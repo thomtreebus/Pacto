@@ -1,4 +1,4 @@
-# Team *Kekw* Small Group project
+# Team *Kekw* Major Group project
 
 ## Team members
 
