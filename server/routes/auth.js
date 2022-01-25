@@ -1,6 +1,15 @@
 const express = require('express');
 const router = express.Router();
 const User = require('../models/User');
+const jwt = require('jsonwebtoken');
+
+// create json web token
+const maxAge = 5 * 24 * 60 * 60; // 5 days
+const createToken = (id) => {
+  return jwt.sign({ id }, 'kekw', {
+    expiresIn: maxAge
+  });
+};
 
 router.post('/signup', (req,res) => {
   const { firstName, lastName, uniEmail, password } = req.body;
