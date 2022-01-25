@@ -1,12 +1,17 @@
 const express = require("express");
 const cors = require("cors");
-const mongoose = require("mongoose");
+const dotenv = require("dotenv");
 
-require("dotenv").config();
+dotenv.config();
 
 const app = express();
 
 app.use(cors());
 app.use(express.json());
+
+// Routes
+app.get("/ping", (req, res) => {
+	res.json({ ping: "pong" });
+});
 
 module.exports = app;
