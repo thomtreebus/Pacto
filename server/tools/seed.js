@@ -1,4 +1,3 @@
-const BlogModel = require("../models/blogs");
 const Chance = require("chance");
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
