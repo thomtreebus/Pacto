@@ -11,31 +11,38 @@ const createToken = (id) => {
   });
 };
 
-router.post('/signup', (req,res) => {
+router.post('/signup', async (req,res) => {
   const { firstName, lastName, uniEmail, password } = req.body;
 
   try {
     const user = await User.create({ firstName, lastName, uniEmail, password });
     const token = createToken(user._id);
     res.cookie('jwt', token, { httpOnly: true, maxAge: maxAge * 1000 });
-    res.status(201).json({ user: user._id });
+    res.status(201).json({user});
   }
   catch(err) {
-    res.status(400);
+    res.status(400).json({err});
   }
 });
 
-router.post('/login', (req,res) => {
-  const { email, password } = req.body;
+router.post('/login', async (req,res) => {
+  const { uniEmail, password } = req.body;
 
   try {
-    const user = await User.login(email, password);
-    const token = createToken(user._id);
-    res.cookie('jwt', token, { httpOnly: true, maxAge: maxAge * 1000 });
-    res.status(200).json({ user: user._id });
+    const user = await this.findOne({ uniEmail });
+    console.log("here")  
+    if (user) {
+      const auth = await bcrypt.compare(password, user.password);
+      if (auth) {
+        const token = createToken(user._id);
+        res.cookie('jwt', token, { httpOnly: true, maxAge: maxAge * 1000 });
+        res.status(200).json({ user: user._id });
+      }
+    }
+    throw Error('incorrect credentials');
   } 
   catch (err) {
-    res.status(400).json();
+    res.status(400).json({err});
   }
 
 });

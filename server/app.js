@@ -10,6 +10,10 @@ app.use(cors());
 app.use(express.json());
 
 // Routes
+const authRoute = require('./routes/auth');
+app.use('/', authRoute);
+
+
 app.get("/ping", (req, res) => {
 	res.json({ ping: "pong" });
 });
