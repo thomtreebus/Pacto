@@ -3,7 +3,8 @@ import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
-import Link from "@mui/material/Link";
+// import Link from "@mui/material/Link";
+import { Link } from 'react-router-dom';
 import Paper from "@mui/material/Paper";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
@@ -92,7 +93,7 @@ export default function Login() {
 						</Button>
 						<Grid container>
 							<Grid item>
-								<Link href="/signup" variant="body2">
+								<Link to="/signup" variant="body2">
 									Don't have an account? Sign Up
 								</Link>
 							</Grid>
