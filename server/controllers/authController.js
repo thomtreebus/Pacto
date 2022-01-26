@@ -75,18 +75,24 @@ module.exports.logoutGet = (req, res) => {
 }
 
 // GET /verify
-module.exports.verifyGet = (req, res) => {
+module.exports.verifyGet = async (req, res) => {
   try {
+    // Get code from query param
     const code = req.query.code;
     if(!code){
-      throw Error("Code query empty!");
+      throw Error("Code query empty.");
     }
 
+    // Find associated user and make them active.
     const userId = await EmailVerificationCode.findOne({ code }).userId;
+    if(!userId){
+      throw Error("Invalid or expired code.");
+    }
     User.findById(userId).active = true;
-
-  } catch(err){
+    res.status(200).json(jsonResponse(null, []));
+  } 
+  catch(err) {
     res.status(400).json(jsonResponse(null, [jsonError(null, err.message)]));
   }
-  res.status(200).json(jsonResponse(null, []));
+
 }
