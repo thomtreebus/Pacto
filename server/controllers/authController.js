@@ -3,6 +3,7 @@ const EmailVerificationCode = require('../models/EmailVerificationCode');
 
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
+const cryptoRandomString = require('crypto-random-string');
 const { jsonResponse, jsonError } = require('../responseHandlers');
 
 // Magic numbers
@@ -30,10 +31,10 @@ module.exports.signupPost = async (req, res) => {
 
     // Generate verification string and send to user's email
     const userId = user._id;
-    const code = await bcrypt.genSalt(SALT_ROUNDS);
-    const linker = await EmailVerificationCode.create({ userId, code })
+    const code = await cryptoRandomString.async({length: 63, type: 'url-safe'});
+    const linker = await EmailVerificationCode.create({ userId, code });
 
-    res.status(201).json(jsonResponse(code, []));
+    res.status(201).json(jsonResponse(linker, []));
   }
   catch(err) {
     res.status(400).json(jsonResponse(null, [jsonError(null, err.message)]));
@@ -48,14 +49,18 @@ module.exports.loginPost = async (req, res) => {
     const user = await User.findOne({ uniEmail });
 
     if (!user) {
-      throw Error('Incorrect credentials!');
+      throw Error('Incorrect credentials.');
     }
 
     // Check input vs hashed, stored password
     const auth = await bcrypt.compare(password, user.password);
 
     if (!auth) {
-      throw Error('Incorrect credentials!');
+      throw Error('Incorrect credentials.');
+    }
+
+    if(!user.active){
+      throw Error('University email not verified.')
     }
 
     // Generate cookie to log in user
@@ -84,12 +89,14 @@ module.exports.verifyGet = async (req, res) => {
     }
 
     // Find associated user and make them active.
-    const userId = await EmailVerificationCode.findOne({ code }).userId;
-    if(!userId){
+    const linker = await EmailVerificationCode.findOne({ code });
+    if(!linker){
       throw Error("Invalid or expired code.");
     }
-    User.findById(userId).active = true;
-    res.status(200).json(jsonResponse(null, []));
+
+    const user = await User.findByIdAndUpdate(linker.userId, {active:true});
+    await linker.delete();
+    res.status(200).json(jsonResponse(user._id, []));
   } 
   catch(err) {
     res.status(400).json(jsonResponse(null, [jsonError(null, err.message)]));
