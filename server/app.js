@@ -13,7 +13,6 @@ app.use(express.json());
 const authRoute = require('./routes/auth');
 app.use('/', authRoute);
 
-
 app.get("/ping", (req, res) => {
 	res.json({ ping: "pong" });
 });
