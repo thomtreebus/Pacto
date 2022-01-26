@@ -1,5 +1,6 @@
 import Login from "./pages/LoginPage";
 import SignUp from "./pages/SignupPage";
+import AppBar from "./components/AppBar";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 
 function App() {
@@ -17,7 +18,7 @@ function App() {
 				</Route>
 
 				<Route path="*">
-					Navbar
+					<AppBar />
 					<Switch>
 						<Route exact path="/profile">
 							<h1>Profile Page</h1>
