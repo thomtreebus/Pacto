@@ -4,10 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon server.js",
     "dbstart": "docker-compose up -d",
-    "dbclose": "docker-compose down"
+    "dbclose": "docker-compose down",
+    "test": "jest --runInBand",
+    "coverage": "jest --coverage --runInBand"
   },
   "keywords": [],
   "author": "",
@@ -20,6 +21,8 @@
     "express": "^4.17.2",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.1.7",
-    "nodemon": "^2.0.15"
+    "nodemon": "^2.0.15",
+    "jest": "^27.4.7",
+    "supertest": "^6.2.2"
   }
 }
