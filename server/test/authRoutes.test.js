@@ -1,9 +1,10 @@
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
+const User = require("../models/User");
 
 dotenv.config();
 
-describe("Actions script", () => {
+describe("Authentication routes", () => {
 	beforeAll(async () => {
 		await mongoose.connect(process.env.TEST_DB_CONNECTION_URL);
 	});
@@ -13,8 +14,7 @@ describe("Actions script", () => {
 	});
 
 	afterEach(async () => {
-		// Empty the database after each test
-		// await ModelName.deleteMany({});
+		await User.deleteMany({});
 	});
 
 	it("passes the test", () => {
