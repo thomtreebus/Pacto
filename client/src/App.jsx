@@ -17,17 +17,15 @@ function App() {
 				</Route>
 
 				<Route path="*">
-					<Router>
-						Navbar
-						<Switch>
-							<Route exact path="/profile">
-								<h1>Profile Page</h1>
-							</Route>
-							<Route path="*">
-								<h1>Not Found Page</h1>
-							</Route>
-						</Switch>
-					</Router>
+					Navbar
+					<Switch>
+						<Route exact path="/profile">
+							<h1>Profile Page</h1>
+						</Route>
+						<Route path="*">
+							<h1>Not Found Page</h1>
+						</Route>
+					</Switch>
 				</Route>
 			</Switch>
 		</Router>
