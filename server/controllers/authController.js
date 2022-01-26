@@ -31,7 +31,7 @@ module.exports.signupPost = async (req, res) => {
     res.status(201).json(jsonResponse(user, []));
   }
   catch(err) {
-    res.status(400).json(jsonResponse(null, [jsonError(null, err)]));
+    res.status(400).json(jsonResponse(null, [jsonError(null, err.message)]));
   }
 }
 
@@ -41,24 +41,30 @@ module.exports.loginPost = async (req, res) => {
 
   try {
     const user = await User.findOne({ uniEmail });
-    if (user) {
-      const auth = await bcrypt.compare(password, user.password);
-      if (auth) {
-        const token = createToken(user._id);
-        res.cookie('jwt', token, { httpOnly: true, maxAge: COOKIE_MAX_AGE * 1000 });
-        res.status(200).json({ user: user._id });
-        return;
-      } 
+
+    if (!user) {
+      throw Error('Incorrect credentials!');
     }
-    throw Error('incorrect credentials');
+
+    // Check input vs hashed, stored password
+    const auth = await bcrypt.compare(password, user.password);
+
+    if (!auth) {
+      throw Error('Incorrect credentials!');
+    }
+
+    // Generate cookie to log in user
+    const token = createToken(user._id);
+    res.cookie('jwt', token, { httpOnly: true, maxAge: COOKIE_MAX_AGE * 1000 });
+    res.status(200).json(jsonResponse(user._id, []));
   } 
   catch (err) {
-    res.status(400).json({errors: [err]});
+    res.status(400).json(jsonResponse(null, [jsonError(null, err.message)]));
   }
 }
 
 // GET logout
 module.exports.logoutGet = (req, res) => {
   res.cookie('jwt', '', { maxAge: 1 });
-  res.status(200).json();
+  res.status(200).json(jsonResponse(null, []));
 }
