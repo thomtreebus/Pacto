@@ -1,5 +1,6 @@
 import Login from "./pages/LoginPage";
 import SignUp from "./pages/SignupPage";
+import Landing from "./pages/LandingPage";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 
 function App() {
@@ -7,7 +8,7 @@ function App() {
 		<Router>
 			<Switch>
 				<Route exact path="/">
-					<h1>Landing Page</h1>
+					<Landing />
 				</Route>
 				<Route exact path="/login">
 					<Login />
