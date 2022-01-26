@@ -4,7 +4,6 @@ const User = require("../models/User");
 const supertest = require("supertest");
 const bcrypt = require("bcrypt");
 const app = require("../app");
-const { use } = require("../routes/auth");
 var Cookies = require("expect-cookies");
 
 dotenv.config();
@@ -28,7 +27,7 @@ describe("Authentication routes", () => {
 		beforeEach(async () => {
 			// Create a test user
 			const salt = await bcrypt.genSalt(SALT_ROUNDS);
-			const hashedPassword = await bcrypt.hash("password", salt);
+			const hashedPassword = await bcrypt.hash("Password123", salt);
 			const user = await User.create({
 				firstName: "pac",
 				lastName: "to",
@@ -71,23 +70,23 @@ describe("Authentication routes", () => {
 		}
 
 		it("rejects invalid email", async () => {
-			await isInvalidCredntials("pac.to", "password");
+			await isInvalidCredntials("pac.to", "Password123");
 		});
 
 		it("rejects incorrect email", async () => {
-			await isInvalidCredntials("pac.to1@kcl.ac.uk", "password");
+			await isInvalidCredntials("pac.to1@kcl.ac.uk", "Password123");
 		});
 
 		it("rejects invalid password", async () => {
-			await isInvalidCredntials("pac.to@kcl.ac.uk", "password1");
+			await isInvalidCredntials("pac.to@kcl.ac.uk", "Password1");
 		});
 
 		it("rejects invalid email and password", async () => {
-			await isInvalidCredntials("pac.to1@kcl.ac.uk", "password1");
+			await isInvalidCredntials("pac.to1@kcl.ac.uk", "Password1");
 		});
 
 		it("logs the user in when the credentials are correct", async () => {
-			await isValidCredntials("pac.to@kcl.ac.uk", "password");
+			await isValidCredntials("pac.to@kcl.ac.uk", "Password123");
 		});
 	});
 });
