@@ -42,7 +42,7 @@ router.post('/login', async (req,res) => {
     throw Error('incorrect credentials');
   } 
   catch (err) {
-    res.status(400).json({err});
+    res.status(400).json({ error: [{ message: err.message }]});
   }
 
 });
