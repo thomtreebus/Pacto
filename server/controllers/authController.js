@@ -1,4 +1,6 @@
 const User = require('../models/User');
+const EmailVerificationCode = require('../models/EmailVerificationCode');
+
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const { jsonResponse, jsonError } = require('../responseHandlers');
@@ -23,12 +25,15 @@ module.exports.signupPost = async (req, res) => {
     const salt = await bcrypt.genSalt(SALT_ROUNDS);
     const hashedPassword = await bcrypt.hash(password, salt);
 
+    // Create user
     const user = await User.create({ firstName, lastName, uniEmail, password:hashedPassword });
 
-    // Generate cookie to log in user
-    const token = createToken(user._id);
-    res.cookie('jwt', token, { httpOnly: true, maxAge: COOKIE_MAX_AGE * 1000 });
-    res.status(201).json(jsonResponse(user, []));
+    // Generate verification string and send to user's email
+    const userId = user._id;
+    const code = await bcrypt.genSalt(SALT_ROUNDS);
+    const linker = await EmailVerificationCode.create({ userId, code })
+
+    res.status(201).json(jsonResponse(code, []));
   }
   catch(err) {
     res.status(400).json(jsonResponse(null, [jsonError(null, err.message)]));
@@ -66,5 +71,22 @@ module.exports.loginPost = async (req, res) => {
 // GET /logout
 module.exports.logoutGet = (req, res) => {
   res.cookie('jwt', '', { maxAge: 1 });
+  res.status(200).json(jsonResponse(null, []));
+}
+
+// GET /verify
+module.exports.verifyGet = (req, res) => {
+  try {
+    const code = req.query.code;
+    if(!code){
+      throw Error("Code query empty!");
+    }
+
+    const userId = await EmailVerificationCode.findOne({ code }).userId;
+    User.findById(userId).active = true;
+
+  } catch(err){
+    res.status(400).json(jsonResponse(null, [jsonError(null, err.message)]));
+  }
   res.status(200).json(jsonResponse(null, []));
 }

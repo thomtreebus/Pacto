@@ -25,7 +25,7 @@ const UserSchema = mongoose.Schema({
     type: String,
     required: false 
   },
-  active: {
+  active: { // This stores whether the user's email has been verified.
     type: Boolean,
     required: true,
     default: false
