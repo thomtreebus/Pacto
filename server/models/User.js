@@ -24,6 +24,11 @@ const UserSchema = mongoose.Schema({
   course: {
     type: String,
     required: false 
+  },
+  active: {
+    type: Boolean,
+    required: true,
+    default: false
   }
 });
 
