@@ -6,17 +6,19 @@ import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import InputBase from '@mui/material/InputBase';
-import Badge from '@mui/material/Badge';
+// import Badge from '@mui/material/Badge';
 import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu';
-import MenuIcon from '@mui/icons-material/Menu';
 import SearchIcon from '@mui/icons-material/Search';
 import AccountCircle from '@mui/icons-material/AccountCircle';
-import MailIcon from '@mui/icons-material/Mail';
-import NotificationsIcon from '@mui/icons-material/Notifications';
+// import MailIcon from '@mui/icons-material/Mail';
+// import NotificationsIcon from '@mui/icons-material/Notifications';
 import MoreIcon from '@mui/icons-material/MoreVert';
 import { Link } from 'react-router-dom';
 import Button from '@mui/material/Button';
+import Divider from '@mui/material/Divider';
+import Avatar from '@mui/material/Avatar';
+
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -100,7 +102,8 @@ export default function PrimarySearchAppBar() {
       onClose={handleMenuClose}
     >
       <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
-      <MenuItem onClick={handleMenuClose}>My account</MenuItem>
+      <Divider />
+      <MenuItem onClick={handleMenuClose}>Log Out</MenuItem>
     </Menu>
   );
 
@@ -121,7 +124,8 @@ export default function PrimarySearchAppBar() {
       open={isMobileMenuOpen}
       onClose={handleMobileMenuClose}
     >
-      <MenuItem>
+      {/* TODO: DMs, Notifications */}
+      {/* <MenuItem>
         <IconButton size="large" aria-label="show 4 new mails" color="inherit">
           <Badge badgeContent={4} color="error">
             <MailIcon />
@@ -140,7 +144,7 @@ export default function PrimarySearchAppBar() {
           </Badge>
         </IconButton>
         <p>Notifications</p>
-      </MenuItem>
+      </MenuItem> */}
       <MenuItem onClick={handleProfileMenuOpen}>
         <IconButton
           size="large"
@@ -153,6 +157,10 @@ export default function PrimarySearchAppBar() {
         </IconButton>
         <p>Profile</p>
       </MenuItem>
+      <Divider />
+      <MenuItem onClick={handleProfileMenuOpen}>
+        <p>Log Out</p>
+      </MenuItem>
     </Menu>
   );
 
@@ -160,24 +168,18 @@ export default function PrimarySearchAppBar() {
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
         <Toolbar>
-          <IconButton
-            size="large"
-            edge="start"
-            color="inherit"
-            aria-label="open drawer"
-            sx={{ mr: 2 }}
-          >
-            <MenuIcon />
-          </IconButton>
+          
           <Typography
             variant="h6"
             noWrap
             component="div"
             sx={{ display: { xs: 'none', sm: 'block' } }}
           >
-            <Button component={Link} to="/">
-              Pacto
-            </Button>
+            <Button 
+              component={Link} 
+              to="/" 
+              startIcon={<Avatar src={'https://media.discordapp.net/attachments/917563380850655277/936005688700862535/pacto-logo.png?width=478&height=478'} />}
+            / >
           </Typography>
           <Search>
             <SearchIconWrapper>
@@ -189,8 +191,9 @@ export default function PrimarySearchAppBar() {
             />
           </Search>
           <Box sx={{ flexGrow: 1 }} />
+          {/* TODO: DMs, Notifications */}
           <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
-            <IconButton size="large" aria-label="show 4 new mails" color="inherit">
+            {/* <IconButton size="large" aria-label="show 4 new mails" color="inherit">
               <Badge badgeContent={4} color="error">
                 <MailIcon />
               </Badge>
@@ -203,7 +206,7 @@ export default function PrimarySearchAppBar() {
               <Badge badgeContent={17} color="error">
                 <NotificationsIcon />
               </Badge>
-            </IconButton>
+            </IconButton> */}
             <IconButton
               size="large"
               edge="end"
