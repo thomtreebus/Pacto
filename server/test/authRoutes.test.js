@@ -218,33 +218,6 @@ describe("Authentication routes", () => {
 			expect(response.body.errors.length).toBe(0);
 		});
 
-		it("returns an error when not  logged in", async () => {
-			const password = "Password123";
-			const salt = await bcrypt.genSalt(SALT_ROUNDS);
-			const hashedPassword = await bcrypt.hash(password, salt);
-
-			const user = await User.create({
-				firstName: "pac",
-				lastName: "to",
-				uniEmail: "pac.to@kcl.ac.uk",
-				password: hashedPassword,
-			});
-
-			const token = createToken(user._id);
-
-			let response = await supertest(app)
-				.get("/me")
-				.set("Cookie", [`jwt=${token}`])
-				.expect(200);
-			expect(response.body.message).toBeDefined();
-			expect(response.body.message._id).toBeDefined();
-			expect(response.body.message.firstName).toBeDefined();
-			expect(response.body.message.lastName).toBeDefined();
-			expect(response.body.message.uniEmail).toBeDefined();
-			expect(response.body.message.password).toBeDefined();
-			expect(response.body.errors.length).toBe(0);
-		});
-
 		it("returns an error when the user is not logged in", async () => {
 			let response = await supertest(app).get("/me");
 			expect(response.body.message).toBe(null);
