@@ -6,7 +6,6 @@ const supertest = require("supertest");
 const bcrypt = require("bcrypt");
 const app = require("../app");
 var Cookies = require("expect-cookies");
-const { findOne } = require("../models/User");
 
 dotenv.config();
 
@@ -17,6 +16,9 @@ const INACTIVE_ACCOUNT = "University email not yet verified.";
 
 // get verify magic values
 const VERIFICATION_CODE = "kaushik12";
+const MISSING_CODE = "Code query empty.";
+const INVALID_CODE = "Invalid or expired code.";
+const VERIFY_SUCCESS_RESPONSE_TEXT = "Success! You may now close this page."; // recall this is a special case
 
 const generateTestUser = async () => {
 	const salt = await bcrypt.genSalt(SALT_ROUNDS);
@@ -41,6 +43,7 @@ describe("Authentication routes", () => {
 
 	afterEach(async () => {
 		await User.deleteMany({});
+		await EmailVerificationCode.deleteMany({});
 	});
 
 	describe("POST /login", () => {
@@ -120,16 +123,26 @@ describe("Authentication routes", () => {
 
 		async function getVerifyWithCode(code) {
 			const response = await supertest(app)
-			.get("/verify?code="+VERIFICATION_CODE);
+			.get("/verify?code="+code);
 
 			return response;
 		}
 
-		it("verify inactive user with valid code", async () => {
+		it("verifies inactive user with valid code", async () => {
 			const response = await getVerifyWithCode(VERIFICATION_CODE);
 			const user = await User.findOne({ uniEmail: "pac.to@kcl.ac.uk"});
 			expect(response.statusCode).toBe(200);
 			expect(user.active).toBe(true);
-		})
+			expect(response.text).toBe(VERIFY_SUCCESS_RESPONSE_TEXT);
+		});
+
+		it("fails to verify inactive user with invalid code", async () => {
+			const response = await getVerifyWithCode(VERIFICATION_CODE + "gibberish");
+			const user = await User.findOne({ uniEmail: "pac.to@kcl.ac.uk"});
+			expect(user.active).toBe(false);
+			expect(response.statusCode).toBe(400);
+			expect(response.body.errors.length).toBe(1);
+			expect(response.body.errors[0].message).toBe(INVALID_CODE);
+		});
 	});
 });
