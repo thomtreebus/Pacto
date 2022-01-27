@@ -26,6 +26,7 @@ export default function LoginPage() {
 			<CssBaseline />
 			<Grid
 				item
+				data-testid="background-login-image"
 				xs={false}
 				sm={4}
 				md={7}
@@ -80,6 +81,7 @@ export default function LoginPage() {
 							label="Password"
 							type="password"
 							autoComplete="current-password"
+							data-testid="password-input"
 						/>
 						<Button
 							type="submit"
