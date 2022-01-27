@@ -23,15 +23,17 @@ export default function LandingPage() {
 					onClick={handleClick}
 					variant="contained"
 					sx={{
-						color: "black",
+						color: "white",
 						width: "70%",
 						height: "45px",
 						borderRadius: "15px",
-						backgroundColor: "white",
+						backgroundColor: "rgb(25,118,210)",
 						fontWeight: "bold",
+						border: "3px solid",
+
 						"&:hover": {
-							backgroundColor: "black",
-							color: "white",
+							backgroundColor: "white",
+							color: "rgb(25,118,210)",
 							border: "3px solid",
 							borderColor: "white",
 						},
