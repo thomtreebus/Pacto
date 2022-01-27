@@ -6,7 +6,7 @@ const bcrypt = require("bcrypt");
 const app = require("../app");
 
 const { checkAuthenticated } = require("../middleware/authMiddleware");
-const { jsonResponse } = require('../responseHandlers');
+const { jsonResponse } = require('../helpers/responseHandlers');
 const { createToken } = require("../controllers/authController");
 
 dotenv.config();
