@@ -7,6 +7,7 @@ import { CssBaseline } from "@mui/material";
 function App() {
 	return (
 		<Router>
+			<CssBaseline />
 			<Switch>
 				<Route exact path="/">
 					<h1>Landing Page</h1>
@@ -19,7 +20,6 @@ function App() {
 				</Route>
 
 				<Route path="*">
-					<CssBaseline />
 					<AppBar />
 					<Switch>
 						<Route exact path="/profile">

@@ -192,6 +192,13 @@ export default function PrimarySearchAppBar() {
               inputProps={{ 'aria-label': 'search' }}
             />
           </Search>
+          <Button 
+              color="inherit"
+              component={ Link } 
+              to="/"
+            >
+              My Pacts
+            </Button>
           <Box sx={{ flexGrow: 1 }} />
           {/* TODO: DMs, Notifications */}
           <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
@@ -210,13 +217,6 @@ export default function PrimarySearchAppBar() {
               </Badge>
             </IconButton> */}
             {/* TODO: My Pacts landing page */}
-            <Button 
-              color="inherit"
-              component={ Link } 
-              to="/"
-            >
-              My Pacts
-            </Button>
             <IconButton
               size="large"
               edge="end"
