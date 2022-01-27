@@ -20,13 +20,15 @@ const MISSING_CODE = "Code query empty.";
 const INVALID_CODE = "Invalid or expired code.";
 const VERIFY_SUCCESS_RESPONSE_TEXT = "Success! You may now close this page."; // recall this is a special case
 
+// global helpers and magic values
+const TEST_USER_EMAIL = "pac.to@kcl.ac.uk";
 const generateTestUser = async () => {
 	const salt = await bcrypt.genSalt(SALT_ROUNDS);
 			const hashedPassword = await bcrypt.hash("Password123", salt);
 			const user = await User.create({
 				firstName: "pac",
 				lastName: "to",
-				uniEmail: "pac.to@kcl.ac.uk",
+				uniEmail: TEST_USER_EMAIL,
 				password: hashedPassword,
 			});
 			return user;
@@ -53,7 +55,7 @@ describe("Authentication routes", () => {
 			await user.save();
 		});
 
-		async function isInvalidCredntials(uniEmail, password, msg=INCORRECT_CREDENTIALS) {
+		async function isInvalidCredentials(uniEmail, password, msg=INCORRECT_CREDENTIALS) {
 			const response = await supertest(app)
 				.post("/login")
 				.send({
@@ -68,7 +70,7 @@ describe("Authentication routes", () => {
 			expect(response.body.errors.length).toBe(1);
 		}
 
-		async function isValidCredntials(uniEmail, password) {
+		async function isValidCredentials(uniEmail, password) {
 			const response = await supertest(app)
 				.post("/login")
 				.send({
@@ -86,29 +88,30 @@ describe("Authentication routes", () => {
 			expect(response.body.errors.length).toBe(0);
 		}
 
+		// Not using TEST_USER_EMAIL due to nature of these tests.
 		it("rejects invalid email", async () => {
-			await isInvalidCredntials("pac.to", "Password123");
+			await isInvalidCredentials("pac.to", "Password123");
 		});
 
 		it("rejects incorrect email", async () => {
-			await isInvalidCredntials("pac.to1@kcl.ac.uk", "Password123");
+			await isInvalidCredentials("pac.to1@kcl.ac.uk", "Password123");
 		});
 
 		it("rejects invalid password", async () => {
-			await isInvalidCredntials("pac.to@kcl.ac.uk", "Password1");
+			await isInvalidCredentials("pac.to@kcl.ac.uk", "Password1");
 		});
 
 		it("rejects invalid email and password", async () => {
-			await isInvalidCredntials("pac.to1@kcl.ac.uk", "Password1");
+			await isInvalidCredentials("pac.to1@kcl.ac.uk", "Password1");
 		});
 
 		it("logs the user in when the credentials are correct", async () => {
-			await isValidCredntials("pac.to@kcl.ac.uk", "Password123");
+			await isValidCredentials("pac.to@kcl.ac.uk", "Password123");
 		});
 
 		it("rejects inactive user with correct credentials", async () => {
-			await User.findOneAndUpdate({uniEmail: 'pac.to@kcl.ac.uk'}, {active: false});
-			await isInvalidCredntials("pac.to@kcl.ac.uk", "Password123", INACTIVE_ACCOUNT);
+			await User.findOneAndUpdate({uniEmail: TEST_USER_EMAIL}, {active: false});
+			await isInvalidCredentials("pac.to@kcl.ac.uk", "Password123", INACTIVE_ACCOUNT);
 		})
 	});
 
@@ -121,6 +124,7 @@ describe("Authentication routes", () => {
 			});
 		});
 
+		// Helpers
 		async function getVerifyWithCode(code) {
 			const response = await supertest(app)
 			.get("/verify?code="+code);
@@ -128,21 +132,51 @@ describe("Authentication routes", () => {
 			return response;
 		}
 
+		async function isResponseUnsuccessful(response, msg=INVALID_CODE) {
+			expect(response.statusCode).toBe(400);
+			expect(response.body.errors.length).toBe(1);
+			expect(response.body.errors[0].message).toBe(msg);
+		}
+
+		async function isResponseSuccessful(response) {
+			expect(response.statusCode).toBe(200);
+			expect(response.text).toBe(VERIFY_SUCCESS_RESPONSE_TEXT);
+		}
+
+		// Tests
 		it("verifies inactive user with valid code", async () => {
 			const response = await getVerifyWithCode(VERIFICATION_CODE);
-			const user = await User.findOne({ uniEmail: "pac.to@kcl.ac.uk"});
-			expect(response.statusCode).toBe(200);
+			isResponseSuccessful(response);
+
+			const user = await User.findOne({ uniEmail: TEST_USER_EMAIL});
 			expect(user.active).toBe(true);
-			expect(response.text).toBe(VERIFY_SUCCESS_RESPONSE_TEXT);
 		});
 
 		it("fails to verify inactive user with invalid code", async () => {
 			const response = await getVerifyWithCode(VERIFICATION_CODE + "gibberish");
-			const user = await User.findOne({ uniEmail: "pac.to@kcl.ac.uk"});
+			isResponseUnsuccessful(response);
+
+			const user = await User.findOne({ uniEmail: TEST_USER_EMAIL});
 			expect(user.active).toBe(false);
-			expect(response.statusCode).toBe(400);
-			expect(response.body.errors.length).toBe(1);
-			expect(response.body.errors[0].message).toBe(INVALID_CODE);
+		});
+
+		it("fails to verify inactive user with no code param", async () => {
+			const response = await getVerifyWithCode("");
+			isResponseUnsuccessful(response, MISSING_CODE)
+
+			const user = await User.findOne({ uniEmail: TEST_USER_EMAIL});
+			expect(user.active).toBe(false);
+		});
+
+		it("identifies already used code as invalid, with user object not affected", async () => {
+			const response = await getVerifyWithCode(VERIFICATION_CODE);
+			isResponseSuccessful(response);
+			const user = await User.findOne({ uniEmail: TEST_USER_EMAIL});
+			expect(user.active).toBe(true);
+
+			const responseAfterSuccess = await getVerifyWithCode(VERIFICATION_CODE);
+			isResponseUnsuccessful(responseAfterSuccess);
+			expect(user.active).toBe(true);
 		});
 	});
 });
