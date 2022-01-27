@@ -167,7 +167,8 @@ export default function PrimarySearchAppBar() {
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar 
-        position="static"
+        position="fixed"
+        sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
         style={{ background: '#2E3B55' }}>
         <Toolbar>
           
@@ -192,13 +193,13 @@ export default function PrimarySearchAppBar() {
               inputProps={{ 'aria-label': 'search' }}
             />
           </Search>
-          <Button 
+          {/* <Button 
               color="inherit"
               component={ Link } 
               to="/"
             >
               My Pacts
-            </Button>
+            </Button> */}
           <Box sx={{ flexGrow: 1 }} />
           {/* TODO: DMs, Notifications */}
           <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
