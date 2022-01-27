@@ -28,18 +28,14 @@ module.exports.signupPost = async (req, res) => {
 		const salt = await bcrypt.genSalt(SALT_ROUNDS);
 		const hashedPassword = await bcrypt.hash(password, salt);
 
-		const user = await User.create({
-			firstName,
-			lastName,
-			uniEmail,
-			password: hashedPassword,
-		});
+		const user = await User.create({ firstName, lastName, uniEmail, password: hashedPassword });
 
 		// Generate verification string and send to user's email
 		await handleVerification(uniEmail, user._id);
 
 		res.status(201).json(jsonResponse(null, []));
-	} catch (err) {
+	} 
+  catch (err) {
 		res.status(400).json(jsonResponse(null, [jsonError(null, err.message)]));
 	}
 };
@@ -70,7 +66,8 @@ module.exports.loginPost = async (req, res) => {
 		const token = createToken(user._id);
 		res.cookie("jwt", token, { httpOnly: true, maxAge: COOKIE_MAX_AGE * 1000 });
 		res.status(200).json(jsonResponse({ id: user._id }, []));
-	} catch (err) {
+	} 
+  catch (err) {
 		res.status(400).json(jsonResponse(null, [jsonError(null, err.message)]));
 	}
 };
@@ -100,7 +97,8 @@ module.exports.verifyGet = async (req, res) => {
 		const user = await User.findByIdAndUpdate(linker.userId, { active: true });
 		await linker.delete();
 		res.status(200).send("Success! You may now close this page.");
-	} catch (err) {
+	} 
+  catch (err) {
 		res.status(400).json(jsonResponse(null, [jsonError(null, err.message)]));
 	}
 };

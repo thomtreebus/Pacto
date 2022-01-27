@@ -11,13 +11,15 @@ const checkAuthenticated = (req, res, next) => {
         res
           .status(401)
           .json(jsonResponse(null, [jsonError(null, "You have to login")]));
-      } else {
+      } 
+      else {
         let user = await User.findById(decodedToken.id);
         req.user = user;
         next();
       }
     });
-  } else {
+  } 
+  else {
     res
       .status(401)
       .json(jsonResponse(null, [jsonError(null, "You have to login")]));
