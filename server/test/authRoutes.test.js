@@ -33,6 +33,7 @@ describe("Authentication routes", () => {
 				lastName: "to",
 				uniEmail: "pac.to@kcl.ac.uk",
 				password: hashedPassword,
+				active: true
 			});
 		});
 
