@@ -6,9 +6,9 @@ import TextField from "@mui/material/TextField";
 import { Link } from "react-router-dom";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
-import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
+import Icon from '../assets/pacto-logo.ico';
 
 export default function SignupPage() {
 	function handleSubmit(event) {
@@ -31,9 +31,7 @@ export default function SignupPage() {
 					alignItems: "center",
 				}}
 			>
-				<Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
-					<LockOutlinedIcon />
-				</Avatar>
+				<Avatar alt="Pacto Icon" src={Icon} />
 				<Typography component="h1" variant="h5" sx={{ fontWeight: "bold" }}>
 					Join Pacto!
 				</Typography>
