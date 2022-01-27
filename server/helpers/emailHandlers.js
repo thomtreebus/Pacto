@@ -33,5 +33,4 @@ module.exports.handleVerification = async (email, id) => {
   });
   
   await EmailVerificationCode.create({ userId:id, code });
-  console.log(mail.messageId)
 }
