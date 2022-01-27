@@ -29,6 +29,7 @@
     "mongoose": "^6.1.7",
     "nodemailer": "^6.7.2",
     "nodemon": "^2.0.15",
-    "supertest": "^6.2.2"
+    "supertest": "^6.2.2",
+    "validator": "^13.7.0"
   }
 }
