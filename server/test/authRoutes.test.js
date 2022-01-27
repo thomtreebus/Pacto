@@ -5,7 +5,7 @@ const EmailVerificationCode = require("../models/EmailVerificationCode");
 const supertest = require("supertest");
 const bcrypt = require("bcrypt");
 const app = require("../app");
-var Cookies = require("expect-cookies");
+const Cookies = require("expect-cookies");
 const { createToken } = require("../controllers/authController");
 
 dotenv.config();
@@ -56,11 +56,7 @@ describe("Authentication routes", () => {
 			await user.save();
 		});
 
-		async function isInvalidCredentials(
-			uniEmail,
-			password,
-			msg = INCORRECT_CREDENTIALS
-		) {
+		async function isInvalidCredentials(uniEmail, password,	msg = INCORRECT_CREDENTIALS) {
 			const response = await supertest(app)
 				.post("/login")
 				.send({
@@ -124,6 +120,32 @@ describe("Authentication routes", () => {
 				"Password123",
 				INACTIVE_ACCOUNT
 			);
+		});
+	});
+
+	describe("GET /logout", () => {
+		beforeEach(async () => {
+			const user = await generateTestUser();
+			user.active = true;
+			await user.save();
+		});
+
+		it("refuses access to non logged in user", async () => {
+			const response = await supertest(app)
+			.get("/logout")
+			.expect(Cookies.not("set", {name: "jwt"}));
+			expect(response.statusCode).toBe(401);
+		});
+
+		it("returns OK and cookie with max-age set when user logged in", async () => {
+			const user = await User.findOne({ uniEmail: TEST_USER_EMAIL });
+			const token = createToken(user._id);
+      const response = await supertest(app)
+				.get("/logout")
+        .set("Cookie", [`jwt=${token}`])	
+				.expect(Cookies.set({name: "jwt", options: ["max-age"]}));
+
+			expect(response.statusCode).toBe(200);
 		});
 	});
 
@@ -193,17 +215,7 @@ describe("Authentication routes", () => {
 
 	describe("GET /me", () => {
 		it("returns a user object when logged in", async () => {
-			const password = "Password123";
-			const salt = await bcrypt.genSalt(SALT_ROUNDS);
-			const hashedPassword = await bcrypt.hash(password, salt);
-
-			const user = await User.create({
-				firstName: "pac",
-				lastName: "to",
-				uniEmail: "pac.to@kcl.ac.uk",
-				password: hashedPassword,
-			});
-
+			const user = await generateTestUser();
 			const token = createToken(user._id);
 
 			let response = await supertest(app)
