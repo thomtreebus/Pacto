@@ -3,14 +3,14 @@ import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 // import Link from "@mui/material/Link";
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 
-export default function SignUp() {
+export default function SignupPage() {
 	function handleSubmit(event) {
 		event.preventDefault();
 		const data = new FormData(event.currentTarget);
@@ -49,13 +49,7 @@ export default function SignUp() {
 							/>
 						</Grid>
 						<Grid item xs={12} sm={6}>
-							<TextField
-								required
-								fullWidth
-								//required
-								label="Last Name"
-								name="lastName"
-							/>
+							<TextField required fullWidth label="Last Name" name="lastName" />
 						</Grid>
 						<Grid item xs={12}>
 							<TextField
