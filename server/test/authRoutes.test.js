@@ -179,4 +179,146 @@ describe("Authentication routes", () => {
 			expect(user.active).toBe(true);
 		});
 	});
+
+	describe("POST /signup", () => {
+		beforeEach(async () => {
+			const user = await generateTestUser();
+			user.active = true;
+			await user.save();
+		});
+
+		async function isInvalidCredentials(firstName, lastName, uniEmail, password, msg = INCORRECT_CREDENTIALS) {
+			const response = await supertest(app)
+				.post("/signup")
+				.send({
+					firstName,
+					lastName,
+					uniEmail,
+					password,
+				})
+				.expect(400);
+
+			expect(response.body.message).toBe(null);
+			expect(response.body.errors[0].field).toBe(null);
+			expect(response.body.errors[0].message).toBe(msg);
+			expect(response.body.errors.length).toBe(1);
+		}
+
+		async function isValidCredentials(firstName, lastName, uniEmail, password) {
+			const response = await supertest(app)
+				.post("/signup")
+				.send({
+					firstName,
+					lastName,
+					uniEmail,
+					password,
+				})
+				.expect(201);
+			expect(response.body.message).toBeDefined();
+			expect(response.body.errors.length).toBe(0);
+		}
+
+		describe("reject firstName due to: ", () => {
+			it("blank", async () => {
+				await isInvalidCredentials(
+					"",
+					"Smith",
+					"kolling.smith@kcl.ac.uk",
+					"Password123",
+					"Users validation failed: firstName: Please enter a first name"
+				);
+			});
+			it("contains numbers", async () => {
+				await isInvalidCredentials(
+					"123Kolling",
+					"Smith",
+					"kolling.smith@kcl.ac.uk",
+					"Password123",
+					"Users validation failed: firstName: Name can't contain number"
+				);
+			});
+
+		})
+
+		describe("reject lastName due to: ", () => {
+			it("blank", async () => {
+				await isInvalidCredentials(
+					"Kolling",
+					"",
+					"kolling.smith@kcl.ac.uk",
+					"Password123",
+					"Users validation failed: lastName: Please enter a last name"
+				);
+			});
+			it("contains numbers", async () => {
+				await isInvalidCredentials(
+					"Kolling",
+					"123Smith",
+					"kolling.smith@kcl.ac.uk",
+					"Password123",
+					"Users validation failed: lastName: Name can't contain number"
+				);
+			});
+		})
+		describe("reject incorrect email due to: ", () => {
+			it(" blank email", async () => {
+				await isInvalidCredentials(
+					"Kolling",
+					"Smith",
+					"",
+					"Password123",
+					"Users validation failed: uniEmail: Please enter an email"
+				);
+			});
+			it("non uni email", async () => {
+				await isInvalidCredentials(
+					"Kolling",
+					"Kolling",
+					"kolling.smith@example.com",
+					"Password123",
+					"Users validation failed: uniEmail: Enter a valid email"
+				);
+			});
+			it("invalid email format", async () => {
+				await isInvalidCredentials(
+					"Kolling",
+					"Smith",
+					"kolling.smith",
+					"Password123",
+					"Users validation failed: uniEmail: Enter a valid email"
+				);
+			});
+			it("email exists", async () => {
+				await isInvalidCredentials(
+					"Kolling",
+					"Smith",
+					"pac.to@kcl.ac.uk",
+					"Password123",
+					"Email already exists"
+				);
+			});
+		});
+		it("accepts valid input", async () => {
+			await isValidCredentials(
+				"Kolling",
+				"Smith",
+				"kolling.smith@kcl.ac.uk",
+				"Password123",
+			);
+		});
+		/* Password length needs to be checked before hash
+		describe("reject password due to: ", () => {
+			it(" blank password", async () => {
+				await isInvalidCredentials("Kolling", "Smith", "kolling.smith@kcl.ac.uk", "");
+			});
+			it(" short password", async () => {
+				await isInvalidCredentials("Kolling", "Smith", "kolling.smith@kcl.ac.uk", "Pass");
+			});
+			it(" long password", async () => {
+				await isInvalidCredentials("Kolling", "Smith", "kolling.smith@kcl.ac.uk", "Password123".repeat(3000));
+			});
+		})
+		 */
+	});
+
 });
