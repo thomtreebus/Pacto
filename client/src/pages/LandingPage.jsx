@@ -6,7 +6,7 @@ export default function LandingPage() {
 	const history = useHistory();
 
 	function handleClick() {
-		history.push("/login");
+		history.push("/signup");
 	}
 
 	return (
