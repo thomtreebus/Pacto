@@ -1,16 +1,34 @@
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const User = require("../models/User");
+const EmailVerificationCode = require("../models/EmailVerificationCode");
 const supertest = require("supertest");
 const bcrypt = require("bcrypt");
 const app = require("../app");
 var Cookies = require("expect-cookies");
+const { findOne } = require("../models/User");
 
 dotenv.config();
 
+// post login magic values
 const SALT_ROUNDS = 10;
 const INCORRECT_CREDENTIALS = "Incorrect credentials.";
 const INACTIVE_ACCOUNT = "University email not yet verified.";
+
+// get verify magic values
+const VERIFICATION_CODE = "kaushik12";
+
+const generateTestUser = async () => {
+	const salt = await bcrypt.genSalt(SALT_ROUNDS);
+			const hashedPassword = await bcrypt.hash("Password123", salt);
+			const user = await User.create({
+				firstName: "pac",
+				lastName: "to",
+				uniEmail: "pac.to@kcl.ac.uk",
+				password: hashedPassword,
+			});
+			return user;
+}
 
 describe("Authentication routes", () => {
 	beforeAll(async () => {
@@ -27,16 +45,9 @@ describe("Authentication routes", () => {
 
 	describe("POST /login", () => {
 		beforeEach(async () => {
-			// Create a test user
-			const salt = await bcrypt.genSalt(SALT_ROUNDS);
-			const hashedPassword = await bcrypt.hash("Password123", salt);
-			const user = await User.create({
-				firstName: "pac",
-				lastName: "to",
-				uniEmail: "pac.to@kcl.ac.uk",
-				password: hashedPassword,
-				active: true
-			});
+			const user = await generateTestUser();
+			user.active = true;
+			await user.save();
 		});
 
 		async function isInvalidCredntials(uniEmail, password, msg=INCORRECT_CREDENTIALS) {
@@ -99,6 +110,26 @@ describe("Authentication routes", () => {
 	});
 
 	describe("GET /verify", () => {
+		beforeEach(async () => {
+			const user = await generateTestUser();
+			await EmailVerificationCode.create({
+				userId: user._id,
+				code: VERIFICATION_CODE
+			});
+		});
 
+		async function getVerifyWithCode(code) {
+			const response = await supertest(app)
+			.get("/verify?code="+VERIFICATION_CODE);
+
+			return response;
+		}
+
+		it("verify inactive user with valid code", async () => {
+			const response = await getVerifyWithCode(VERIFICATION_CODE);
+			const user = await User.findOne({ uniEmail: "pac.to@kcl.ac.uk"});
+			expect(response.statusCode).toBe(200);
+			expect(user.active).toBe(true);
+		})
 	});
 });
