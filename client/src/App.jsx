@@ -2,6 +2,7 @@ import Login from "./pages/LoginPage";
 import SignUp from "./pages/SignupPage";
 import AppBar from "./components/AppBar";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import { CssBaseline } from "@mui/material";
 
 function App() {
 	return (
@@ -18,6 +19,7 @@ function App() {
 				</Route>
 
 				<Route path="*">
+					<CssBaseline />
 					<AppBar />
 					<Switch>
 						<Route exact path="/profile">
