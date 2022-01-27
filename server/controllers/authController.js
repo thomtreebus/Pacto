@@ -14,6 +14,8 @@ const createToken = (id) => {
   });
 };
 
+module.exports.createToken = createToken;
+
 // POST /signup
 module.exports.signupPost = async (req, res) => {
   const { firstName, lastName, uniEmail, password } = req.body;

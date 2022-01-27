@@ -9,7 +9,6 @@ const checkAuthenticated = (req, res, next) => {
         jwt.verify(token, 'kekw', async (err, decodedToken) => {
             if (err) {
                 res.status(401).json(jsonResponse(null, [jsonError(null, "You have to login")]));
-                next();
             } else {
                 let user = await User.findById(decodedToken.id);
                 req.user = user;
@@ -18,7 +17,6 @@ const checkAuthenticated = (req, res, next) => {
           });
     } else {
         res.status(401).json(jsonResponse(null, [jsonError(null, "You have to login")]));
-        next();
     }
 }
 
