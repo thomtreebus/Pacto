@@ -126,16 +126,17 @@ describe("Authentication routes", () => {
 		it("refuses access to non logged in user", async () => {
 			const response = await supertest(app)
 			.get("/logout")
-			.expect(Cookies.not("set", {"name": "jwt"}));
+			.expect(Cookies.not("set", {name: "jwt"}));
 			expect(response.statusCode).toBe(401);
 		});
 
-		it("returns OK and no cookie when user logged in", async () => {
+		it("returns OK and cookie with max-age set when user logged in", async () => {
+			const user = await User.findOne({ uniEmail: TEST_USER_EMAIL });
 			const token = createToken(user._id);
       const response = await supertest(app)
 				.get("/logout")
         .set("Cookie", [`jwt=${token}`])	
-				.expect(Cookies.not("set", {"name": "jwt"}));
+				.expect(Cookies.set({name: "jwt", options: ["max-age"]}));
 
 			expect(response.statusCode).toBe(200);
 		});
