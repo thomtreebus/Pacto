@@ -5,6 +5,7 @@ import React from 'react';
 
 export default function Feed() {
   return (
-    <SideBar />
+    <h1>Feed</h1>
+    
   );
 }

@@ -1,6 +1,6 @@
 import Login from "./pages/LoginPage";
 import SignUp from "./pages/SignupPage";
-import AppBar from "./components/AppBar";
+import BaseLayout from "./layouts/BaseLayout";
 import Landing from "./pages/LandingPage";
 import Feed from "./pages/Feed";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
@@ -22,7 +22,7 @@ function App() {
 				</Route>
 
 				<Route path="*">
-					<AppBar />
+					<BaseLayout>
 					<Switch>
 						<Route exact path="/profile">
 							<h1>Profile Page</h1>
@@ -35,6 +35,8 @@ function App() {
 							<h1>Not Found Page</h1>
 						</Route>
 					</Switch>
+					</BaseLayout>
+					
 				</Route>
 			</Switch>
 		</Router>
