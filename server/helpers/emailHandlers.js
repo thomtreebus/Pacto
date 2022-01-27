@@ -1,20 +1,21 @@
 const nodemailer = require("nodemailer");
 const EmailVerificationCode = require('../models/EmailVerificationCode');
 const cryptoRandomString = require('crypto-random-string');
+const dotenv = require('dotenv');
+dotenv.config();
 
 // We are currently set up using nodemailer test account.
 // We should create a dedicated account.
 
 const createTransporter = async () => { 
-  const testAccount = await nodemailer.createTestAccount();
 
   return nodemailer.createTransport({
-    host: "smtp.ethereal.email",
-    port: 587,
-    secure: false, // true for 465, false for other ports (from docs)
+    host: "smtp.gmail.com",
+    port: 465,
+    secure: true,
     auth: {
-      user: testAccount.user, 
-      pass: testAccount.pass
+      user: process.env.GMAIL_USER, 
+      pass: process.env.GMAIL_PASS
     },
   });
 }
@@ -22,10 +23,10 @@ const createTransporter = async () => {
 module.exports.handleVerification = async (email, id) => {
   const transporter = await createTransporter();
   const code = await cryptoRandomString.async({length: 63, type: 'url-safe'});
-  const url = "https://localhost:8000/verify?code="+code;
+  const url = "localhost:8000/verify?code="+code;
   
   const mail = await transporter.sendMail({
-    from: '"Pacto" <pacto@example.com>', // sender address
+    from: 'pacto.noreply@gmail.com', // sender address
     to: email, // list of receivers
     subject: "Verify your email ✔", // Subject line
     text: url, // plain text body
