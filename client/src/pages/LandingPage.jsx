@@ -42,7 +42,6 @@ export default function LandingPage() {
 					Join now!
 				</Button>
 			</div>
-			<img className="hero-img" alt="hero-img" />
 		</>
 	);
 }
