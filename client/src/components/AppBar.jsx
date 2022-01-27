@@ -207,6 +207,14 @@ export default function PrimarySearchAppBar() {
                 <NotificationsIcon />
               </Badge>
             </IconButton> */}
+            {/* TODO: My Pacts landing page */}
+            <Button 
+              color="inherit"
+              component={ Link } 
+              to="/"
+            >
+              My Pacts
+            </Button>
             <IconButton
               size="large"
               edge="end"
