@@ -18,6 +18,7 @@ import { Link } from 'react-router-dom';
 import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
 import Avatar from '@mui/material/Avatar';
+import PactoIcon from '../assets/pacto-logo.png';
 
 
 const Search = styled('div')(({ theme }) => ({
@@ -181,7 +182,7 @@ export default function PrimarySearchAppBar() {
             <Button 
               component={Link} 
               to="/" 
-              startIcon={<Avatar src={'https://media.discordapp.net/attachments/917563380850655277/936005688700862535/pacto-logo.png?width=478&height=478'} />}
+              startIcon={<Avatar src={PactoIcon} />}
             / >
           </Typography>
           <Search>

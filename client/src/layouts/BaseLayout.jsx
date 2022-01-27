@@ -6,6 +6,7 @@ import Box from "@mui/material/Box";
 
 
 export default function BaseLayout({children}) {
+  document.body.style = "background-color: #edf6ff"
   return (
     <>
       <AppBar />
@@ -13,10 +14,9 @@ export default function BaseLayout({children}) {
       <Box sx={{
 						my: 8,
 						mx: 4,
-						display: "flex",
+            display: "flex",
 						flexDirection: "column",
-            alignItems: "center",
-            transform: "translateX(120)"
+            alignItems: "center"
 					}}>
         {children}
       </Box>
