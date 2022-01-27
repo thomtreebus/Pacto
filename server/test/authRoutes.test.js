@@ -122,7 +122,13 @@ describe("Authentication routes", () => {
 			user.active = true;
 			await user.save();
 		});
-
+		
+		it("refuses access to non logged in user", async () => {
+			const response = await supertest(app)
+			.get("/logout")
+			.expect(Cookies.not("set", {"name": "jwt"}));
+			expect(response.statusCode).toBe(401);
+		});
 	});
 
 	describe("GET /verify", () => {
