@@ -121,7 +121,7 @@ export default function PrimarySearchAppBar() {
 			open={isMobileMenuOpen}
 			onClose={handleMobileMenuClose}
 		>
-			<MenuItem onClick={handleProfileMenuOpen}>
+			<MenuItem onClick={handleMobileMenuClose}>
 				<IconButton
 					size="large"
 					aria-label="account of current user"
@@ -134,7 +134,7 @@ export default function PrimarySearchAppBar() {
 				<p>Profile</p>
 			</MenuItem>
 			<Divider />
-			<MenuItem onClick={handleProfileMenuOpen}>
+			<MenuItem onClick={handleMobileMenuClose}>
 				<p>Log Out</p>
 			</MenuItem>
 		</Menu>
