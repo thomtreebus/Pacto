@@ -5,7 +5,8 @@ const EmailVerificationCode = require("../models/EmailVerificationCode");
 const supertest = require("supertest");
 const bcrypt = require("bcrypt");
 const app = require("../app");
-var Cookies = require("expect-cookies");
+const Cookies = require("expect-cookies");
+const { createToken } = require("../controllers/authController");
 
 dotenv.config();
 
@@ -115,6 +116,15 @@ describe("Authentication routes", () => {
 		})
 	});
 
+	describe("GET /logout", () => {
+		beforeEach(async () => {
+			const user = await generateTestUser();
+			user.active = true;
+			await user.save();
+		});
+
+	});
+
 	describe("GET /verify", () => {
 		beforeEach(async () => {
 			const user = await generateTestUser();
@@ -148,7 +158,7 @@ describe("Authentication routes", () => {
 			const response = await getVerifyWithCode(VERIFICATION_CODE);
 			isResponseSuccessful(response);
 
-			const user = await User.findOne({ uniEmail: TEST_USER_EMAIL});
+			const user = await User.findOne({ uniEmail: TEST_USER_EMAIL });
 			expect(user.active).toBe(true);
 		});
 
@@ -156,7 +166,7 @@ describe("Authentication routes", () => {
 			const response = await getVerifyWithCode(VERIFICATION_CODE + "gibberish");
 			isResponseUnsuccessful(response);
 
-			const user = await User.findOne({ uniEmail: TEST_USER_EMAIL});
+			const user = await User.findOne({ uniEmail: TEST_USER_EMAIL });
 			expect(user.active).toBe(false);
 		});
 
