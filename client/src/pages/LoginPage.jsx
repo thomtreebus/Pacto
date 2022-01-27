@@ -56,7 +56,7 @@ export default function LoginPage() {
 						<LockOutlinedIcon />
 					</Avatar>
 					<Typography component="h1" variant="h5" sx={{ fontWeight: "bold" }}>
-						Join Pacto Today!
+						Sign In
 					</Typography>
 					<Box
 						component="form"
