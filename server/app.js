@@ -12,6 +12,7 @@ app.use(express.json());
 app.use(cookieParser());
 
 // Routes
+
 const authRoute = require("./routes/auth");
 app.use("/", authRoute);
 

@@ -16,6 +16,8 @@ const createToken = (id) => {
   });
 };
 
+module.exports.createToken = createToken;
+
 // POST /signup
 module.exports.signupPost = async (req, res) => {
   const { firstName, lastName, uniEmail, password } = req.body;
@@ -72,6 +74,7 @@ module.exports.loginPost = async (req, res) => {
 // GET /logout
 module.exports.logoutGet = (req, res) => {
   res.cookie('jwt', '', { maxAge: 1 });
+  // console.log(req.user);
   res.status(200).json(jsonResponse(null, []));
 }
 
