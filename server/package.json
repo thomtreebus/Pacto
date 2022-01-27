@@ -4,18 +4,29 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "start": "nodemon server.js",
+    "dbstart": "docker-compose up -d",
+    "dbclose": "docker-compose down",
     "test": "jest --runInBand",
+    "seed": "node ./tools/seed.js",
+    "unseed": "node ./tools/unseed.js",
     "coverage": "jest --coverage --runInBand"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "bcrypt": "^5.0.1",
+    "chance": "^1.1.8",
+    "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "dotenv": "^14.2.0",
+    "expect-cookies": "^0.2.0",
     "express": "^4.17.2",
     "jest": "^27.4.7",
+    "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.1.7",
+    "nodemon": "^2.0.15",
     "supertest": "^6.2.2"
   }
 }

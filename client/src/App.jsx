@@ -1,6 +1,7 @@
 import Login from "./pages/LoginPage";
 import SignUp from "./pages/SignupPage";
 import AppBar from "./components/AppBar";
+import Landing from "./pages/LandingPage";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { CssBaseline } from "@mui/material";
 
@@ -10,7 +11,7 @@ function App() {
 			<CssBaseline />
 			<Switch>
 				<Route exact path="/">
-					<h1>Landing Page</h1>
+					<Landing />
 				</Route>
 				<Route exact path="/login">
 					<Login />

@@ -3,15 +3,14 @@ import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
-// import Link from "@mui/material/Link";
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
 import Paper from "@mui/material/Paper";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
-import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+import Icon from '../assets/pacto-logo.ico';
 import Typography from "@mui/material/Typography";
 
-export default function Login() {
+export default function LoginPage() {
 	const handleSubmit = (event) => {
 		event.preventDefault();
 		const data = new FormData(event.currentTarget);
@@ -53,11 +52,10 @@ export default function Login() {
 						alignItems: "center",
 					}}
 				>
-					<Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
-						<LockOutlinedIcon />
-					</Avatar>
+					<Avatar alt="Pacto Icon" src={Icon} />
+					
 					<Typography component="h1" variant="h5" sx={{ fontWeight: "bold" }}>
-						Join Pacto Today!
+						Sign In
 					</Typography>
 					<Box
 						component="form"

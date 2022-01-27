@@ -1,15 +1,22 @@
 const express = require("express");
 const cors = require("cors");
-const mongoose = require("mongoose");
+const dotenv = require("dotenv");
+const cookieParser = require("cookie-parser");
 
-require("dotenv").config();
+dotenv.config();
 
 const app = express();
-const port = process.env.PORT || 3000;
 
 app.use(cors());
 app.use(express.json());
+app.use(cookieParser());
 
-app.listen(port, () => {
-  console.log(`Server is running on port: ${port}`);
+// Routes
+const authRoute = require("./routes/auth");
+app.use("/", authRoute);
+
+app.get("/ping", (req, res) => {
+	res.json({ ping: "pong" });
 });
+
+module.exports = app;
