@@ -89,4 +89,55 @@ describe("Authentication routes", () => {
 			await isValidCredntials("pac.to@kcl.ac.uk", "Password123");
 		});
 	});
+
+	describe("Authentification Middleware", () => {
+		beforeEach(async () => {
+			// Create a test user
+			const salt = await bcrypt.genSalt(SALT_ROUNDS);
+			const hashedPassword = await bcrypt.hash("Password123", salt);
+			const user = await User.create({
+				firstName: "pac",
+				lastName: "to",
+				uniEmail: "pac.to@kcl.ac.uk",
+				password: hashedPassword,
+			});
+		});
+
+		async function isInvalidCredntials(uniEmail, password) {
+			const response = await supertest(app)
+				.post("/login")
+				.send({
+					uniEmail,
+					password,
+				})
+				.expect(400);
+
+			expect(response.body.message).toBe(null);
+			expect(response.body.errors[0].field).toBe(null);
+			expect(response.body.errors[0].message).toBe("Incorrect credentials!");
+			expect(response.body.errors.length).toBe(1);
+		}
+
+		async function isValidCredntials(uniEmail, password) {
+			const response = await supertest(app)
+				.post("/login")
+				.send({
+					uniEmail,
+					password,
+				})
+				.expect(200)
+				.expect(
+					Cookies.set({
+						name: "jwt",
+						options: ["httponly"],
+					})
+				);
+			expect(response.body.message).toBeDefined();
+			expect(response.body.errors.length).toBe(0);
+		}
+
+		it("rejects invalid email", async () => {
+			await isInvalidCredntials("pac.to", "Password123");
+		});
+	});
 });
