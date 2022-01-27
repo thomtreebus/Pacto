@@ -1,10 +1,9 @@
 const User = require('../models/User');
 const EmailVerificationCode = require('../models/EmailVerificationCode');
-
+const { handleVerification } = require('../helpers/emailHandlers');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
-const cryptoRandomString = require('crypto-random-string');
-const { jsonResponse, jsonError } = require('../responseHandlers');
+const { jsonResponse, jsonError } = require('../helpers/responseHandlers');
 
 // Magic numbers
 const COOKIE_MAX_AGE = 432000; // 432000 = 5 days
@@ -26,15 +25,12 @@ module.exports.signupPost = async (req, res) => {
     const salt = await bcrypt.genSalt(SALT_ROUNDS);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    // Create user
     const user = await User.create({ firstName, lastName, uniEmail, password:hashedPassword });
 
     // Generate verification string and send to user's email
-    const userId = user._id;
-    const code = await cryptoRandomString.async({length: 63, type: 'url-safe'});
-    const linker = await EmailVerificationCode.create({ userId, code });
+    await handleVerification(uniEmail, user._id);
 
-    res.status(201).json(jsonResponse(linker, []));
+    res.status(201).json(jsonResponse(null, []));
   }
   catch(err) {
     res.status(400).json(jsonResponse(null, [jsonError(null, err.message)]));
@@ -66,7 +62,7 @@ module.exports.loginPost = async (req, res) => {
     // Generate cookie to log in user
     const token = createToken(user._id);
     res.cookie('jwt', token, { httpOnly: true, maxAge: COOKIE_MAX_AGE * 1000 });
-    res.status(200).json(jsonResponse(user._id, []));
+    res.status(200).json(jsonResponse({id: user._id}, []));
   } 
   catch (err) {
     res.status(400).json(jsonResponse(null, [jsonError(null, err.message)]));
@@ -96,7 +92,7 @@ module.exports.verifyGet = async (req, res) => {
 
     const user = await User.findByIdAndUpdate(linker.userId, {active:true});
     await linker.delete();
-    res.status(200).json(jsonResponse(user._id, []));
+    res.status(200).json(jsonResponse({id: user._id}, []));
   } 
   catch(err) {
     res.status(400).json(jsonResponse(null, [jsonError(null, err.message)]));
