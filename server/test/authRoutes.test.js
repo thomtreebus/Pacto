@@ -9,6 +9,8 @@ var Cookies = require("expect-cookies");
 dotenv.config();
 
 const SALT_ROUNDS = 10;
+const INCORRECT_CREDENTIALS = "Incorrect credentials.";
+const INACTIVE_ACCOUNT = "University email not yet verified.";
 
 describe("Authentication routes", () => {
 	beforeAll(async () => {
@@ -37,7 +39,7 @@ describe("Authentication routes", () => {
 			});
 		});
 
-		async function isInvalidCredntials(uniEmail, password) {
+		async function isInvalidCredntials(uniEmail, password, msg=INCORRECT_CREDENTIALS) {
 			const response = await supertest(app)
 				.post("/login")
 				.send({
@@ -48,7 +50,7 @@ describe("Authentication routes", () => {
 
 			expect(response.body.message).toBe(null);
 			expect(response.body.errors[0].field).toBe(null);
-			expect(response.body.errors[0].message).toBe("Incorrect credentials!");
+			expect(response.body.errors[0].message).toBe(msg);
 			expect(response.body.errors.length).toBe(1);
 		}
 
@@ -89,5 +91,14 @@ describe("Authentication routes", () => {
 		it("logs the user in when the credentials are correct", async () => {
 			await isValidCredntials("pac.to@kcl.ac.uk", "Password123");
 		});
+
+		it("rejects inactive user with correct credentials", async () => {
+			await User.findOneAndUpdate({uniEmail: 'pac.to@kcl.ac.uk'}, {active: false});
+			await isInvalidCredntials("pac.to@kcl.ac.uk", "Password123", INACTIVE_ACCOUNT);
+		})
+	});
+
+	describe("GET /verify", () => {
+
 	});
 });

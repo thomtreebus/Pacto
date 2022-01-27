@@ -56,7 +56,7 @@ module.exports.loginPost = async (req, res) => {
     }
 
     if(!user.active){
-      throw Error('University email not verified.')
+      throw Error('University email not yet verified.')
     }
 
     // Generate cookie to log in user
