@@ -9,16 +9,18 @@ import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import Icon from "../assets/pacto-logo.ico";
 import Typography from "@mui/material/Typography";
+import { useAuth } from "../providers/AuthProvider";
 
 export default function LoginPage() {
+	const { user, isAuthenticated, setIsAuthenticated, setUser } = useAuth();
+
 	const handleSubmit = (event) => {
 		event.preventDefault();
 		const data = new FormData(event.currentTarget);
-
-		console.log({
-			email: data.get("email"),
-			password: data.get("password"),
-		});
+		console.log(data.get("email"));
+		console.log(data.get("password"));
+		setIsAuthenticated(true);
+		setUser({ firstName: "pac", lastName: "toe" });
 	};
 
 	return (
@@ -99,6 +101,7 @@ export default function LoginPage() {
 							</Grid>
 						</Grid>
 					</Box>
+					{isAuthenticated ? user.firstName : "not logged in"}
 				</Box>
 			</Grid>
 		</Grid>
