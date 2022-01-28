@@ -353,6 +353,51 @@ describe("Authentication routes", () => {
 					"Password does not meet requirements"
 				);
 			});
+			it("password too short", async () => {
+				await isInvalidCredentials(
+					"Kolling",
+					"Smith",
+					"kolling.smith@kekw.ac.uk",
+					"a".repeat(4),
+					"Password does not meet requirements"
+				);
+			});
+			it("password does not contain number", async () => {
+				await isInvalidCredentials(
+					"Kolling",
+					"Smith",
+					"kolling.smith@kekw.ac.uk",
+					"Password",
+					"Password does not meet requirements"
+				);
+			});
+			it("password does not contain capital letter", async () => {
+				await isInvalidCredentials(
+					"Kolling",
+					"Smith",
+					"kolling.smith@kekw.ac.uk",
+					"passsword123",
+					"Password does not meet requirements"
+				);
+			});
+			it("password does not contain lower case character", async () => {
+				await isInvalidCredentials(
+					"Kolling",
+					"Smith",
+					"kolling.smith@kekw.ac.uk",
+					"PASSWORD123",
+					"Password does not meet requirements"
+				);
+			});
+			it("password does not contain number", async () => {
+				await isInvalidCredentials(
+					"Kolling",
+					"Smith",
+					"kolling.smith@kekw.ac.uk",
+					"Password",
+					"Password does not meet requirements"
+				);
+			});
 		})
 	});
 
