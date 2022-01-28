@@ -64,6 +64,7 @@ export default function SignupPage() {
 								name="password"
 								label="Password"
 								type="password"
+								data-testid="initial-password-input"
 							/>
 						</Grid>
 						<Grid item xs={12}>
@@ -73,6 +74,7 @@ export default function SignupPage() {
 								name="password"
 								label="Confirm Password"
 								type="password"
+								data-testid="confirm-password-input"
 							/>
 						</Grid>
 					</Grid>
