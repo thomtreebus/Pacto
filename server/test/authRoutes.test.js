@@ -333,6 +333,29 @@ describe("Authentication routes", () => {
 				"Password123",
 			);
 		});
+		describe("reject password due to: ", () => {
+			it("blank password", async () => {
+				await isInvalidCredentials(
+					"Kolling",
+					"Smith",
+					"kolling.smith@kekw.ac.uk",
+					"",
+					"Password does not meet requirements"
+				);
+			});
+
+			it("password too long", async () => {
+				await isInvalidCredentials(
+					"Kolling",
+					"Smith",
+					"kolling.smith@kekw.ac.uk",
+					"a".repeat(3000),
+					"Password does not meet requirements"
+				);
+			});
+		})
 	});
+
+
 
 });

@@ -4,6 +4,8 @@ const { handleVerification } = require('../helpers/emailHandlers');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const { jsonResponse, jsonError } = require('../helpers/responseHandlers');
+const passwordValidator = require('password-validator');
+
 
 // Magic numbers
 const COOKIE_MAX_AGE = 432000; // 432000 = 5 days
@@ -16,25 +18,43 @@ const createToken = (id) => {
   });
 };
 
+const validPassword = (password) => {
+  const validator = (new passwordValidator())
+    .is().min(8)
+    .is().max(64)
+    .has().uppercase()
+    .has().lowercase()
+    .has().digits(1);
+  return validator.validate(password)
+}
+
 // POST /signup
 module.exports.signupPost = async (req, res) => {
   const { firstName, lastName, uniEmail, password } = req.body;
 
-  try {
-    // Hash password
-    const salt = await bcrypt.genSalt(SALT_ROUNDS);
-    const hashedPassword = await bcrypt.hash(password, salt);
+  if (validPassword(password)){
+    try {
+      // Hash password
+      const salt = await bcrypt.genSalt(SALT_ROUNDS);
+      const hashedPassword = await bcrypt.hash(password, salt);
 
-    const user = await User.create({ firstName, lastName, uniEmail, password:hashedPassword });
+      const user = await User.create({ firstName, lastName, uniEmail, password:hashedPassword });
 
-    // Generate verification string and send to user's email
-    await handleVerification(uniEmail, user._id);
+      // Generate verification string and send to user's email
+      await handleVerification(uniEmail, user._id);
 
-    res.status(201).json(jsonResponse(null, []));
+      res.status(201).json(jsonResponse(null, []));
+    }
+    catch(err) {
+      res.status(400).json(jsonResponse(null, [jsonError(null, err.message)]));
+    }
   }
-  catch(err) {
-    res.status(400).json(jsonResponse(null, [jsonError(null, err.message)]));
+  else {
+    const invalidPasswordError = "Password does not meet requirements"
+    res.status(400).json(jsonResponse(null, [jsonError(null, invalidPasswordError)]));
   }
+
+
 }
 
 // POST /login
