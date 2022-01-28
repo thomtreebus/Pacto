@@ -223,7 +223,7 @@ describe("Authentication routes", () => {
 				await isInvalidCredentials(
 					"",
 					"Smith",
-					"kolling.smith@kcl.ac.uk",
+					"kolling.smith@kekw.ac.uk",
 					"Password123",
 					"Users validation failed: firstName: Please enter a first name"
 				);
@@ -232,7 +232,7 @@ describe("Authentication routes", () => {
 				await isInvalidCredentials(
 					"123Kolling",
 					"Smith",
-					"kolling.smith@kcl.ac.uk",
+					"kolling.smith@kekw.ac.uk",
 					"Password123",
 					"Users validation failed: firstName: Name can't contain number"
 				);
@@ -245,7 +245,7 @@ describe("Authentication routes", () => {
 				await isInvalidCredentials(
 					"Kolling",
 					"",
-					"kolling.smith@kcl.ac.uk",
+					"kolling.smith@kekw.ac.uk",
 					"Password123",
 					"Users validation failed: lastName: Please enter a last name"
 				);
@@ -254,7 +254,7 @@ describe("Authentication routes", () => {
 				await isInvalidCredentials(
 					"Kolling",
 					"123Smith",
-					"kolling.smith@kcl.ac.uk",
+					"kolling.smith@kekw.ac.uk",
 					"Password123",
 					"Users validation failed: lastName: Name can't contain number"
 				);
@@ -302,20 +302,20 @@ describe("Authentication routes", () => {
 			await isValidCredentials(
 				"Kolling",
 				"Smith",
-				"kolling.smith@kcl.ac.uk",
+				"kolling.smith@kekw.ac.uk",
 				"Password123",
 			);
 		});
 		/* Password length needs to be checked before hash
 		describe("reject password due to: ", () => {
 			it(" blank password", async () => {
-				await isInvalidCredentials("Kolling", "Smith", "kolling.smith@kcl.ac.uk", "");
+				await isInvalidCredentials("Kolling", "Smith", "kolling.smith@kekw.ac.uk", "");
 			});
 			it(" short password", async () => {
-				await isInvalidCredentials("Kolling", "Smith", "kolling.smith@kcl.ac.uk", "Pass");
+				await isInvalidCredentials("Kolling", "Smith", "kolling.smith@kekw.ac.uk", "Pass");
 			});
 			it(" long password", async () => {
-				await isInvalidCredentials("Kolling", "Smith", "kolling.smith@kcl.ac.uk", "Password123".repeat(3000));
+				await isInvalidCredentials("Kolling", "Smith", "kolling.smith@kekw.ac.uk", "Password123".repeat(3000));
 			});
 		})
 		 */
