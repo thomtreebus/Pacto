@@ -225,7 +225,7 @@ describe("Authentication routes", () => {
 					"Smith",
 					"kolling.smith@kekw.ac.uk",
 					"Password123",
-					"Users validation failed: firstName: Please enter a first name"
+					"Users validation failed: firstName: Provide the first name"
 				);
 			});
 			it("contains numbers", async () => {
@@ -234,7 +234,16 @@ describe("Authentication routes", () => {
 					"Smith",
 					"kolling.smith@kekw.ac.uk",
 					"Password123",
-					"Users validation failed: firstName: Name can't contain number"
+					"Users validation failed: firstName: Provide firstName without number"
+				);
+			});
+			it("longer than 64", async () => {
+				await isInvalidCredentials(
+					"Kolling".repeat(300),
+					"Smith",
+					"kolling.smith@kekw.ac.uk",
+					"Password123",
+					"Users validation failed: firstName: Provide firstName shorter than 16 characters"
 				);
 			});
 
@@ -247,7 +256,7 @@ describe("Authentication routes", () => {
 					"",
 					"kolling.smith@kekw.ac.uk",
 					"Password123",
-					"Users validation failed: lastName: Please enter a last name"
+					"Users validation failed: lastName: Provide the last name"
 				);
 			});
 			it("contains numbers", async () => {
@@ -256,7 +265,16 @@ describe("Authentication routes", () => {
 					"123Smith",
 					"kolling.smith@kekw.ac.uk",
 					"Password123",
-					"Users validation failed: lastName: Name can't contain number"
+					"Users validation failed: lastName: Provide lastName without number"
+				);
+			});
+			it("longer than 64", async () => {
+				await isInvalidCredentials(
+					"Kolling",
+					"Smith".repeat(300),
+					"kolling.smith@kekw.ac.uk",
+					"Password123",
+					"Users validation failed: lastName: Provide lastName shorter than 16 characters"
 				);
 			});
 		})
@@ -267,7 +285,7 @@ describe("Authentication routes", () => {
 					"Smith",
 					"",
 					"Password123",
-					"Users validation failed: uniEmail: Please enter an email"
+					"Users validation failed: uniEmail: Provide the email"
 				);
 			});
 			it("non uni email", async () => {
@@ -276,7 +294,7 @@ describe("Authentication routes", () => {
 					"Kolling",
 					"kolling.smith@example.com",
 					"Password123",
-					"Users validation failed: uniEmail: Enter a valid email"
+					"Users validation failed: uniEmail: Provide a uni email"
 				);
 			});
 			it("invalid email format", async () => {
@@ -285,7 +303,7 @@ describe("Authentication routes", () => {
 					"Smith",
 					"kolling.smith",
 					"Password123",
-					"Users validation failed: uniEmail: Enter a valid email"
+					"Users validation failed: uniEmail: Provide a valid email format"
 				);
 			});
 			it("email exists", async () => {
@@ -297,6 +315,15 @@ describe("Authentication routes", () => {
 					"Email already exists"
 				);
 			});
+			it("emails contains uppercase", async () => {
+				await isInvalidCredentials(
+					"Kolling",
+					"Smith",
+					"kolling.Smith@kekw.ac.uk",
+					"Password123",
+					"Users validation failed: uniEmail: Provide lowercase email"
+				);
+			});
 		});
 		it("accepts valid input", async () => {
 			await isValidCredentials(
@@ -306,19 +333,6 @@ describe("Authentication routes", () => {
 				"Password123",
 			);
 		});
-		/* Password length needs to be checked before hash
-		describe("reject password due to: ", () => {
-			it(" blank password", async () => {
-				await isInvalidCredentials("Kolling", "Smith", "kolling.smith@kekw.ac.uk", "");
-			});
-			it(" short password", async () => {
-				await isInvalidCredentials("Kolling", "Smith", "kolling.smith@kekw.ac.uk", "Pass");
-			});
-			it(" long password", async () => {
-				await isInvalidCredentials("Kolling", "Smith", "kolling.smith@kekw.ac.uk", "Password123".repeat(3000));
-			});
-		})
-		 */
 	});
 
 });
