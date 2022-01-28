@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const bcrypt = require('bcrypt');
 
 const UserSchema = mongoose.Schema({
   firstName: {
@@ -25,6 +24,11 @@ const UserSchema = mongoose.Schema({
   course: {
     type: String,
     required: false 
+  },
+  active: { // This stores whether the user's email has been verified.
+    type: Boolean,
+    required: true,
+    default: false
   }
 });
 
