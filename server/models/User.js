@@ -1,10 +1,19 @@
 const mongoose = require('mongoose');
 const { isEmail } = require('validator')
+const UniversityApiCache = require('../helpers/UniversityApiCache')
 
-const isUniEmail = (email) => {
+const isUniEmail = async (email) => {
   // only including .ac.uk domain
-  regex = /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9]+\.ac\.uk$/;
-  return regex.test(email);
+  // const regex = /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9]+\.ac\.uk$/;
+  const res = await UniversityApiCache();
+  const domains = res.flatMap(x => '@'+x['domains']);
+  let found = false;
+  for(let x=0; x< domains.length; x++){
+    if(email.includes(domains[x])){
+      found = true
+    }
+  }
+  return found
 };
 
 const containsNoNumbers = (str) => {
