@@ -111,12 +111,13 @@ describe("Check interaction with elements", () => {
 		expect(window.location.pathname).toBe("/login")
 	})
 
-	// Future test once homepage is setup
-	//
-	// it("should redirect to homepage if the sign up button is pressed", () => {
-	// 	render(<MockSignup />)
-	// 	const buttonElement = screen.getByRole("button", { name: "Sign up" })
-	// 	fireEvent.click(buttonElement)
-	// 	expect(window.location.pathname).toBe("/home")
-	// })
+// 	// Future test once homepage is setup
+// 	//
+// 	// it("should redirect to homepage if the sign up button is pressed", () => {
+// 	// 	render(<MockSignup />)
+// 	// 	const buttonElement = screen.getByRole("button", { name: "Sign up" })
+// 	// 	fireEvent.click(buttonElement)
+// 	// 	expect(window.location.pathname).toBe("/home")
+// 	// })
+// })
 })
