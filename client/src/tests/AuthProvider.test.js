@@ -2,11 +2,26 @@ import { render, screen } from "@testing-library/react";
 import { waitForElementToBeRemoved } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import MockComponent from "./utils/MockComponent";
-import PrivateRoute from "../components/PrivateRoute";
+import AuthRoute from "../components/AuthRoute";
 import { rest } from "msw";
 import { setupServer } from "msw/node";
+import { useAuth } from "../providers/AuthProvider";
 
-describe("PrivateRoute Tests", () => {
+const MockAuthProviderUser = () => {
+	const { user, isAuthenticated } = useAuth();
+
+	if (isAuthenticated) {
+		return (
+			<>
+				<h1>{user.firstName}</h1>
+			</>
+		);
+	}
+
+	return <h1>You are not logged in</h1>;
+};
+
+describe("AuthProvider Tests", () => {
 	const server = setupServer(
 		rest.get(`${process.env.REACT_APP_URL}/me`, (req, res, ctx) => {
 			return res(
@@ -30,21 +45,19 @@ describe("PrivateRoute Tests", () => {
 	async function renderComponent() {
 		render(
 			<MockComponent>
-				<PrivateRoute>
-					<h1>You are logged in</h1>
-				</PrivateRoute>
+				<MockAuthProviderUser />
 			</MockComponent>
 		);
 		await waitForElementToBeRemoved(() => screen.getByText("Loading"));
 	}
 
-	it("renders the component when the user is logged in", async () => {
+	it("isAuthenticated is true and user is defined when user is logged in", async () => {
 		await renderComponent();
-		const textElement = screen.getByText("You are logged in");
+		const textElement = screen.getByText("pac");
 		expect(textElement).toBeInTheDocument();
 	});
 
-	it("redirects to /login when the user is not logged in", async () => {
+	it("isAuthenticated is false is logged not in", async () => {
 		server.use(
 			rest.get(`${process.env.REACT_APP_URL}/me`, (req, res, ctx) => {
 				return res(
@@ -53,6 +66,19 @@ describe("PrivateRoute Tests", () => {
 			})
 		);
 		await renderComponent();
-		expect(window.location.pathname).toBe("/login");
+		const textElement = screen.getByText("You are not logged in");
+		expect(textElement).toBeInTheDocument();
+	});
+
+	it("displays and error is something went wrong", async () => {
+		server.use(
+			rest.get(`${process.env.REACT_APP_URL}/me`, (req, res, ctx) => {
+				return res(ctx.json({ pacto: ":(" }));
+			})
+		);
+		await renderComponent();
+		screen.debug();
+		const textElement = screen.getByText(/Error:/i);
+		expect(textElement).toBeInTheDocument();
 	});
 });

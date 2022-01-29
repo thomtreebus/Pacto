@@ -2,11 +2,11 @@ import { render, screen } from "@testing-library/react";
 import { waitForElementToBeRemoved } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import MockComponent from "./utils/MockComponent";
-import PrivateRoute from "../components/PrivateRoute";
+import BaseLayout from "../layouts/BaseLayout";
 import { rest } from "msw";
 import { setupServer } from "msw/node";
 
-describe("PrivateRoute Tests", () => {
+describe("BaseLayout Tests", () => {
 	const server = setupServer(
 		rest.get(`${process.env.REACT_APP_URL}/me`, (req, res, ctx) => {
 			return res(
@@ -23,36 +23,29 @@ describe("PrivateRoute Tests", () => {
 		server.close();
 	});
 
-	beforeEach(async () => {
-		server.resetHandlers();
-	});
-
 	async function renderComponent() {
 		render(
 			<MockComponent>
-				<PrivateRoute>
-					<h1>You are logged in</h1>
-				</PrivateRoute>
+				<BaseLayout>
+					<h1>This is my base layout</h1>
+				</BaseLayout>
 			</MockComponent>
 		);
 		await waitForElementToBeRemoved(() => screen.getByText("Loading"));
 	}
 
-	it("renders the component when the user is logged in", async () => {
+	beforeEach(async () => {
+		server.resetHandlers();
 		await renderComponent();
-		const textElement = screen.getByText("You are logged in");
+	});
+
+	it("renders the component surrounded by an appbar", async () => {
+		const textElement = screen.getByPlaceholderText(/Search/i);
 		expect(textElement).toBeInTheDocument();
 	});
 
-	it("redirects to /login when the user is not logged in", async () => {
-		server.use(
-			rest.get(`${process.env.REACT_APP_URL}/me`, (req, res, ctx) => {
-				return res(
-					ctx.json({ message: null, errors: ["Invalid credentials"] })
-				);
-			})
-		);
-		await renderComponent();
-		expect(window.location.pathname).toBe("/login");
+	it("renders the component with the side bar", async () => {
+		const textElement = screen.getByText(/Feed/i);
+		expect(textElement).toBeInTheDocument();
 	});
 });

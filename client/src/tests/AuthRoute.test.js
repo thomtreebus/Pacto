@@ -2,11 +2,11 @@ import { render, screen } from "@testing-library/react";
 import { waitForElementToBeRemoved } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import MockComponent from "./utils/MockComponent";
-import PrivateRoute from "../components/PrivateRoute";
+import AuthRoute from "../components/AuthRoute";
 import { rest } from "msw";
 import { setupServer } from "msw/node";
 
-describe("PrivateRoute Tests", () => {
+describe("AuthRoute Tests", () => {
 	const server = setupServer(
 		rest.get(`${process.env.REACT_APP_URL}/me`, (req, res, ctx) => {
 			return res(
@@ -30,21 +30,20 @@ describe("PrivateRoute Tests", () => {
 	async function renderComponent() {
 		render(
 			<MockComponent>
-				<PrivateRoute>
-					<h1>You are logged in</h1>
-				</PrivateRoute>
+				<AuthRoute>
+					<h1>You are not logged in</h1>
+				</AuthRoute>
 			</MockComponent>
 		);
 		await waitForElementToBeRemoved(() => screen.getByText("Loading"));
 	}
 
-	it("renders the component when the user is logged in", async () => {
+	it("redirects to /feed if the user is already logged in", async () => {
 		await renderComponent();
-		const textElement = screen.getByText("You are logged in");
-		expect(textElement).toBeInTheDocument();
+		expect(window.location.pathname).toBe("/feed");
 	});
 
-	it("redirects to /login when the user is not logged in", async () => {
+	it("renders the compontent when the user is not logged in", async () => {
 		server.use(
 			rest.get(`${process.env.REACT_APP_URL}/me`, (req, res, ctx) => {
 				return res(
@@ -53,6 +52,7 @@ describe("PrivateRoute Tests", () => {
 			})
 		);
 		await renderComponent();
-		expect(window.location.pathname).toBe("/login");
+		const textElement = screen.getByText("You are not logged in");
+		expect(textElement).toBeInTheDocument();
 	});
 });

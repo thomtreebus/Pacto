@@ -15,6 +15,7 @@ import { Link } from "react-router-dom";
 import Button from "@mui/material/Button";
 import Divider from "@mui/material/Divider";
 import Avatar from "@mui/material/Avatar";
+import { useAuth } from "../providers/AuthProvider";
 import PactoIcon from "../assets/pacto-logo.png";
 
 const Search = styled("div")(({ theme }) => ({
@@ -58,11 +59,21 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 export default function PrimarySearchAppBar() {
+	const { setIsAuthenticated } = useAuth();
+
 	const [anchorEl, setAnchorEl] = React.useState(null);
 	const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
 
 	const isMenuOpen = Boolean(anchorEl);
 	const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
+
+	const handleLogout = async () => {
+		const response = await fetch(`${process.env.REACT_APP_URL}/logout`, {
+			credentials: "include",
+		});
+		const data = await response.json();
+		setIsAuthenticated(false);
+	};
 
 	const handleProfileMenuOpen = (event) => {
 		setAnchorEl(event.currentTarget);
@@ -100,7 +111,7 @@ export default function PrimarySearchAppBar() {
 		>
 			<MenuItem onClick={handleMenuClose}>Profile</MenuItem>
 			<Divider />
-			<MenuItem onClick={handleMenuClose}>Log Out</MenuItem>
+			<MenuItem onClick={handleLogout}>Log Out</MenuItem>
 		</Menu>
 	);
 
@@ -134,7 +145,7 @@ export default function PrimarySearchAppBar() {
 				<p>Profile</p>
 			</MenuItem>
 			<Divider />
-			<MenuItem onClick={handleMobileMenuClose}>
+			<MenuItem onClick={handleLogout}>
 				<p>Log Out</p>
 			</MenuItem>
 		</Menu>
