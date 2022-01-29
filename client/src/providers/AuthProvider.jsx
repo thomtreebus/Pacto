@@ -15,7 +15,9 @@ export default function AuthProvider({ children }) {
 	async function fetchUser() {
 		setIsLoading(true);
 		try {
-			const response = await fetch(`${process.env.REACT_APP_URL}/me`);
+			const response = await fetch(`${process.env.REACT_APP_URL}/me`, {
+				credentials: "include",
+			});
 			const data = await response.json();
 
 			if (data.errors.length) {
@@ -28,6 +30,8 @@ export default function AuthProvider({ children }) {
 			}
 		} catch (err) {
 			setError(err.message);
+			setUser(null);
+			setIsAuthenticated(false);
 		}
 		setIsLoading(false);
 	}
