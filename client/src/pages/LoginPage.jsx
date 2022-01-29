@@ -20,10 +20,7 @@ export default function LoginPage() {
 	const [ snackbarSeverity, setSnackbarSeverity ] = React.useState(null);
 	const history = useHistory()
 
-	const handleClose = (event, reason) => {
-		if (reason === "clickaway") {
-			return;
-		}
+	const handleClose = () => {
 		setSnackbarOpen(false);
 	};
 
@@ -75,10 +72,7 @@ export default function LoginPage() {
 					backgroundImage:
 						"url(https://images.unsplash.com/photo-1523050854058-8df90110c9f1?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80)",
 					backgroundRepeat: "no-repeat",
-					backgroundColor: (t) =>
-						t.palette.mode === "light"
-							? t.palette.grey[50]
-							: t.palette.grey[900],
+					backgroundColor: (t) => t.palette.grey[50],
 					backgroundSize: "cover",
 					backgroundPosition: "center",
 					filter: "blur(3px)",
@@ -144,7 +138,7 @@ export default function LoginPage() {
 			</Grid>
 		</Grid>
 
-		<Snackbar anchorOrigin={{ vertical: "top", horizontal: "center" }} open={snackbarOpen} autoHideDuration={6000} onClose={handleClose}>
+		<Snackbar anchorOrigin={{ vertical: "top", horizontal: "center" }} open={snackbarOpen} autoHideDuration={6000} onClose={handleClose} data-testid="snackbar">
 			<Alert severity={snackbarSeverity} onClose={handleClose}>{snackbarMessage}</Alert>
 		</Snackbar>
 		</>

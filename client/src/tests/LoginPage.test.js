@@ -1,10 +1,9 @@
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen, fireEvent, waitForElementToBeRemoved } from "@testing-library/react";
 import Login from "../pages/LoginPage";
 import "@testing-library/jest-dom";
 import MockComponent from "./utils/MockComponent";
 import { rest } from "msw";
 import { setupServer } from "msw/node";
-import { waitForElementToBeRemoved } from "@testing-library/react";
 import { Route } from "react-router-dom";
 
 describe("LoginPage Tests", () => {
@@ -131,6 +130,44 @@ describe("LoginPage Tests", () => {
 			const snackbarElement = await screen.findByText("Incorrect credentials.");
 			expect(snackbarElement).toBeInTheDocument();
 		});
+
+		it("should close the snackbar when the cross button is pressed", async () => {
+			const loginButtonElement = await screen.findByRole("button", {
+				name: "Sign In",
+			});
+			fireEvent.click(loginButtonElement);
+
+			const snackbarButtonElement = await screen.findByTestId("snackbar")
+			expect(snackbarButtonElement).toBeInTheDocument();
+			fireEvent.click(snackbarButtonElement.querySelector("button"));
+
+			await waitForElementToBeRemoved(() => screen.queryByTestId("snackbar"))
+		})
+
+		it("should close the snackbar when 6 seconds have passed", async () => {
+			const loginButtonElement = await screen.findByRole("button", {
+				name: "Sign In",
+			});
+			fireEvent.click(loginButtonElement);
+
+			const snackbarButtonElement = await screen.findByTestId("snackbar")
+			expect(snackbarButtonElement).toBeInTheDocument();
+			setTimeout(() => {
+				expect(screen.queryByTestId("snackbar")).not.toBeInTheDocument(),
+				6500
+			})
+		})
+
+		// Need some way to make fetch reject
+		// it("should put the fetch error in a snackbar if there is one", async () => {
+		// 	const loginButtonElement = await screen.findByRole("button", {
+		// 		name: "Sign In",
+		// 	});
+		// 	fireEvent.click(loginButtonElement);
+
+		// 	const snackbarElement = await screen.findByText("Something went wrong.");
+		// 	expect(snackbarElement).toBeInTheDocument();
+		// })
 
 		it("should redirect to feed when the login button is pressed with valid credentials", async () => {
 			server.use(
