@@ -1,4 +1,5 @@
-import { render, screen, fireEvent, waitForElementToBeRemoved } from "@testing-library/react";
+import { render, screen, fireEvent } from "@testing-library/react";
+import { waitForElementToBeRemoved } from "@testing-library/react";
 import Login from "../pages/LoginPage";
 import "@testing-library/jest-dom";
 import MockComponent from "./utils/MockComponent";
@@ -137,12 +138,12 @@ describe("LoginPage Tests", () => {
 			});
 			fireEvent.click(loginButtonElement);
 
-			const snackbarButtonElement = await screen.findByTestId("snackbar")
+			const snackbarButtonElement = await screen.findByTestId("snackbar");
 			expect(snackbarButtonElement).toBeInTheDocument();
 			fireEvent.click(snackbarButtonElement.querySelector("button"));
 
-			await waitForElementToBeRemoved(() => screen.queryByTestId("snackbar"))
-		})
+			await waitForElementToBeRemoved(() => screen.queryByTestId("snackbar"));
+		});
 
 		it("should close the snackbar when 6 seconds have passed", async () => {
 			const loginButtonElement = await screen.findByRole("button", {
@@ -150,13 +151,12 @@ describe("LoginPage Tests", () => {
 			});
 			fireEvent.click(loginButtonElement);
 
-			const snackbarButtonElement = await screen.findByTestId("snackbar")
+			const snackbarButtonElement = await screen.findByTestId("snackbar");
 			expect(snackbarButtonElement).toBeInTheDocument();
 			setTimeout(() => {
-				expect(screen.queryByTestId("snackbar")).not.toBeInTheDocument(),
-				6500
-			})
-		})
+				expect(screen.queryByTestId("snackbar")).not.toBeInTheDocument(), 6500;
+			});
+		});
 
 		// Need some way to make fetch reject
 		// it("should put the fetch error in a snackbar if there is one", async () => {
@@ -186,6 +186,22 @@ describe("LoginPage Tests", () => {
 			const redirectMessage = await screen.findByText(/Redirected to feed/i);
 			expect(redirectMessage).toBeInTheDocument;
 			expect(window.location.pathname).toBe("/feed");
+		});
+
+		it("should display an error in the snack bar if there is one", async () => {
+			server.use(
+				rest.post(`${process.env.REACT_APP_URL}/login`, (req, res, ctx) => {
+					return res().networkError("Something went wrong.");
+				})
+			);
+
+			const buttonElement = await screen.findByRole("button", {
+				name: "Sign In",
+			});
+
+			fireEvent.click(buttonElement);
+			const snackbarMessage = await screen.findByText(/Network request failed/i);
+			expect(snackbarMessage).toBeInTheDocument;
 		});
 	});
 });
