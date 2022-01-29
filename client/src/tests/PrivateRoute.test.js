@@ -6,7 +6,7 @@ import PrivateRoute from "../components/PrivateRoute";
 import { rest } from "msw";
 import { setupServer } from "msw/node";
 
-describe("PriavteRoute Tests", () => {
+describe("PrivateRoute Tests", () => {
 	const server = setupServer(
 		rest.get(`${process.env.REACT_APP_URL}/me`, (req, res, ctx) => {
 			return res(
