@@ -1,6 +1,5 @@
 import React from "react";
 import { Route, Redirect } from "react-router-dom";
-import Feed from "../pages/Feed";
 import { useAuth } from "../providers/AuthProvider";
 
 const AuthRoute = ({ children, ...rest }) => {
@@ -10,7 +9,7 @@ const AuthRoute = ({ children, ...rest }) => {
 		return <Route {...rest}>{children}</Route>;
 	}
 
-	return <Feed />;
+	return <Redirect to="/feed" />;
 };
 
 export default AuthRoute;

@@ -53,7 +53,6 @@ describe("PrivateRoute Tests", () => {
 			})
 		);
 		await renderComponent();
-		const textElements = screen.getAllByText("Sign In");
-		expect(textElements[0]).toBeInTheDocument();
+		expect(window.location.pathname).toBe("/login");
 	});
 });
