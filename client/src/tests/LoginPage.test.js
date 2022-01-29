@@ -158,17 +158,6 @@ describe("LoginPage Tests", () => {
 			});
 		});
 
-		// Need some way to make fetch reject
-		// it("should put the fetch error in a snackbar if there is one", async () => {
-		// 	const loginButtonElement = await screen.findByRole("button", {
-		// 		name: "Sign In",
-		// 	});
-		// 	fireEvent.click(loginButtonElement);
-
-		// 	const snackbarElement = await screen.findByText("Something went wrong.");
-		// 	expect(snackbarElement).toBeInTheDocument();
-		// })
-
 		it("should redirect to feed when the login button is pressed with valid credentials", async () => {
 			server.use(
 				rest.post(`${process.env.REACT_APP_URL}/login`, (req, res, ctx) => {
@@ -200,7 +189,9 @@ describe("LoginPage Tests", () => {
 			});
 
 			fireEvent.click(buttonElement);
-			const snackbarMessage = await screen.findByText(/Network request failed/i);
+			const snackbarMessage = await screen.findByText(
+				/Network request failed/i
+			);
 			expect(snackbarMessage).toBeInTheDocument;
 		});
 	});
