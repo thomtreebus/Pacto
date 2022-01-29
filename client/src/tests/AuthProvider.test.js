@@ -77,7 +77,6 @@ describe("AuthProvider Tests", () => {
 			})
 		);
 		await renderComponent();
-		screen.debug();
 		const textElement = screen.getByText(/Error:/i);
 		expect(textElement).toBeInTheDocument();
 	});

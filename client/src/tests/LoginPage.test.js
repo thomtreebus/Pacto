@@ -5,6 +5,7 @@ import MockComponent from "./utils/MockComponent";
 import { rest } from "msw";
 import { setupServer } from "msw/node";
 import { waitForElementToBeRemoved } from "@testing-library/react";
+import { Route } from "react-router-dom";
 
 describe("LoginPage Tests", () => {
 	const server = setupServer(
@@ -16,7 +17,10 @@ describe("LoginPage Tests", () => {
 		rest.post(`${process.env.REACT_APP_URL}/login`, (req, res, ctx) => {
 			return res(
 				ctx.status(401),
-				ctx.json({ message: null, errors: [{field: null, message: "Incorrect credentials."}] }),
+				ctx.json({
+					message: null,
+					errors: [{ field: null, message: "Incorrect credentials." }],
+				})
 			);
 		})
 	);
@@ -37,6 +41,9 @@ describe("LoginPage Tests", () => {
 		render(
 			<MockComponent>
 				<Login />
+				<Route exact path="/feed">
+					<h1>Redirected to feed</h1>
+				</Route>
 			</MockComponent>
 		);
 		await waitForElementToBeRemoved(() => screen.getByText("Loading"));
@@ -122,15 +129,15 @@ describe("LoginPage Tests", () => {
 			fireEvent.click(buttonElement);
 
 			const snackbarElement = await screen.findByText("Incorrect credentials.");
-			expect(snackbarElement).toBeInTheDocument()
-		})
+			expect(snackbarElement).toBeInTheDocument();
+		});
 
 		it("should redirect to feed when the login button is pressed with valid credentials", async () => {
 			server.use(
 				rest.post(`${process.env.REACT_APP_URL}/login`, (req, res, ctx) => {
 					return res(
 						ctx.status(200),
-						ctx.json({message: {id: 3724682634}, errors: []})
+						ctx.json({ message: { id: 3724682634 }, errors: [] })
 					);
 				})
 			);
@@ -138,8 +145,9 @@ describe("LoginPage Tests", () => {
 			const buttonElement = await screen.findByRole("button", {
 				name: "Sign In",
 			});
-
 			fireEvent.click(buttonElement);
+			const redirectMessage = await screen.findByText(/Redirected to feed/i);
+			expect(redirectMessage).toBeInTheDocument;
 			expect(window.location.pathname).toBe("/feed");
 		});
 	});
