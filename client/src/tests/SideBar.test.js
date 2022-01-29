@@ -16,6 +16,7 @@ describe("Check elements are rendered", () => {
   beforeEach(() => {
     render(<SideBar />)
   })
+  
   it("should render the drawer element", () => {
     const drawerElement = screen.getByTestId("sidebar-drawer")
     expect(drawerElement).toBeInTheDocument()
