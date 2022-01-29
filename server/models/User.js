@@ -1,11 +1,11 @@
 const mongoose = require('mongoose');
 const { isEmail } = require('validator')
-const UniversityApiCache = require('../helpers/UniversityApiCache')
+const ApiCache = require('../helpers/ApiCache')
 
 const isUniEmail = async (email) => {
   // only including .ac.uk domain
   // const regex = /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9]+\.ac\.uk$/;
-  const res = await UniversityApiCache();
+  const res = await ApiCache("http://universities.hipolabs.com/search?country=United%20Kingdom");
   const domains = res.flatMap(x => '@'+x['domains']);
   let found = false;
   for(let x=0; x< domains.length; x++){
