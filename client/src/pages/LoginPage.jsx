@@ -42,8 +42,7 @@ export default function LoginPage() {
 				password: data.get("password")
 			})
 		}).catch(err => {
-			console.log(err.message)
-			setSnackbarMessage("err");
+			setSnackbarMessage(err.message);
 			setSnackbarSeverity("error");
 			setSnackbarOpen(true)
 			return

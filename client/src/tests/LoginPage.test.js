@@ -12,6 +12,12 @@ describe("LoginPage Tests", () => {
 			return res(
 				ctx.json({ message: { firstName: "pac", lastName: "to" }, errors: [] })
 			);
+		}),
+		rest.post(`${process.env.REACT_APP_URL}/login`, (req, res, ctx) => {
+			return res(
+				ctx.status(401),
+				ctx.json({ message: null, errors: [{field: null, message: "Incorrect credentials."}] }),
+			);
 		})
 	);
 
@@ -100,12 +106,41 @@ describe("LoginPage Tests", () => {
 			expect(inputElement.value).toBe("hunter123");
 		});
 
-		it("should redirect to sign up if the sign up button is pressed", async () => {
+		it("should redirect to sign up if the 'Don't have an account? Sign Up' button is pressed", async () => {
 			const linkElement = await screen.findByRole("link", {
 				name: "Don't have an account? Sign Up",
 			});
 			fireEvent.click(linkElement);
 			expect(window.location.pathname).toBe("/signup");
+		});
+
+		it("should show an error snackbar with text 'Incorrect credentials.' when the login button is pressed with a invalid credentials", async () => {
+			const buttonElement = await screen.findByRole("button", {
+				name: "Sign In",
+			});
+
+			fireEvent.click(buttonElement);
+
+			const snackbarElement = await screen.findByText("Incorrect credentials.");
+			expect(snackbarElement).toBeInTheDocument()
+		})
+
+		it("should redirect to feed when the login button is pressed with valid credentials", async () => {
+			server.use(
+				rest.post(`${process.env.REACT_APP_URL}/login`, (req, res, ctx) => {
+					return res(
+						ctx.status(200),
+						ctx.json({message: {id: 3724682634}, errors: []})
+					);
+				})
+			);
+
+			const buttonElement = await screen.findByRole("button", {
+				name: "Sign In",
+			});
+
+			fireEvent.click(buttonElement);
+			expect(window.location.pathname).toBe("/feed");
 		});
 	});
 });
