@@ -3,27 +3,67 @@ import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import Paper from "@mui/material/Paper";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import Icon from "../assets/pacto-logo.ico";
 import Typography from "@mui/material/Typography";
 import { useAuth } from "../providers/AuthProvider";
+import Snackbar from "@mui/material/Snackbar"
+import Alert from "@mui/material/Alert";
 
 export default function LoginPage() {
-	const { user, isAuthenticated, setIsAuthenticated, setUser } = useAuth();
+	const { setIsAuthenticated } = useAuth();
+	const [ snackbarOpen, setSnackbarOpen ] = React.useState(false);
+	const [ snackbarMessage, setSnackbarMessage ] = React.useState(null);
+	const [ snackbarSeverity, setSnackbarSeverity ] = React.useState(null);
+	const history = useHistory()
 
-	const handleSubmit = (event) => {
+	const handleClose = (event, reason) => {
+		if (reason === "clickaway") {
+			return;
+		}
+		setSnackbarOpen(false);
+	};
+
+	const handleSubmit = async (event) => {
 		event.preventDefault();
 		const data = new FormData(event.currentTarget);
-		console.log(data.get("email"));
-		console.log(data.get("password"));
+
+		const response = await fetch(`${process.env.REACT_APP_URL}/login`, {
+			method: "POST",
+			headers: {
+				"Content-Type": 'application/json'
+			},
+			credentials: "include",
+			body: JSON.stringify({
+				uniEmail: data.get("email"),
+				password: data.get("password")
+			})
+		}).catch(err => {
+			console.log(err.message)
+			setSnackbarMessage("err");
+			setSnackbarSeverity("error");
+			setSnackbarOpen(true)
+			return
+		});
+
+		const json = await response.json();
+
+		if (response.status !== 200) {
+			setSnackbarMessage(json.errors[0].message);
+			setSnackbarSeverity("error");
+			setSnackbarOpen(true);
+			return;
+		}
+
 		setIsAuthenticated(true);
-		setUser({ firstName: "pac", lastName: "toe" });
+		history.push("/feed");
 	};
 
 	return (
+		<>
 		<Grid container component="main" sx={{ height: "100vh" }}>
 			<CssBaseline />
 			<Grid
@@ -101,9 +141,13 @@ export default function LoginPage() {
 							</Grid>
 						</Grid>
 					</Box>
-					{isAuthenticated ? user.firstName : "not logged in"}
 				</Box>
 			</Grid>
 		</Grid>
+
+		<Snackbar anchorOrigin={{ vertical: "top", horizontal: "center" }} open={snackbarOpen} autoHideDuration={6000} onClose={handleClose}>
+			<Alert severity={snackbarSeverity} onClose={handleClose}>{snackbarMessage}</Alert>
+		</Snackbar>
+		</>
 	);
 }
