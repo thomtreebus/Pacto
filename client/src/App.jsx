@@ -26,16 +26,16 @@ function App() {
 				<PrivateRoute path="*">
 					<BaseLayout>
 						<Switch>
-							<Route exact path="/profile">
+							<PrivateRoute exact path="/profile">
 								<h1>Profile Page</h1>
-							</Route>
-							<Route exact path="/feed">
+							</PrivateRoute>
+							<PrivateRoute exact path="/feed">
 								<h1>Feed</h1>
 								<Feed />
-							</Route>
-							<Route path="*">
+							</PrivateRoute>
+							<PrivateRoute path="*">
 								<h1>Not Found Page</h1>
-							</Route>
+							</PrivateRoute>
 						</Switch>
 					</BaseLayout>
 				</PrivateRoute>
