@@ -8,8 +8,9 @@ import Card from '@mui/material/Card';
 import TextField from '@mui/material/TextField';
 import { styled } from '@mui/material/styles';
 import Button from '@mui/material/Button';
-import { useDropzone } from 'react-dropzone';
-import Dropzone from 'react-dropzone'
+import IconButton from '@mui/material/IconButton';
+import Stack from '@mui/material/Stack';
+import CameraIcon from '@mui/icons-material/PhotoCamera';
 import PhotoIcon from '@mui/icons-material/Photo';
 import TextIcon from '@mui/icons-material/TextSnippet';
 import LinkIcon from '@mui/icons-material/Link';
@@ -64,9 +65,12 @@ export default function CreatePostCard() {
     <Card sx={{ width: '40%', padding: '100', marginTop: '18px'}}>
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
         <Tabs value={value} onChange={handleChange} aria-label="basic tabs example" centered>
-          <Tab icon={<TextIcon />} label="Post" {...a11yProps(0)} />
-          <Tab icon={<PhotoIcon />} label="Image" {...a11yProps(1)} />
-          <Tab icon={<LinkIcon />} label="Link"{...a11yProps(2)} />
+          {/* <Tab icon={<TextIcon />} label="Post" {...a11yProps(0)} /> */}
+          {/* <Tab icon={<PhotoIcon />} label="Image" {...a11yProps(1)} />
+          <Tab icon={<LinkIcon />} label="Link"{...a11yProps(2)} /> */}
+          <Tab label={<div><TextIcon style={{ verticalAlign: 'middle' }} /> Post </div>} {...a11yProps(0)} />
+          <Tab label={<div><PhotoIcon style={{ verticalAlign: 'middle' }} /> Image </div>} {...a11yProps(0)} />
+          <Tab label= {<div><LinkIcon style = { {verticalAlign : 'middle'} } /> Link </div>} {...a11yProps(0)} />
         </Tabs>
       </Box>
       <TabPanel value={value} index={0}>
@@ -82,25 +86,21 @@ export default function CreatePostCard() {
         <Button variant="contained" sx={{marginTop: '8px'}}>Post</Button>
       </TabPanel>
       <TabPanel value={value} index={1}>
-        <TextField fullWidth label="Title" />
-        {/* <label htmlFor="contained-button-file">
-          <Input accept="image/*" id="contained-button-file" multiple type="file" />
-          <Button fullWidth variant="contained" component="span" sx={{marginTop: '8px'}}>Upload Photo</Button>
-        </label> */}
-        <Dropzone onDrop={acceptedFiles => console.log(acceptedFiles)}>
-        {({getRootProps, getInputProps}) => (
-          <section>
-            <div {...getRootProps()}>
-              <input {...getInputProps()} />
-              <p>Drag and drop or click to upload image</p>
-            </div>
-          </section>
-        )}
-      </Dropzone>
+        <Stack direction="row" alignItems="center" spacing={2}>
+          <TextField fullWidth label="Title" />
+          <label htmlFor="icon-button-file">
+            <Input accept="image/*" id="icon-button-file" type="file" />
+            <IconButton color="primary" aria-label="upload picture" component="span">
+              <CameraIcon />
+            </IconButton>
+          </label>
+        </Stack>
+
         <Button variant="contained" sx={{marginTop: '8px'}}>Post</Button>
       </TabPanel>
       <TabPanel value={value} index={2}>
         <TextField fullWidth label="Title" />
+        <TextField fullWidth label="URL" sx={{marginTop: '8px'}}/>
         <Button variant="contained" sx={{marginTop: '8px'}}>Post</Button>
       </TabPanel>
     </Card>
