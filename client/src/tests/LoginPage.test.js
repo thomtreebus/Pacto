@@ -2,14 +2,38 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import Login from "../pages/LoginPage";
 import "@testing-library/jest-dom";
 import MockComponent from "./utils/MockComponent";
+import { rest } from "msw";
+import { setupServer } from "msw/node";
+import { waitForElementToBeRemoved } from "@testing-library/react";
 
 describe("LoginPage Tests", () => {
+	const server = setupServer(
+		rest.get(`${process.env.REACT_APP_URL}/me`, (req, res, ctx) => {
+			return res(
+				ctx.json({ message: { firstName: "pac", lastName: "to" }, errors: [] })
+			);
+		})
+	);
+
+	beforeAll(() => {
+		server.listen();
+	});
+
+	afterAll(() => {
+		server.close();
+	});
+
+	beforeEach(async () => {
+		server.resetHandlers();
+	});
+
 	beforeEach(async () => {
 		render(
 			<MockComponent>
 				<Login />
 			</MockComponent>
 		);
+		await waitForElementToBeRemoved(() => screen.getByText("Loading"));
 	});
 
 	describe("Check elements are rendered", () => {
@@ -21,7 +45,7 @@ describe("LoginPage Tests", () => {
 		});
 
 		it("should render the Pacto icon element", async () => {
-			const avatarElement = await await screen.findByAltText("Pacto Icon");
+			const avatarElement = await screen.findByAltText("Pacto Icon");
 			expect(avatarElement).toBeInTheDocument();
 		});
 
