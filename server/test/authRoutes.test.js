@@ -237,7 +237,7 @@ describe("Authentication routes", () => {
 					"Users validation failed: firstName: Provide firstName without number"
 				);
 			});
-			it("longer than 64", async () => {
+			it("longer than 64 characters", async () => {
 				await isInvalidCredentials(
 					"Kolling".repeat(300),
 					"Smith",
@@ -268,7 +268,7 @@ describe("Authentication routes", () => {
 					"Users validation failed: lastName: Provide lastName without number"
 				);
 			});
-			it("longer than 64", async () => {
+			it("longer than 64 characters", async () => {
 				await isInvalidCredentials(
 					"Kolling",
 					"Smith".repeat(300),
@@ -400,7 +400,4 @@ describe("Authentication routes", () => {
 			});
 		})
 	});
-
-
-
 });
