@@ -20,6 +20,9 @@ const MISSING_CODE = "Code query empty.";
 const INVALID_CODE = "Invalid or expired code.";
 const VERIFY_SUCCESS_RESPONSE_TEXT = "Success! You may now close this page."; // recall this is a special case
 
+// post signup magic values
+const REAL_UNI_EMAIL = "aaron.monte@kcl.ac.uk";
+
 // global helpers and magic values
 const TEST_USER_EMAIL = "pac.to@kcl.ac.uk";
 const generateTestUser = async () => {
@@ -223,7 +226,7 @@ describe("Authentication routes", () => {
 				await isInvalidCredentials(
 					"",
 					"Smith",
-					"kolling.smith@kekw.ac.uk",
+					REAL_UNI_EMAIL,
 					"Password123",
 					"Users validation failed: firstName: Provide the first name"
 				);
@@ -232,7 +235,7 @@ describe("Authentication routes", () => {
 				await isInvalidCredentials(
 					"123Kolling",
 					"Smith",
-					"kolling.smith@kekw.ac.uk",
+					REAL_UNI_EMAIL,
 					"Password123",
 					"Users validation failed: firstName: Provide firstName without number"
 				);
@@ -241,7 +244,7 @@ describe("Authentication routes", () => {
 				await isInvalidCredentials(
 					"Kolling".repeat(300),
 					"Smith",
-					"kolling.smith@kekw.ac.uk",
+					REAL_UNI_EMAIL,
 					"Password123",
 					"Users validation failed: firstName: Provide firstName shorter than 16 characters"
 				);
@@ -254,7 +257,7 @@ describe("Authentication routes", () => {
 				await isInvalidCredentials(
 					"Kolling",
 					"",
-					"kolling.smith@kekw.ac.uk",
+					REAL_UNI_EMAIL,
 					"Password123",
 					"Users validation failed: lastName: Provide the last name"
 				);
@@ -263,7 +266,7 @@ describe("Authentication routes", () => {
 				await isInvalidCredentials(
 					"Kolling",
 					"123Smith",
-					"kolling.smith@kekw.ac.uk",
+					REAL_UNI_EMAIL,
 					"Password123",
 					"Users validation failed: lastName: Provide lastName without number"
 				);
@@ -272,7 +275,7 @@ describe("Authentication routes", () => {
 				await isInvalidCredentials(
 					"Kolling",
 					"Smith".repeat(300),
-					"kolling.smith@kekw.ac.uk",
+					REAL_UNI_EMAIL,
 					"Password123",
 					"Users validation failed: lastName: Provide lastName shorter than 16 characters"
 				);
@@ -329,7 +332,7 @@ describe("Authentication routes", () => {
 			await isValidCredentials(
 				"Kolling",
 				"Smith",
-				"kolling.smith@kekw.ac.uk",
+				REAL_UNI_EMAIL,
 				"Password123",
 			);
 		});
@@ -338,7 +341,7 @@ describe("Authentication routes", () => {
 				await isInvalidCredentials(
 					"Kolling",
 					"Smith",
-					"kolling.smith@kekw.ac.uk",
+					REAL_UNI_EMAIL,
 					"",
 					"Password does not meet requirements"
 				);
@@ -348,7 +351,7 @@ describe("Authentication routes", () => {
 				await isInvalidCredentials(
 					"Kolling",
 					"Smith",
-					"kolling.smith@kekw.ac.uk",
+					REAL_UNI_EMAIL,
 					"a".repeat(3000),
 					"Password does not meet requirements"
 				);
@@ -357,7 +360,7 @@ describe("Authentication routes", () => {
 				await isInvalidCredentials(
 					"Kolling",
 					"Smith",
-					"kolling.smith@kekw.ac.uk",
+					REAL_UNI_EMAIL,
 					"a".repeat(4),
 					"Password does not meet requirements"
 				);
@@ -366,7 +369,7 @@ describe("Authentication routes", () => {
 				await isInvalidCredentials(
 					"Kolling",
 					"Smith",
-					"kolling.smith@kekw.ac.uk",
+					REAL_UNI_EMAIL,
 					"Password",
 					"Password does not meet requirements"
 				);
@@ -375,7 +378,7 @@ describe("Authentication routes", () => {
 				await isInvalidCredentials(
 					"Kolling",
 					"Smith",
-					"kolling.smith@kekw.ac.uk",
+					REAL_UNI_EMAIL,
 					"passsword123",
 					"Password does not meet requirements"
 				);
@@ -384,7 +387,7 @@ describe("Authentication routes", () => {
 				await isInvalidCredentials(
 					"Kolling",
 					"Smith",
-					"kolling.smith@kekw.ac.uk",
+					REAL_UNI_EMAIL,
 					"PASSWORD123",
 					"Password does not meet requirements"
 				);
@@ -393,7 +396,7 @@ describe("Authentication routes", () => {
 				await isInvalidCredentials(
 					"Kolling",
 					"Smith",
-					"kolling.smith@kekw.ac.uk",
+					REAL_UNI_EMAIL,
 					"Password",
 					"Password does not meet requirements"
 				);
