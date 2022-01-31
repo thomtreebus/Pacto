@@ -5,6 +5,8 @@ import Landing from "./pages/LandingPage";
 import Feed from "./pages/Feed";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { CssBaseline } from "@mui/material";
+import PrivateRoute from "./components/PrivateRoute";
+import AuthRoute from "./components/AuthRoute";
 
 function App() {
 	return (
@@ -14,30 +16,29 @@ function App() {
 				<Route exact path="/">
 					<Landing />
 				</Route>
-				<Route exact path="/login">
+				<AuthRoute exact path="/login">
 					<Login />
-				</Route>
-				<Route exact path="/signup">
+				</AuthRoute>
+				<AuthRoute exact path="/signup">
 					<SignUp />
-				</Route>
+				</AuthRoute>
 
-				<Route path="*">
+				<PrivateRoute path="*">
 					<BaseLayout>
-					<Switch>
-						<Route exact path="/profile">
-							<h1>Profile Page</h1>
-						</Route>
-						<Route exact path="/feed">
-							<h1>Feed</h1>
-							<Feed />
-						</Route>
-						<Route path="*">
-							<h1>Not Found Page</h1>
-						</Route>
-					</Switch>
+						<Switch>
+							<PrivateRoute exact path="/profile">
+								<h1>Profile Page</h1>
+							</PrivateRoute>
+							<PrivateRoute exact path="/feed">
+								<h1>Feed</h1>
+								<Feed />
+							</PrivateRoute>
+							<PrivateRoute path="*">
+								<h1>Not Found Page</h1>
+							</PrivateRoute>
+						</Switch>
 					</BaseLayout>
-					
-				</Route>
+				</PrivateRoute>
 			</Switch>
 		</Router>
 	);

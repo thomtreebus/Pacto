@@ -7,11 +7,17 @@ dotenv.config();
 
 const app = express();
 
-app.use(cors());
+const corsOptions  = {
+	origin: process.env.CORS_URL, //frontend url
+	credentials: true
+}
+
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(cookieParser());
 
 // Routes
+
 const authRoute = require("./routes/auth");
 app.use("/", authRoute);
 

@@ -1,21 +1,46 @@
-import { render, screen, fireEvent } from "@testing-library/react"
+import { render, screen, waitForElementToBeRemoved } from "@testing-library/react"
+
 import AppBar from "../components/AppBar.jsx";
 import { BrowserRouter } from "react-router-dom";
 import "@testing-library/jest-dom";
+import MockComponent from "./utils/MockComponent.jsx";
+import { rest } from "msw";
+import { setupServer } from "msw/node";
 
 const MockAppBar = () => {
   return (
-    <BrowserRouter>
+    <MockComponent>
       <AppBar />
-    </BrowserRouter>
+    </MockComponent>
   )
 }
 
 describe("Check elements are rendered", () => {
 
-  beforeEach(() => {
+  beforeEach(async () => {
     render(<MockAppBar />)
+    await waitForElementToBeRemoved(() => screen.getByText("Loading"));
   })
+
+  const server = setupServer(
+		rest.get(`${process.env.REACT_APP_URL}/me`, (req, res, ctx) => {
+			return res(
+				ctx.json({ message: { firstName: "pac", lastName: "to" }, errors: [] })
+			);
+		})
+	);
+
+	beforeAll(() => {
+		server.listen();
+	});
+
+	afterAll(() => {
+		server.close();
+	});
+
+	beforeEach(async () => {
+		server.resetHandlers();
+	});
 
   it("should render the app bar element", () => {
     const appBarElement = screen.getByTestId("app-bar")
