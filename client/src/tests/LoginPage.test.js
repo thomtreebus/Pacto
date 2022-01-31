@@ -173,7 +173,7 @@ describe("LoginPage Tests", () => {
 			});
 			fireEvent.click(buttonElement);
 			const redirectMessage = await screen.findByText(/Redirected to feed/i);
-			expect(redirectMessage).toBeInTheDocument;
+			expect(redirectMessage).toBeInTheDocument();
 			expect(window.location.pathname).toBe("/feed");
 		});
 
@@ -192,7 +192,7 @@ describe("LoginPage Tests", () => {
 			const snackbarMessage = await screen.findByText(
 				/Network request failed/i
 			);
-			expect(snackbarMessage).toBeInTheDocument;
+			expect(snackbarMessage).toBeInTheDocument();
 		});
 	});
 });
