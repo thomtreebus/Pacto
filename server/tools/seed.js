@@ -17,12 +17,14 @@ async function createUser(firstName, lastName) {
 	await User.create({
 		firstName,
 		lastName,
-		uniEmail: `${firstName}.${lastName}@kcl.ac.uk`,
+		uniEmail: `${firstName.toLowerCase()}.${lastName.toLowerCase()}@kcl.ac.uk`,
 		password: hashedPassword,
+		active: true,
 	});
 }
 
 async function seedUsers() {
+	await createUser("pac", "to");
 	for (let i = 0; i <= USER_COUNT; i++) {
 		let name = chance.name();
 		await createUser(name.split(" ")[0], name.split(" ")[0]);
