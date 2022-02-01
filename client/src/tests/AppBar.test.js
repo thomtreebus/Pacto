@@ -25,8 +25,15 @@ describe("App Bar Tests", () => {
 			return res(
 				ctx.json({ message: { firstName: "pac", lastName: "to" }, errors: [] })
 			);
+		}),
+    rest.get(`${process.env.REACT_APP_URL}/logout`, (req, res, ctx) => {
+			return res(
+				ctx.json({ message: null, errors: [] })
+			);
 		})
 	);
+
+  
 
 	beforeAll(() => {
 		server.listen();
@@ -94,11 +101,11 @@ describe("App Bar Tests", () => {
   });
 
   describe("Check interaction with elements", () => {
-    // it("should log out the user when log out is pressed", () => {
-    //   const logoutItemElement = screen.getByTestId("logout-item");
-    //   fireEvent.click(logoutItemElement);
-    //   expect(window.location.pathname).toBe("/");
-    // });
+    it("should log out the user when log out is pressed", () => {
+      const logoutItemElement = screen.getByTestId("logout-item");
+      fireEvent.click(logoutItemElement);
+      expect(window.location.pathname).toBe("/");
+    });
 
     it("should redirect to home when the Pacto icon is pressed", () => {
       const buttonElement = screen.getByTestId("home-button");
