@@ -2,23 +2,40 @@ import * as React from "react";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import Icon from '../assets/pacto-logo.ico';
+import { useAuth } from "../providers/AuthProvider";
 
 export default function SignupPage() {
-	function handleSubmit(event) {
+	const { setIsAuthenticated } = useAuth();
+	const history = useHistory();
+
+	const handleSubmit = async (event) => {
 		event.preventDefault();
 		const data = new FormData(event.currentTarget);
 
-		console.log({
-			email: data.get("email"),
-			password: data.get("password"),
+		
+		const response = await fetch(`${process.env.REACT_APP_URL}/signup`, {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			credentials: "include",
+			body: JSON.stringify({
+				firstName: data.get("Pac"),
+				lasttName: data.get("To"),
+				uniEmail: data.get("Pacto@uni.ac.uk"),
+				password: data.get("Password123"),
+				confirmPassword: data.get("Password123"),
+			}),
 		});
-	}
+
+		// setIsAuthenticated(true);		
+	};
 
 	return (
 		<Container component="main" maxWidth="xs">
