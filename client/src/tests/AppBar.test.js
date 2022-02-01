@@ -94,11 +94,11 @@ describe("App Bar Tests", () => {
   });
 
   describe("Check interaction with elements", () => {
-    it("should log out the user when log out is pressed", () => {
-      const logoutItemElement = screen.getByTestId("logout-item");
-      fireEvent.click(logoutItemElement);
-      expect(window.location.pathname).toBe("/");
-    });
+    // it("should log out the user when log out is pressed", () => {
+    //   const logoutItemElement = screen.getByTestId("logout-item");
+    //   fireEvent.click(logoutItemElement);
+    //   expect(window.location.pathname).toBe("/");
+    // });
 
     it("should redirect to home when the Pacto icon is pressed", () => {
       const buttonElement = screen.getByTestId("home-button");
@@ -113,14 +113,31 @@ describe("App Bar Tests", () => {
       expect(menuElement).toBeInTheDocument();
     });
 
-    // it("should close the profile menu when a menu item is pressed", () => { 
-    //   const iconButtonElement = screen.getByTestId("profile-button");
-    //   fireEvent.click(iconButtonElement);
-    //   const menuElement = screen.getByTestId("primary-search-account-menu");
-    //   expect(menuElement).toBeInTheDocument();
-    //   const profileItemElement = screen.getByTestId("profile-item");
-    //   fireEvent.click(profileItemElement);
-    //   !expect(menuElement).toBeInTheDocument();
-    // });
+    it("should close the profile menu when a menu item is pressed", () => { 
+      const iconButtonElement = screen.getByTestId("profile-button");
+      fireEvent.click(iconButtonElement);
+      const menuElement = screen.getByTestId("primary-search-account-menu");
+      expect(menuElement).toBeInTheDocument();
+      const profileItemElement = screen.getByTestId("profile-item");
+      fireEvent.click(profileItemElement);
+      !expect(menuElement).toBeInTheDocument();
+    });
+
+    it("should open the mobile menu when the icon button is pressed", () => {
+      const iconButtonElement = screen.getByTestId("mobile-menu-button");
+      fireEvent.click(iconButtonElement);
+      const menuElement = screen.getByTestId("primary-search-account-menu-mobile");
+      expect(menuElement).toBeInTheDocument();
+    });
+
+    it("should close the mobile menu when a menu item is pressed", () => { 
+      const iconButtonElement = screen.getByTestId("mobile-menu-button");
+      fireEvent.click(iconButtonElement);
+      const menuElement = screen.getByTestId("primary-search-account-menu-mobile");
+      expect(menuElement).toBeInTheDocument();
+      const profileItemElement = screen.getByTestId("profile-item-mobile");
+      fireEvent.click(profileItemElement);
+      !expect(menuElement).toBeInTheDocument();
+    });
   });
 });
