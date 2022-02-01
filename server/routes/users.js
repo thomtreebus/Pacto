@@ -6,5 +6,5 @@ const users = require('../controllers/users');
 
 
 router.route('/:id')
-  .get(catchAsync(users.updateProfile))
+  .put(catchAsync(users.updateProfile))
   .delete(catchAsync(users.deleteUser));

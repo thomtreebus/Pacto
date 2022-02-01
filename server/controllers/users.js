@@ -2,7 +2,8 @@ const User = require('../models/User');
 
 
 module.exports.updateProfile = async(req, res) => {
-  const { id } = req.params;
+  const { id } = req.params; 
+  console.log(req.body);
   const { firstName, lastName, personalEmail, course } = req.body;
 
   if (!mongoose.Types.ObjectId.isValid(id)) return res.status(404).send(`No user with id: ${id}`);
