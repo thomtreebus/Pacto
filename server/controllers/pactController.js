@@ -21,10 +21,10 @@ module.exports.pactsGet = async (req, res) => {
     const university = req.user.university;
 
 		if (!university){
-			throw Error("User not authenticated")
+			throw Error("User not authenticated");
 		}
 
-		const pacts = Pact.find({ university })
+		const pacts = Pact.find({ university });
 
 		res.status(200).json(jsonResponse(pacts, []));
 	} 
