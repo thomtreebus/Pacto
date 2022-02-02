@@ -36,6 +36,7 @@ export default function SignupPage() {
 
 		if (data.get("password") != data.get("confirmPassword")){
 			setPasswordConfirmError("Passwords do not match!");
+			return;
 		}
 
 		const response = await fetch(`${process.env.REACT_APP_URL}/signup`, {
@@ -73,7 +74,9 @@ export default function SignupPage() {
 
 		});
 
-		if (response.status !== 200) {
+		console.log(response.status)
+
+		if (response.status !== 201) {
 			return;
 		}
 
