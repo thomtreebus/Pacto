@@ -3,14 +3,6 @@ import SideBar from "../components/SideBar";
 import { BrowserRouter } from "react-router-dom";
 import "@testing-library/jest-dom";
 
-// const MockSideBar = () => {
-//     return (
-//         <BrowserRouter>
-//             <Login />
-//         </BrowserRouter>
-//     )
-// }
-
 describe("Check elements are rendered", () => {
 
   beforeEach(() => {
@@ -25,11 +17,6 @@ describe("Check elements are rendered", () => {
   it("should render the toolbar element", () => {
     const toolbarElement = screen.getByTestId("sidebar-toolbar")
     expect(toolbarElement).toBeInTheDocument()
-  })
-    
-  it("should render the drawer element", () => {
-    const drawerElement = screen.getByTestId("sidebar-drawer")
-    expect(drawerElement).toBeInTheDocument()
   })
 
   it("should render the user profile list element", () => {
@@ -66,13 +53,6 @@ describe("Check elements are rendered", () => {
     expect(pactIconElement).toBeInTheDocument()
     const pactTextElement = screen.getByTestId("sidebar-pacts")
     expect(pactTextElement).toBeInTheDocument()
-  })
-
-  it("should render the friends item", () => {
-    const friendIconElement = screen.getByTestId("sidebar-friends-icon")
-    expect(friendIconElement).toBeInTheDocument()
-    const friendTextElement = screen.getByTestId("sidebar-friends")
-    expect(friendTextElement).toBeInTheDocument()
   })
 
   it("should render the friends item", () => {

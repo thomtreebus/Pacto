@@ -1,4 +1,4 @@
-import { render, screen, fireEvent, waitForElementToBeRemoved } from "@testing-library/react"
+import { render, screen, fireEvent, waitFor, waitForElementToBeRemoved } from "@testing-library/react"
 import AppBar from "../components/AppBar.jsx";
 import "@testing-library/jest-dom";
 import MockComponent from "./utils/MockComponent.jsx";
@@ -120,18 +120,45 @@ describe("App Bar Tests", () => {
       expect(window.location.pathname).toBe("/feed");
     });
 
-    it("should open the profile menu when the icon button is pressed", () => {
+    it("should open the profile menu when the icon button is pressed", async () => {
       const iconButtonElement = screen.getByTestId("profile-button");
       fireEvent.click(iconButtonElement);
       const menuElement = screen.getByTestId("primary-search-account-menu");
-      expect(menuElement).toBeVisible();
+      await waitFor(() => expect(menuElement).toBeVisible());
     });
 
-    it("should open the mobile menu when the icon button is pressed", () => {
+    it("should close the profile menu when a menu item is pressed", async () => {
+      const iconButtonElement = screen.getByTestId("profile-button");
+      fireEvent.click(iconButtonElement);
+      const menuElement = screen.getByTestId("primary-search-account-menu");
+      await waitFor(() => expect(menuElement).toBeVisible());
+    });
+
+    it("should open the mobile menu when the icon button is pressed", async () => {
       const iconButtonElement = screen.getByTestId("mobile-menu-button");
       fireEvent.click(iconButtonElement);
       const menuElement = screen.getByTestId("primary-search-account-menu-mobile");
       expect(menuElement).toBeVisible();
+    });
+
+    it("should close the profile menu when a menu item is pressed", async () => { 
+      const iconButtonElement = screen.getByTestId("profile-button");
+      fireEvent.click(iconButtonElement);
+      const menuElement = screen.getByTestId("primary-search-account-menu");
+      expect(menuElement).toBeInTheDocument();
+      const profileItemElement = screen.getByTestId("profile-item");
+      fireEvent.click(profileItemElement);
+      await waitFor(() => expect(menuElement).not.toBeVisible());
+    });
+
+    it("should close the mobile menu when a menu item is pressed", async () => { 
+      const iconButtonElement = screen.getByTestId("mobile-menu-button");
+      fireEvent.click(iconButtonElement);
+      const menuElement = screen.getByTestId("primary-search-account-menu-mobile");
+      expect(menuElement).toBeInTheDocument();
+      const profileItemElement = screen.getByTestId("profile-item-mobile");
+      fireEvent.click(profileItemElement);
+      await waitFor(() => expect(menuElement).not.toBeVisible());
     });
   });
 });
