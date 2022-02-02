@@ -76,7 +76,7 @@ module.exports.signupPost = async (req, res) => {
   }
   else {
     const invalidPasswordError = "Password does not meet requirements"
-    res.status(400).json(jsonResponse("password", [jsonError(null, invalidPasswordError)]));
+    res.status(400).json(jsonResponse(null, [jsonError("password", invalidPasswordError)]));
   }
 
 
