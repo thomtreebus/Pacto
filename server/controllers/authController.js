@@ -52,37 +52,35 @@ const validPassword = (password) => {
 module.exports.signupPost = async (req, res) => {
 	const { firstName, lastName, uniEmail, password } = req.body;
 
-  if (validPassword(password)){
-	const { firstName, lastName, uniEmail, password } = req.body;
-    try {
-      // Hash password
-      const salt = await bcrypt.genSalt(SALT_ROUNDS);
-      const hashedPassword = await bcrypt.hash(password, salt);
+  try {
+    // Hash password
+    const salt = await bcrypt.genSalt(SALT_ROUNDS);
+    const hashedPassword = await bcrypt.hash(password, salt);
 
-      const user = await User.create({ firstName, lastName, uniEmail, password:hashedPassword });
+    const user = await User.create({ firstName, lastName, uniEmail, password:hashedPassword });
 
-      // Generate verification string and send to user's email
-      await handleVerification(uniEmail, user._id);
-			if (validPassword(password)) {
-				res.status(201).json(jsonResponse(null, []));
-			}
-			else {
-				const invalidPasswordError = "Password does not meet requirements";
-				res.status(400).json(jsonResponse(null, [jsonError("password", invalidPasswordError)]));
-			}
+    // Generate verification string and send to user's email
+    await handleVerification(uniEmail, user._id);
+    if (validPassword(password)) {
+      res.status(201).json(jsonResponse(null, []));
     }
-    catch(err) {
-      const allErrors = handleFieldErrors(err);
-      let jsonErrors = [];
-      Object.entries(allErrors).forEach(([field, message]) =>{
-        jsonErrors.push(jsonError(field,message));
-      });
-			if (!validPassword(password)) {
-				const invalidPasswordError = "Password does not meet requirements";
-				jsonErrors.push(jsonError("password", invalidPasswordError));
-			}
-			res.status(400).json(jsonResponse(null, jsonErrors));
+    else {
+      const invalidPasswordError = "Password does not meet requirements";
+      res.status(400).json(jsonResponse(null, [jsonError("password", invalidPasswordError)]));
     }
+  }
+  catch(err) {
+    const allErrors = handleFieldErrors(err);
+    let jsonErrors = [];
+    Object.entries(allErrors).forEach(([field, message]) =>{
+      jsonErrors.push(jsonError(field,message));
+    });
+    if (!validPassword(password)) {
+      const invalidPasswordError = "Password does not meet requirements";
+      jsonErrors.push(jsonError("password", invalidPasswordError));
+    }
+    res.status(400).json(jsonResponse(null, jsonErrors));
+  }
 
 
 }

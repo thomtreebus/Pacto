@@ -2,12 +2,14 @@ import * as React from "react";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import Icon from '../assets/pacto-logo.ico';
+import { useAuth } from "../providers/AuthProvider";
+
 
 
 
@@ -18,6 +20,9 @@ export default function SignupPage() {
 	const [apiLastNameError, setApiLastNameError] = React.useState('');
 	const [apiUniEmailError, setApiUniEmailError] = React.useState('');
 	const [apiPasswordError, setApiPasswordError] = React.useState('');
+	const history = useHistory();
+	const { setIsAuthenticated } = useAuth();
+
 
 	const handleSubmit = async (event) => {
 		event.preventDefault();
@@ -32,10 +37,6 @@ export default function SignupPage() {
 		if (data.get("password") != data.get("confirmPassword")){
 			setPasswordConfirmError("Passwords do not match!");
 		}
-		console.log(1, data.get("firstName"));
-		console.log(2, data.get("lastName"));
-		console.log(3, data.get("email"));
-		console.log(4, data.get("password"));
 
 		const response = await fetch(`${process.env.REACT_APP_URL}/signup`, {
 			method: "POST",
@@ -52,8 +53,6 @@ export default function SignupPage() {
 		});
 
 		const json = await response.json();
-		console.log(json)
-		console.log(typeof json)
 		
 		Object.values(json['errors']).forEach(err => {
 			const field = err["field"];
@@ -74,13 +73,24 @@ export default function SignupPage() {
 
 		});
 
-
 		if (response.status !== 200) {
 			return;
 		}
 
-		// setIsAuthenticated(true);		
+		
+		history.push("/login");
+		
 	};
+	/*
+
+	{
+    "firstName": "asd",
+    "lastName": "asd",
+    "uniEmail": "asdasdsad@kcl.ac.uk",
+    "password": "Password123"
+}
+
+	*/
 
 	return (
 		<Container component="main" maxWidth="xs">
