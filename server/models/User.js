@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
 
 const UserSchema = mongoose.Schema({
   firstName: {
@@ -29,6 +30,10 @@ const UserSchema = mongoose.Schema({
     type: Boolean,
     required: true,
     default: false
+  },
+  university : {
+    type: Schema.Types.ObjectId,
+    ref: 'Univeristy'
   }
 });
 
