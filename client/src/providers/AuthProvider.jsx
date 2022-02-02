@@ -9,7 +9,7 @@ export function useAuth() {
 export default function AuthProvider({ children }) {
 	const [user, setUser] = useState(null);
 	const [error, setError] = useState(null);
-	const [isLoading, setIsLoading] = useState(false);
+	const [isLoading, setIsLoading] = useState(true);
 	const [isAuthenticated, setIsAuthenticated] = useState(false);
 
 	async function fetchUser() {
@@ -41,7 +41,7 @@ export default function AuthProvider({ children }) {
 		return () => {
       setUser(null);
 			setError(null);
-			setIsLoading(false);
+			setIsLoading(true); //This might need to be set to false.
 			setIsAuthenticated(false);
     };
 	}, []);
