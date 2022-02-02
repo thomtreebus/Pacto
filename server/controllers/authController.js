@@ -62,10 +62,12 @@ module.exports.signupPost = async (req, res) => {
 
 		// Check if the provided email is associated with a domain in the university API.
 		const universityJson = await ApiCache(process.env.UNIVERSITY_API);
-		const entry = await universityJson.filter(uni => uni["domains"].includes(uniEmail.split('@')[1]));
-		if (entry) {
+
+		const userDomain = uniEmail.split('@')[1];
+		const entry = await universityJson.filter(uni => uni["domains"].includes(userDomain));
+		if (!entry) {
 			errorField = "uniEmail";
-			throw Error("Email is not associated with a valid UK university");
+			throw Error("Domain " + userDomain + " is not associated with a valid UK university");
 		}
 
 		// Convert array of 1 item to the item
@@ -74,7 +76,7 @@ module.exports.signupPost = async (req, res) => {
 		// Get the relevant university from the database.
 		// If it doesn't exist: make one.
 		let university = await University.findOne({ domains: uniDetails["domains"] });
-		if (university) {
+		if (!university) {
 			university = await University.create({ name:uniDetails["name"], domains:uniDetails["domains"] });
 		}
 		// We don't include the user in the university users list until they verify their email.

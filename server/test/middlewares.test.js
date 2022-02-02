@@ -8,6 +8,7 @@ const app = require("../app");
 const { checkAuthenticated } = require("../middleware/authMiddleware");
 const { jsonResponse } = require("../helpers/responseHandlers");
 const { createToken } = require("../controllers/authController");
+const University = require('../models/University')
 
 dotenv.config();
 
@@ -48,6 +49,7 @@ describe("Middlewares", () => {
     });
 
     it("accepts authorised access", async () => {
+      const uni = await University.create( { name: "kcl", domains: ["kcl.ac.uk"] });
       const uniEmail = "pac.to@kcl.ac.uk";
       const password = "Password123";
       const salt = await bcrypt.genSalt(10);
@@ -59,6 +61,7 @@ describe("Middlewares", () => {
         lastName: "to",
         uniEmail: uniEmail,
         password: hashedPassword,
+        university: uni
       });
 
       const token = createToken(user._id);
