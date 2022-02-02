@@ -15,3 +15,17 @@ module.exports.pactPost = async (req, res) => {
 	}
 };
 
+// GET pacts (all pacts in user's hub)
+module.exports.pactsGet = async (req, res) => {
+	try {
+    const university = req.user.university;
+		const pacts = Pact.find({ university })
+
+		res.status(200).json(jsonResponse(pacts, []));
+	} 
+  catch (err) {
+		res.status(400).json(jsonResponse(null, [jsonError(null, err.message)]));
+	}
+};
+
+
