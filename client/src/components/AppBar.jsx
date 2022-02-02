@@ -11,7 +11,7 @@ import Menu from "@mui/material/Menu";
 import SearchIcon from "@mui/icons-material/Search";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import MoreIcon from "@mui/icons-material/MoreVert";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import Button from "@mui/material/Button";
 import Divider from "@mui/material/Divider";
 import Avatar from "@mui/material/Avatar";
@@ -59,6 +59,8 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 export default function PrimarySearchAppBar() {
+  const history = useHistory() 
+
 	const { setIsAuthenticated } = useAuth();
 
 	const [anchorEl, setAnchorEl] = React.useState(null);
@@ -73,6 +75,7 @@ export default function PrimarySearchAppBar() {
 		});
 		const data = await response.json();
 		setIsAuthenticated(false);
+		history.push('login');
 	};
 
 	const handleProfileMenuOpen = (event) => {
@@ -95,6 +98,7 @@ export default function PrimarySearchAppBar() {
 	const menuId = "primary-search-account-menu";
 	const renderMenu = (
 		<Menu
+			data-testid={menuId}
 			anchorEl={anchorEl}
 			anchorOrigin={{
 				vertical: "top",
@@ -109,15 +113,16 @@ export default function PrimarySearchAppBar() {
 			open={isMenuOpen}
 			onClose={handleMenuClose}
 		>
-			<MenuItem onClick={handleMenuClose}>Profile</MenuItem>
+			<MenuItem data-testid="profile-item" onClick={handleMenuClose}>Profile</MenuItem>
 			<Divider />
-			<MenuItem onClick={handleLogout}>Log Out</MenuItem>
+			<MenuItem data-testid="logout-item" onClick={handleLogout}>Log Out</MenuItem>
 		</Menu>
 	);
 
 	const mobileMenuId = "primary-search-account-menu-mobile";
 	const renderMobileMenu = (
 		<Menu
+			data-testid={mobileMenuId}
 			anchorEl={mobileMoreAnchorEl}
 			anchorOrigin={{
 				vertical: "top",
@@ -132,7 +137,7 @@ export default function PrimarySearchAppBar() {
 			open={isMobileMenuOpen}
 			onClose={handleMobileMenuClose}
 		>
-			<MenuItem onClick={handleMobileMenuClose}>
+			<MenuItem data-testid="profile-item-mobile" onClick={handleMobileMenuClose}>
 				<IconButton
 					size="large"
 					aria-label="account of current user"
@@ -145,7 +150,7 @@ export default function PrimarySearchAppBar() {
 				<p>Profile</p>
 			</MenuItem>
 			<Divider />
-			<MenuItem onClick={handleLogout}>
+			<MenuItem data-testid="logout-item-mobile" onClick={handleLogout}>
 				<p>Log Out</p>
 			</MenuItem>
 		</Menu>
@@ -154,6 +159,7 @@ export default function PrimarySearchAppBar() {
 	return (
 		<Box sx={{ flexGrow: 1 }}>
 			<AppBar
+				data-testid="app-bar"
 				position="fixed"
 				sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
 				style={{ background: "#2E3B55" }}
@@ -166,14 +172,17 @@ export default function PrimarySearchAppBar() {
 						sx={{ display: { xs: "none", sm: "block" } }}
 					>
 						<Button
+							data-testid="home-button"
 							component={Link}
-							to="/"
-							startIcon={<Avatar src={PactoIcon} />}
+							to="/feed"
+							startIcon={<Avatar src={PactoIcon} alt="Pacto Icon" />}
 						/>
 					</Typography>
-					<Search>
+					<Search
+						data-testid="search-bar"
+					>
 						<SearchIconWrapper>
-							<SearchIcon />
+							<SearchIcon data-testid="search-icon" />
 						</SearchIconWrapper>
 						<StyledInputBase
 							placeholder="Search…"
@@ -184,6 +193,7 @@ export default function PrimarySearchAppBar() {
 					<Box sx={{ flexGrow: 1 }} />
 					<Box sx={{ display: { xs: "none", md: "flex" } }}>
 						<IconButton
+							data-testid="profile-button"
 							size="large"
 							edge="end"
 							aria-label="account of current user"
@@ -192,11 +202,12 @@ export default function PrimarySearchAppBar() {
 							onClick={handleProfileMenuOpen}
 							color="inherit"
 						>
-							<AccountCircle />
+							<AccountCircle data-testid="account-circle" />
 						</IconButton>
 					</Box>
 					<Box sx={{ display: { xs: "flex", md: "none" } }}>
 						<IconButton
+							data-testid="mobile-menu-button"
 							size="large"
 							aria-label="show more"
 							aria-controls={mobileMenuId}
@@ -204,7 +215,7 @@ export default function PrimarySearchAppBar() {
 							onClick={handleMobileMenuOpen}
 							color="inherit"
 						>
-							<MoreIcon />
+							<MoreIcon data-testid="more-button" />
 						</IconButton>
 					</Box>
 				</Toolbar>
