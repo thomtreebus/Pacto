@@ -48,6 +48,7 @@ const isUniEmail = async (email) => {
 // POST /signup
 module.exports.signupPost = async (req, res) => {
 	const { firstName, lastName, uniEmail, password } = req.body;
+	const processedEmail = uniEmail.toLowerCase()
 	let errorField = null;
 
 	try {
@@ -63,11 +64,11 @@ module.exports.signupPost = async (req, res) => {
 		// Check if the provided email is associated with a domain in the university API.
 		const universityJson = await ApiCache(process.env.UNIVERSITY_API);
 
-		const userDomain = uniEmail.split('@')[1];
+		const userDomain = processedEmail.split('@')[1];
 		const entry = await universityJson.filter(uni => uni["domains"].includes(userDomain));
-		if (!entry) {
+		if (entry.length == 0) {
 			errorField = "uniEmail";
-			throw Error("Domain " + userDomain + " is not associated with a valid UK university");
+			throw Error("Email not associated with a UK university");
 		}
 
 		// Convert array of 1 item to the item
@@ -81,7 +82,7 @@ module.exports.signupPost = async (req, res) => {
 		}
 		// We don't include the user in the university users list until they verify their email.
 
-		const user = await User.create({ firstName, lastName, uniEmail, password:hashedPassword, university });
+		const user = await User.create({ firstName, lastName, uniEmail:processedEmail, password:hashedPassword, university });
 
 		// Generate verification string and send to user's email
 		await handleVerification(uniEmail, user._id);

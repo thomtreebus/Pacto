@@ -29,19 +29,13 @@ const UserSchema = mongoose.Schema({
     required: false,
     validate: [
       {validator: isEmail , msg: "Provide a valid email format"},
-      {validator: isLowerCase, msg: "Provide lowercase email"},
     ],
-    lowercase: [true, "Provide lowercase email"]
   },
   uniEmail: {
-    // Email must be @xxx.ac.uk
     type: String,
     required: [true, 'Provide the email'],
-    unique: true,
-    validate: [
-      {validator: isEmail , msg: "Provide a valid email format"},
-      {validator: isLowerCase, msg: "Provide lowercase email"},
-    ],
+    unique: true
+    // Validated in post route
   },
   password: {
     type: String,

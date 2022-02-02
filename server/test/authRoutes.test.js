@@ -24,6 +24,8 @@ const VERIFY_SUCCESS_RESPONSE_TEXT = "Success! You may now close this page."; //
 
 // post signup magic values
 const REAL_UNI_EMAIL = "aaron.monte@kcl.ac.uk";
+const NON_UNI_EMAIL_MESSAGE = "Email not associated with a UK university";
+const INVALID_PASSWORD_MESSAGE = "Password does not meet requirements";
 
 // global helpers and magic values
 const TEST_USER_EMAIL = "pac.to@kcl.ac.uk";
@@ -328,6 +330,7 @@ describe("Authentication routes", () => {
 					"Users validation failed: lastName: Provide the last name"
 				);
 			});
+
 			it("contains numbers", async () => {
 				await isInvalidCredentials(
 					"Kolling",
@@ -337,6 +340,7 @@ describe("Authentication routes", () => {
 					"Users validation failed: lastName: Provide lastName without number"
 				);
 			});
+
 			it("longer than 64 characters", async () => {
 				await isInvalidCredentials(
 					"Kolling",
@@ -346,36 +350,43 @@ describe("Authentication routes", () => {
 					"Users validation failed: lastName: Provide lastName shorter than 16 characters"
 				);
 			});
-		})
-		describe("reject incorrect email due to: ", () => {
-			it(" blank email", async () => {
+		});
+
+		describe("reject incorrect email as: ", () => {
+			it("email is blank", async () => {
 				await isInvalidCredentials(
 					"Kolling",
 					"Smith",
 					"",
 					"Password123",
-					"Users validation failed: uniEmail: Provide the email"
+					NON_UNI_EMAIL_MESSAGE,
+					"uniEmail"
 				);
 			});
+
 			it("non uni email", async () => {
 				await isInvalidCredentials(
 					"Kolling",
 					"Kolling",
 					"kolling.smith@example.com",
 					"Password123",
-					"Users validation failed: uniEmail: Provide a uni email"
+					NON_UNI_EMAIL_MESSAGE,
+					"uniEmail"
 				);
 			});
+
 			it("invalid email format", async () => {
 				await isInvalidCredentials(
 					"Kolling",
 					"Smith",
 					"kolling.smith",
 					"Password123",
-					"Users validation failed: uniEmail: Provide a valid email format"
+					NON_UNI_EMAIL_MESSAGE,
+					"uniEmail"
 				);
 			});
-			it("email exists", async () => {
+
+			it("email not unqiue", async () => {
 				await isInvalidCredentials(
 					"Kolling",
 					"Smith",
@@ -383,17 +394,9 @@ describe("Authentication routes", () => {
 					"Password123",
 					"Email already exists"
 				);
-			});
-			it("emails contains uppercase", async () => {
-				await isInvalidCredentials(
-					"Kolling",
-					"Smith",
-					"kolling.Smith@kekw.ac.uk",
-					"Password123",
-					"Users validation failed: uniEmail: Provide lowercase email"
-				);
-			});
+			})
 		});
+
 		it("accepts valid input", async () => {
 			await isValidCredentials(
 				"Kolling",
@@ -402,6 +405,16 @@ describe("Authentication routes", () => {
 				"Password123",
 			);
 		});
+
+		it("handles upper case", async () => {
+			await isValidCredentials(
+				"Kolling",
+				"Smith",
+				REAL_UNI_EMAIL.toUpperCase(),
+				"Password123",
+			);
+		});
+
 		describe("reject password due to: ", () => {
 			it("blank password", async () => {
 				await isInvalidCredentials(
@@ -409,7 +422,7 @@ describe("Authentication routes", () => {
 					"Smith",
 					REAL_UNI_EMAIL,
 					"",
-					"Password does not meet requirements",
+					INVALID_PASSWORD_MESSAGE,
 					"password"
 				);
 			});
@@ -420,57 +433,62 @@ describe("Authentication routes", () => {
 					"Smith",
 					REAL_UNI_EMAIL,
 					"a".repeat(3000),
-					"Password does not meet requirements",
+					INVALID_PASSWORD_MESSAGE,
 					"password"
 				);
 			});
+
 			it("password too short", async () => {
 				await isInvalidCredentials(
 					"Kolling",
 					"Smith",
 					REAL_UNI_EMAIL,
 					"a".repeat(4),
-					"Password does not meet requirements",
+					INVALID_PASSWORD_MESSAGE,
 					"password"
 				);
 			});
+
 			it("password does not contain number", async () => {
 				await isInvalidCredentials(
 					"Kolling",
 					"Smith",
 					REAL_UNI_EMAIL,
 					"Password",
-					"Password does not meet requirements",
+					INVALID_PASSWORD_MESSAGE,
 					"password"
 				);
 			});
+
 			it("password does not contain capital letter", async () => {
 				await isInvalidCredentials(
 					"Kolling",
 					"Smith",
 					REAL_UNI_EMAIL,
 					"passsword123",
-					"Password does not meet requirements",
+					INVALID_PASSWORD_MESSAGE,
 					"password"
 				);
 			});
+
 			it("password does not contain lower case character", async () => {
 				await isInvalidCredentials(
 					"Kolling",
 					"Smith",
 					REAL_UNI_EMAIL,
 					"PASSWORD123",
-					"Password does not meet requirements",
+					INVALID_PASSWORD_MESSAGE,
 					"password"
 				);
 			});
+
 			it("password does not contain number", async () => {
 				await isInvalidCredentials(
 					"Kolling",
 					"Smith",
 					REAL_UNI_EMAIL,
 					"Password",
-					"Password does not meet requirements",
+					INVALID_PASSWORD_MESSAGE,
 					"password"
 				);
 			});
