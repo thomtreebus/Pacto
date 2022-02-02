@@ -21,7 +21,7 @@ const drawerWidth = 240;
 
 export default function SideBar() {
 	const history = useHistory();
-	const [selectedIndex, setSelectedIndex] = React.useState(1);
+	const [selectedIndex, setSelectedIndex] = React.useState(0);
 
 	const handleListItemClick = (event, index, path) => {
 		setSelectedIndex(index);
@@ -31,6 +31,7 @@ export default function SideBar() {
 	return (
 		<Box sx={{ display: "flex" }}>
 			<Drawer
+				data-testid="sidebar-drawer"
 				variant="permanent"
 				sx={{
 					width: drawerWidth,
@@ -41,63 +42,67 @@ export default function SideBar() {
 					},
 				}}
 			>
-				<Toolbar />
+				<Toolbar data-testid="sidebar-toolbar"/>
 				<Box sx={{ overflow: "auto" }}>
-					<List>
+					<List data-testid="sidebar-profile-list">
 						<ListItem>
 							<ListItemIcon>
-								<Avatar alt="Placeholder" src={PactoIcon} />
+								<Avatar data-testid="sidebar-avatar" alt="Placeholder" src={PactoIcon} />
 							</ListItemIcon>
-							<ListItemText primary="Thom Treebus" />
+							<ListItemText data-testid="sidebar-user-name" primary="Thom Treebus" />
 						</ListItem>
 						<Divider />
 						<ListItem
 							button
+							data-testid="sidebar-feed"
 							key="Feed"
 							selected={selectedIndex === 0}
 							onClick={(event) => handleListItemClick(event, 0, "/feed")}
 						>
 							<ListItemIcon>
-								<FeedIcon />
+								<FeedIcon data-testid="sidebar-feed-icon"/>
 							</ListItemIcon>
 							<ListItemText primary="Feed" />
 						</ListItem>
 						<ListItem
 							button
+							data-testid="sidebar-hub"
 							key="University Hub"
 							selected={selectedIndex === 1}
 							onClick={(event) => handleListItemClick(event, 1, "/hub")}
 						>
 							<ListItemIcon>
-								<UniversityIcon />
+								<UniversityIcon data-testid="sidebar-hub-icon" />
 							</ListItemIcon>
 							<ListItemText primary="University Hub" />
 						</ListItem>
 						<ListItem
 							button
 							key="Pacts"
+							data-testid="sidebar-pacts"
 							selected={selectedIndex === 2}
 							onClick={(event) => handleListItemClick(event, 2, "/pacts")}
 						>
 							<ListItemIcon>
-								<PactIcon />
+								<PactIcon data-testid="sidebar-pacts-icon"/>
 							</ListItemIcon>
 							<ListItemText primary="Pacts" />
 						</ListItem>
 						<ListItem
 							button
+							data-testid="sidebar-friends"
 							key="Friends"
 							selected={selectedIndex === 3}
 							onClick={(event) => handleListItemClick(event, 3, "/friends")}
 						>
 							<ListItemIcon>
-								<FriendsIcon />
+								<FriendsIcon data-testid="sidebar-friends-icon"/>
 							</ListItemIcon>
 							<ListItemText primary="Friends" />
 						</ListItem>
 					</List>
 					<Divider />
-					<Typography sx={{ marginLeft: 10, marginTop: 1 }}>
+					<Typography data-testid="sidebar-mypacts-text" variant="p" sx={{ marginLeft: 10, marginTop: 1 }}>
 						My Pacts
 					</Typography>
 					<List>

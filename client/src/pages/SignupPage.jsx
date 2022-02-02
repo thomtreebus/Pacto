@@ -10,13 +10,12 @@ import Container from "@mui/material/Container";
 import Icon from '../assets/pacto-logo.ico';
 
 export default function SignupPage() {
-
 	const [passwordError, setPasswordError] = React.useState('');
 
 	const handleSubmit = async (event) => {
 		event.preventDefault();
 		const data = new FormData(event.currentTarget);
-		
+
 		setPasswordError('')
 
 		if (data.get("password") != data.get("confirmPassword")){
