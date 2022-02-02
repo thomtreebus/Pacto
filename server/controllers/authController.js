@@ -18,7 +18,7 @@ const createToken = (id) => {
   });
 };
 
-
+// Helper function returns to give us errors as a json object.
 const handleFieldErrors = (err) => {
   let fieldErrors = {};
   if (err.code === 11000) {
@@ -26,7 +26,6 @@ const handleFieldErrors = (err) => {
     // unique constraint is last checked for mongo, so we return here early.
     return fieldErrors;
   }
-
   if (err.message.includes('Users validation failed')) {
     Object.values(err.errors).forEach(({ properties }) => {
       fieldErrors[properties.path] = properties.message;
@@ -35,6 +34,8 @@ const handleFieldErrors = (err) => {
   return fieldErrors;
 }
 
+
+// helper function to decide whether a password is valid.
 const validPassword = (password) => {
   const validator = (new passwordValidator())
     .is().min(8)

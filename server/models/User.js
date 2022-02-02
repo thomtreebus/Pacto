@@ -16,11 +16,13 @@ const isUniEmail = async (email) => {
   return found
 };
 
+// function returns true if it contains no numbers
 const containsNoNumbers = (str) => {
   const regex = /^[^0-9]+$/;
   return regex.test(str);
 };
 
+// function returns true if it contains no uppercase characters.
 const isLowerCase = (str) => {
   return str === str.toLowerCase();
 }
