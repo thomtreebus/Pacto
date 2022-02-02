@@ -12,6 +12,12 @@ app.use(express.json());
 app.use(cookieParser());
 
 // Routes
+const pactRoute = require("./routes/pact");
+app.use("/pact", pactRoute);
+app.use("/pacts", pactRoute);
+
+const uniRoute = require("./routes/university");
+app.use("/university", uniRoute);
 
 const authRoute = require("./routes/auth");
 app.use("/", authRoute);
