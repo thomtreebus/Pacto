@@ -1,10 +1,12 @@
 import Login from "./pages/LoginPage";
 import SignUp from "./pages/SignupPage";
 import BaseLayout from "./layouts/BaseLayout";
+import AppBarLayout from "./layouts/AppBarLayout";
 import Landing from "./pages/LandingPage";
 import Feed from "./pages/Feed";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { CssBaseline } from "@mui/material";
+import Profile from "./pages/Profile";
 
 function App() {
 	return (
@@ -19,6 +21,11 @@ function App() {
 				</Route>
 				<Route exact path="/signup">
 					<SignUp />
+				</Route>
+				<Route exact path="/profile">
+					<AppBarLayout>
+						<Profile />
+					</AppBarLayout>
 				</Route>
 
 				<Route path="*">

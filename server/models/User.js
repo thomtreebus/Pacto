@@ -35,7 +35,7 @@ const UserSchema = Schema({
     type: String,
     required: false
   },
-  active: { // This stores whether the user's email has been verified.
+  active: { // Stores whether the user's email has been verified.
     type: Boolean,
     required: true,
     default: false
