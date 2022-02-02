@@ -13,13 +13,13 @@ const UniversitySchema = mongoose.Schema({
   },
 
   users: [{
-    type = Schema.Types.ObjectId,
-    ref = 'User'
+    type: Schema.Types.ObjectId,
+    ref: 'User'
   }],
 
   pacts: [{
-    type = Schema.Types.ObjectId,
-    ref = 'Pact'
+    type: Schema.Types.ObjectId,
+    ref: 'Pact'
   }],
 
 });
