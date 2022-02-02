@@ -13,6 +13,19 @@ const PactSchema = mongoose.Schema({
     ref: 'University',
     required: true
   },
+
+  category: {
+    type: String,
+    enum: ["society", "subject", "module", "other"],
+    required: true,
+    default: "other"
+  },
+
+  description: {
+    type: String,
+    required: true,
+    default: "A Pact that doesn't know what it wants to be..."
+  },
   
   members: [{
     type: Schema.Types.ObjectId,
