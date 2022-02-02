@@ -21,6 +21,9 @@ const MISSING_CODE = "Code query empty.";
 const INVALID_CODE = "Invalid or expired code.";
 const VERIFY_SUCCESS_RESPONSE_TEXT = "Success! You may now close this page."; // recall this is a special case
 
+// post signup magic values
+const REAL_UNI_EMAIL = "aaron.monte@kcl.ac.uk";
+
 // global helpers and magic values
 const TEST_USER_EMAIL = "pac.to@kcl.ac.uk";
 const generateTestUser = async () => {
@@ -237,5 +240,224 @@ describe("Authentication routes", () => {
 			expect(response.body.errors[0].message).toBe("You have to login");
 			expect(response.body.errors.length).toBe(1);
 		});
-	});
-});
+
+	describe("POST /signup", () => {
+		beforeEach(async () => {
+			const user = await generateTestUser();
+			user.active = true;
+			await user.save();
+		});
+
+		async function isInvalidCredentials(firstName, lastName, uniEmail, password, msg = INCORRECT_CREDENTIALS) {
+			const response = await supertest(app)
+				.post("/signup")
+				.send({
+					firstName,
+					lastName,
+					uniEmail,
+					password,
+				})
+				.expect(400);
+
+			expect(response.body.message).toBe(null);
+			expect(response.body.errors[0].field).toBe(null);
+			expect(response.body.errors[0].message).toBe(msg);
+			expect(response.body.errors.length).toBe(1);
+		}
+
+		async function isValidCredentials(firstName, lastName, uniEmail, password) {
+			const response = await supertest(app)
+				.post("/signup")
+				.send({
+					firstName,
+					lastName,
+					uniEmail,
+					password,
+				})
+				.expect(201);
+			expect(response.body.message).toBeDefined();
+			expect(response.body.errors.length).toBe(0);
+		}
+
+		describe("reject firstName due to: ", () => {
+			it("blank", async () => {
+				await isInvalidCredentials(
+					"",
+					"Smith",
+					REAL_UNI_EMAIL,
+					"Password123",
+					"Users validation failed: firstName: Provide the first name"
+				);
+			});
+			it("contains numbers", async () => {
+				await isInvalidCredentials(
+					"123Kolling",
+					"Smith",
+					REAL_UNI_EMAIL,
+					"Password123",
+					"Users validation failed: firstName: Provide firstName without number"
+				);
+			});
+			it("longer than 64 characters", async () => {
+				await isInvalidCredentials(
+					"Kolling".repeat(300),
+					"Smith",
+					REAL_UNI_EMAIL,
+					"Password123",
+					"Users validation failed: firstName: Provide firstName shorter than 16 characters"
+				);
+			});
+
+		})
+
+		describe("reject lastName due to: ", () => {
+			it("blank", async () => {
+				await isInvalidCredentials(
+					"Kolling",
+					"",
+					REAL_UNI_EMAIL,
+					"Password123",
+					"Users validation failed: lastName: Provide the last name"
+				);
+			});
+			it("contains numbers", async () => {
+				await isInvalidCredentials(
+					"Kolling",
+					"123Smith",
+					REAL_UNI_EMAIL,
+					"Password123",
+					"Users validation failed: lastName: Provide lastName without number"
+				);
+			});
+			it("longer than 64 characters", async () => {
+				await isInvalidCredentials(
+					"Kolling",
+					"Smith".repeat(300),
+					REAL_UNI_EMAIL,
+					"Password123",
+					"Users validation failed: lastName: Provide lastName shorter than 16 characters"
+				);
+			});
+		})
+		describe("reject incorrect email due to: ", () => {
+			it(" blank email", async () => {
+				await isInvalidCredentials(
+					"Kolling",
+					"Smith",
+					"",
+					"Password123",
+					"Users validation failed: uniEmail: Provide the email"
+				);
+			});
+			it("non uni email", async () => {
+				await isInvalidCredentials(
+					"Kolling",
+					"Kolling",
+					"kolling.smith@example.com",
+					"Password123",
+					"Users validation failed: uniEmail: Provide a uni email"
+				);
+			});
+			it("invalid email format", async () => {
+				await isInvalidCredentials(
+					"Kolling",
+					"Smith",
+					"kolling.smith",
+					"Password123",
+					"Users validation failed: uniEmail: Provide a valid email format"
+				);
+			});
+			it("email exists", async () => {
+				await isInvalidCredentials(
+					"Kolling",
+					"Smith",
+					"pac.to@kcl.ac.uk",
+					"Password123",
+					"Email already exists"
+				);
+			});
+			it("emails contains uppercase", async () => {
+				await isInvalidCredentials(
+					"Kolling",
+					"Smith",
+					"kolling.Smith@kekw.ac.uk",
+					"Password123",
+					"Users validation failed: uniEmail: Provide lowercase email"
+				);
+			});
+		});
+		it("accepts valid input", async () => {
+			await isValidCredentials(
+				"Kolling",
+				"Smith",
+				REAL_UNI_EMAIL,
+				"Password123",
+			);
+		});
+		describe("reject password due to: ", () => {
+			it("blank password", async () => {
+				await isInvalidCredentials(
+					"Kolling",
+					"Smith",
+					REAL_UNI_EMAIL,
+					"",
+					"Password does not meet requirements"
+				);
+			});
+
+			it("password too long", async () => {
+				await isInvalidCredentials(
+					"Kolling",
+					"Smith",
+					REAL_UNI_EMAIL,
+					"a".repeat(3000),
+					"Password does not meet requirements"
+				);
+			});
+			it("password too short", async () => {
+				await isInvalidCredentials(
+					"Kolling",
+					"Smith",
+					REAL_UNI_EMAIL,
+					"a".repeat(4),
+					"Password does not meet requirements"
+				);
+			});
+			it("password does not contain number", async () => {
+				await isInvalidCredentials(
+					"Kolling",
+					"Smith",
+					REAL_UNI_EMAIL,
+					"Password",
+					"Password does not meet requirements"
+				);
+			});
+			it("password does not contain capital letter", async () => {
+				await isInvalidCredentials(
+					"Kolling",
+					"Smith",
+					REAL_UNI_EMAIL,
+					"passsword123",
+					"Password does not meet requirements"
+				);
+			});
+			it("password does not contain lower case character", async () => {
+				await isInvalidCredentials(
+					"Kolling",
+					"Smith",
+					REAL_UNI_EMAIL,
+					"PASSWORD123",
+					"Password does not meet requirements"
+				);
+			});
+			it("password does not contain number", async () => {
+				await isInvalidCredentials(
+					"Kolling",
+					"Smith",
+					REAL_UNI_EMAIL,
+					"Password",
+					"Password does not meet requirements"
+				);
+			});
+		});
+	});})});
