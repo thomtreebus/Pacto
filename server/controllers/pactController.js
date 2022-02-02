@@ -24,7 +24,7 @@ module.exports.pactsGet = async (req, res) => {
 			throw Error("User not authenticated");
 		}
 
-		const pacts = Pact.find({ university });
+		const pacts = await Pact.find({ university });
 
 		res.status(200).json(jsonResponse(pacts, []));
 	} 
@@ -43,7 +43,7 @@ module.exports.pactGet = async (req, res) => {
 			throw Error("User not authenticated");
 		}
 
-		const pact = Pact.findOne({ university, _id:req.params.id });
+		const pact = await Pact.findOne({ university, _id:req.params.id });
 
 		if (!pact){
 			status = 404;

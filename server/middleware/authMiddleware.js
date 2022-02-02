@@ -15,6 +15,11 @@ const checkAuthenticated = (req, res, next) => {
       else {
         let user = await User.findById(decodedToken.id);
         req.user = user;
+
+        if(!user.active){
+          throw Error("User has not verified their email")
+        }
+
         next();
       }
     });
