@@ -7,6 +7,7 @@ import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { CssBaseline } from "@mui/material";
 import PrivateRoute from "./components/PrivateRoute";
 import AuthRoute from "./components/AuthRoute";
+import UniversityHubPage from "./pages/UniversityHubPage";
 
 function App() {
 	return (
@@ -32,6 +33,9 @@ function App() {
 							<PrivateRoute exact path="/feed">
 								<h1>Feed</h1>
 								<Feed />
+							</PrivateRoute>
+							<PrivateRoute exact path="/hub">
+								<UniversityHubPage/>
 							</PrivateRoute>
 							<PrivateRoute path="*">
 								<h1>Not Found Page</h1>

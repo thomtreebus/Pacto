@@ -10,17 +10,19 @@ export default function BaseLayout({children}) {
   return (
     <>
       <AppBar />
+      <Box sx={{display:'flex', alignItems: "center"}}>
       <SideBar />
       <Box sx={{
 						my: 8,
-						mx: 4,
             display: "flex",
 						flexDirection: "column",
-            alignItems: "center"
-					}}>
+            alignItems: "center",
+            flex: "1",
+      }}>
         {children}
       </Box>
-      
+      <SideBar temp />
+      </Box>
     </>
     
   );
