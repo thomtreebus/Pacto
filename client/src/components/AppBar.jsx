@@ -73,7 +73,6 @@ export default function PrimarySearchAppBar() {
 		const response = await fetch(`${process.env.REACT_APP_URL}/logout`, {
 			credentials: "include",
 		});
-		const data = await response.json();
 		setIsAuthenticated(false);
 		history.push('login');
 	};

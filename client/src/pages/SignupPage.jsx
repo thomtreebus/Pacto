@@ -8,18 +8,15 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import Icon from '../assets/pacto-logo.ico';
-import { useAuth } from "../providers/AuthProvider";
 
 export default function SignupPage() {
-	const { setIsAuthenticated } = useAuth();
-	const history = useHistory();
 
 	const handleSubmit = async (event) => {
 		event.preventDefault();
 		const data = new FormData(event.currentTarget);
 
 		
-		const response = await fetch(`${process.env.REACT_APP_URL}/signup`, {
+		await fetch(`${process.env.REACT_APP_URL}/signup`, {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",
