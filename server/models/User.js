@@ -33,7 +33,8 @@ const UserSchema = mongoose.Schema({
   },
   university : {
     type: Schema.Types.ObjectId,
-    ref: 'Univeristy'
+    ref: 'Univeristy',
+    required: true
   }
 });
 
