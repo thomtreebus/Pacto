@@ -1,9 +1,10 @@
-const User = require("../models/User");
-const EmailVerificationCode = require("../models/EmailVerificationCode");
-const { handleVerification } = require("../helpers/emailHandlers");
-const jwt = require("jsonwebtoken");
-const bcrypt = require("bcrypt");
-const { jsonResponse, jsonError } = require("../helpers/responseHandlers");
+const User = require('../models/User');
+const EmailVerificationCode = require('../models/EmailVerificationCode');
+const { handleVerification } = require('../helpers/emailHandlers');
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
+const { jsonResponse, jsonError } = require('../helpers/responseHandlers');
+const passwordValidator = require('password-validator');
 const { async } = require("crypto-random-string");
 
 // Magic numbers
@@ -19,26 +20,67 @@ const createToken = (id) => {
 
 module.exports.createToken = createToken;
 
+// Helper function returns to give us errors as a json object.
+const handleFieldErrors = (err) => {
+  let fieldErrors = {};
+  if (err.code === 11000) {
+    fieldErrors.uniEmail = 'Email already exists';
+    // unique constraint is last checked for mongo, so we return here early.
+    return fieldErrors;
+  }
+  if (err.message.includes('Users validation failed')) {
+    Object.values(err.errors).forEach(({ properties }) => {
+      fieldErrors[properties.path] = properties.message;
+    });
+  }
+  return fieldErrors;
+}
+
+
+// helper function to decide whether a password is valid.
+const validPassword = (password) => {
+  const validator = (new passwordValidator())
+    .is().min(8)
+    .is().max(64)
+    .has().uppercase()
+    .has().lowercase()
+    .has().digits(1);
+  return validator.validate(password)
+}
+
 // POST /signup
 module.exports.signupPost = async (req, res) => {
 	const { firstName, lastName, uniEmail, password } = req.body;
 
-	try {
-		// Hash password
-		const salt = await bcrypt.genSalt(SALT_ROUNDS);
-		const hashedPassword = await bcrypt.hash(password, salt);
+  if (validPassword(password)){
+    try {
+      // Hash password
+      const salt = await bcrypt.genSalt(SALT_ROUNDS);
+      const hashedPassword = await bcrypt.hash(password, salt);
 
-		const user = await User.create({ firstName, lastName, uniEmail, password: hashedPassword });
+      const user = await User.create({ firstName, lastName, uniEmail, password:hashedPassword });
 
-		// Generate verification string and send to user's email
-		await handleVerification(uniEmail, user._id);
+      // Generate verification string and send to user's email
+      await handleVerification(uniEmail, user._id);
 
-		res.status(201).json(jsonResponse(null, []));
-	} 
-  catch (err) {
-		res.status(400).json(jsonResponse(null, [jsonError(null, err.message)]));
-	}
-};
+      res.status(201).json(jsonResponse(null, []));
+    }
+    catch(err) {
+      const allErrors = handleFieldErrors(err);
+      let jsonErrors = [];
+      Object.entries(allErrors).forEach(([field, message]) =>{
+        jsonErrors.push(jsonError(field,message));
+      });
+      res.status(400).json(jsonResponse(null, jsonErrors));
+    }
+  }
+  else {
+    const invalidPasswordError = "Password does not meet requirements"
+    res.status(400).json(jsonResponse("password", [jsonError(null, invalidPasswordError)]));
+  }
+
+
+}
 
 // POST /login
 module.exports.loginPost = async (req, res) => {
@@ -66,7 +108,7 @@ module.exports.loginPost = async (req, res) => {
 		const token = createToken(user._id);
 		res.cookie("jwt", token, { httpOnly: true, maxAge: COOKIE_MAX_AGE * 1000 });
 		res.status(200).json(jsonResponse({ id: user._id }, []));
-	} 
+	}
   catch (err) {
 		res.status(400).json(jsonResponse(null, [jsonError(null, err.message)]));
 	}
@@ -97,7 +139,7 @@ module.exports.verifyGet = async (req, res) => {
 		const user = await User.findByIdAndUpdate(linker.userId, { active: true });
 		await linker.delete();
 		res.status(200).send("Success! You may now close this page.");
-	} 
+	}
   catch (err) {
 		res.status(400).json(jsonResponse(null, [jsonError(null, err.message)]));
 	}

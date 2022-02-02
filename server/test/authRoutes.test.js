@@ -21,6 +21,13 @@ const MISSING_CODE = "Code query empty.";
 const INVALID_CODE = "Invalid or expired code.";
 const VERIFY_SUCCESS_RESPONSE_TEXT = "Success! You may now close this page."; // recall this is a special case
 
+// post signup magic values
+const REAL_UNI_EMAIL = "aaron.monte@kcl.ac.uk";
+const FIRST_NAME = "John";
+const LAST_NAME = "Doe";
+const PASSWORD = "Password123"
+
+
 // global helpers and magic values
 const TEST_USER_EMAIL = "pac.to@kcl.ac.uk";
 const generateTestUser = async () => {
@@ -142,7 +149,7 @@ describe("Authentication routes", () => {
 			const token = createToken(user._id);
       const response = await supertest(app)
 				.get("/logout")
-        .set("Cookie", [`jwt=${token}`])	
+        .set("Cookie", [`jwt=${token}`])
 				.expect(Cookies.set({name: "jwt", options: ["max-age"]}));
 
 			expect(response.statusCode).toBe(200);
@@ -211,6 +218,229 @@ describe("Authentication routes", () => {
 			isResponseUnsuccessful(responseAfterSuccess);
 			expect(user.active).toBe(true);
 		});
+	});
+
+	describe("POST /signup", () => {
+		beforeEach(async () => {
+			const user = await generateTestUser();
+			user.active = true;
+			await user.save();
+		});
+
+		async function isInvalidCredentials(firstName, lastName, uniEmail, password, msg = INCORRECT_CREDENTIALS) {
+			const response = await supertest(app)
+				.post("/signup")
+				.send({
+					firstName,
+					lastName,
+					uniEmail,
+					password,
+				})
+				.expect(400);
+
+			let msgExists= false
+			Object.values(response.body.errors).forEach(({message}) =>{
+				if(message.includes(msg)){msgExists = true}
+			});
+			expect(msgExists).toBe(true);
+			expect(response.body.errors.length).toBe(1);
+		}
+
+		async function isValidCredentials(firstName, lastName, uniEmail, password) {
+			const response = await supertest(app)
+				.post("/signup")
+				.send({
+					firstName,
+					lastName,
+					uniEmail,
+					password,
+				})
+				.expect(201);
+			expect(response.body.message).toBeDefined();
+			expect(response.body.errors.length).toBe(0);
+		}
+
+		describe("reject firstName due to: ", () => {
+			it("blank", async () => {
+				await isInvalidCredentials(
+					"",
+					LAST_NAME,
+					REAL_UNI_EMAIL,
+					PASSWORD,
+					"Provide the first name"
+				);
+			});
+			it("contains numbers", async () => {
+				await isInvalidCredentials(
+					"123"+FIRST_NAME,
+					LAST_NAME,
+					REAL_UNI_EMAIL,
+					PASSWORD,
+					"Provide firstName without number"
+				);
+			});
+			it("longer than 64 characters", async () => {
+				await isInvalidCredentials(
+					FIRST_NAME.repeat(300),
+					LAST_NAME,
+					REAL_UNI_EMAIL,
+					PASSWORD,
+					"Provide firstName shorter than 16 characters"
+				);
+			});
+
+		})
+
+		describe("reject lastName due to: ", () => {
+			it("blank", async () => {
+				await isInvalidCredentials(
+					FIRST_NAME,
+					"",
+					REAL_UNI_EMAIL,
+					PASSWORD,
+					"Provide the last name"
+				);
+			});
+			it("contains numbers", async () => {
+				await isInvalidCredentials(
+					FIRST_NAME,
+					"123"+LAST_NAME,
+					REAL_UNI_EMAIL,
+					PASSWORD,
+					"Provide lastName without number"
+				);
+			});
+			it("longer than 64 characters", async () => {
+				await isInvalidCredentials(
+					FIRST_NAME,
+					LAST_NAME.repeat(300),
+					REAL_UNI_EMAIL,
+					PASSWORD,
+					"Provide lastName shorter than 16 characters"
+				);
+			});
+		})
+		describe("reject incorrect email due to: ", () => {
+			it(" blank email", async () => {
+				await isInvalidCredentials(
+					FIRST_NAME,
+					LAST_NAME,
+					"",
+					PASSWORD,
+					"Provide the email"
+				);
+			});
+			it("non uni email", async () => {
+				await isInvalidCredentials(
+					FIRST_NAME,
+					FIRST_NAME,
+					"john.doe@example.com",
+					PASSWORD,
+					"Provide a uni email"
+				);
+			});
+			it("invalid email format", async () => {
+				await isInvalidCredentials(
+					FIRST_NAME,
+					LAST_NAME,
+					"john.doe",
+					PASSWORD,
+					"Provide a valid email format"
+				);
+			});
+			it("email exists", async () => {
+				await isInvalidCredentials(
+					FIRST_NAME,
+					LAST_NAME,
+					"pac.to@kcl.ac.uk",
+					PASSWORD,
+					"Email already exists"
+				);
+			});
+			it("emails contains uppercase", async () => {
+				await isInvalidCredentials(
+					FIRST_NAME,
+					LAST_NAME,
+					"kolling.Smith@kekw.ac.uk",
+					PASSWORD,
+					"Provide lowercase email"
+				);
+			});
+		});
+		it("accepts valid input", async () => {
+			await isValidCredentials(
+				FIRST_NAME,
+				LAST_NAME,
+				REAL_UNI_EMAIL,
+				PASSWORD,
+			);
+		});
+		describe("reject password due to: ", () => {
+			it("blank password", async () => {
+				await isInvalidCredentials(
+					FIRST_NAME,
+					LAST_NAME,
+					REAL_UNI_EMAIL,
+					"",
+					"Password does not meet requirements"
+				);
+			});
+
+			it("password too long", async () => {
+				await isInvalidCredentials(
+					FIRST_NAME,
+					LAST_NAME,
+					REAL_UNI_EMAIL,
+					"a".repeat(3000),
+					"Password does not meet requirements"
+				);
+			});
+			it("password too short", async () => {
+				await isInvalidCredentials(
+					FIRST_NAME,
+					LAST_NAME,
+					REAL_UNI_EMAIL,
+					"a".repeat(4),
+					"Password does not meet requirements"
+				);
+			});
+			it("password does not contain number", async () => {
+				await isInvalidCredentials(
+					FIRST_NAME,
+					LAST_NAME,
+					REAL_UNI_EMAIL,
+					"Password",
+					"Password does not meet requirements"
+				);
+			});
+			it("password does not contain capital letter", async () => {
+				await isInvalidCredentials(
+					FIRST_NAME,
+					LAST_NAME,
+					REAL_UNI_EMAIL,
+					"passsword123",
+					"Password does not meet requirements"
+				);
+			});
+			it("password does not contain lower case character", async () => {
+				await isInvalidCredentials(
+					FIRST_NAME,
+					LAST_NAME,
+					REAL_UNI_EMAIL,
+					"PASSWORD",
+					"Password does not meet requirements"
+				);
+			});
+			it("password does not contain number", async () => {
+				await isInvalidCredentials(
+					FIRST_NAME,
+					LAST_NAME,
+					REAL_UNI_EMAIL,
+					"Password",
+					"Password does not meet requirements"
+				);
+			});
+		})
 	});
 
 	describe("GET /me", () => {
