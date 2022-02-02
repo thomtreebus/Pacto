@@ -256,7 +256,7 @@ describe("Authentication routes", () => {
 			await user.save();
 		});
 
-		async function isInvalidCredentials(firstName, lastName, uniEmail, password, msg = INCORRECT_CREDENTIALS) {
+		async function isInvalidCredentials(firstName, lastName, uniEmail, password, msg = INCORRECT_CREDENTIALS, field=null) {
 			const response = await supertest(app)
 				.post("/signup")
 				.send({
@@ -268,7 +268,7 @@ describe("Authentication routes", () => {
 				.expect(400);
 
 			expect(response.body.message).toBe(null);
-			expect(response.body.errors[0].field).toBe(null);
+			expect(response.body.errors[0].field).toBe(field);
 			expect(response.body.errors[0].message).toBe(msg);
 			expect(response.body.errors.length).toBe(1);
 		}
@@ -409,7 +409,8 @@ describe("Authentication routes", () => {
 					"Smith",
 					REAL_UNI_EMAIL,
 					"",
-					"Password does not meet requirements"
+					"Password does not meet requirements",
+					"password"
 				);
 			});
 
@@ -419,7 +420,8 @@ describe("Authentication routes", () => {
 					"Smith",
 					REAL_UNI_EMAIL,
 					"a".repeat(3000),
-					"Password does not meet requirements"
+					"Password does not meet requirements",
+					"password"
 				);
 			});
 			it("password too short", async () => {
@@ -428,7 +430,8 @@ describe("Authentication routes", () => {
 					"Smith",
 					REAL_UNI_EMAIL,
 					"a".repeat(4),
-					"Password does not meet requirements"
+					"Password does not meet requirements",
+					"password"
 				);
 			});
 			it("password does not contain number", async () => {
@@ -437,7 +440,8 @@ describe("Authentication routes", () => {
 					"Smith",
 					REAL_UNI_EMAIL,
 					"Password",
-					"Password does not meet requirements"
+					"Password does not meet requirements",
+					"password"
 				);
 			});
 			it("password does not contain capital letter", async () => {
@@ -446,7 +450,8 @@ describe("Authentication routes", () => {
 					"Smith",
 					REAL_UNI_EMAIL,
 					"passsword123",
-					"Password does not meet requirements"
+					"Password does not meet requirements",
+					"password"
 				);
 			});
 			it("password does not contain lower case character", async () => {
@@ -455,7 +460,8 @@ describe("Authentication routes", () => {
 					"Smith",
 					REAL_UNI_EMAIL,
 					"PASSWORD123",
-					"Password does not meet requirements"
+					"Password does not meet requirements",
+					"password"
 				);
 			});
 			it("password does not contain number", async () => {
@@ -464,7 +470,8 @@ describe("Authentication routes", () => {
 					"Smith",
 					REAL_UNI_EMAIL,
 					"Password",
-					"Password does not meet requirements"
+					"Password does not meet requirements",
+					"password"
 				);
 			});
 		});
