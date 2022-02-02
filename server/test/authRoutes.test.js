@@ -7,6 +7,7 @@ const bcrypt = require("bcrypt");
 const app = require("../app");
 const Cookies = require("expect-cookies");
 const { createToken } = require("../controllers/authController");
+const University = require("../models/University");
 
 dotenv.config();
 
@@ -27,14 +28,21 @@ const REAL_UNI_EMAIL = "aaron.monte@kcl.ac.uk";
 // global helpers and magic values
 const TEST_USER_EMAIL = "pac.to@kcl.ac.uk";
 const generateTestUser = async () => {
+	const uni = await University.create( { name: "kcl", domains: ["kcl.ac.uk"] });
+
 	const salt = await bcrypt.genSalt(SALT_ROUNDS);
 	const hashedPassword = await bcrypt.hash("Password123", salt);
+
 	const user = await User.create({
 		firstName: "pac",
 		lastName: "to",
 		uniEmail: TEST_USER_EMAIL,
 		password: hashedPassword,
+		university: uni
 	});
+
+	await uni.users.push(user);
+	await uni.save();
 	return user;
 };
 
@@ -240,7 +248,7 @@ describe("Authentication routes", () => {
 			expect(response.body.errors[0].message).toBe("You have to login");
 			expect(response.body.errors.length).toBe(1);
 		});
-
+	});
 	describe("POST /signup", () => {
 		beforeEach(async () => {
 			const user = await generateTestUser();
@@ -460,4 +468,5 @@ describe("Authentication routes", () => {
 				);
 			});
 		});
-	});})});
+	});
+});

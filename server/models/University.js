@@ -7,10 +7,10 @@ const UniversitySchema = mongoose.Schema({
     required: true
   },
   
-  domain: {
+  domains: [{
     type: String,
     required: true
-  },
+  }],
 
   users: [{
     type: Schema.Types.ObjectId,

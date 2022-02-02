@@ -1,21 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const { isEmail } = require('validator')
-const ApiCache = require('../helpers/ApiCache')
-
-const isUniEmail = async (email) => {
-  // only including .ac.uk domain
-  // const regex = /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9]+\.ac\.uk$/;
-  const res = await ApiCache("http://universities.hipolabs.com/search?country=United%20Kingdom");
-  const domains = res.flatMap(x => '@'+x['domains']);
-  let found = false;
-  for(let x=0; x< domains.length; x++){
-    if(email.includes(domains[x])){
-      found = true
-    }
-  }
-  return found
-};
 
 const containsNoNumbers = (str) => {
   const regex = /^[^0-9]+$/;
@@ -56,7 +41,6 @@ const UserSchema = mongoose.Schema({
     validate: [
       {validator: isEmail , msg: "Provide a valid email format"},
       {validator: isLowerCase, msg: "Provide lowercase email"},
-      {validator: isUniEmail, msg: "Provide a uni email"}
     ],
   },
   password: {
@@ -72,7 +56,7 @@ const UserSchema = mongoose.Schema({
     required: [true, 'Provide the active flag'],
     default: false
   },
-  university : {
+  university: {
     type: Schema.Types.ObjectId,
     ref: 'Univeristy',
     required: true

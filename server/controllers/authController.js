@@ -5,6 +5,9 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const { jsonResponse, jsonError } = require("../helpers/responseHandlers");
 const { async } = require("crypto-random-string");
+const ApiCache = require("../helpers/ApiCache");
+const University = require("../models/University");
+const passwordValidator = require('password-validator');
 
 // Magic numbers
 const COOKIE_MAX_AGE = 432000; // 432000 = 5 days
@@ -28,34 +31,65 @@ const validPassword = (password) => {
   return validator.validate(password)
 }
 
+const isUniEmail = async (email) => {
+  // only including .ac.uk domain
+  // const regex = /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9]+\.ac\.uk$/;
+  const res = await ApiCache(UNIVERSITY_API);
+  const domains = res.flatMap(x => '@'+x['domains']);
+  let found = false;
+  for(let x=0; x< domains.length; x++){
+    if(email.includes(domains[x])){
+      found = true
+    }
+  }
+  return found;
+};
+
 // POST /signup
 module.exports.signupPost = async (req, res) => {
 	const { firstName, lastName, uniEmail, password } = req.body;
+	let errorField = null;
 
-  if (validPassword(password)){
-    try {
-      // Hash password
-      const salt = await bcrypt.genSalt(SALT_ROUNDS);
-      const hashedPassword = await bcrypt.hash(password, salt);
+	try {
+		// Hash password
+		const salt = await bcrypt.genSalt(SALT_ROUNDS);
+		const hashedPassword = await bcrypt.hash(password, salt);
 
-      const user = await User.create({ firstName, lastName, uniEmail, password:hashedPassword });
+		if (!validPassword(password)){
+			errorField = "password";
+			throw Error("Password does not meet requirements");
+		}
 
-      // Generate verification string and send to user's email
-      await handleVerification(uniEmail, user._id);
+		// Check if the provided email is associated with a domain in the university API.
+		const universityJson = await ApiCache(process.env.UNIVERSITY_API);
+		const entry = await universityJson.filter(uni => uni["domains"].includes(uniEmail.split('@')[1]));
+		if (entry) {
+			errorField = "uniEmail";
+			throw Error("Email is not associated with a valid UK university");
+		}
 
-      res.status(201).json(jsonResponse(null, []));
-    }
-    catch(err) {
-      res.status(400).json(jsonResponse(null, [jsonError(null, err.message)]));
-    }
-  }
-  else {
-    const invalidPasswordError = "Password does not meet requirements"
-    res.status(400).json(jsonResponse(null, [jsonError(null, invalidPasswordError)]));
-  }
+		// Convert array of 1 item to the item
+		const uniDetails = entry[0];
 
+		// Get the relevant university from the database.
+		// If it doesn't exist: make one.
+		let university = await University.findOne({ domains: uniDetails["domains"] });
+		if (university) {
+			university = await University.create({ name:uniDetails["name"], domains:uniDetails["domains"] });
+		}
+		// We don't include the user in the university users list until they verify their email.
 
-}
+		const user = await User.create({ firstName, lastName, uniEmail, password:hashedPassword, university });
+
+		// Generate verification string and send to user's email
+		await handleVerification(uniEmail, user._id);
+
+		res.status(201).json(jsonResponse(null, []));
+	}
+	catch(err) {
+		res.status(400).json(jsonResponse(null, [jsonError(errorField, err.message)]));
+	}
+};
 
 // POST /login
 module.exports.loginPost = async (req, res) => {
@@ -111,7 +145,10 @@ module.exports.verifyGet = async (req, res) => {
 			throw Error("Invalid or expired code.");
 		}
 
+		// Add user to their university
 		const user = await User.findByIdAndUpdate(linker.userId, { active: true });
+		await University.findByIdAndUpdate(user.university, {$push: {users: user}});
+
 		await linker.delete();
 		res.status(200).send("Success! You may now close this page.");
 	} 
