@@ -1,25 +1,14 @@
 import React from 'react';
-import { useState } from 'react';
-import AppBar from '../components/AppBar';
-
-import { useHistory, useParams } from "react-router-dom";
+import { useAuth } from '../providers/AuthProvider';
 
 export default function Profile() {
 
-  const { id } = useParams();
-  const { data: user, error, isPending };
-  const history = useHistory();
-
-  const []
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log('update profile!');
-    console.log()
-  }
+  const { user, setUser, setIsAuthenticated, IsAuthenticated } = useAuth();
+  console.log(user);
 
   return (
     <h1>Profile</h1>
+    // <h1>{user.firstName}</h1>
   );
     
 }

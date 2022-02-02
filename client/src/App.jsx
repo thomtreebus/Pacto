@@ -24,16 +24,15 @@ function App() {
 				<AuthRoute exact path="/signup">
 					<SignUp />
 				</AuthRoute>
-				<Route exact path="/profile">
-					<AppBarLayout>
-						<Profile />
-					</AppBarLayout>
-				</Route>
 				
 				<PrivateRoute path="*">
 					<BaseLayout>
 						<Switch>
-							<PrivateRoute exact path="/feed">
+							<PrivateRoute path="/profile">
+								<h2>Profile</h2>
+								<Profile />
+							</PrivateRoute>
+							<PrivateRoute path="/feed">
 								<h1>Feed</h1>
 								<Feed />
 							</PrivateRoute>
