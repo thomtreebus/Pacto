@@ -31,9 +31,6 @@ function App() {
 				<Route path="*">
 					<BaseLayout>
 					<Switch>
-						<Route exact path="/profile">
-							<h1>Profile Page</h1>
-						</Route>
 						<Route exact path="/feed">
 							<h1>Feed</h1>
 							<Feed />
