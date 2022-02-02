@@ -252,7 +252,6 @@ describe("SignupPage Tests", () => {
 					);
 				})
 			);
-
 			const buttonElement = await screen.findByRole("button", {
 				name: "Sign Up",
 			});

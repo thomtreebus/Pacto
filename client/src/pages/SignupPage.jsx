@@ -2,23 +2,27 @@ import * as React from "react";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
-import { Link, useHistory } from "react-router-dom";
+import { Link } from "react-router-dom";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import Icon from '../assets/pacto-logo.ico';
-import { useAuth } from "../providers/AuthProvider";
 
 export default function SignupPage() {
-	const { setIsAuthenticated } = useAuth();
-	const history = useHistory();
+
+	const [passwordError, setPasswordError] = React.useState('');
 
 	const handleSubmit = async (event) => {
 		event.preventDefault();
 		const data = new FormData(event.currentTarget);
-
 		
+		setPasswordError('')
+
+		if (data.get("password") != data.get("confirmPassword")){
+			setPasswordError("Passwords do not match!")
+			return;
+		}
 		const response = await fetch(`${process.env.REACT_APP_URL}/signup`, {
 			method: "POST",
 			headers: {
@@ -26,13 +30,20 @@ export default function SignupPage() {
 			},
 			credentials: "include",
 			body: JSON.stringify({
-				firstName: data.get("Pac"),
-				lasttName: data.get("To"),
-				uniEmail: data.get("Pacto@uni.ac.uk"),
-				password: data.get("Password123"),
-				confirmPassword: data.get("Password123"),
+				firstName: data.get("firstName"),
+				lastName: data.get("lastname"),
+				uniEmail: data.get("email"),
+				password: data.get("password"),
 			}),
 		});
+
+		const json = await response.json();
+		console.log(1, json);
+		
+
+		if (response.status !== 200) {
+			return;
+		}
 
 		// setIsAuthenticated(true);		
 	};
@@ -88,9 +99,11 @@ export default function SignupPage() {
 							<TextField
 								required
 								fullWidth
-								name="password"
+								name="confirmPassword"
 								label="Confirm Password"
 								type="password"
+								error={passwordError.length != 0}
+								helperText={passwordError}
 								data-testid="confirm-password-input"
 							/>
 						</Grid>
