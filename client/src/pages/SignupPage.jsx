@@ -9,19 +9,34 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import Icon from '../assets/pacto-logo.ico';
 
+
+
 export default function SignupPage() {
-	const [passwordError, setPasswordError] = React.useState('');
+	
+	const [passwordConfirmError, setPasswordConfirmError] = React.useState('');
+	const [apiFirstNameError, setApiFirstNameError] = React.useState('');
+	const [apiLastNameError, setApiLastNameError] = React.useState('');
+	const [apiUniEmailError, setApiUniEmailError] = React.useState('');
+	const [apiPasswordError, setApiPasswordError] = React.useState('');
 
 	const handleSubmit = async (event) => {
 		event.preventDefault();
 		const data = new FormData(event.currentTarget);
 
-		setPasswordError('')
+		setApiFirstNameError('');
+		setApiLastNameError('');
+		setApiUniEmailError('');
+		setApiPasswordError('');
+		setPasswordConfirmError('');
 
 		if (data.get("password") != data.get("confirmPassword")){
-			setPasswordError("Passwords do not match!")
-			return;
+			setPasswordConfirmError("Passwords do not match!");
 		}
+		console.log(1, data.get("firstName"));
+		console.log(2, data.get("lastName"));
+		console.log(3, data.get("email"));
+		console.log(4, data.get("password"));
+
 		const response = await fetch(`${process.env.REACT_APP_URL}/signup`, {
 			method: "POST",
 			headers: {
@@ -30,15 +45,35 @@ export default function SignupPage() {
 			credentials: "include",
 			body: JSON.stringify({
 				firstName: data.get("firstName"),
-				lastName: data.get("lastname"),
+				lastName: data.get("lastName"),
 				uniEmail: data.get("email"),
 				password: data.get("password"),
 			}),
 		});
 
 		const json = await response.json();
-		console.log(1, json);
+		console.log(json)
+		console.log(typeof json)
 		
+		Object.values(json['errors']).forEach(err => {
+			const field = err["field"];
+			const message = err["message"];
+
+			if (field == "firstName"){
+				setApiFirstNameError(message)
+			}
+			if (field == "lastName"){
+				setApiLastNameError(message)
+			}
+			if (field == "uniEmail"){
+				setApiUniEmailError(message)
+			}
+			if (field == "password"){
+				setApiPasswordError(message)
+			}
+
+		});
+
 
 		if (response.status !== 200) {
 			return;
@@ -69,11 +104,20 @@ export default function SignupPage() {
 								required
 								fullWidth
 								label="First Name"
+								error={apiFirstNameError.length != 0}
+								helperText={apiFirstNameError}
 								autoFocus
 							/>
 						</Grid>
 						<Grid item xs={12} sm={6}>
-							<TextField required fullWidth label="Last Name" name="lastName" />
+							<TextField 
+								required 
+								fullWidth 
+								label="Last Name"
+								name="lastName" 
+								error={apiLastNameError.length != 0}
+								helperText={apiLastNameError}
+							/>
 						</Grid>
 						<Grid item xs={12}>
 							<TextField
@@ -81,7 +125,9 @@ export default function SignupPage() {
 								fullWidth
 								label="University Email Address"
 								name="email"
+								error={apiUniEmailError.length != 0}
 								autoComplete="email"
+								helperText={apiUniEmailError}
 							/>
 						</Grid>
 						<Grid item xs={12}>
@@ -92,6 +138,8 @@ export default function SignupPage() {
 								label="Password"
 								type="password"
 								data-testid="initial-password-input"
+								error={apiPasswordError.length != 0}
+								helperText={apiPasswordError}
 							/>
 						</Grid>
 						<Grid item xs={12}>
@@ -101,8 +149,8 @@ export default function SignupPage() {
 								name="confirmPassword"
 								label="Confirm Password"
 								type="password"
-								error={passwordError.length != 0}
-								helperText={passwordError}
+								error={passwordConfirmError.length != 0}
+								helperText={passwordConfirmError}
 								data-testid="confirm-password-input"
 							/>
 						</Grid>
