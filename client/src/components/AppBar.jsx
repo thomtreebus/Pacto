@@ -70,7 +70,7 @@ export default function PrimarySearchAppBar() {
 	const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
 
 	const handleLogout = async () => {
-		const response = await fetch(`${process.env.REACT_APP_URL}/logout`, {
+		await fetch(`${process.env.REACT_APP_URL}/logout`, {
 			credentials: "include",
 		});
 		setIsAuthenticated(false);
