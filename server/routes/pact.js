@@ -4,7 +4,7 @@ const pactController = require("../controllers/pactController");
 const { checkAuthenticated } = require("../middleware/authMiddleware");
 
 router.post("/pact", checkAuthenticated, pactController.pactPost);
-router.get("/pact", checkAuthenticated, ()=>{});
+router.get("/pact/:id", checkAuthenticated, pactController.pactGet);
 router.get("/pacts", checkAuthenticated, pactController.pactsGet);
 
 module.exports = router;
