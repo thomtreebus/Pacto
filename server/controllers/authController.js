@@ -53,6 +53,7 @@ module.exports.signupPost = async (req, res) => {
 	const { firstName, lastName, uniEmail, password } = req.body;
 
   if (validPassword(password)){
+	const { firstName, lastName, uniEmail, password } = req.body;
     try {
       // Hash password
       const salt = await bcrypt.genSalt(SALT_ROUNDS);
@@ -62,8 +63,13 @@ module.exports.signupPost = async (req, res) => {
 
       // Generate verification string and send to user's email
       await handleVerification(uniEmail, user._id);
-
-      res.status(201).json(jsonResponse(null, []));
+			if (validPassword(password)) {
+				res.status(201).json(jsonResponse(null, []));
+			}
+			else {
+				const invalidPasswordError = "Password does not meet requirements";
+				res.status(400).json(jsonResponse(null, [jsonError("password", invalidPasswordError)]));
+			}
     }
     catch(err) {
       const allErrors = handleFieldErrors(err);
@@ -71,13 +77,12 @@ module.exports.signupPost = async (req, res) => {
       Object.entries(allErrors).forEach(([field, message]) =>{
         jsonErrors.push(jsonError(field,message));
       });
-      res.status(400).json(jsonResponse(null, jsonErrors));
+			if (!validPassword(password)) {
+				const invalidPasswordError = "Password does not meet requirements";
+				jsonErrors.push(jsonError("password", invalidPasswordError));
+			}
+			res.status(400).json(jsonResponse(null, jsonErrors));
     }
-  }
-  else {
-    const invalidPasswordError = "Password does not meet requirements"
-    res.status(400).json(jsonResponse(null, [jsonError("password", invalidPasswordError)]));
-  }
 
 
 }
