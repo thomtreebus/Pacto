@@ -4,21 +4,11 @@ import "@testing-library/jest-dom";
 import MockComponent from "./utils/MockComponent.jsx";
 import { rest } from "msw";
 import { setupServer } from "msw/node";
+import { Route } from "react-router-dom";
 
-const MockAppBar = () => {
-  return (
-    <MockComponent>
-      <AppBar />
-    </MockComponent>
-  );
-};
 
 describe("App Bar Tests", () => {
 
-  beforeEach(async () => {
-    render(<MockAppBar />);
-    await waitForElementToBeRemoved(() => screen.getByText("Loading"));
-  });
 
   const server = setupServer(
 		rest.get(`${process.env.REACT_APP_URL}/me`, (req, res, ctx) => {
@@ -33,8 +23,6 @@ describe("App Bar Tests", () => {
 		})
 	);
 
-  
-
 	beforeAll(() => {
 		server.listen();
 	});
@@ -46,6 +34,21 @@ describe("App Bar Tests", () => {
 	beforeEach(async () => {
 		server.resetHandlers();
 	});
+
+  beforeEach(async () => {
+    render(
+      <MockComponent>
+        <AppBar />
+        <Route exact path="/login">
+          <h1>Redirected to login</h1>
+        </Route>
+        <Route exact path="/feed">
+          <h1>Redirected to feed</h1>
+        </Route>
+      </MockComponent>
+      );
+    await waitForElementToBeRemoved(() => screen.getByText("Loading"));
+  });
 
   describe("Check elements are rendered", () => {
     it("should render the app bar element", () => {
@@ -101,50 +104,34 @@ describe("App Bar Tests", () => {
   });
 
   describe("Check interaction with elements", () => {
-    it("should log out the user when log out is pressed", () => {
-      const logoutItemElement = screen.getByTestId("logout-item");
+    it("should log out the user when log out is pressed", async () => {
+      const logoutItemElement = await screen.findByTestId("logout-item");
       fireEvent.click(logoutItemElement);
-      expect(window.location.pathname).toBe("/");
+      const redirectMessage = await screen.findByText(/Redirected to login/i);
+			expect(redirectMessage).toBeInTheDocument();
+      expect(window.location.pathname).toBe("/login");
     });
 
-    it("should redirect to home when the Pacto icon is pressed", () => {
+    it("should redirect to home when the Pacto icon is pressed",async () => {
       const buttonElement = screen.getByTestId("home-button");
       fireEvent.click(buttonElement);
-      expect(window.location.pathname).toBe("/");
+      const redirectMessage = await screen.findByText(/Redirected to feed/i);
+			expect(redirectMessage).toBeInTheDocument();
+      expect(window.location.pathname).toBe("/feed");
     });
 
     it("should open the profile menu when the icon button is pressed", () => {
       const iconButtonElement = screen.getByTestId("profile-button");
       fireEvent.click(iconButtonElement);
       const menuElement = screen.getByTestId("primary-search-account-menu");
-      expect(menuElement).toBeInTheDocument();
-    });
-
-    it("should close the profile menu when a menu item is pressed", () => { 
-      const iconButtonElement = screen.getByTestId("profile-button");
-      fireEvent.click(iconButtonElement);
-      const menuElement = screen.getByTestId("primary-search-account-menu");
-      expect(menuElement).toBeInTheDocument();
-      const profileItemElement = screen.getByTestId("profile-item");
-      fireEvent.click(profileItemElement);
-      !expect(menuElement).toBeInTheDocument();
+      expect(menuElement).toBeVisible();
     });
 
     it("should open the mobile menu when the icon button is pressed", () => {
       const iconButtonElement = screen.getByTestId("mobile-menu-button");
       fireEvent.click(iconButtonElement);
       const menuElement = screen.getByTestId("primary-search-account-menu-mobile");
-      expect(menuElement).toBeInTheDocument();
-    });
-
-    it("should close the mobile menu when a menu item is pressed", () => { 
-      const iconButtonElement = screen.getByTestId("mobile-menu-button");
-      fireEvent.click(iconButtonElement);
-      const menuElement = screen.getByTestId("primary-search-account-menu-mobile");
-      expect(menuElement).toBeInTheDocument();
-      const profileItemElement = screen.getByTestId("profile-item-mobile");
-      fireEvent.click(profileItemElement);
-      !expect(menuElement).toBeInTheDocument();
+      expect(menuElement).toBeVisible();
     });
   });
 });

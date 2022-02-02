@@ -11,7 +11,7 @@ import Menu from "@mui/material/Menu";
 import SearchIcon from "@mui/icons-material/Search";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import MoreIcon from "@mui/icons-material/MoreVert";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import Button from "@mui/material/Button";
 import Divider from "@mui/material/Divider";
 import Avatar from "@mui/material/Avatar";
@@ -59,6 +59,8 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 export default function PrimarySearchAppBar() {
+  const history = useHistory() 
+
 	const { setIsAuthenticated } = useAuth();
 
 	const [anchorEl, setAnchorEl] = React.useState(null);
@@ -73,6 +75,7 @@ export default function PrimarySearchAppBar() {
 		});
 		const data = await response.json();
 		setIsAuthenticated(false);
+		history.push('login');
 	};
 
 	const handleProfileMenuOpen = (event) => {
@@ -171,7 +174,7 @@ export default function PrimarySearchAppBar() {
 						<Button
 							data-testid="home-button"
 							component={Link}
-							to="/"
+							to="/feed"
 							startIcon={<Avatar src={PactoIcon} alt="Pacto Icon" />}
 						/>
 					</Typography>

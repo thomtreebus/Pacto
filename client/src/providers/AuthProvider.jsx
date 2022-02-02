@@ -38,6 +38,12 @@ export default function AuthProvider({ children }) {
 
 	useEffect(() => {
 		fetchUser();
+		return () => {
+      setUser(null);
+			setError(null);
+			setIsLoading(false);
+			setIsAuthenticated(false);
+    };
 	}, []);
 
 	if (isLoading) {
