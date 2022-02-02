@@ -18,6 +18,23 @@ const createToken = (id) => {
   });
 };
 
+
+const handleFieldErrors = (err) => {
+  let fieldErrors = {};
+  if (err.code === 11000) {
+    fieldErrors.uniEmail = 'Email already exists';
+    // unique constraint is last checked for mongo, so we return here early.
+    return fieldErrors;
+  }
+
+  if (err.message.includes('Users validation failed')) {
+    Object.values(err.errors).forEach(({ properties }) => {
+      fieldErrors[properties.path] = properties.message;
+    });
+  }
+  return fieldErrors;
+}
+
 const validPassword = (password) => {
   const validator = (new passwordValidator())
     .is().min(8)
@@ -46,12 +63,17 @@ module.exports.signupPost = async (req, res) => {
       res.status(201).json(jsonResponse(null, []));
     }
     catch(err) {
-      res.status(400).json(jsonResponse(null, [jsonError(null, err.message)]));
+      const allErrors = handleFieldErrors(err);
+      let jsonErrors = [];
+      Object.entries(allErrors).forEach(([field, message]) =>{
+        jsonErrors.push(jsonError(field,message));
+      });
+      res.status(400).json(jsonResponse(null, jsonErrors));
     }
   }
   else {
     const invalidPasswordError = "Password does not meet requirements"
-    res.status(400).json(jsonResponse(null, [jsonError(null, invalidPasswordError)]));
+    res.status(400).json(jsonResponse("password", [jsonError(null, invalidPasswordError)]));
   }
 
 

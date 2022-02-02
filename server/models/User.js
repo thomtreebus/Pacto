@@ -73,18 +73,6 @@ const UserSchema = mongoose.Schema({
   }
 });
 
-
-// Duplicate email check
-// https://stackoverflow.com/questions/38945608/custom-error-messages-with-mongoose
-// Responses are outdated, error name is now MongoServerError
-UserSchema.post('save', function(error, doc, next) {
-  if (error.name === 'MongoServerError' && error.code === 11000) {
-    next(new Error('Email already exists'));
-  } else {
-    next(error);
-  }
-});
-
 const User = mongoose.model('Users', UserSchema);
 
 module.exports = User;

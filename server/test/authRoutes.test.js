@@ -201,9 +201,11 @@ describe("Authentication routes", () => {
 				})
 				.expect(400);
 
-			expect(response.body.message).toBe(null);
-			expect(response.body.errors[0].field).toBe(null);
-			expect(response.body.errors[0].message).toBe(msg);
+			let msgExists= false
+			Object.values(response.body.errors).forEach(({message}) =>{
+				if(message.includes(msg)){msgExists = true}
+			});
+			expect(msgExists).toBe(true);
 			expect(response.body.errors.length).toBe(1);
 		}
 
@@ -228,7 +230,7 @@ describe("Authentication routes", () => {
 					"Smith",
 					REAL_UNI_EMAIL,
 					"Password123",
-					"Users validation failed: firstName: Provide the first name"
+					"Provide the first name"
 				);
 			});
 			it("contains numbers", async () => {
@@ -237,7 +239,7 @@ describe("Authentication routes", () => {
 					"Smith",
 					REAL_UNI_EMAIL,
 					"Password123",
-					"Users validation failed: firstName: Provide firstName without number"
+					"Provide firstName without number"
 				);
 			});
 			it("longer than 64 characters", async () => {
@@ -246,7 +248,7 @@ describe("Authentication routes", () => {
 					"Smith",
 					REAL_UNI_EMAIL,
 					"Password123",
-					"Users validation failed: firstName: Provide firstName shorter than 16 characters"
+					"Provide firstName shorter than 16 characters"
 				);
 			});
 
@@ -259,7 +261,7 @@ describe("Authentication routes", () => {
 					"",
 					REAL_UNI_EMAIL,
 					"Password123",
-					"Users validation failed: lastName: Provide the last name"
+					"Provide the last name"
 				);
 			});
 			it("contains numbers", async () => {
@@ -268,7 +270,7 @@ describe("Authentication routes", () => {
 					"123Smith",
 					REAL_UNI_EMAIL,
 					"Password123",
-					"Users validation failed: lastName: Provide lastName without number"
+					"Provide lastName without number"
 				);
 			});
 			it("longer than 64 characters", async () => {
@@ -277,7 +279,7 @@ describe("Authentication routes", () => {
 					"Smith".repeat(300),
 					REAL_UNI_EMAIL,
 					"Password123",
-					"Users validation failed: lastName: Provide lastName shorter than 16 characters"
+					"Provide lastName shorter than 16 characters"
 				);
 			});
 		})
@@ -288,7 +290,7 @@ describe("Authentication routes", () => {
 					"Smith",
 					"",
 					"Password123",
-					"Users validation failed: uniEmail: Provide the email"
+					"Provide the email"
 				);
 			});
 			it("non uni email", async () => {
@@ -297,7 +299,7 @@ describe("Authentication routes", () => {
 					"Kolling",
 					"kolling.smith@example.com",
 					"Password123",
-					"Users validation failed: uniEmail: Provide a uni email"
+					"Provide a uni email"
 				);
 			});
 			it("invalid email format", async () => {
@@ -306,7 +308,7 @@ describe("Authentication routes", () => {
 					"Smith",
 					"kolling.smith",
 					"Password123",
-					"Users validation failed: uniEmail: Provide a valid email format"
+					"Provide a valid email format"
 				);
 			});
 			it("email exists", async () => {
@@ -324,7 +326,7 @@ describe("Authentication routes", () => {
 					"Smith",
 					"kolling.Smith@kekw.ac.uk",
 					"Password123",
-					"Users validation failed: uniEmail: Provide lowercase email"
+					"Provide lowercase email"
 				);
 			});
 		});
