@@ -66,6 +66,7 @@ export default function LoginPage() {
 							/>
 
             <TextField
+							data-testid='category-select'
               alignItems='center'
               margin="normal"
               required
@@ -77,16 +78,16 @@ export default function LoginPage() {
               label="Select"
               helperText="What type of Pact is this?"
             >
-              <MenuItem value="Subjects">
+              <MenuItem value="Subject" data-testid="subject-item">
                 Subject
               </MenuItem>
-              <MenuItem value="Modules">
+              <MenuItem value="Module" data-testid="module-item">
                 Module
               </MenuItem>
-              <MenuItem value="Societies">
+              <MenuItem value="Society" data-testid="society-item">
                 Society
               </MenuItem>
-              <MenuItem value="Other">
+              <MenuItem value="Other" data-testid="other-item">
                 Other
               </MenuItem>
             </TextField>
