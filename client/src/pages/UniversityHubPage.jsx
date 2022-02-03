@@ -12,77 +12,12 @@ import SearchIcon from "@mui/icons-material/Search";
 import CloseIcon from "@mui/icons-material/Close";
 import AddIcon from "@mui/icons-material/Add";
 import { useHistory } from "react-router-dom";
+import tempPacts from "../tests/utils/testPacts";
 
 export default function UniversityHubPage() {
 	const [search, setSearch] = useState("");
 	const [category, setCategory] = useState("all");
 	const history = useHistory();
-
-	const tempPacts = [
-		{
-			name: "Pact1",
-			description: "No description provided",
-			category: "subject",
-			tags: ["apple", "ball"],
-			members: ["jeff", "jhon"],
-		},
-		{
-			name: "Pact2",
-			description: "description retracted",
-			category: "module",
-			tags: ["cat", "dog"],
-			members: ["jane"],
-		},
-		{
-			name: "Pact3",
-			description: "No description provided",
-			category: "other",
-			tags: ["elephant", "fish"],
-			members: ["alice", "bob", "charlie"],
-		},
-		{
-			name: "Pact1",
-			description: "No description provided",
-			category: "society",
-			tags: ["apple", "ball"],
-			members: ["jeff", "jhon"],
-		},
-		{
-			name: "Pact2",
-			description: "description retracted",
-			category: "subject",
-			tags: ["cat", "dog"],
-			members: ["jane"],
-		},
-		{
-			name: "Pact3",
-			description: "No description provided",
-			category: "other",
-			tags: ["elephant", "fish"],
-			members: ["alice", "bob", "charlie"],
-		},
-		{
-			name: "Pact1",
-			description: "No description provided",
-			category: "society",
-			tags: ["apple", "ball"],
-			members: ["jeff", "jhon"],
-		},
-		{
-			name: "Pact2",
-			description: "description retracted",
-			category: "subject",
-			tags: ["cat", "dog"],
-			members: ["jane"],
-		},
-		{
-			name: "Pact3",
-			description: "No description provided",
-			category: "other",
-			tags: ["elephant", "fish"],
-			members: ["alice", "bob", "charlie"],
-		},
-	];
 
 	const handleChange = (category, newCategory) => {
 		setCategory(newCategory);
