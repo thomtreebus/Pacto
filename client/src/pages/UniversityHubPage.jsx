@@ -1,13 +1,18 @@
-import { Box, Typography, TextField, Grid } from "@mui/material";
+import { Box, Typography, Grid, Card } from "@mui/material";
 import Tab from "@mui/material/Tab";
 import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import background from "../assets/hub-background.jpg";
 import { Divider } from "@mui/material";
 import PactCard from "../components/PactCard";
+import InputBase from "@mui/material/InputBase";
+import IconButton from "@mui/material/IconButton";
+import SearchIcon from "@mui/icons-material/Search";
+import CloseIcon from "@mui/icons-material/Close";
 
 export default function UniversityHubPage() {
+	const [search, setSearch] = useState("");
 	const [category, setCategory] = useState("all");
 
 	const tempPacts = [
@@ -111,22 +116,32 @@ export default function UniversityHubPage() {
 					Find your pact
 				</Typography>
 				<Typography variant="h5" sx={{ fontWeight: "bold" }}>
-					There's a pact for everything if not make one...
+					There's a pact for everything if not, make one...
 				</Typography>
-				<TextField
-					id="outlined-basic"
-					label="Search"
-					variant="filled"
-					size="small"
+				<Card
 					sx={{
-						backgroundColor: "white",
-						textShadow: "none",
-						margin: "10px",
-						width: "300px",
-						borderRadius: "5px",
-						overflow: "hidden",
+						p: "2px 4px",
+						marginTop: "10px",
+						display: "flex",
+						alignItems: "center",
+						width: 400,
 					}}
-				/>
+				>
+					<InputBase
+						sx={{ ml: 1, flex: 1 }}
+						placeholder="Search Pacts"
+						value={search}
+						onChange={(e) => setSearch(e.target.value)}
+					/>
+					<IconButton
+						sx={{ p: "10px" }}
+						disabled={!search}
+						color="primary"
+						onClick={() => setSearch("")}
+					>
+						{search ? <CloseIcon /> : <SearchIcon />}
+					</IconButton>
+				</Card>
 			</Box>
 			<Divider sx={{ marginTop: "15px" }} />
 			<Box>
@@ -148,10 +163,10 @@ export default function UniversityHubPage() {
 				</TabContext>
 			</Box>
 			<Grid container spacing={2}>
-				{tempPacts.map((pact) => (
+				{tempPacts.map((pact, index) => (
 					<PactCard
 						pact={pact}
-						id={pact}
+						key={index}
 						joined={Math.floor(Math.random() * 10) > 4}
 					/>
 				))}
