@@ -2,7 +2,7 @@ import { Box, Typography, Grid, Card } from "@mui/material";
 import Tab from "@mui/material/Tab";
 import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
-import { useState, useRef } from "react";
+import { useState } from "react";
 import background from "../assets/hub-background.jpg";
 import { Divider } from "@mui/material";
 import PactCard from "../components/PactCard";
@@ -19,14 +19,14 @@ export default function UniversityHubPage() {
 		{
 			name: "Pact1",
 			description: "No description provided",
-			category: "subjects",
+			category: "subject",
 			tags: ["apple", "ball"],
 			members: ["jeff", "jhon"],
 		},
 		{
 			name: "Pact2",
 			description: "description retracted",
-			category: "courses",
+			category: "module",
 			tags: ["cat", "dog"],
 			members: ["jane"],
 		},
@@ -40,14 +40,14 @@ export default function UniversityHubPage() {
 		{
 			name: "Pact1",
 			description: "No description provided",
-			category: "subjects",
+			category: "society",
 			tags: ["apple", "ball"],
 			members: ["jeff", "jhon"],
 		},
 		{
 			name: "Pact2",
 			description: "description retracted",
-			category: "courses",
+			category: "subject",
 			tags: ["cat", "dog"],
 			members: ["jane"],
 		},
@@ -61,14 +61,14 @@ export default function UniversityHubPage() {
 		{
 			name: "Pact1",
 			description: "No description provided",
-			category: "subjects",
+			category: "society",
 			tags: ["apple", "ball"],
 			members: ["jeff", "jhon"],
 		},
 		{
 			name: "Pact2",
 			description: "description retracted",
-			category: "courses",
+			category: "subject",
 			tags: ["cat", "dog"],
 			members: ["jane"],
 		},
@@ -157,6 +157,7 @@ export default function UniversityHubPage() {
 							<Tab label="All" value="all" />
 							<Tab label="Subjects" value="subjects" />
 							<Tab label="Modules" value="modules" />
+							<Tab label="Socities" value="socities" />
 							<Tab label="Other" value="other" />
 						</TabList>
 					</Box>
