@@ -1,4 +1,4 @@
-import { Box, Typography, Grid, Card } from "@mui/material";
+import { Box, Typography, Grid, Card, Fab } from "@mui/material";
 import Tab from "@mui/material/Tab";
 import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
@@ -10,10 +10,13 @@ import InputBase from "@mui/material/InputBase";
 import IconButton from "@mui/material/IconButton";
 import SearchIcon from "@mui/icons-material/Search";
 import CloseIcon from "@mui/icons-material/Close";
+import AddIcon from "@mui/icons-material/Add";
+import { useHistory } from "react-router-dom";
 
 export default function UniversityHubPage() {
 	const [search, setSearch] = useState("");
 	const [category, setCategory] = useState("all");
+	const history = useHistory();
 
 	const tempPacts = [
 		{
@@ -172,6 +175,13 @@ export default function UniversityHubPage() {
 					/>
 				))}
 			</Grid>
+			<Fab
+				aria-label="add"
+				sx={{ position: "absolute", top: 75, right: 250 }}
+				onClick={() => history.push("/create-pact")}
+			>
+				<AddIcon />
+			</Fab>
 		</Box>
 	);
 }
