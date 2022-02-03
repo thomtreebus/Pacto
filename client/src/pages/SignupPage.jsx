@@ -10,9 +10,6 @@ import Container from "@mui/material/Container";
 import Icon from '../assets/pacto-logo.ico';
 import { useAuth } from "../providers/AuthProvider";
 
-
-
-
 export default function SignupPage() {
 	
 	const [passwordConfirmError, setPasswordConfirmError] = React.useState('');
@@ -74,26 +71,13 @@ export default function SignupPage() {
 
 		});
 
-		console.log(response.status)
-
 		if (response.status !== 201) {
 			return;
 		}
 
-		
 		history.push("/login");
 		
 	};
-	/*
-
-	{
-    "firstName": "asd",
-    "lastName": "asd",
-    "uniEmail": "asdasdsad@kcl.ac.uk",
-    "password": "Password123"
-}
-
-	*/
 
 	return (
 		<Container component="main" maxWidth="xs">
