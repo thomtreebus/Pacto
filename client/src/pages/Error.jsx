@@ -1,10 +1,8 @@
 import { Box, Typography } from "@mui/material";
-import React, { useEffect } from "react";
+import React from "react";
 
 export default function Loading({ error }) {
-	useEffect(() => {
-		console.error(error);
-	}, []);
+	console.error(error);
 
 	return (
 		<Box
