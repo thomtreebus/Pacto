@@ -12,17 +12,6 @@ export default function Profile() {
   console.log(user);
 
   return (
-    // <Container component="main" maxWidth="xs">
-		// 	<Box
-		// 		sx={{
-		// 			marginTop: 4,
-		// 			display: "flex",
-		// 			flexDirection: "column",
-		// 			alignItems: "center",
-		// 		}}>
-    //     <h1>{user.firstName} {user.lastName} </h1>
-		// 	</Box>
-		// </Container>
     <Grid container spacing={2} justify="center" justifyContent="center" alignItems="stretch">
       <Grid item direction="column" xs={4}>
         <h1>Hello</h1>
