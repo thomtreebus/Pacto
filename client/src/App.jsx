@@ -28,7 +28,6 @@ function App() {
 					<BaseLayout>
 						<Switch>
 							<PrivateRoute path="/profile">
-								<h2>Profile</h2>
 								<Profile />
 							</PrivateRoute>
 							<PrivateRoute path="/feed">
