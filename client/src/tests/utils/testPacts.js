@@ -2,7 +2,7 @@ const pacts = [
 	{
 		name: "Pact1",
 		description: "No description provided",
-		category: "subject",
+		category: "course",
 		tags: ["apple", "ball"],
 		members: ["jeff", "jhon"],
 	},
@@ -30,7 +30,7 @@ const pacts = [
 	{
 		name: "Pact2",
 		description: "description retracted",
-		category: "subject",
+		category: "course",
 		tags: ["cat", "dog"],
 		members: ["jane"],
 	},
@@ -51,7 +51,7 @@ const pacts = [
 	{
 		name: "Pact2",
 		description: "description retracted",
-		category: "subject",
+		category: "course",
 		tags: ["cat", "dog"],
 		members: ["jane"],
 	},

@@ -46,7 +46,7 @@ export default function UniversityHubPage() {
 					flexDirection: "column",
 					justifyContent: "center",
 					alignItems: "center",
-					textShadow: "1px 1px grey",
+					textShadow: "1px 1.5px #1a237e",
 					color: "white",
 				}}
 			>
@@ -93,7 +93,7 @@ export default function UniversityHubPage() {
 					>
 						<TabList onChange={handleChange} aria-label="lab API tabs example">
 							<Tab label="All" value="all" />
-							<Tab label="Subjects" value="subjects" />
+							<Tab label="Courses" value="courses" />
 							<Tab label="Modules" value="modules" />
 							<Tab label="Socities" value="socities" />
 							<Tab label="Other" value="other" />
