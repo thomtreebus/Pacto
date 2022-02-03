@@ -3,6 +3,7 @@ import SignUp from "./pages/SignupPage";
 import BaseLayout from "./layouts/BaseLayout";
 import Landing from "./pages/LandingPage";
 import Feed from "./pages/Feed";
+import CreatePact from "./pages/CreatePact";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { CssBaseline } from "@mui/material";
 import Profile from "./pages/Profile";
@@ -38,6 +39,9 @@ function App() {
 							</PrivateRoute>
 							<PrivateRoute exact path="/hub">
 								<UniversityHubPage/>
+							</PrivateRoute>
+							<PrivateRoute exact path="/create-pact">
+								<CreatePact/>
 							</PrivateRoute>
 							<PrivateRoute path="*">
 								<h1>Not Found Page</h1>
