@@ -45,7 +45,7 @@ describe("BaseLayout Tests", () => {
 	});
 
 	it("renders the component with the side bar", async () => {
-		const textElement = screen.getByText(/Feed/i);
-		expect(textElement).toBeInTheDocument();
+		const textElements = screen.getAllByText(/Feed/i);
+		expect(textElements[0]).toBeInTheDocument();
 	});
 });

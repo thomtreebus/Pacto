@@ -8,6 +8,7 @@ import { CssBaseline } from "@mui/material";
 import Profile from "./pages/Profile";
 import PrivateRoute from "./components/PrivateRoute";
 import AuthRoute from "./components/AuthRoute";
+import UniversityHubPage from "./pages/UniversityHubPage";
 
 function App() {
 	return (
@@ -33,6 +34,9 @@ function App() {
 							<PrivateRoute path="/feed">
 								<h1>Feed</h1>
 								<Feed />
+							</PrivateRoute>
+							<PrivateRoute exact path="/hub">
+								<UniversityHubPage/>
 							</PrivateRoute>
 							<PrivateRoute path="*">
 								<h1>Not Found Page</h1>
