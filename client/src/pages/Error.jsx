@@ -1,7 +1,7 @@
 import { Box, Typography } from "@mui/material";
 import React from "react";
 
-export default function Loading({ error }) {
+export default function Error({ error }) {
 	console.error(error);
 
 	return (
