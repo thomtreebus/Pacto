@@ -45,6 +45,9 @@ describe("App Bar Tests", () => {
         <Route exact path="/feed">
           <h1>Redirected to feed</h1>
         </Route>
+        <Route exact path="/create-pact">
+          <h1>Redirected to Create New Pact</h1>
+        </Route>
       </MockComponent>
       );
     await waitForElementToBeRemoved(() => screen.getByText("Loading"));
@@ -68,6 +71,11 @@ describe("App Bar Tests", () => {
       expect(searchElement).toBeInTheDocument();
       const searchIconElement = screen.getByTestId("search-icon");
       expect(searchIconElement).toBeInTheDocument();
+    });
+
+    it("should render the create new pact button", () => {
+      const buttonElement = screen.getByTestId("create-new-pact");
+      expect(buttonElement).toBeInTheDocument();
     });
   
     it("should render the profile button element", () => {
@@ -118,6 +126,14 @@ describe("App Bar Tests", () => {
       const redirectMessage = await screen.findByText(/Redirected to feed/i);
 			expect(redirectMessage).toBeInTheDocument();
       expect(window.location.pathname).toBe("/feed");
+    });
+
+    it("should link to Create New Pact page when its button is pressed", async () => {
+      const buttonElement = screen.getByTestId("create-new-pact");
+      fireEvent.click(buttonElement);
+      const redirectMessage = await screen.findByText(/Redirected to Create New Pact/i);
+			expect(redirectMessage).toBeInTheDocument();
+      expect(window.location.pathname).toBe("/create-pact");
     });
 
     it("should open the profile menu when the icon button is pressed", async () => {

@@ -190,6 +190,7 @@ export default function PrimarySearchAppBar() {
 					</Search>
 					<Box sx={{ flexGrow: 1 }} />
 					<Button
+						data-testid="create-new-pact"
 						component={Link}
 						to="/create-pact"
 						sx={{ my: 2, color: 'white', display: 'block' }}

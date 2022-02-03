@@ -78,13 +78,13 @@ export default function LoginPage() {
               helperText="What type of Pact is this?"
             >
               <MenuItem value="Subjects">
-                Subjects
+                Subject
               </MenuItem>
               <MenuItem value="Modules">
-                Modules
+                Module
               </MenuItem>
               <MenuItem value="Societies">
-                Societies
+                Society
               </MenuItem>
               <MenuItem value="Other">
                 Other
