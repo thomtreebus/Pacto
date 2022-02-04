@@ -1,9 +1,11 @@
 import React from 'react';
+import Axios from 'axios';
 import { useHistory } from "react-router-dom";
 import { useState } from "react";
 import { useAuth } from '../providers/AuthProvider';
 import Avatar from '@mui/material/Avatar';
 import Grid from '@mui/material/Grid';
+import { styled } from '@mui/material/styles';
 import Button from '@mui/material/Button';
 import Photo from '../assets/KC.jpeg';
 import Typography from '@mui/material/Typography';
@@ -11,10 +13,16 @@ import TextField from '@mui/material/TextField';
 import InputAdornment from '@mui/material/InputAdornment';
 import LocationIcon from '@mui/icons-material/LocationOn';
 import CourseIcon from '@mui/icons-material/School';
+import PhotoIcon from '@mui/icons-material/AddAPhoto';
 import InstagramIcon from '@mui/icons-material/Instagram';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import WhatsAppIcon from '@mui/icons-material/WhatsApp';
 import { Divider } from '@mui/material';
+
+
+const Input = styled('input')({
+  display: 'none',
+});
 
 export default function Profile() {
 
@@ -27,9 +35,24 @@ export default function Profile() {
   const [linkedin, setLinkedin] = useState(user.bio);
   const [instagram, setInstagram] = useState(user.bio);
   const [phone, setPhone] = useState(user.bio);
+  const [image, setImage] = useState(user.image.url);
   
 
   // console.log(user._id);
+
+  const uploadImage = () => {
+    console.log(image);
+    const data = new FormData();
+
+    data.append("file", image);
+    data.append("upload_preset", "n2obmbt1");
+
+    Axios.post(`https://api.cloudinary.com/v1_1/${process.env.CLOUDINARY_CLOUD_NAME}/image/upload`, data)
+      .then((res) => {
+        console.log(res)
+      });
+  }
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     // const data = new FormData(event.currentTarget);
@@ -66,10 +89,32 @@ export default function Profile() {
           src={Photo}
           variant="rounded"
           sx={{ width: "250px", height: "250px" }} />
+        
+        <label htmlFor="contained-button-file">
+          <Input
+            accept="image/*"
+            id="contained-button-file"
+            type="file"
+            onChange={(e) => {setImage(e.target.files[0])}} />
+            <Button
+              fullWidth
+              variant="contained"
+              component="span"
+              startIcon={<PhotoIcon />}
+              onClick={uploadImage}
+              sx={{
+                marginTop: 1
+              }}
+              >
+              Choose Photo
+            </Button>
+        </label>
+
         <TextField
           name="location"
           label="Location"
           variant="outlined"
+          fullWidth
           defaultValue={user.location}
           onChange={(e) => setLocation(e.target.value)}
           size="small"
