@@ -8,28 +8,32 @@ import Button from '@mui/material/Button';
 import Photo from '../assets/KC.jpeg';
 import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField';
-import Autocomplete from '@mui/material/Autocomplete';
 import InputAdornment from '@mui/material/InputAdornment';
 import LocationIcon from '@mui/icons-material/LocationOn';
 import CourseIcon from '@mui/icons-material/School';
 import InstagramIcon from '@mui/icons-material/Instagram';
-import FacebookIcon from '@mui/icons-material/Facebook';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import WhatsAppIcon from '@mui/icons-material/WhatsApp';
 import { Divider } from '@mui/material';
 
 export default function Profile() {
 
-  const { user, setUser, setIsAuthenticated, IsAuthenticated } = useAuth();
+  const { user } = useAuth();
   const history = useHistory();
 
   const [bio, setBio] = useState(user.bio);
+  const [location, setLocation] = useState(user.bio);
+  const [course, setCourse] = useState(user.bio);
+  const [linkedin, setLinkedin] = useState(user.bio);
+  const [instagram, setInstagram] = useState(user.bio);
+  const [phone, setPhone] = useState(user.bio);
+  
 
   // console.log(user._id);
   const handleSubmit = async (event) => {
     event.preventDefault();
     // const data = new FormData(event.currentTarget);
-    const data = { bio }
+    const data = { bio, location, course, linkedin, instagram, phone }
 
     await fetch(`${process.env.REACT_APP_URL}/users/${user._id}`, {
       method: "PUT",
@@ -67,6 +71,7 @@ export default function Profile() {
           label="Location"
           variant="outlined"
           defaultValue={user.location}
+          onChange={(e) => setLocation(e.target.value)}
           size="small"
           InputProps={{
           startAdornment: (
@@ -85,6 +90,7 @@ export default function Profile() {
           variant="outlined"
           size="small"
           defaultValue={user.course}
+          onChange={(e) => setCourse(e.target.value)}
           InputProps={{
           startAdornment: (
             <InputAdornment position="start">
@@ -109,6 +115,7 @@ export default function Profile() {
           variant="outlined"
           size="small"
           defaultValue={user.linkedin}
+          onChange={(e) => setLinkedin(e.target.value)}
           InputProps={{
           startAdornment: (
             <InputAdornment position="start">
@@ -125,6 +132,7 @@ export default function Profile() {
           variant="outlined"
           size="small"
           defaultValue={user.instagram}
+          onChange={(e) => setInstagram(e.target.value)}
           InputProps={{
           startAdornment: (
             <InputAdornment position="start">
@@ -140,7 +148,8 @@ export default function Profile() {
           name="instagram"
           variant="outlined"
           size="small"
-          defaultValue={user.instagram}
+          defaultValue={user.phone}
+          onChange={(e) => setPhone(e.target.value)}
           InputProps={{
           startAdornment: (
             <InputAdornment position="start">

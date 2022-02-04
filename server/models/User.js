@@ -61,6 +61,18 @@ const UserSchema = Schema({
       ref: 'User'
     }
   ],
+  instagram: {
+    type: String,
+    required: false
+  }, 
+  linkedin: {
+    type: String,
+    required: false
+  },
+  phone: {
+    type: String,
+    required: false
+  }
 
 
 });
