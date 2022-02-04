@@ -18,8 +18,11 @@ app.use(cookieParser());
 
 // Routes
 
-const authRoute = require("./routes/auth");
-app.use("/", authRoute);
+const authRoutes = require("./routes/auth");
+const userRoutes = require("./routes/users");
+
+app.use("/", authRoutes);
+app.use("/users", userRoutes)
 
 app.get("/ping", (req, res) => {
 	res.json({ ping: "pong" });

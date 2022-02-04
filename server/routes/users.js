@@ -1,10 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const catchAsync = require('../utils/catchAsync');
-const User = require('../models/user');
+const User = require('../models/User');
 const users = require('../controllers/users');
 
 
-router.route('/:id')
-  .put(catchAsync(users.updateProfile))
-  .delete(catchAsync(users.deleteUser));
+router.put("/:id", users.updateProfile);
+
+module.exports = router;

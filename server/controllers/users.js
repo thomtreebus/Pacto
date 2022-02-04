@@ -1,16 +1,16 @@
 const User = require('../models/User');
+const mongoose = require('mongoose');
 
 
 module.exports.updateProfile = async(req, res) => {
   const { id } = req.params; 
-  console.log(req.body);
-  const { firstName, lastName, personalEmail, course } = req.body;
 
   if (!mongoose.Types.ObjectId.isValid(id)) return res.status(404).send(`No user with id: ${id}`);
 
-  const user = await User.findByIdAndUpdate(id, { firstName, lastName, personalEmail, course });
-
-  req.flash('success', 'Successfully updated profile!');
+  const updatedUser = await User.findByIdAndUpdate(id, { ...req.body }).catch(error => {
+    return res.status(500).send(error);
+  });
+  console.log(updatedUser);
 
 }
 

@@ -1,4 +1,6 @@
 import React from 'react';
+import { useHistory } from "react-router-dom";
+import { useState } from "react";
 import { useAuth } from '../providers/AuthProvider';
 import Avatar from '@mui/material/Avatar';
 import Grid from '@mui/material/Grid';
@@ -19,17 +21,42 @@ import { Divider } from '@mui/material';
 export default function Profile() {
 
   const { user, setUser, setIsAuthenticated, IsAuthenticated } = useAuth();
-  
-  // const handleSubmit = async (event) => {
-  //   event.preventDefault();
-  //   const data = new FormData(event.currentTarget);
+  const history = useHistory();
 
-  //   await fetch(`${process.env.REACT_APP_URL}/${user.id}`)
-  // }
+  const [bio, setBio] = useState(user.bio);
+
+  // console.log(user._id);
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    // const data = new FormData(event.currentTarget);
+    const data = { bio }
+
+    await fetch(`${process.env.REACT_APP_URL}/users/${user._id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify(data)
+    }).then(() => {
+      console.log("Data ", JSON.stringify(data));
+      history.push('/profile');
+    });
+  
+  }
 
 
   return (
-    <Grid container p={4} spacing={2} justify="center" justifyContent="center" alignItems="stretch">
+    <Grid
+      component="form"
+      noValidate
+      onSubmit={handleSubmit}
+      container
+      p={4}
+      spacing={2}
+      justify="center"
+      justifyContent="center"
+      alignItems="stretch">
       <Grid item direction="column" xs={4}>
         <Avatar
           src={Photo}
@@ -137,6 +164,7 @@ export default function Profile() {
           multiline
           rows={6}
           defaultValue={user.bio}
+          onChange={(e) => setBio(e.target.value)}
           sx={{
             marginTop: 2,
             width: "100%"
@@ -145,7 +173,7 @@ export default function Profile() {
         <Button
           sx={{float: "right", marginTop: 30}}
           variant="contained"
-          // type="submit"
+          type="submit"
         >
           
           
