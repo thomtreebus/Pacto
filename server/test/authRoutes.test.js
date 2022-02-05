@@ -234,6 +234,8 @@ describe("Authentication routes", () => {
 	describe("GET /me", () => {
 		it("returns a user object when logged in", async () => {
 			const user = await generateTestUser();
+			user.active = true;
+			await user.save();
 			const token = createToken(user._id);
 
 			let response = await supertest(app)
