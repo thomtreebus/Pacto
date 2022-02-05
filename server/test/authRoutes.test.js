@@ -147,11 +147,12 @@ describe("Authentication routes", () => {
 			await user.save();
 		});
 
-		it("refuses access to non logged in user", async () => {
-			const response = await supertest(app)
-			.get("/logout")
-			.expect(Cookies.not("set", {name: "jwt"}));
-			expect(response.statusCode).toBe(401);
+		it("clears the cookie even for non-logged in users", async () => {
+      const response = await supertest(app)
+				.get("/logout")
+				.expect(Cookies.set({name: "jwt", options: ["max-age"]}));
+
+			expect(response.statusCode).toBe(200);
 		});
 
 		it("returns OK and cookie with max-age set when user logged in", async () => {
