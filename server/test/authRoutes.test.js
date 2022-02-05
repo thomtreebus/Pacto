@@ -305,7 +305,8 @@ describe("Authentication routes", () => {
 					LAST_NAME,
 					REAL_UNI_EMAIL,
 					PASSWORD,
-					"Provide the first name"
+					"Provide the first name",
+					"firstName"
 				);
 			});
 			it("contains numbers", async () => {
@@ -314,7 +315,8 @@ describe("Authentication routes", () => {
 					LAST_NAME,
 					REAL_UNI_EMAIL,
 					PASSWORD,
-					"Provide firstName without number"
+					"Provide firstName without number",
+					"firstName"
 				);
 			});
 			it("longer than 64 characters", async () => {
@@ -323,7 +325,8 @@ describe("Authentication routes", () => {
 					LAST_NAME,
 					REAL_UNI_EMAIL,
 					PASSWORD,
-					"Provide firstName shorter than 16 characters"
+					"Provide firstName shorter than 16 characters",
+					"firstName"
 				);
 			});
 
@@ -336,7 +339,8 @@ describe("Authentication routes", () => {
 					"",
 					REAL_UNI_EMAIL,
 					PASSWORD,
-					"Provide the last name"
+					"Provide the last name",
+					"lastName"
 				);
 			});
 
@@ -346,7 +350,8 @@ describe("Authentication routes", () => {
 					"123"+LAST_NAME,
 					REAL_UNI_EMAIL,
 					PASSWORD,
-					"Provide lastName without number"
+					"Provide lastName without number",
+					"lastName"
 				);
 			});
 
@@ -356,7 +361,8 @@ describe("Authentication routes", () => {
 					LAST_NAME.repeat(300),
 					REAL_UNI_EMAIL,
 					PASSWORD,
-					"Provide lastName shorter than 16 characters"
+					"Provide lastName shorter than 16 characters",
+					"lastName"
 				);
 			});
 		});
@@ -379,7 +385,8 @@ describe("Authentication routes", () => {
 					FIRST_NAME,
 					"john.doe@example.com",
 					PASSWORD,
-					"Provide a uni email"
+					NON_UNI_EMAIL_MESSAGE,
+					"uniEmail"
 				);
 			});
 
@@ -389,7 +396,8 @@ describe("Authentication routes", () => {
 					LAST_NAME,
 					"john.doe",
 					PASSWORD,
-					"Provide a valid email format"
+					NON_UNI_EMAIL_MESSAGE,
+					"uniEmail"
 				);
 			});
 
@@ -399,7 +407,8 @@ describe("Authentication routes", () => {
 					LAST_NAME,
 					"pac.to@kcl.ac.uk",
 					PASSWORD,
-					"Email already exists"
+					"Email already exists",
+					"uniEmail"
 				);
 			})
 		});
