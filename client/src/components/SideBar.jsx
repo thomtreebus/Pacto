@@ -19,7 +19,7 @@ import { useHistory } from "react-router-dom";
 
 const drawerWidth = 240;
 
-export default function SideBar() {
+export default function SideBar({temp}) {
 	const history = useHistory();
 	const [selectedIndex, setSelectedIndex] = React.useState(0);
 
@@ -33,6 +33,7 @@ export default function SideBar() {
 			<Drawer
 				data-testid="sidebar-drawer"
 				variant="permanent"
+				anchor={temp ? 'right' : 'left'}
 				sx={{
 					width: drawerWidth,
 					flexShrink: 0,
