@@ -12,6 +12,26 @@ const University = require('../models/University')
 
 dotenv.config();
 
+const getTestUser = async () => {
+  const uni = await University.create( { name: "kcl", domains: ["kcl.ac.uk"] });
+  const uniEmail = "pac.to@kcl.ac.uk";
+  const password = "Password123";
+  const salt = await bcrypt.genSalt(10);
+  const hashedPassword = await bcrypt.hash(password, salt);
+
+  // Create a test user
+  const user = await User.create({
+    firstName: "pac",
+    lastName: "to",
+    uniEmail: uniEmail,
+    password: hashedPassword,
+    university: uni,
+    active: true
+  });
+
+  return user;
+}
+
 describe("Middlewares", () => {
   beforeAll(async () => {
     await mongoose.connect(process.env.TEST_DB_CONNECTION_URL);
@@ -49,20 +69,7 @@ describe("Middlewares", () => {
     });
 
     it("accepts authorised access", async () => {
-      const uni = await University.create( { name: "kcl", domains: ["kcl.ac.uk"] });
-      const uniEmail = "pac.to@kcl.ac.uk";
-      const password = "Password123";
-      const salt = await bcrypt.genSalt(10);
-      const hashedPassword = await bcrypt.hash(password, salt);
-
-      // Create a test user
-      const user = await User.create({
-        firstName: "pac",
-        lastName: "to",
-        uniEmail: uniEmail,
-        password: hashedPassword,
-        university: uni
-      });
+      const user = await getTestUser();
 
       const token = createToken(user._id);
       let response = await supertest(app)
@@ -75,6 +82,21 @@ describe("Middlewares", () => {
       expect(response.body.message.uniEmail).toBeDefined();
       expect(response.body.message.password).toBeDefined();
       expect(response.body.errors.length).toBe(0);
+    });
+
+    it("rejects inactive user", async () => {
+      const user = await getTestUser();
+      user.active = false;
+      await user.save();
+
+      const token = createToken(user._id);
+      let response = await supertest(app)
+        .get("/mockRoute")
+        .set("Cookie", [`jwt=${token}`]);
+      expect(response.body.message).toBe(null);
+      expect(response.body.errors[0].field).toBe(null);
+      expect(response.body.errors[0].message).toBe("User has not verified their email");
+      expect(response.body.errors.length).toBe(1);
     });
   });
 });

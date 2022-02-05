@@ -17,7 +17,10 @@ const checkAuthenticated = (req, res, next) => {
         req.user = user;
 
         if(!user.active){
-          throw Error("User has not verified their email")
+          //throw Error("User has not verified their email");
+          res
+          .status(401)
+          .json(jsonResponse(null, [jsonError(null, "User has not verified their email")]));
         }
 
         next();
