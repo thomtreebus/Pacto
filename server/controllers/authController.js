@@ -104,6 +104,8 @@ module.exports.signupPost = async (req, res) => {
 		// Generate verification string and send to user's email
 		await handleVerification(uniEmail, user._id);
 
+		await user.populate({path: 'university', model: University});
+
 		res.status(201).json(jsonResponse(user, []));
 	} 
 	else {
@@ -167,7 +169,9 @@ module.exports.verifyGet = async (req, res) => {
 
 		// Add user to their university
 		const user = await User.findByIdAndUpdate(linker.userId, { active: true });
-		await University.findByIdAndUpdate(user.university, {$push: {users: user}});
+		const university = await University.findByIdAndUpdate(user.university, {$push: {users: user}});
+
+		await university.populate({ path: 'users', model: User});
 
 		await linker.delete();
 		res.status(200).send("Success! You may now close this page.");

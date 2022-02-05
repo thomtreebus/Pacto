@@ -1,6 +1,5 @@
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
-const User = require("../models/User");
 const EmailVerificationCode = require("../models/EmailVerificationCode");
 const supertest = require("supertest");
 const bcrypt = require("bcrypt");
@@ -8,6 +7,7 @@ const app = require("../app");
 const Cookies = require("expect-cookies");
 const { createToken } = require("../controllers/authController");
 const University = require("../models/University");
+const User = require("../models/User");
 
 dotenv.config();
 
@@ -427,8 +427,8 @@ describe("Authentication routes", () => {
 
 		it("handles upper case", async () => {
 			await isValidCredentials(
-				"Kolling",
-				"Smith",
+				FIRST_NAME,
+				LAST_NAME,
 				REAL_UNI_EMAIL.toUpperCase(),
 				"Password123",
 			);

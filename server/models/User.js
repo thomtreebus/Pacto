@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const { isEmail } = require('validator')
+const { isEmail } = require('validator');
 
 // function returns true if it contains no numbers
 const containsNoNumbers = (str) => {
@@ -63,7 +63,7 @@ const UserSchema = Schema({
   },
   university: {
     type: Schema.Types.ObjectId,
-    ref: 'Univeristy',
+    ref: 'University',
     required: true
   },
   image: ImageSchema,
@@ -87,8 +87,6 @@ const UserSchema = Schema({
       ref: 'User'
     }
   ],
-
-
 });
 
 const User = mongoose.model('Users', UserSchema);

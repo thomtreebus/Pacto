@@ -1,4 +1,6 @@
 const Pact = require("../models/Pact");
+const University = require("../models/University");
+const User = require("../models/User");
 
 // POST pact
 module.exports.pactPost = async (req, res) => {
@@ -7,6 +9,10 @@ module.exports.pactPost = async (req, res) => {
     const user = req.user;
 
     const pact = await Pact.create({ name, university:user.university, members:[user], moderators:[user] });
+
+		await pact.populate({path: 'university', model: University})
+		.populate({path: 'members', model: User})
+		.populate({path: 'moderators', model: User});
 
 		res.status(201).json(jsonResponse(pact, []));
 	} 
