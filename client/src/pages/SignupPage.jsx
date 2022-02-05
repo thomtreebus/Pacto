@@ -8,7 +8,6 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import Icon from '../assets/pacto-logo.ico';
-import { useAuth } from "../providers/AuthProvider";
 
 export default function SignupPage() {
 	
@@ -18,7 +17,6 @@ export default function SignupPage() {
 	const [apiUniEmailError, setApiUniEmailError] = React.useState('');
 	const [apiPasswordError, setApiPasswordError] = React.useState('');
 	const history = useHistory();
-	const { setIsAuthenticated } = useAuth();
 
 
 	const handleSubmit = async (event) => {
@@ -31,7 +29,7 @@ export default function SignupPage() {
 		setApiPasswordError('');
 		setPasswordConfirmError('');
 
-		if (data.get("password") != data.get("confirmPassword")){
+		if (data.get("password") !== data.get("confirmPassword")){
 			setPasswordConfirmError("Passwords do not match!");
 			return;
 		}
@@ -56,16 +54,16 @@ export default function SignupPage() {
 			const field = err["field"];
 			const message = err["message"];
 
-			if (field == "firstName"){
+			if (field === "firstName"){
 				setApiFirstNameError(message)
 			}
-			if (field == "lastName"){
+			if (field === "lastName"){
 				setApiLastNameError(message)
 			}
-			if (field == "uniEmail"){
+			if (field === "uniEmail"){
 				setApiUniEmailError(message)
 			}
-			if (field == "password"){
+			if (field === "password"){
 				setApiPasswordError(message)
 			}
 
@@ -101,7 +99,7 @@ export default function SignupPage() {
 								required
 								fullWidth
 								label="First Name"
-								error={apiFirstNameError.length != 0}
+								error={apiFirstNameError.length !== 0}
 								helperText={apiFirstNameError}
 								autoFocus
 							/>
@@ -112,7 +110,7 @@ export default function SignupPage() {
 								fullWidth 
 								label="Last Name"
 								name="lastName" 
-								error={apiLastNameError.length != 0}
+								error={apiLastNameError.length !== 0}
 								helperText={apiLastNameError}
 							/>
 						</Grid>
@@ -122,7 +120,7 @@ export default function SignupPage() {
 								fullWidth
 								label="University Email Address"
 								name="email"
-								error={apiUniEmailError.length != 0}
+								error={apiUniEmailError.length !== 0}
 								autoComplete="email"
 								helperText={apiUniEmailError}
 							/>
@@ -135,7 +133,7 @@ export default function SignupPage() {
 								label="Password"
 								type="password"
 								data-testid="initial-password-input"
-								error={apiPasswordError.length != 0}
+								error={apiPasswordError.length !== 0}
 								helperText={apiPasswordError}
 							/>
 						</Grid>
@@ -146,7 +144,7 @@ export default function SignupPage() {
 								name="confirmPassword"
 								label="Confirm Password"
 								type="password"
-								error={passwordConfirmError.length != 0}
+								error={passwordConfirmError.length !== 0}
 								helperText={passwordConfirmError}
 								data-testid="confirm-password-input"
 							/>
