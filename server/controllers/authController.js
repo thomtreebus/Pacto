@@ -21,6 +21,24 @@ const createToken = (id) => {
 };
 module.exports.createToken = createToken;
 
+// Helper function returns to give us errors as a json object.
+const handleFieldErrors = (err) => {
+  let fieldErrors = {};
+  if (err.code === 11000) {
+    fieldErrors.uniEmail = 'Email already exists';
+    // unique constraint is last checked for mongo, so we return here early.
+    return fieldErrors;
+  }
+  if (err.message.includes('Users validation failed')) {
+    Object.values(err.errors).forEach(({ properties }) => {
+      fieldErrors[properties.path] = properties.message;
+    });
+  }
+  return fieldErrors;
+}
+
+
+// helper function to decide whether a password is valid.
 const validPassword = (password) => {
   const validator = (new passwordValidator())
     .is().min(8)
@@ -35,7 +53,8 @@ const validPassword = (password) => {
 module.exports.signupPost = async (req, res) => {
 	const { firstName, lastName, uniEmail, password } = req.body;
 	const processedEmail = uniEmail.toLowerCase()
-	let errorField = null;
+	let jsonErrors = [];
+	let user = null;
 
 	try {
 		// Hash password
@@ -43,8 +62,10 @@ module.exports.signupPost = async (req, res) => {
 		const hashedPassword = await bcrypt.hash(password, salt);
 
 		if (!validPassword(password)){
-			errorField = "password";
-			throw Error("Password does not meet requirements");
+			jsonErrors.push({
+				field: "password",
+				message: "Password does not meet requirements"
+			});
 		}
 
 		// Check if the provided email is associated with a domain in the university API.
@@ -53,8 +74,10 @@ module.exports.signupPost = async (req, res) => {
 		const userDomain = processedEmail.split('@')[1];
 		const entry = await universityJson.filter(uni => uni["domains"].includes(userDomain));
 		if (entry.length == 0) {
-			errorField = "uniEmail";
-			throw Error("Email not associated with a UK university");
+			jsonErrors.push({
+				field: "uniEmail",
+				message: "Email not associated with a UK university"
+			});
 		}
 
 		// Convert array of 1 item to the item
@@ -68,15 +91,23 @@ module.exports.signupPost = async (req, res) => {
 		}
 		// We don't include the user in the university users list until they verify their email.
 
-		const user = await User.create({ firstName, lastName, uniEmail:processedEmail, password:hashedPassword, university });
+		user = await User.create({ firstName, lastName, uniEmail:processedEmail, password:hashedPassword, university });
+	}
+	catch(err) {
+		const allErrors = handleFieldErrors(err);
+    Object.entries(allErrors).forEach(([field, message]) =>{
+      jsonErrors.push(jsonError(field,message));
+    });
+	}
 
+	if (jsonErrors.length == 0){
 		// Generate verification string and send to user's email
 		await handleVerification(uniEmail, user._id);
 
-		res.status(201).json(jsonResponse(null, []));
-	}
-	catch(err) {
-		res.status(400).json(jsonResponse(null, [jsonError(errorField, err.message)]));
+		res.status(201).json(jsonResponse(user, []));
+	} 
+	else {
+		res.status(400).json(jsonResponse(null, jsonErrors));
 	}
 };
 

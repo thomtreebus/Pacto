@@ -2,11 +2,13 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const { isEmail } = require('validator')
 
+// function returns true if it contains no numbers
 const containsNoNumbers = (str) => {
   const regex = /^[^0-9]+$/;
   return regex.test(str);
 };
 
+// function returns true if it contains no uppercase characters.
 const isLowerCase = (str) => {
   return str === str.toLowerCase();
 }
@@ -54,18 +56,6 @@ const UserSchema = mongoose.Schema({
     type: Schema.Types.ObjectId,
     ref: 'Univeristy',
     required: true
-  }
-});
-
-
-// Duplicate email check
-// https://stackoverflow.com/questions/38945608/custom-error-messages-with-mongoose
-// Responses are outdated, error name is now MongoServerError
-UserSchema.post('save', function(error, doc, next) {
-  if (error.name === 'MongoServerError' && error.code === 11000) {
-    next(new Error('Email already exists'));
-  } else {
-    next(error);
   }
 });
 
