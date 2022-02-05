@@ -10,15 +10,29 @@ import Container from "@mui/material/Container";
 import Icon from '../assets/pacto-logo.ico';
 
 export default function SignupPage() {
-	function handleSubmit(event) {
+
+	const handleSubmit = async (event) => {
 		event.preventDefault();
 		const data = new FormData(event.currentTarget);
 
-		console.log({
-			email: data.get("email"),
-			password: data.get("password"),
+		
+		await fetch(`${process.env.REACT_APP_URL}/signup`, {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			credentials: "include",
+			body: JSON.stringify({
+				firstName: data.get("Pac"),
+				lasttName: data.get("To"),
+				uniEmail: data.get("Pacto@uni.ac.uk"),
+				password: data.get("Password123"),
+				confirmPassword: data.get("Password123"),
+			}),
 		});
-	}
+
+		// setIsAuthenticated(true);		
+	};
 
 	return (
 		<Container component="main" maxWidth="xs">

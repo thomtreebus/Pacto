@@ -13,7 +13,12 @@ const isLowerCase = (str) => {
   return str === str.toLowerCase();
 }
 
-const UserSchema = mongoose.Schema({
+const ImageSchema = new Schema({
+  url: String,
+  filename: String
+});
+
+const UserSchema = Schema({
   firstName: {
     type: String,
     required: [true, 'Provide the first name'],
@@ -47,7 +52,11 @@ const UserSchema = mongoose.Schema({
     type: String,
     required: false 
   },
-  active: { // This stores whether the user's email has been verified.
+  university: {
+    type: String,
+    required: false
+  },
+  active: { // Stores whether the user's email has been verified.
     type: Boolean,
     required: [true, 'Provide the active flag'],
     default: false
@@ -56,7 +65,30 @@ const UserSchema = mongoose.Schema({
     type: Schema.Types.ObjectId,
     ref: 'Univeristy',
     required: true
-  }
+  },
+  image: ImageSchema,
+  bio: {
+    type: String,
+    required: false,
+    default: ""
+  },
+  hobbies: [{
+    type: String,
+    required: false
+  }],
+  location: {
+    type: String,
+    required: false,
+    default: ""
+  },  
+  friends: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: 'User'
+    }
+  ],
+
+
 });
 
 const User = mongoose.model('Users', UserSchema);
