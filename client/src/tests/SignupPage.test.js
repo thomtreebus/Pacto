@@ -1,5 +1,5 @@
 import Signup from "../pages/SignupPage";
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { waitForElementToBeRemoved } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import MockComponent from "./utils/MockComponent";
@@ -41,8 +41,8 @@ describe("SignupPage Tests", () => {
 		render(
 			<MockComponent>
 				<Signup />
-				<Route exact path="/feed">
-					<h1>Redirected to feed</h1>
+				<Route exact path="/login">
+					<h1>Redirected to login</h1>
 				</Route>
 			</MockComponent>
 		);
@@ -150,6 +150,162 @@ describe("SignupPage Tests", () => {
 			expect(inputElement.value).toBe("Password123");
 		});
 
+		it("should return error when invalid first name is entered when the signup button is pressed with invalid credentials", async () => {
+			server.use(
+				rest.post(`${process.env.REACT_APP_URL}/signup`, (req, res, ctx) => {					
+					return res(
+						ctx.json({ 
+							message: null, 
+							errors : [
+								{field: "firstName", message: "Provide the first name"}
+							], 
+						})
+					);					
+				})
+			);
+			const nonExistingElement = screen.queryByText("Provide the first name");
+			expect(nonExistingElement).not.toBeInTheDocument();
+			const buttonElement = await screen.findByRole("button", {
+				name: "Sign Up",
+			});
+			fireEvent.click(buttonElement);
+			const firstNameElement = await screen.findByText("Provide the first name");
+			expect(firstNameElement).toBeInTheDocument();
+		});
+
+		it("should return error when invalid last name is entered when the signup button is pressed with invalid credentials", async () => {
+			server.use(
+				rest.post(`${process.env.REACT_APP_URL}/signup`, (req, res, ctx) => {					
+					return res(
+						ctx.json({ 
+							message: null, 
+							errors : [
+								{field: "lastName", message: "Provide the last name"}
+							], 
+						})
+					);					
+				})
+			);
+			const nonExistingElement = screen.queryByText("Provide the last name");
+			expect(nonExistingElement).not.toBeInTheDocument();
+			const buttonElement = await screen.findByRole("button", {
+				name: "Sign Up",
+			});
+			fireEvent.click(buttonElement);
+			const lastNameElement = await screen.findByText("Provide the last name");
+			expect(lastNameElement).toBeInTheDocument();
+		});
+
+		it("should return error when invalid email is entered when the signup button is pressed with invalid credentials", async () => {
+			server.use(
+				rest.post(`${process.env.REACT_APP_URL}/signup`, (req, res, ctx) => {					
+					return res(
+						ctx.json({ 
+							message: null, 
+							errors : [
+								{field: "uniEmail", message: "Provide the email"}
+							], 
+						})
+					);					
+				})
+			);
+			const nonExistingElement = screen.queryByText("Provide the email");
+			expect(nonExistingElement).not.toBeInTheDocument();
+			const buttonElement = await screen.findByRole("button", {
+				name: "Sign Up",
+			});
+			fireEvent.click(buttonElement);
+			const emailElement = await screen.findByText("Provide the email");
+			expect(emailElement).toBeInTheDocument();
+		});
+
+		it("should return error when invalid password is entered when the signup button is pressed with invalid credentials", async () => {
+			server.use(
+				rest.post(`${process.env.REACT_APP_URL}/signup`, (req, res, ctx) => {					
+					return res(
+						ctx.json({ 
+							message: null, 
+							errors : [
+								{field: "password", message: "Password does not meet requirements"}
+							], 
+						})
+					);					
+				})
+			);
+			const nonExistingElement = screen.queryByText("Password does not meet requirements");
+			expect(nonExistingElement).not.toBeInTheDocument();
+			const buttonElement = await screen.findByRole("button", {
+				name: "Sign Up",
+			});
+			fireEvent.click(buttonElement);
+			const passwordElement = await screen.findByText("Password does not meet requirements");
+			expect(passwordElement).toBeInTheDocument();
+		});
+
+		it("hould return error when password does not match confirm password when the signup button is pressed with invalid credentials", async () => {
+			const initialPassword = await screen.findByTestId("initial-password-input");
+			const initialPasswordInput = initialPassword.querySelector("input");
+			fireEvent.change(initialPasswordInput, { target: { value: "Password123" } });
+			const confirmPassword = await screen.findByTestId("confirm-password-input");
+			const confirmPasswordInput = confirmPassword.querySelector("input");
+			fireEvent.change(confirmPasswordInput, { target: { value: "password1" } });
+			const nonExistingElement = screen.queryByText("Passwords do not match!");
+			expect(nonExistingElement).not.toBeInTheDocument();
+			const buttonElement = await screen.findByRole("button", {
+				name: "Sign Up",
+			});
+			fireEvent.click(buttonElement);
+			const passwordElement = await screen.findByText("Passwords do not match!");
+			expect(passwordElement).toBeInTheDocument();
+		});
+
+		it("should return multiple errors when multiple fields are entered when the signup button is pressed with invalid credentials", async () => {
+			server.use(
+				rest.post(`${process.env.REACT_APP_URL}/signup`, (req, res, ctx) => {					
+					return res(
+						ctx.json({ 
+							message: null, 
+							errors : [
+								{field: "firstName", message: "Provide the first name"}, 
+								{field: "lastName", message: "Provide the last name"}
+							], 
+						}) 
+					);					
+				})
+			);
+			const nonExistingFirstNameElement = screen.queryByText("Provide the first name");
+			const nonExistingLastNameElement = screen.queryByText("Provide the last name");
+			expect(nonExistingFirstNameElement).not.toBeInTheDocument();
+			expect(nonExistingLastNameElement).not.toBeInTheDocument();
+			const buttonElement = await screen.findByRole("button", {
+				name: "Sign Up",
+			});
+			fireEvent.click(buttonElement);
+			const firstNameElement = await screen.findByText("Provide the first name");
+			const lastNameElement = await screen.findByText("Provide the last name");
+			expect(firstNameElement).toBeInTheDocument();
+			expect(lastNameElement).toBeInTheDocument();
+		});
+
+		it("should redirect to login when the sign up button is pressed with valid credentials", async () => {
+			server.use(
+				rest.post(`${process.env.REACT_APP_URL}/signup`, (req, res, ctx) => {
+					return res(
+						ctx.status(201),
+						ctx.json({ 
+							message: 'Success', 
+							errors: [], 
+						})
+					);
+				})
+			);
+			const buttonElement = await screen.findByRole("button", {
+				name: "Sign Up",
+			});
+			fireEvent.click(buttonElement);
+			await waitFor(() => expect(window.location.pathname).toBe("/login"));	
+		});
+
 		it("should redirect to sign in if the sign in button is pressed", async () => {		
 			const linkElement = await screen.findByRole("link", { 
 				name: "Already have an account? Sign in", 
@@ -158,106 +314,5 @@ describe("SignupPage Tests", () => {
 			expect(window.location.pathname).toBe("/login");
 		});
 
-		it("should return success when valid first name is entered", async () => {
-			server.use(
-				rest.post(`${process.env.REACT_APP_URL}/signup`, (req, res, ctx) => {
-					const { firstName } = req.body;
-					if (firstName !== 'Pac') {
-						return res(
-							ctx.status(401), 
-							ctx.json({ success: false })
-						);
-					}					
-					return res(
-						ctx.json({ success: true })
-					);					
-				})
-			);
-		});
-
-		it("should return success when valid last name is entered", async () => {
-			server.use(
-				rest.post(`${process.env.REACT_APP_URL}/signup`, (req, res, ctx) => {
-					const { lastName } = req.body;
-					if (lastName !== 'To') {
-						return res(
-							ctx.status(401), 
-							ctx.json({ success: false })
-						);
-					}					
-					return res(
-						ctx.json({ success: true })
-					);					
-				})
-			);
-		});
-
-		it("should return success when valid email is entered", async () => {
-			server.use(
-				rest.post(`${process.env.REACT_APP_URL}/signup`, (req, res, ctx) => {
-					const { uniEmail } = req.body;
-					if (uniEmail !== 'Pacto@uni.ac.uk') {
-						return res(
-							ctx.status(401), 
-							ctx.json({ success: false })
-						);
-					}					
-					return res(
-						ctx.json({ success: true })
-					);					
-				})
-			);
-		});
-
-		it("should return success when valid password is entered", async () => {
-			server.use(
-				rest.post(`${process.env.REACT_APP_URL}/signup`, (req, res, ctx) => {
-					const { password } = req.body;
-					if (password !== 'Password123') {
-						return res(
-							ctx.status(401), 
-							ctx.json({ success: false })
-						);
-					}					
-					return res(
-						ctx.json({ success: true })
-					);					
-				})
-			);
-		});
-
-		it("should return success when valid confirmPassword is entered", async () => {
-			server.use(
-				rest.post(`${process.env.REACT_APP_URL}/signup`, (req, res, ctx) => {
-					const { confirmPassword } = req.body;
-					if (confirmPassword !== 'Password123') {
-						return res(
-							ctx.status(401), 
-							ctx.json({ success: false })
-						);
-					}					
-					return res(
-						ctx.json({ success: true })
-					);			
-				})
-			);
-		});
-
-		it("should redirect to login when the sign up button is pressed with valid credentials", async () => {
-			server.use(
-				rest.post(`${process.env.REACT_APP_URL}/signup`, (req, res, ctx) => {
-					return res(
-						ctx.status(200),
-						ctx.json({ message: 'Success', errors: [] })
-					);
-				})
-			);
-
-			const buttonElement = await screen.findByRole("button", {
-				name: "Sign Up",
-			});
-			fireEvent.click(buttonElement);
-			expect(window.location.pathname).toBe("/login");
-		});
 	});
 });
