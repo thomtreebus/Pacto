@@ -374,7 +374,7 @@ describe("Authentication routes", () => {
 				REAL_UNI_EMAIL,
 				PASSWORD,
 			);
-		});
+		}, 30000);
 		describe("reject password due to: ", () => {
 			it("blank password", async () => {
 				await isInvalidCredentials(
