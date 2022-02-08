@@ -11,7 +11,7 @@ import Alert from "@mui/material/Alert";
 import MenuItem from '@mui/material/MenuItem';
 
 export default function LoginPage() {
-  const [category, setCategory] = React.useState('Subjects')
+  const [category, setCategory] = React.useState('Subject')
 	const [snackbarOpen, setSnackbarOpen] = React.useState(false);
 	const [snackbarMessage, setSnackbarMessage] = React.useState(null);
 	const [isButtonDisabled, setIsButtonDisabled] = React.useState(false);
@@ -67,7 +67,7 @@ export default function LoginPage() {
 
             <TextField
 							data-testid='category-select'
-              alignItems='center'
+              alignitems='center'
               margin="normal"
               required
 							fullWidth
