@@ -100,7 +100,7 @@ module.exports.signupPost = async (req, res) => {
     });
 	}
 
-	if (Object.entries(jsonErrors).length == 0){
+	if (user){
 		// Generate verification string and send to user's email
 		await handleVerification(uniEmail, user._id);
 
