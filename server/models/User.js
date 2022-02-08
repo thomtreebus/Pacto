@@ -1,11 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const ImageSchema = new Schema({
-  url: String,
-  filename: String
-});
-
 const UserSchema = Schema({
   firstName: {
     type: String,
@@ -40,7 +35,10 @@ const UserSchema = Schema({
     required: true,
     default: false
   },
-  image: ImageSchema,
+  image: {
+    type: String,
+    default: "https://res.cloudinary.com/djlwzi9br/image/upload/v1644324688/gxflstl5ivocqp7pswav.png"
+  },
   bio: {
     type: String,
     required: false,

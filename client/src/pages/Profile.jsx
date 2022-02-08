@@ -3,11 +3,12 @@ import Axios from 'axios';
 import { useHistory } from "react-router-dom";
 import { useState } from "react";
 import { useAuth } from '../providers/AuthProvider';
-import Avatar from '@mui/material/Avatar';
+import { Image } from 'cloudinary-react';
 import Grid from '@mui/material/Grid';
+import Stack from '@mui/material/Stack';
 import { styled } from '@mui/material/styles';
 import Button from '@mui/material/Button';
-import Photo from '../assets/KC.jpeg';
+import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField';
 import InputAdornment from '@mui/material/InputAdornment';
@@ -30,33 +31,37 @@ export default function Profile() {
   const history = useHistory();
 
   const [bio, setBio] = useState(user.bio);
-  const [location, setLocation] = useState(user.bio);
-  const [course, setCourse] = useState(user.bio);
-  const [linkedin, setLinkedin] = useState(user.bio);
-  const [instagram, setInstagram] = useState(user.bio);
-  const [phone, setPhone] = useState(user.bio);
-  const [image, setImage] = useState(user.image.url);
-  
-
-  // console.log(user._id);
+  const [location, setLocation] = useState(user.location);
+  const [course, setCourse] = useState(user.course);
+  const [linkedin, setLinkedin] = useState(user.linkedin);
+  const [instagram, setInstagram] = useState(user.instagram);
+  const [phone, setPhone] = useState(user.phone);
+  const [image, setImage] = useState(user.image);
+  const [imageToUpload, setUploadImage] = useState(user.image);
 
   const uploadImage = () => {
     console.log(image);
     const data = new FormData();
 
-    data.append("file", image);
+    data.append("api_key", process.env.REACT_APP_CLOUDINARY_KEY);
+    data.append("file", imageToUpload);
     data.append("upload_preset", "n2obmbt1");
 
-    Axios.post(`https://api.cloudinary.com/v1_1/${process.env.CLOUDINARY_CLOUD_NAME}/image/upload`, data)
+    Axios.post(`https://api.cloudinary.com/v1_1/${process.env.REACT_APP_CLOUDINARY_CLOUD_NAME}/image/upload`, data)
       .then((res) => {
         console.log(res)
+        console.log(res.data.secure_url);
+        setImage(res.data.url);
+      })
+      .catch((err) => {
+        console.log(err);
       });
   }
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    // const data = new FormData(event.currentTarget);
-    const data = { bio, location, course, linkedin, instagram, phone }
+
+    const data = { bio, location, course, linkedin, instagram, phone, image }
 
     await fetch(`${process.env.REACT_APP_URL}/users/${user._id}`, {
       method: "PUT",
@@ -85,30 +90,35 @@ export default function Profile() {
       justifyContent="center"
       alignItems="stretch">
       <Grid item direction="column" xs={4}>
-        <Avatar
-          src={Photo}
-          variant="rounded"
-          sx={{ width: "250px", height: "250px" }} />
-        
-        <label htmlFor="contained-button-file">
-          <Input
-            accept="image/*"
-            id="contained-button-file"
-            type="file"
-            onChange={(e) => {setImage(e.target.files[0])}} />
-            <Button
+        <Image
+          style={{ width: "250px", height: "250px", borderRadius: "10px" }}
+          cloudName={`${process.env.REACT_APP_CLOUDINARY_CLOUD_NAME}`}
+          publicID={image}
+        />
+        <Stack direction="row" alignItems="center" spacing={2}>
+          <label htmlFor="contained-button-file">
+            <Input
+              accept="image/*"
+              id="contained-button-file"
+              type="file"
+              onChange={(e) => { setUploadImage(e.target.files[0]) }} />
+            <IconButton color="primary" component="span">
+              <PhotoIcon />
+            </IconButton>
+          </label>
+          <Button
               fullWidth
               variant="contained"
               component="span"
-              startIcon={<PhotoIcon />}
               onClick={uploadImage}
               sx={{
                 marginTop: 1
               }}
               >
-              Choose Photo
+              Upload Image
             </Button>
-        </label>
+          </Stack>
+        
 
         <TextField
           name="location"
@@ -116,7 +126,9 @@ export default function Profile() {
           variant="outlined"
           fullWidth
           defaultValue={user.location}
-          onChange={(e) => setLocation(e.target.value)}
+          onChange={(e) => {
+            setLocation(e.target.value)
+          }}
           size="small"
           InputProps={{
           startAdornment: (
@@ -210,7 +222,6 @@ export default function Profile() {
       </Grid>
       <Grid item direction="column" xs={8}>
         <Typography variant="h4">{user.firstName} {user.lastName}</Typography>
-        {/* <Typography variant="subtitle1"> {user.university} </Typography> */}
         <Typography variant="subtitle1" sx={{ color: "#1976d2" }}> King's College London </Typography>
         <TextField
           name="bio"
