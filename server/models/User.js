@@ -80,7 +80,7 @@ const UserSchema = Schema({
     type: String,
     required: false,
     default: ""
-  },  
+  },
   friends: [
     {
       type: Schema.Types.ObjectId,

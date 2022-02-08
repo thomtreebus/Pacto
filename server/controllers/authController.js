@@ -175,7 +175,7 @@ module.exports.verifyGet = async (req, res) => {
 
 		await linker.delete();
 		res.status(200).send("Success! You may now close this page.");
-	} 
+	}
   catch (err) {
 		res.status(400).json(jsonResponse(null, [jsonError(null, err.message)]));
 	}

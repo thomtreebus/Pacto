@@ -162,7 +162,7 @@ describe("Authentication routes", () => {
 			const token = createToken(user._id);
       const response = await supertest(app)
 				.get("/logout")
-        .set("Cookie", [`jwt=${token}`])	
+        .set("Cookie", [`jwt=${token}`])
 				.expect(Cookies.set({name: "jwt", options: ["max-age"]}));
 
 			expect(response.statusCode).toBe(200);
