@@ -83,6 +83,12 @@ const UserSchema = Schema({
       ref: 'User'
     }
   ],
+  pacts: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: 'Pact'
+    }
+  ],
 });
 
 const User = mongoose.model('Users', UserSchema);
