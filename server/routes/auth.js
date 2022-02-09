@@ -7,7 +7,7 @@ router.post("/signup", authController.signupPost);
 
 router.post("/login", authController.loginPost);
 
-router.get("/logout", checkAuthenticated, authController.logoutGet);
+router.get("/logout", authController.logoutGet);
 
 router.get("/verify", authController.verifyGet);
 

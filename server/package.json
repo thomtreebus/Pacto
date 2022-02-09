@@ -8,6 +8,7 @@
     "dbstart": "docker-compose up -d",
     "dbclose": "docker-compose down",
     "test": "jest --runInBand",
+    "refresh-test": "jest --runInBand  --watchAll",
     "seed": "node ./tools/seed.js",
     "unseed": "node ./tools/unseed.js",
     "coverage": "jest --coverage --runInBand"
