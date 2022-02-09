@@ -472,7 +472,7 @@ describe("Authentication routes", () => {
 					FIRST_NAME,
 					LAST_NAME,
 					REAL_UNI_EMAIL,
-					"a".repeat(65),
+					"P1" + "a".repeat(63),
 					MESSAGES.PASSWORD.MAX_LENGTH_EXCEEDED,
 					"password"
 				);
@@ -499,7 +499,7 @@ describe("Authentication routes", () => {
 			});
 
 			it("accepts when 8 characters", async () => {
-				await isInvalidCredentials(
+				await isValidCredentials(
 					FIRST_NAME,
 					LAST_NAME,
 					REAL_UNI_EMAIL,

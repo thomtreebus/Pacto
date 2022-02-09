@@ -7,8 +7,8 @@ const { jsonResponse, jsonError } = require("../helpers/responseHandlers");
 const { async } = require("crypto-random-string");
 const ApiCache = require("../helpers/ApiCache");
 const University = require("../models/University");
-const passwordValidator = require('password-validator');
 const { MESSAGES } = require("../helpers/messages");
+const {passwordValidators} = require('../helpers/passwordValidator')
 
 // Magic numbers
 const COOKIE_MAX_AGE = 432000; // 432000 = 5 days
@@ -37,15 +37,7 @@ const handleFieldErrors = (err) => {
 }
 
 // helper function to decide whether a password is valid.
-const validPassword = (password) => {
-  const validator = (new passwordValidator())
-    .is().min(8)
-    .is().max(64)
-    .has().uppercase()
-    .has().lowercase()
-    .has().digits(1);
-  return validator.validate(password)
-}
+
 
 // POST /signup
 module.exports.signupPost = async (req, res) => {
@@ -59,8 +51,16 @@ module.exports.signupPost = async (req, res) => {
 		const salt = await bcrypt.genSalt(SALT_ROUNDS);
 		const hashedPassword = await bcrypt.hash(password, salt);
 
-		if (!validPassword(password)){
-			jsonErrors.push(jsonError("password", MESSAGES.PASSWORD.GENERIC));
+		if(password) {
+			passwordValidators.forEach((handler) => {
+				if(!handler.validator(password)){
+					jsonErrors.push(jsonError("password", handler.message));
+					errorFound = true;
+				}
+			});
+		}
+		else	{
+			jsonErrors.push(jsonError("password", MESSAGES.PASSWORD.BLANK));
 			errorFound = true;
 		}
 
