@@ -12,11 +12,13 @@ module.exports.MESSAGES = {
   EMAIL: {
     BLANK: "Email cannot be blank",
     INVALID_FORMAT: "Email must be formatted correctly",
+    NOT_UNIQUE: "Email already in use",
     UNI: {
       NON_UNI_EMAIL: "Email must be associated with a supported UK university"
     }
   },
   PASSWORD: {
+    GENERIC: "Password does not meet requirements",
     BLANK: "Password cannot be blank",
     MIN_LENGTH_NOT_MET: "Password must be at least 8 characters",
     MAX_LENGTH_EXCEEDED: "Password cannot exceed 64 characters",

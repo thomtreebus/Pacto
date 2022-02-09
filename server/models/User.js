@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const { isEmail } = require('validator');
+const { MESSAGES } = require('../helpers/messages')
 
 // function returns true if it contains no numbers
 const containsNoNumbers = (str) => {
@@ -21,32 +22,32 @@ const ImageSchema = new Schema({
 const UserSchema = Schema({
   firstName: {
     type: String,
-    required: [true, 'Provide the first name'],
-    validate: [containsNoNumbers, "Provide firstName without number"],
-    maxLength: [16, "Provide firstName shorter than 16 characters"]
+    required: [true, MESSAGES.FIRST_NAME.BLANK],
+    validate: [containsNoNumbers, MESSAGES.FIRST_NAME.CONTAINS_NUMBERS],
+    maxLength: [50, MESSAGES.FIRST_NAME.MAX_LENGTH_EXCEEDED]
   },
   lastName: {
     type: String,
-    required: [true, 'Provide the last name'],
-    validate: [containsNoNumbers, "Provide lastName without number"],
-    maxLength: [16, "Provide lastName shorter than 16 characters"]
+    required: [true, MESSAGES.LAST_NAME.BLANK],
+    validate: [containsNoNumbers, MESSAGES.LAST_NAME.CONTAINS_NUMBERS],
+    maxLength: [50, MESSAGES.LAST_NAME.MAX_LENGTH_EXCEEDED]
   },
   personalEmail: {
     type: String,
     required: false,
     validate: [
-      {validator: isEmail , msg: "Provide a valid email format"},
+      {validator: isEmail , msg: MESSAGES.EMAIL.INVALID_FORMAT},
     ],
   },
   uniEmail: {
     type: String,
-    required: [true, 'Provide the email'],
+    required: [true, MESSAGES.EMAIL.BLANK],
     unique: true
     // Validated in post route
   },
   password: {
     type: String,
-    required: [true, 'Provide the password'],
+    required: [true, MESSAGES.PASSWORD.BLANK],
   },
   course: {
     type: String,
@@ -58,7 +59,7 @@ const UserSchema = Schema({
   },
   active: { // Stores whether the user's email has been verified.
     type: Boolean,
-    required: [true, 'Provide the active flag'],
+    required: true,
     default: false
   },
   university: {

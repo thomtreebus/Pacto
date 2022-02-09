@@ -8,6 +8,7 @@ const { async } = require("crypto-random-string");
 const ApiCache = require("../helpers/ApiCache");
 const University = require("../models/University");
 const passwordValidator = require('password-validator');
+const { MESSAGES } = require("../helpers/messages");
 
 // Magic numbers
 const COOKIE_MAX_AGE = 432000; // 432000 = 5 days
@@ -25,7 +26,7 @@ module.exports.createToken = createToken;
 const handleFieldErrors = (err) => {
   let fieldErrors = [];
 	if(err.code === 11000){
-		fieldErrors.push(jsonError('uniEmail', 'Email already exists'));
+		fieldErrors.push(jsonError('uniEmail', MESSAGES.EMAIL.NOT_UNIQUE));
 	}
   if (err.message.includes('Users validation failed')) {
     Object.values(err.errors).forEach((properties) => {
@@ -59,7 +60,7 @@ module.exports.signupPost = async (req, res) => {
 		const hashedPassword = await bcrypt.hash(password, salt);
 
 		if (!validPassword(password)){
-			jsonErrors.push(jsonError("password", "Password does not meet requirements"));
+			jsonErrors.push(jsonError("password", MESSAGES.PASSWORD.GENERIC));
 			errorFound = true;
 		}
 
@@ -70,7 +71,7 @@ module.exports.signupPost = async (req, res) => {
 		const userDomain = processedEmail.split('@')[1];
 		const entry = universityJson.filter(uni => uni["domains"].includes(userDomain));
 		if (entry.length===0) {
-			jsonErrors.push(jsonError("uniEmail", "Email not associated with a UK university"));
+			jsonErrors.push(jsonError("uniEmail", MESSAGES.EMAIL.UNI.NON_UNI_EMAIL));
 			errorFound = true;
 		} 
 		else {
