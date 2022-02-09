@@ -17,7 +17,7 @@ export default function LoginPage() {
 	const { setIsAuthenticated } = useAuth();
 	const [snackbarOpen, setSnackbarOpen] = React.useState(false);
 	const [snackbarMessage, setSnackbarMessage] = React.useState(null);
-	const [snackbarSeverity, setSnackbarSeverity] = React.useState(null);
+	const [isButtonDisabled, setIsButtonDisabled] = React.useState(false);
 	const history = useHistory();
 
 	const handleClose = () => {
@@ -26,6 +26,7 @@ export default function LoginPage() {
 
 	const handleSubmit = async (event) => {
 		event.preventDefault();
+		setIsButtonDisabled(true);
 		const data = new FormData(event.currentTarget);
 
 		try {
@@ -45,8 +46,8 @@ export default function LoginPage() {
 
 			if (response.status !== 200) {
 				setSnackbarMessage(json.errors[0].message);
-				setSnackbarSeverity("error");
 				setSnackbarOpen(true);
+				setIsButtonDisabled(false);
 				return;
 			}
 
@@ -54,8 +55,8 @@ export default function LoginPage() {
 			history.push("/feed");
 		} catch (err) {
 			setSnackbarMessage(err.message);
-			setSnackbarSeverity("error");
 			setSnackbarOpen(true);
+			setIsButtonDisabled(false);
 			return;
 		}
 	};
@@ -124,6 +125,7 @@ export default function LoginPage() {
 								type="submit"
 								fullWidth
 								variant="contained"
+								disabled={isButtonDisabled}
 								sx={{ mt: 3, mb: 2 }}
 							>
 								Sign In
@@ -147,7 +149,7 @@ export default function LoginPage() {
 				onClose={handleClose}
 				data-testid="snackbar"
 			>
-				<Alert severity={snackbarSeverity} onClose={handleClose}>
+				<Alert severity="error" onClose={handleClose}>
 					{snackbarMessage}
 				</Alert>
 			</Snackbar>

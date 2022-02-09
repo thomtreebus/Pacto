@@ -2,7 +2,7 @@ import * as React from "react";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
@@ -10,28 +10,71 @@ import Container from "@mui/material/Container";
 import Icon from '../assets/pacto-logo.ico';
 
 export default function SignupPage() {
+	
+	const [passwordConfirmError, setPasswordConfirmError] = React.useState('');
+	const [apiFirstNameError, setApiFirstNameError] = React.useState('');
+	const [apiLastNameError, setApiLastNameError] = React.useState('');
+	const [apiUniEmailError, setApiUniEmailError] = React.useState('');
+	const [apiPasswordError, setApiPasswordError] = React.useState('');
+	const history = useHistory();
+
 
 	const handleSubmit = async (event) => {
 		event.preventDefault();
 		const data = new FormData(event.currentTarget);
 
-		
-		await fetch(`${process.env.REACT_APP_URL}/signup`, {
+		setApiFirstNameError('');
+		setApiLastNameError('');
+		setApiUniEmailError('');
+		setApiPasswordError('');
+		setPasswordConfirmError('');
+
+		if (data.get("password") !== data.get("confirmPassword")){
+			setPasswordConfirmError("Passwords do not match!");
+			return;
+		}
+
+		const response = await fetch(`${process.env.REACT_APP_URL}/signup`, {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",
 			},
 			credentials: "include",
 			body: JSON.stringify({
-				firstName: data.get("Pac"),
-				lasttName: data.get("To"),
-				uniEmail: data.get("Pacto@uni.ac.uk"),
-				password: data.get("Password123"),
-				confirmPassword: data.get("Password123"),
+				firstName: data.get("firstName"),
+				lastName: data.get("lastName"),
+				uniEmail: data.get("email"),
+				password: data.get("password"),
 			}),
 		});
 
-		// setIsAuthenticated(true);		
+		const json = await response.json();
+		
+		Object.values(json['errors']).forEach(err => {
+			const field = err["field"];
+			const message = err["message"];
+
+			if (field === "firstName"){
+				setApiFirstNameError(message)
+			}
+			if (field === "lastName"){
+				setApiLastNameError(message)
+			}
+			if (field === "uniEmail"){
+				setApiUniEmailError(message)
+			}
+			if (field === "password"){
+				setApiPasswordError(message)
+			}
+
+		});
+
+		if (response.status !== 201) {
+			return;
+		}
+
+		history.push("/login");
+		
 	};
 
 	return (
@@ -56,11 +99,20 @@ export default function SignupPage() {
 								required
 								fullWidth
 								label="First Name"
+								error={apiFirstNameError.length !== 0}
+								helperText={apiFirstNameError}
 								autoFocus
 							/>
 						</Grid>
 						<Grid item xs={12} sm={6}>
-							<TextField required fullWidth label="Last Name" name="lastName" />
+							<TextField 
+								required 
+								fullWidth 
+								label="Last Name"
+								name="lastName" 
+								error={apiLastNameError.length !== 0}
+								helperText={apiLastNameError}
+							/>
 						</Grid>
 						<Grid item xs={12}>
 							<TextField
@@ -68,7 +120,9 @@ export default function SignupPage() {
 								fullWidth
 								label="University Email Address"
 								name="email"
+								error={apiUniEmailError.length !== 0}
 								autoComplete="email"
+								helperText={apiUniEmailError}
 							/>
 						</Grid>
 						<Grid item xs={12}>
@@ -79,15 +133,19 @@ export default function SignupPage() {
 								label="Password"
 								type="password"
 								data-testid="initial-password-input"
+								error={apiPasswordError.length !== 0}
+								helperText={apiPasswordError}
 							/>
 						</Grid>
 						<Grid item xs={12}>
 							<TextField
 								required
 								fullWidth
-								name="password"
+								name="confirmPassword"
 								label="Confirm Password"
 								type="password"
+								error={passwordConfirmError.length !== 0}
+								helperText={passwordConfirmError}
 								data-testid="confirm-password-input"
 							/>
 						</Grid>

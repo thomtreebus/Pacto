@@ -8,6 +8,7 @@ import { CssBaseline } from "@mui/material";
 import Profile from "./pages/Profile";
 import PrivateRoute from "./components/PrivateRoute";
 import AuthRoute from "./components/AuthRoute";
+import NotFound from "./pages/NotFound";
 import UniversityHubPage from "./pages/UniversityHubPage";
 
 function App() {
@@ -24,7 +25,7 @@ function App() {
 				<AuthRoute exact path="/signup">
 					<SignUp />
 				</AuthRoute>
-				
+
 				<PrivateRoute path="*">
 					<BaseLayout>
 						<Switch>
@@ -36,10 +37,10 @@ function App() {
 								<Feed />
 							</PrivateRoute>
 							<PrivateRoute exact path="/hub">
-								<UniversityHubPage/>
+								<UniversityHubPage />
 							</PrivateRoute>
 							<PrivateRoute path="*">
-								<h1>Not Found Page</h1>
+								<NotFound />
 							</PrivateRoute>
 						</Switch>
 					</BaseLayout>
