@@ -8,9 +8,10 @@ const Cookies = require("expect-cookies");
 const { createToken } = require("../controllers/authController");
 const University = require("../models/University");
 const User = require("../models/User");
-let { handleVerification } = require('../helpers/emailHandlers');
-handleVerification = jest.fn(); // Mock
+const emailHandler = require('../helpers/emailHandlers');
+const { JsonWebTokenError } = require("jsonwebtoken");
 
+jest.mock("../helpers/emailHandlers");
 dotenv.config();
 
 // post login magic values
@@ -300,7 +301,7 @@ describe("Authentication routes", () => {
 					password,
 				})
 				.expect(201);
-			expect(handleVerification).toHaveBeenCalled();
+			expect(emailHandler.handleVerification).toHaveBeenCalled();
 			expect(response.body.message).toBeDefined();
 			expect(response.body.errors.length).toBe(0);
 		}

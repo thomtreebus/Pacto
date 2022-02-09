@@ -101,7 +101,6 @@ module.exports.signupPost = async (req, res) => {
 		
 		// Convert mongoose errors into a nice format.
 		const allErrors = handleFieldErrors(err);
-		console.log(allErrors[0]);
     if(allErrors){
 			allErrors.forEach((myErr) => jsonErrors.push(myErr));
 		} 
