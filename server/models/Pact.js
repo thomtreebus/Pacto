@@ -1,11 +1,10 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const PactSchema = mongoose.Schema({
+let PactSchema = mongoose.Schema({
   name: {
     type: String,
-    required: true,
-    unique: true
+    required: true
   },
 
   university: {
@@ -41,6 +40,8 @@ const PactSchema = mongoose.Schema({
   // POSTS AND EVENTS TO BE ADDED
 
 });
+
+PactSchema.index({ name:1, university:1 }, { unique: true });
 
 const Pact = mongoose.model('Pacts', PactSchema);
 
