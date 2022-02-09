@@ -67,6 +67,7 @@ describe("Authentication routes", () => {
 	afterEach(async () => {
 		await User.deleteMany({});
 		await EmailVerificationCode.deleteMany({});
+		await University.deleteMany({});
 	});
 
 	describe("POST /login", () => {

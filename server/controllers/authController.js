@@ -69,8 +69,7 @@ module.exports.signupPost = async (req, res) => {
 		const universityJson = await ApiCache(process.env.UNIVERSITY_API);
 		const userDomain = processedEmail.split('@')[1];
 		const entry = universityJson.filter(uni => uni["domains"].includes(userDomain));
-		
-		if (!entry) {
+		if (entry.length===0) {
 			jsonErrors.push(jsonError("uniEmail", "Email not associated with a UK university"));
 			errorFound = true;
 		} 
@@ -173,7 +172,7 @@ module.exports.verifyGet = async (req, res) => {
 		const user = await User.findByIdAndUpdate(linker.userId, { active: true });
 		const university = await University.findByIdAndUpdate(user.university, {$push: {users: user}});
 
-		await university.populate({ path: 'users', model: User});
+		// await university.populate({ path: 'users', model: User});
 
 		await linker.delete();
 		res.status(200).send("Success! You may now close this page.");
