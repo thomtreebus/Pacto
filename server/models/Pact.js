@@ -37,7 +37,13 @@ let PactSchema = mongoose.Schema({
     required: true
   }],
 
-  // POSTS AND EVENTS TO BE ADDED
+  posts: [{
+    type: Schema.Types.ObjectId,
+    ref: 'Post',
+    required: true
+  }]
+
+  // EVENTS TO BE ADDED
 
 });
 
