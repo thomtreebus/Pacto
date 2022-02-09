@@ -24,9 +24,12 @@ module.exports.createToken = createToken;
 // Helper function returns to give us errors as a json object.
 const handleFieldErrors = (err) => {
   let fieldErrors = [];
+	if(err.code === 11000){
+		fieldErrors.push(jsonError('uniEmail', 'Email already exists'));
+	}
   if (err.message.includes('Users validation failed')) {
-    Object.values(err.errors).forEach(({ properties }) => {
-      fieldErrors.push([properties.path, properties.message]);
+    Object.values(err.errors).forEach((properties) => {
+      fieldErrors.push(jsonError(properties.path, properties.message));
     });
   }
   return fieldErrors;
@@ -98,11 +101,11 @@ module.exports.signupPost = async (req, res) => {
 		
 		// Convert mongoose errors into a nice format.
 		const allErrors = handleFieldErrors(err);
+		console.log(allErrors[0]);
     if(allErrors){
-			Object.entries(allErrors).forEach(([field, message]) =>{
-      	jsonErrors.push(jsonError(field,message));
-    	});
-		} else {
+			allErrors.forEach((myErr) => jsonErrors.push(myErr));
+		} 
+		else {
 			jsonErrors.push(jsonError(null, err.message));
 		}
 	}
