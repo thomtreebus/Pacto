@@ -8,7 +8,8 @@ const { async } = require("crypto-random-string");
 const ApiCache = require("../helpers/ApiCache");
 const University = require("../models/University");
 const { MESSAGES } = require("../helpers/messages");
-const {passwordValidators} = require('../helpers/passwordValidator')
+const {passwordValidators} = require('../helpers/customSignupValidators')
+const { isEmail } = require('validator');
 
 // Magic numbers
 const COOKIE_MAX_AGE = 432000; // 432000 = 5 days
@@ -70,7 +71,15 @@ module.exports.signupPost = async (req, res) => {
 		const universityJson = await ApiCache(process.env.UNIVERSITY_API);
 		const userDomain = processedEmail.split('@')[1];
 		const entry = universityJson.filter(uni => uni["domains"].includes(userDomain));
-		if (entry.length===0) {
+		if (!processedEmail){
+			jsonErrors.push(jsonError("uniEmail", MESSAGES.EMAIL.BLANK));
+			errorFound = true;
+		}
+		else if (!isEmail(processedEmail)){
+			jsonErrors.push(jsonError("uniEmail", MESSAGES.EMAIL.INVALID_FORMAT));
+			errorFound = true;
+		}
+		else if (entry.length===0) {
 			jsonErrors.push(jsonError("uniEmail", MESSAGES.EMAIL.UNI.NON_UNI_EMAIL));
 			errorFound = true;
 		} 
