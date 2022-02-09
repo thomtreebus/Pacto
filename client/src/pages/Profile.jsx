@@ -92,6 +92,7 @@ export default function Profile() {
       <Grid item direction="column" xs={4}>
         <Image
           style={{ width: "250px", height: "250px", borderRadius: "10px" }}
+          alt="Profile Picture"
           cloudName={`${process.env.REACT_APP_CLOUDINARY_CLOUD_NAME}`}
           publicID={image}
         />
@@ -108,6 +109,7 @@ export default function Profile() {
           </label>
           <Button
               fullWidth
+              label="Upload Image"
               variant="contained"
               component="span"
               onClick={uploadImage}
@@ -169,6 +171,7 @@ export default function Profile() {
         <Divider sx={{ marginTop: 1, width: "97%" }} />
         <TextField
           name="linkedin"
+          label="LinkedIn"
           variant="outlined"
           size="small"
           defaultValue={user.linkedin}
@@ -186,6 +189,7 @@ export default function Profile() {
         />
         <TextField
           name="instagram"
+          label="Instagram"
           variant="outlined"
           size="small"
           defaultValue={user.instagram}
@@ -202,7 +206,8 @@ export default function Profile() {
           }}
         />
         <TextField
-          name="instagram"
+          name="phone"
+          label="Phone Number"
           variant="outlined"
           size="small"
           defaultValue={user.phone}
@@ -236,6 +241,7 @@ export default function Profile() {
           }}
         />
         <Button
+          label="Update Profile"
           sx={{float: "right", marginTop: 30}}
           variant="contained"
           type="submit"
