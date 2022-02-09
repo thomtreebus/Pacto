@@ -7,7 +7,9 @@ const { jsonResponse, jsonError } = require("../helpers/responseHandlers");
 const { async } = require("crypto-random-string");
 const ApiCache = require("../helpers/ApiCache");
 const University = require("../models/University");
-const passwordValidator = require('password-validator');
+const { MESSAGES } = require("../helpers/messages");
+const {passwordValidators} = require('../helpers/customSignupValidators')
+const { isEmail } = require('validator');
 
 // Magic numbers
 const COOKIE_MAX_AGE = 432000; // 432000 = 5 days
@@ -25,7 +27,7 @@ module.exports.createToken = createToken;
 const handleFieldErrors = (err) => {
   let fieldErrors = [];
 	if(err.code === 11000){
-		fieldErrors.push(jsonError('uniEmail', 'Email already exists'));
+		fieldErrors.push(jsonError('uniEmail', MESSAGES.EMAIL.NOT_UNIQUE));
 	}
   if (err.message.includes('Users validation failed')) {
     Object.values(err.errors).forEach((properties) => {
@@ -36,15 +38,7 @@ const handleFieldErrors = (err) => {
 }
 
 // helper function to decide whether a password is valid.
-const validPassword = (password) => {
-  const validator = (new passwordValidator())
-    .is().min(8)
-    .is().max(64)
-    .has().uppercase()
-    .has().lowercase()
-    .has().digits(1);
-  return validator.validate(password)
-}
+
 
 // POST /signup
 module.exports.signupPost = async (req, res) => {
@@ -58,8 +52,16 @@ module.exports.signupPost = async (req, res) => {
 		const salt = await bcrypt.genSalt(SALT_ROUNDS);
 		const hashedPassword = await bcrypt.hash(password, salt);
 
-		if (!validPassword(password)){
-			jsonErrors.push(jsonError("password", "Password does not meet requirements"));
+		if(password) {
+			passwordValidators.forEach((handler) => {
+				if(!handler.validator(password)){
+					jsonErrors.push(jsonError("password", handler.message));
+					errorFound = true;
+				}
+			});
+		}
+		else	{
+			jsonErrors.push(jsonError("password", MESSAGES.PASSWORD.BLANK));
 			errorFound = true;
 		}
 
@@ -69,8 +71,16 @@ module.exports.signupPost = async (req, res) => {
 		const universityJson = await ApiCache(process.env.UNIVERSITY_API);
 		const userDomain = processedEmail.split('@')[1];
 		const entry = universityJson.filter(uni => uni["domains"].includes(userDomain));
-		if (entry.length===0) {
-			jsonErrors.push(jsonError("uniEmail", "Email not associated with a UK university"));
+		if (!processedEmail){
+			jsonErrors.push(jsonError("uniEmail", MESSAGES.EMAIL.BLANK));
+			errorFound = true;
+		}
+		else if (!isEmail(processedEmail)){
+			jsonErrors.push(jsonError("uniEmail", MESSAGES.EMAIL.INVALID_FORMAT));
+			errorFound = true;
+		}
+		else if (entry.length===0) {
+			jsonErrors.push(jsonError("uniEmail", MESSAGES.EMAIL.UNI.NON_UNI_EMAIL));
 			errorFound = true;
 		} 
 		else {
