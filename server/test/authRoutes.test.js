@@ -30,7 +30,7 @@ const NON_UNI_EMAIL_MESSAGE = "Email not associated with a UK university";
 const INVALID_PASSWORD_MESSAGE = "Password does not meet requirements";
 const FIRST_NAME = "John";
 const LAST_NAME = "Doe";
-const PASSWORD = "Password123"
+const PASSWORD = "Password123";
 
 
 // global helpers and magic values
@@ -429,12 +429,12 @@ describe("Authentication routes", () => {
 			);
 		});
 
-		it("handles upper case", async () => {
+		it("handles upper case email", async () => {
 			await isValidCredentials(
 				FIRST_NAME,
 				LAST_NAME,
 				REAL_UNI_EMAIL.toUpperCase(),
-				"Password123",
+				PASSWORD,
 			);
 		});
 

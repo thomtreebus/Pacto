@@ -54,7 +54,7 @@ module.exports.signupPost = async (req, res) => {
 	const { firstName, lastName, uniEmail, password } = req.body;
 	const processedEmail = uniEmail.toLowerCase()
 	let jsonErrors = [];
-	let user = null;
+	let errorFound = false;
 
 	try {
 		// Hash password
@@ -62,36 +62,42 @@ module.exports.signupPost = async (req, res) => {
 		const hashedPassword = await bcrypt.hash(password, salt);
 
 		if (!validPassword(password)){
-			jsonErrors.push({
-				field: "password",
-				message: "Password does not meet requirements"
-			});
+			jsonErrors.push(jsonError("password", "Password does not meet requirements"));
+			errorFound = true;
 		}
 
 		// Check if the provided email is associated with a domain in the university API.
 		const universityJson = await ApiCache(process.env.UNIVERSITY_API);
 
+		let university = null;
 		const userDomain = processedEmail.split('@')[1];
 		const entry = await universityJson.filter(uni => uni["domains"].includes(userDomain));
-		if (entry.length == 0) {
-			jsonErrors.push({
-				field: "uniEmail",
-				message: "Email not associated with a UK university"
-			});
+		if (!entry) {
+			jsonErrors.push(jsonError("uniEmail", "Email not associated with a UK university"));
+			errorFound = true;
+		} 
+		else {
+			// Convert array of 1 item to the item
+			const uniDetails = entry[0];
+
+			// Get the relevant university from the database.
+			// If it doesn't exist: make one.
+			university = await University.findOne({ domains: uniDetails["domains"] });
+			if (!university) {
+				university = await University.create({ name:uniDetails["name"], domains:uniDetails["domains"] });
+			}
+			// We don't include the user in the university users list until they verify their email.
 		}
+		
+		if(!errorFound){
+			const user = await User.create({ firstName, lastName, uniEmail:processedEmail, password:hashedPassword, university });
 
-		// Convert array of 1 item to the item
-		const uniDetails = entry[0];
+			await handleVerification(uniEmail, user._id);
 
-		// Get the relevant university from the database.
-		// If it doesn't exist: make one.
-		let university = await University.findOne({ domains: uniDetails["domains"] });
-		if (!university) {
-			university = await University.create({ name:uniDetails["name"], domains:uniDetails["domains"] });
+			await user.populate({path: 'university', model: University});
+
+			res.status(201).json(jsonResponse(user, []));
 		}
-		// We don't include the user in the university users list until they verify their email.
-
-		user = await User.create({ firstName, lastName, uniEmail:processedEmail, password:hashedPassword, university });
 	}
 	catch(err) {
 		const allErrors = handleFieldErrors(err);
@@ -100,15 +106,7 @@ module.exports.signupPost = async (req, res) => {
     });
 	}
 
-	if (user){
-		// Generate verification string and send to user's email
-		await handleVerification(uniEmail, user._id);
-
-		await user.populate({path: 'university', model: University});
-
-		res.status(201).json(jsonResponse(user, []));
-	} 
-	else {
+	if(errorFound){
 		res.status(400).json(jsonResponse(null, jsonErrors));
 	}
 };
