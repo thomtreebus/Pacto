@@ -26,10 +26,6 @@ module.exports.pactsGet = async (req, res) => {
 	try {
     const university = req.user.university;
 
-		if (!university){
-			throw Error("User not authenticated");
-		}
-
 		const pacts = await Pact.find({ university });
 
 		res.status(200).json(jsonResponse(pacts, []));
