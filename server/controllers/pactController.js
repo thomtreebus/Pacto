@@ -1,6 +1,7 @@
 const Pact = require("../models/Pact");
 const University = require("../models/University");
 const User = require("../models/User");
+const {jsonResponse, jsonError} = require("../helpers/responseHandlers");
 
 // POST pact
 module.exports.pactPost = async (req, res) => {
@@ -31,6 +32,11 @@ module.exports.pactsGet = async (req, res) => {
 		}
 
 		const pacts = await Pact.find({ university });
+		pacts.forEach(async pact => {
+			await pact.populate({path: 'members', model: User})
+			.populate({path: 'moderators', model: User})
+			.populate({path: 'university', model: Univeristy});
+		});
 
 		res.status(200).json(jsonResponse(pacts, []));
 	} 
@@ -55,6 +61,10 @@ module.exports.pactGet = async (req, res) => {
 			status = 404;
 			throw Error("Pact not found");
 		}
+
+		await pact.populate({path: 'university', model: University})
+		.populate({path: 'members', model: User})
+		.populate({path: 'moderators', model: User});
 
 		res.status(200).json(jsonResponse(pact, []));
 	} 
