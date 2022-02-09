@@ -66,10 +66,10 @@ module.exports.signupPost = async (req, res) => {
 			errorFound = true;
 		}
 
+		let university = null;
+
 		// Check if the provided email is associated with a domain in the university API.
 		const universityJson = await ApiCache(process.env.UNIVERSITY_API);
-
-		let university = null;
 		const userDomain = processedEmail.split('@')[1];
 		const entry = await universityJson.filter(uni => uni["domains"].includes(userDomain));
 		if (!entry) {
@@ -77,11 +77,11 @@ module.exports.signupPost = async (req, res) => {
 			errorFound = true;
 		} 
 		else {
-			// Convert array of 1 item to the item
+			// Convert array of objects to a single object containing details about the user's university.
 			const uniDetails = entry[0];
 
-			// Get the relevant university from the database.
-			// If it doesn't exist: make one.
+			// Get the related university from the database.
+			// If it doesn't exist: make one for it.
 			university = await University.findOne({ domains: uniDetails["domains"] });
 			if (!university) {
 				university = await University.create({ name:uniDetails["name"], domains:uniDetails["domains"] });
@@ -93,13 +93,15 @@ module.exports.signupPost = async (req, res) => {
 			const user = await User.create({ firstName, lastName, uniEmail:processedEmail, password:hashedPassword, university });
 
 			await handleVerification(uniEmail, user._id);
-
 			await user.populate({path: 'university', model: University});
 
 			res.status(201).json(jsonResponse(user, []));
 		}
 	}
 	catch(err) {
+		errorFound = true;
+
+		// Convert mongoose errors into a nice format.
 		const allErrors = handleFieldErrors(err);
     Object.entries(allErrors).forEach(([field, message]) =>{
       jsonErrors.push(jsonError(field,message));
