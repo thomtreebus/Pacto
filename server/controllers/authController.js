@@ -71,7 +71,8 @@ module.exports.signupPost = async (req, res) => {
 		// Check if the provided email is associated with a domain in the university API.
 		const universityJson = await ApiCache(process.env.UNIVERSITY_API);
 		const userDomain = processedEmail.split('@')[1];
-		const entry = await universityJson.filter(uni => uni["domains"].includes(userDomain));
+		const entry = universityJson.filter(uni => uni["domains"].includes(userDomain));
+		
 		if (!entry) {
 			jsonErrors.push(jsonError("uniEmail", "Email not associated with a UK university"));
 			errorFound = true;
@@ -100,7 +101,7 @@ module.exports.signupPost = async (req, res) => {
 	}
 	catch(err) {
 		errorFound = true;
-
+		
 		// Convert mongoose errors into a nice format.
 		const allErrors = handleFieldErrors(err);
     if(allErrors){
