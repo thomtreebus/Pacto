@@ -9,11 +9,6 @@ const containsNoNumbers = (str) => {
   return regex.test(str);
 };
 
-// function returns true if it contains no uppercase characters.
-const isLowerCase = (str) => {
-  return str === str.toLowerCase();
-}
-
 const ImageSchema = new Schema({
   url: String,
   filename: String
