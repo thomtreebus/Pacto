@@ -1,6 +1,5 @@
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
-const User = require("../models/User");
 const supertest = require("supertest");
 const bcrypt = require("bcrypt");
 const app = require("../app");
@@ -9,7 +8,8 @@ const { checkAuthenticated } = require("../middleware/authMiddleware");
 const { checkNotAuthenticated } = require("../middleware/notAuthMiddleware");
 const { jsonResponse } = require("../helpers/responseHandlers");
 const { createToken } = require("../controllers/authController");
-const University = require('../models/University')
+const University = require('../models/University');
+const User = require("../models/User");
 
 dotenv.config();
 

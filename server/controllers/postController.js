@@ -7,13 +7,15 @@ const User = require("../models/User");
 module.exports.postPost = async (req, res) => {
 	try {
     const user = req.user;
-    const { title, text, image, link, type } = req.body;
-    const post = await Post.create({ author:user, title, image, text, link, type });
-
-    const pact = req.body.pact;
-    await Pact.findByIdAndUpdate(pact, {$push: {posts: post}});
-
-		res.status(201).json(jsonResponse(post, []));
+    const { pact, title, text, image, link, type } = req.body;
+		const userPacts = await user.pacts.filter(userPact => userPact._id === pact._id);
+		if(userPacts.length === 1) {
+			const post = await Post.create({ author:user, pact=userPacts[0], title, image, text, link, type });
+			await Pact.findByIdAndUpdate(pact, {$push: {posts: post}});
+			res.status(201).json(jsonResponse(post, []));
+		} else {
+			res.status(400).json(jsonResponse(null, [jsonError(null, "User is not in pact")]));
+		}
 	} 
   catch (err) {
 		res.status(400).json(jsonResponse(null, [jsonError(null, err.message)]));
@@ -26,13 +28,17 @@ module.exports.postGet = async (req, res) => {
 	try {
 
 		const post = await Post.findOne({ _id:req.params.id });
-
-		if (!post){
+  	if (!post){
 			status = 404;
 			throw Error("Post not found");
 		}
 
-		res.status(200).json(jsonResponse(pact, []));
+		const postPact = post.pact;
+		if(req.user.pacts.includes(postPact)) {
+			res.status(200).json(jsonResponse(post, []));
+		} else {
+			res.status(status).json(jsonResponse(null, [jsonError(null, "User is not in pact")]));
+		}		
 	} 
   catch (err) {
 		res.status(status).json(jsonResponse(null, [jsonError(null, err.message)]));

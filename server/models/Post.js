@@ -2,6 +2,12 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const PostSchema = mongoose.Schema({
+  pact: {
+    type: Schema.Types.ObjectId,
+    ref: 'Pact',
+    required: true
+  },
+
   author: {
     type: Schema.Types.ObjectId,
     ref: 'User',
@@ -26,7 +32,10 @@ const PostSchema = mongoose.Schema({
   },
 
   type: {
-    type: String
+    type: String,
+    enum: ["link", "image", "text"],
+    required: true,
+    default: "text"
   },
 
   votes: {
