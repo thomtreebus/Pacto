@@ -10,6 +10,7 @@ const University = require("../models/University");
 const User = require("../models/User");
 const emailHandler = require('../helpers/emailHandlers');
 const { JsonWebTokenError } = require("jsonwebtoken");
+const { MESSAGES } = require("../helpers/messages")
 
 jest.mock("../helpers/emailHandlers");
 dotenv.config();
@@ -27,8 +28,6 @@ const VERIFY_SUCCESS_RESPONSE_TEXT = "Success! You may now close this page."; //
 
 // post signup magic values
 const REAL_UNI_EMAIL = "aaron.monte@kcl.ac.uk";
-const NON_UNI_EMAIL_MESSAGE = "Email not associated with a UK university";
-const INVALID_PASSWORD_MESSAGE = "Password does not meet requirements";
 const FIRST_NAME = "John";
 const LAST_NAME = "Doe";
 const PASSWORD = "Password123";
@@ -307,116 +306,132 @@ describe("Authentication routes", () => {
 			expect(response.body.errors.length).toBe(0);
 		}
 
-		describe("reject firstName due to: ", () => {
-			it("blank", async () => {
+		describe("First name validation", () => {
+			it("rejects when blank", async () => {
 				await isInvalidCredentials(
 					"",
 					LAST_NAME,
 					REAL_UNI_EMAIL,
 					PASSWORD,
-					"Provide the first name",
+					MESSAGES.FIRST_NAME.BLANK,
 					"firstName"
 				);
 			});
-			it("contains numbers", async () => {
+
+			it("rejects when it contains numbers", async () => {
 				await isInvalidCredentials(
 					"123"+FIRST_NAME,
 					LAST_NAME,
 					REAL_UNI_EMAIL,
 					PASSWORD,
-					"Provide firstName without number",
+					MESSAGES.FIRST_NAME.CONTAINS_NUMBERS,
 					"firstName"
 				);
 			});
-			it("longer than 64 characters", async () => {
+
+			it("rejects if longer than 50 characters", async () => {
 				await isInvalidCredentials(
-					FIRST_NAME.repeat(300),
+					"x".repeat(51),
 					LAST_NAME,
 					REAL_UNI_EMAIL,
 					PASSWORD,
-					"Provide firstName shorter than 16 characters",
+					MESSAGES.FIRST_NAME.MAX_LENGTH_EXCEEDED,
 					"firstName"
 				);
 			});
 
+			it("accepts if exactly 50 characters", async () => {
+				await isValidCredentials(
+					"x".repeat(50),
+					LAST_NAME,
+					REAL_UNI_EMAIL,
+					PASSWORD
+				);
+			});
 		})
 
-		describe("reject lastName due to: ", () => {
-			it("blank", async () => {
+		describe("Last name validation", () => {
+			it("rejects when blank", async () => {
 				await isInvalidCredentials(
 					FIRST_NAME,
 					"",
 					REAL_UNI_EMAIL,
 					PASSWORD,
-					"Provide the last name",
+					MESSAGES.LAST_NAME.BLANK,
 					"lastName"
 				);
 			});
-
-			it("contains numbers", async () => {
+			it("rejects when it contains numbers", async () => {
 				await isInvalidCredentials(
 					FIRST_NAME,
 					"123"+LAST_NAME,
 					REAL_UNI_EMAIL,
 					PASSWORD,
-					"Provide lastName without number",
+					MESSAGES.LAST_NAME.CONTAINS_NUMBERS,
 					"lastName"
 				);
 			});
-
-			it("longer than 64 characters", async () => {
+			it("rejects if longer than 50 characters", async () => {
 				await isInvalidCredentials(
 					FIRST_NAME,
-					LAST_NAME.repeat(300),
+					"x".repeat(51),
 					REAL_UNI_EMAIL,
 					PASSWORD,
-					"Provide lastName shorter than 16 characters",
+					MESSAGES.LAST_NAME.MAX_LENGTH_EXCEEDED,
 					"lastName"
+				);
+			});
+			it("accepts if exactly 50 characters", async () => {
+				await isValidCredentials(
+					FIRST_NAME,
+					"x".repeat(50),
+					REAL_UNI_EMAIL,
+					PASSWORD
 				);
 			});
 		});
 
-		describe("reject incorrect email as: ", () => {
-			it("email is blank", async () => {
+		describe("University email validation", () => {
+			it("rejects when blank", async () => {
 				await isInvalidCredentials(
 					FIRST_NAME,
 					LAST_NAME,
 					"",
-					"Password123",
-					NON_UNI_EMAIL_MESSAGE,
+					PASSWORD,
+					MESSAGES.EMAIL.BLANK,
 					"uniEmail"
 				);
 			});
 
-			it("non uni email", async () => {
+			it("rejects when not a uni-associated email", async () => {
 				await isInvalidCredentials(
 					FIRST_NAME,
 					FIRST_NAME,
 					"john.doe@example.com",
 					PASSWORD,
-					NON_UNI_EMAIL_MESSAGE,
+					MESSAGES.EMAIL.UNI.NON_UNI_EMAIL,
 					"uniEmail"
 				);
 			});
 
-			it("invalid email format", async () => {
+			it("rejects when invalid email format", async () => {
 				await isInvalidCredentials(
 					FIRST_NAME,
 					LAST_NAME,
 					"john.doe",
 					PASSWORD,
-					NON_UNI_EMAIL_MESSAGE,
+					MESSAGES.EMAIL.INVALID_FORMAT,
 					"uniEmail"
 				);
 			});
 
-			it("email not unqiue", async () => {
+			it("rejects when email not unqiue", async () => {
 				await isInvalidCredentials(
 					FIRST_NAME,
 					LAST_NAME,
 					"pac.to@kcl.ac.uk",
 					PASSWORD,
-					"Email already exists",
+					MESSAGES.EMAIL.NOT_UNIQUE,
 					"uniEmail"
 				);
 			})
@@ -440,80 +455,87 @@ describe("Authentication routes", () => {
 			);
 		});
 
-		describe("reject password due to: ", () => {
-			it("blank password", async () => {
+		describe("Password validation", () => {
+			it("rejects when blank", async () => {
 				await isInvalidCredentials(
 					FIRST_NAME,
 					LAST_NAME,
 					REAL_UNI_EMAIL,
 					"",
-					INVALID_PASSWORD_MESSAGE,
+					MESSAGES.PASSWORD.BLANK,
 					"password"
 				);
 			});
 
-			it("password too long", async () => {
+			it("rejects when longer than 64 characters", async () => {
 				await isInvalidCredentials(
 					FIRST_NAME,
 					LAST_NAME,
 					REAL_UNI_EMAIL,
-					"a".repeat(3000),
-					INVALID_PASSWORD_MESSAGE,
+					"a".repeat(65),
+					MESSAGES.PASSWORD.MAX_LENGTH_EXCEEDED,
 					"password"
 				);
 			});
 
-			it("password too short", async () => {
+			it("accepts when 64 characters", async () => {
+				await isValidCredentials(
+					FIRST_NAME,
+					LAST_NAME,
+					REAL_UNI_EMAIL,
+					"P1" + "a".repeat(62)
+				);
+			});
+
+			it("rejects when below 8 characters", async () => {
 				await isInvalidCredentials(
 					FIRST_NAME,
 					LAST_NAME,
 					REAL_UNI_EMAIL,
-					"a".repeat(4),
-					INVALID_PASSWORD_MESSAGE,
+					"Pass123", // 7 chars
+					MESSAGES.PASSWORD.MIN_LENGTH_NOT_MET,
 					"password"
 				);
 			});
 
-			it("password does not contain number", async () => {
+			it("accepts when 8 characters", async () => {
+				await isInvalidCredentials(
+					FIRST_NAME,
+					LAST_NAME,
+					REAL_UNI_EMAIL,
+					"Passw123" // 8 chars
+				);
+			});
+
+			it("rejects when does not contain number", async () => {
 				await isInvalidCredentials(
 					FIRST_NAME,
 					LAST_NAME,
 					REAL_UNI_EMAIL,
 					"Password",
-					INVALID_PASSWORD_MESSAGE,
+					MESSAGES.PASSWORD.NO_NUMBERS,
 					"password"
 				);
 			});
 
-			it("password does not contain capital letter", async () => {
+			it("rejects when does not contain capital letter", async () => {
 				await isInvalidCredentials(
 					FIRST_NAME,
 					LAST_NAME,
 					REAL_UNI_EMAIL,
 					"passsword123",
-					INVALID_PASSWORD_MESSAGE,
+					MESSAGES.PASSWORD.NO_UPPERCASE,
 					"password"
 				);
 			});
 
-			it("password does not contain lower case character", async () => {
+			it("rejects when does not contain lowercase character", async () => {
 				await isInvalidCredentials(
 					FIRST_NAME,
 					LAST_NAME,
 					REAL_UNI_EMAIL,
 					"PASSWORD123",
-					INVALID_PASSWORD_MESSAGE,
-					"password"
-				);
-			});
-
-			it("password does not contain number", async () => {
-				await isInvalidCredentials(
-					FIRST_NAME,
-					LAST_NAME,
-					REAL_UNI_EMAIL,
-					"Password",
-					INVALID_PASSWORD_MESSAGE,
+					MESSAGES.PASSWORD.NO_LOWERCASE,
 					"password"
 				);
 			});
