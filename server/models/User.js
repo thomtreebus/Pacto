@@ -52,10 +52,6 @@ const UserSchema = Schema({
     type: String,
     required: false 
   },
-  university: {
-    type: String,
-    required: false
-  },
   active: { // Stores whether the user's email has been verified.
     type: Boolean,
     required: [true, 'Provide the active flag'],
