@@ -23,20 +23,14 @@ module.exports.createToken = createToken;
 
 // Helper function returns to give us errors as a json object.
 const handleFieldErrors = (err) => {
-  let fieldErrors = {};
-  if (err.code === 11000) {
-    fieldErrors.uniEmail = 'Email already exists';
-    // unique constraint is last checked for mongo, so we return here early.
-    return fieldErrors;
-  }
+  let fieldErrors = [];
   if (err.message.includes('Users validation failed')) {
     Object.values(err.errors).forEach(({ properties }) => {
-      fieldErrors[properties.path] = properties.message;
+      fieldErrors.push([properties.path, properties.message]);
     });
   }
   return fieldErrors;
 }
-
 
 // helper function to decide whether a password is valid.
 const validPassword = (password) => {
@@ -112,9 +106,10 @@ module.exports.signupPost = async (req, res) => {
 			jsonErrors.push(jsonError(null, err.message));
 		}
 	}
-
-	if(errorFound){
-		res.status(400).json(jsonResponse(null, jsonErrors));
+	finally {
+		if(errorFound){
+			res.status(400).json(jsonResponse(null, jsonErrors));
+		}
 	}
 };
 
