@@ -18,8 +18,7 @@ const getUrls = async (url) => {
     }
   }
   catch (err){
-    // returns empty json if there was some sort of error in the process.
-    return {};
+    throw Error("Error accessing universities json file.");
   }
 }
 

@@ -67,7 +67,7 @@ module.exports.signupPost = async (req, res) => {
 		}
 
 		let university = null;
-
+		
 		// Check if the provided email is associated with a domain in the university API.
 		const universityJson = await ApiCache(process.env.UNIVERSITY_API);
 		const userDomain = processedEmail.split('@')[1];
@@ -103,9 +103,13 @@ module.exports.signupPost = async (req, res) => {
 
 		// Convert mongoose errors into a nice format.
 		const allErrors = handleFieldErrors(err);
-    Object.entries(allErrors).forEach(([field, message]) =>{
-      jsonErrors.push(jsonError(field,message));
-    });
+    if(allErrors){
+			Object.entries(allErrors).forEach(([field, message]) =>{
+      	jsonErrors.push(jsonError(field,message));
+    	});
+		} else {
+			jsonErrors.push(jsonError(null, err.message));
+		}
 	}
 
 	if(errorFound){
