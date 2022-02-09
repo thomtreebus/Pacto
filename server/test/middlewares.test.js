@@ -69,6 +69,19 @@ describe("Middlewares", () => {
       expect(response.body.errors.length).toBe(1);
     });
 
+    it("rejects valid token for nonexisting user", async () => {
+      const user = await getTestUser();
+      
+      const token = createToken(user._id + 1);
+      const response = await supertest(app)
+        .get("/mockRoute")
+        .set("Cookie", [`jwt=${token}`]);
+      expect(response.body.message).toBe(null);
+      expect(response.body.errors[0].field).toBe(null);
+      expect(response.body.errors[0].message).toBe("You have to login");
+      expect(response.body.errors.length).toBe(1);
+    });
+
     it("accepts authorised access", async () => {
       const user = await getTestUser();
 
