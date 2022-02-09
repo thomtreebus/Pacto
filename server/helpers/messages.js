@@ -11,7 +11,7 @@ module.exports.MESSAGES = {
   },
   EMAIL: {
     BLANK: "Email cannot be blank",
-    INVALID_FORMAT: "Email must be formatted correctly",
+    INVALID_FORMAT: "Must be a valid email",
     NOT_UNIQUE: "Email already in use",
     UNI: {
       NON_UNI_EMAIL: "Email must be associated with a supported UK university"
