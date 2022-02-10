@@ -4,12 +4,12 @@ const { handleVerification } = require("../helpers/emailHandlers");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const { jsonResponse, jsonError } = require("../helpers/responseHandlers");
-const { async } = require("crypto-random-string");
 const ApiCache = require("../helpers/ApiCache");
 const University = require("../models/University");
 const { MESSAGES } = require("../helpers/messages");
-const {passwordValidators} = require('../helpers/customSignupValidators')
+const {passwordValidators} = require('../helpers/customSignupValidators');
 const { isEmail } = require('validator');
+const handleFieldErrors = require('../helpers/errorHandler');
 
 // Magic numbers
 const COOKIE_MAX_AGE = 432000; // 432000 = 5 days
@@ -22,23 +22,6 @@ const createToken = (id) => {
 	});
 };
 module.exports.createToken = createToken;
-
-// Helper function returns to give us errors as a json object.
-const handleFieldErrors = (err) => {
-  let fieldErrors = [];
-	if(err.code === 11000){
-		fieldErrors.push(jsonError('uniEmail', MESSAGES.EMAIL.NOT_UNIQUE));
-	}
-  if (err.message.includes('Users validation failed')) {
-    Object.values(err.errors).forEach((properties) => {
-      fieldErrors.push(jsonError(properties.path, properties.message));
-    });
-  }
-  return fieldErrors;
-}
-
-// helper function to decide whether a password is valid.
-
 
 // POST /signup
 module.exports.signupPost = async (req, res) => {

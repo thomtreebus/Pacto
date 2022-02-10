@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const { PACT_MESSAGES } = require('../helpers/messages');
 const Schema = mongoose.Schema;
 
 const PactSchema = mongoose.Schema({
@@ -11,12 +12,15 @@ const PactSchema = mongoose.Schema({
   university: {
     type: Schema.Types.ObjectId,
     ref: 'University',
-    required: true
+    required: [true, PACT_MESSAGES.UNIVERSITY.BLANK]
   },
 
   category: {
     type: String,
-    enum: ["society", "subject", "module", "other"],
+    enum: {
+      values : ["society", "course", "module", "other"],
+      message: PACT_MESSAGES.CATEGORY.INVALID_CHOICE 
+    },
     required: true,
     default: "other"
   },
@@ -38,8 +42,20 @@ const PactSchema = mongoose.Schema({
     required: true
   }],
 
+  image: {
+    type: String,
+    default: "https://avatars.dicebear.com/api/identicon/temp.svg"
+  },
+
   // POSTS AND EVENTS TO BE ADDED
 
+});
+
+PactSchema.pre('validate',  function(next) {
+  if(this.image.includes('dicebear.com')) {
+    this.image = `https://avatars.dicebear.com/api/identicon/${this.name}.svg`
+  }
+  next();
 });
 
 const Pact = mongoose.model('Pacts', PactSchema);
