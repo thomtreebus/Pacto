@@ -18,7 +18,7 @@ const PactSchema = mongoose.Schema({
   category: {
     type: String,
     enum: {
-      values : ["society", "subject", "module", "other"],
+      values : ["society", "course", "module", "other"],
       message: PACT_MESSAGES.CATEGORY.INVALID_CHOICE 
     },
     required: [true, PACT_MESSAGES.CATEGORY.BLANK],
