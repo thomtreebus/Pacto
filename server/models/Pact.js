@@ -21,13 +21,13 @@ const PactSchema = mongoose.Schema({
       values : ["society", "course", "module", "other"],
       message: PACT_MESSAGES.CATEGORY.INVALID_CHOICE 
     },
-    required: [true, PACT_MESSAGES.CATEGORY.BLANK],
+    required: true,
     default: "other"
   },
 
   description: {
     type: String,
-    required: [true, PACT_MESSAGES.DESCRIPTION.BLANK],
+    required: true,
     default: "A Pact that doesn't know what it wants to be..."
   },
   

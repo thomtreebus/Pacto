@@ -21,7 +21,7 @@ module.exports.pactPost = async (req, res) => {
 			moderators:[user]
 		}
 
-		// If the aatribute is in the body we can add it otherwise leave undefined
+		// If the attribute is in the body we can add it otherwise leave undefined
 		// If it is undefined mongo will use default values
 		optionalAttributes.forEach((attribute) => {
 			req.body[attribute] && (newPact[attribute] = req.body[attribute]);
@@ -41,7 +41,7 @@ module.exports.pactPost = async (req, res) => {
 		else {
 			jsonErrors.push(jsonError(null, err.message));
 		}
-		res.status(400).json(jsonResponse(null, allErrors));
+		res.status(400).json(jsonResponse(null, jsonErrors));
 	}
 };
 

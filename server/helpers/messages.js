@@ -49,10 +49,6 @@ module.exports.PACT_MESSAGES = {
     BLANK: "University cannot be blank",
   },
   CATEGORY: {
-    BLANK: "Category cannot be blank",
     INVALID_CHOICE: "The category must be either society, course, module or other",
   },
-  DESCRIPTION: {
-    BLANK: "Description cannot be blank",
-  }
 }

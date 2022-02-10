@@ -16,7 +16,8 @@ const errorHandler = (err) => {
     const field = Object.keys(err.keyValue)[0];
     fieldErrors.push(jsonError(field, getUniqueError(field)));
 	}
-  if (err.message.includes('Users validation failed')) {
+
+  if (err.message.includes('validation failed')) {
     Object.values(err.errors).forEach((properties) => {
       fieldErrors.push(jsonError(properties.path, properties.message));
     });
