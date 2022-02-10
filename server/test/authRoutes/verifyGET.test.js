@@ -26,6 +26,7 @@ describe("GET /verify", () => {
 
 	afterEach(async () => {
 		await User.deleteMany({});
+    await EmailVerificationCode.deleteMany({});
 		await University.deleteMany({});
 	});
   
@@ -60,7 +61,7 @@ describe("GET /verify", () => {
     const response = await getVerifyWithCode(VERIFICATION_CODE);
     isResponseSuccessful(response);
 
-    const user = await User.findOne({ uniEmail: TEST_USER_EMAIL });
+    const user = await User.findOne({ uniEmail: getEmail() });
     expect(user.active).toBe(true);
   });
 
@@ -68,7 +69,7 @@ describe("GET /verify", () => {
     const response = await getVerifyWithCode(VERIFICATION_CODE + "gibberish");
     isResponseUnsuccessful(response);
 
-    const user = await User.findOne({ uniEmail: TEST_USER_EMAIL });
+    const user = await User.findOne({ uniEmail: getEmail() });
     expect(user.active).toBe(false);
   });
 
@@ -76,14 +77,14 @@ describe("GET /verify", () => {
     const response = await getVerifyWithCode("");
     isResponseUnsuccessful(response, MISSING_CODE);
 
-    const user = await User.findOne({ uniEmail: TEST_USER_EMAIL });
+    const user = await User.findOne({ uniEmail: getEmail() });
     expect(user.active).toBe(false);
   });
 
   it("identifies already used code as invalid, with user object not affected", async () => {
     const response = await getVerifyWithCode(VERIFICATION_CODE);
     isResponseSuccessful(response);
-    const user = await User.findOne({ uniEmail: TEST_USER_EMAIL });
+    const user = await User.findOne({ uniEmail: getEmail() });
     expect(user.active).toBe(true);
 
     const responseAfterSuccess = await getVerifyWithCode(VERIFICATION_CODE);
