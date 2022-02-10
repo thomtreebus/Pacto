@@ -1,4 +1,4 @@
-import { Box, Typography, TextField, Grid } from "@mui/material";
+import { Box, Typography, Grid, Card, Fab } from "@mui/material";
 import Tab from "@mui/material/Tab";
 import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
@@ -6,75 +6,18 @@ import { useState } from "react";
 import background from "../assets/hub-background.jpg";
 import { Divider } from "@mui/material";
 import PactCard from "../components/PactCard";
+import InputBase from "@mui/material/InputBase";
+import IconButton from "@mui/material/IconButton";
+import SearchIcon from "@mui/icons-material/Search";
+import CloseIcon from "@mui/icons-material/Close";
+import AddIcon from "@mui/icons-material/Add";
+import { useHistory } from "react-router-dom";
+import tempPacts from "../tests/utils/testPacts";
 
 export default function UniversityHubPage() {
+	const [search, setSearch] = useState("");
 	const [category, setCategory] = useState("all");
-
-	const tempPacts = [
-		{
-			name: "Pact1",
-			description: "No description provided",
-			category: "subjects",
-			tags: ["apple", "ball"],
-			members: ["jeff", "jhon"],
-		},
-		{
-			name: "Pact2",
-			description: "description retracted",
-			category: "courses",
-			tags: ["cat", "dog"],
-			members: ["jane"],
-		},
-		{
-			name: "Pact3",
-			description: "No description provided",
-			category: "other",
-			tags: ["elephant", "fish"],
-			members: ["alice", "bob", "charlie"],
-		},
-		{
-			name: "Pact1",
-			description: "No description provided",
-			category: "subjects",
-			tags: ["apple", "ball"],
-			members: ["jeff", "jhon"],
-		},
-		{
-			name: "Pact2",
-			description: "description retracted",
-			category: "courses",
-			tags: ["cat", "dog"],
-			members: ["jane"],
-		},
-		{
-			name: "Pact3",
-			description: "No description provided",
-			category: "other",
-			tags: ["elephant", "fish"],
-			members: ["alice", "bob", "charlie"],
-		},
-		{
-			name: "Pact1",
-			description: "No description provided",
-			category: "subjects",
-			tags: ["apple", "ball"],
-			members: ["jeff", "jhon"],
-		},
-		{
-			name: "Pact2",
-			description: "description retracted",
-			category: "courses",
-			tags: ["cat", "dog"],
-			members: ["jane"],
-		},
-		{
-			name: "Pact3",
-			description: "No description provided",
-			category: "other",
-			tags: ["elephant", "fish"],
-			members: ["alice", "bob", "charlie"],
-		},
-	];
+	const history = useHistory();
 
 	const handleChange = (category, newCategory) => {
 		setCategory(newCategory);
@@ -103,7 +46,7 @@ export default function UniversityHubPage() {
 					flexDirection: "column",
 					justifyContent: "center",
 					alignItems: "center",
-					textShadow: "1px 1px grey",
+					textShadow: "1px 1.5px #1a237e",
 					color: "white",
 				}}
 			>
@@ -111,22 +54,32 @@ export default function UniversityHubPage() {
 					Find your pact
 				</Typography>
 				<Typography variant="h5" sx={{ fontWeight: "bold" }}>
-					There's a pact for everything if not make one...
+					There's a pact for everything if not, make one...
 				</Typography>
-				<TextField
-					id="outlined-basic"
-					label="Search"
-					variant="filled"
-					size="small"
+				<Card
 					sx={{
-						backgroundColor: "white",
-						textShadow: "none",
-						margin: "10px",
-						width: "300px",
-						borderRadius: "5px",
-						overflow: "hidden",
+						p: "2px 4px",
+						marginTop: "10px",
+						display: "flex",
+						alignItems: "center",
+						width: 400,
 					}}
-				/>
+				>
+					<InputBase
+						sx={{ ml: 1, flex: 1 }}
+						placeholder="Search Pacts"
+						value={search}
+						onChange={(e) => setSearch(e.target.value)}
+					/>
+					<IconButton
+						sx={{ p: "10px" }}
+						disabled={!search}
+						color="primary"
+						onClick={() => setSearch("")}
+					>
+						{search ? <CloseIcon /> : <SearchIcon />}
+					</IconButton>
+				</Card>
 			</Box>
 			<Divider sx={{ marginTop: "15px" }} />
 			<Box>
@@ -140,22 +93,30 @@ export default function UniversityHubPage() {
 					>
 						<TabList onChange={handleChange} aria-label="lab API tabs example">
 							<Tab label="All" value="all" />
-							<Tab label="Subjects" value="subjects" />
+							<Tab label="Courses" value="courses" />
 							<Tab label="Modules" value="modules" />
+							<Tab label="Socities" value="socities" />
 							<Tab label="Other" value="other" />
 						</TabList>
 					</Box>
 				</TabContext>
 			</Box>
 			<Grid container spacing={2}>
-				{tempPacts.map((pact) => (
+				{tempPacts.map((pact, index) => (
 					<PactCard
 						pact={pact}
-						id={pact}
+						key={index}
 						joined={Math.floor(Math.random() * 10) > 4}
 					/>
 				))}
 			</Grid>
+			<Fab
+				aria-label="add"
+				sx={{ position: "absolute", top: 75, right: 250 }}
+				onClick={() => history.push("/create-pact")}
+			>
+				<AddIcon />
+			</Fab>
 		</Box>
 	);
 }

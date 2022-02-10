@@ -4,16 +4,32 @@ import { CardContent, Typography, CardActions } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import PeopleAltRoundedIcon from "@mui/icons-material/PeopleAltRounded";
+import PactChip from "./PactChip";
 
 export default function PactCard({ pact, joined }) {
 	return (
 		<Grid item xs={3}>
 			<Card sx={{ maxWidth: 345 }}>
-				<CardHeader avatar={<Avatar>P</Avatar>} title={pact.name} />
+				<CardHeader
+					avatar={<Avatar>P</Avatar>}
+					title={pact.name}
+					sx={{ paddingBlock: 1 }}
+				/>
 				<CardContent>
-					<Typography variant="body2" sx={{ marginBottom: "10px" }}>
-						{pact.description}
-					</Typography>
+					<Box
+						sx={{
+							display: "flex",
+							flexDirection: "column",
+							alignItems: "flex-start",
+							gap: "10px",
+						}}
+					>
+						<PactChip pact={pact} />
+						<Typography variant="body2" sx={{ marginBottom: "10px" }}>
+							{pact.description}
+						</Typography>
+					</Box>
+
 					<Box
 						sx={{
 							alignItems: "center",

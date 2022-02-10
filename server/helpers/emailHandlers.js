@@ -4,9 +4,6 @@ const cryptoRandomString = require('crypto-random-string');
 const dotenv = require('dotenv');
 dotenv.config();
 
-// We are currently set up using nodemailer test account.
-// We should create a dedicated account.
-
 const createTransporter = async () => { 
 
   return nodemailer.createTransport({

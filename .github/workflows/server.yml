@@ -36,3 +36,9 @@ jobs:
         env:
           CI: true
           TEST_DB_CONNECTION_URL: ${{ secrets.TEST_DB_CONNECTION_URL }}
+          GMAIL_USER: ${{ secrets.GMAIL_USER }}
+          GMAIL_PASS: ${{ secrets.GMAIL_PASS }}
+          CLOUDINARY: ${{ secrets.CLOUDINARY }}
+          CLOUDINARY_KEY: ${{ secrets.CLOUDINARY_KEY }}
+          CLOUDINARY_SECRET: ${{ secrets.CLOUDINARY_SECRET }}
+          UNIVERSITY_API: ${{ secrets.UNIVERSITY_API }}

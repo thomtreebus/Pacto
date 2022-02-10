@@ -1,4 +1,6 @@
 import React, { useContext, useState, useEffect } from "react";
+import Loading from "../pages/Loading";
+import Error from "../pages/Error";
 
 const AuthContext = React.createContext();
 
@@ -39,19 +41,19 @@ export default function AuthProvider({ children }) {
 	useEffect(() => {
 		fetchUser();
 		return () => {
-      setUser(null);
+			setUser(null);
 			setError(null);
 			setIsLoading(true); //This might need to be set to false.
 			setIsAuthenticated(false);
-    };
+		};
 	}, []);
 
 	if (isLoading) {
-		return <h1>Loading</h1>;
+		return <Loading />;
 	}
 
 	if (error) {
-		return <h1>Error: {error}</h1>;
+		return <Error error={error} />;
 	}
 
 	return (
