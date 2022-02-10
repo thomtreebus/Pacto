@@ -30,6 +30,7 @@ describe("GET /logout", () => {
     await user.save();
   });
 
+  // Tests
   it("clears the cookie even for non-logged in users", async () => {
     const response = await supertest(app)
       .get("/logout")

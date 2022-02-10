@@ -12,6 +12,7 @@ const { generateTestUser } = require("../fixtures/generateTestUser");
 jest.mock("../../helpers/emailHandlers");
 dotenv.config();
 
+// Magic values
 const REAL_UNI_EMAIL = "aaron.monte@kcl.ac.uk";
 const FIRST_NAME = "John";
 const LAST_NAME = "Doe";
@@ -38,6 +39,7 @@ describe("POST /signup", () => {
 		await University.deleteMany({});
 	});
 
+  // Helpers
   async function isInvalidCredentials(firstName, lastName, uniEmail, password, msg = INCORRECT_CREDENTIALS, field=null) {
     const response = await supertest(app)
       .post("/signup")
@@ -75,6 +77,7 @@ describe("POST /signup", () => {
     expect(response.body.errors.length).toBe(0);
   }
 
+  // Tests
   describe("First name validation", () => {
     it("rejects when blank", async () => {
       await isInvalidCredentials(

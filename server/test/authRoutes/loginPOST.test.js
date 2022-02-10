@@ -7,7 +7,7 @@ const User = require("../../models/User");
 const University = require("../../models/University");
 const { generateTestUser, getEmail } = require('../fixtures/generateTestUser');
 
-// post login magic values
+// Magic values
 const INCORRECT_CREDENTIALS = "Incorrect credentials.";
 const INACTIVE_ACCOUNT = "University email not yet verified.";
 
@@ -33,6 +33,7 @@ describe("POST /login", () => {
     await user.save();
   });
 
+  // Helpers
   async function isInvalidCredentials(uniEmail, password,	msg = INCORRECT_CREDENTIALS) {
     const response = await supertest(app)
       .post("/login")
@@ -66,7 +67,8 @@ describe("POST /login", () => {
     expect(response.body.errors.length).toBe(0);
   }
 
-  // Not using TEST_USER_EMAIL due to nature of these tests.
+  // Tests
+  // Not using getEmail for invalid inputs
   it("rejects invalid email", async () => {
     await isInvalidCredentials("pac.to", "Password123");
   });
