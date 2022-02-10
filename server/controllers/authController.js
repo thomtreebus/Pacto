@@ -159,7 +159,6 @@ module.exports.loginPost = async (req, res) => {
 // GET /logout
 module.exports.logoutGet = (req, res) => {
 	res.cookie("jwt", "", { maxAge: 1 });
-	// console.log(req.user);
 	res.status(200).json(jsonResponse(null, []));
 };
 
