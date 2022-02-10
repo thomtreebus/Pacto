@@ -3,7 +3,7 @@ import Axios from 'axios';
 import { useHistory } from "react-router-dom";
 import { useState } from "react";
 import { useAuth } from '../providers/AuthProvider';
-import { Image } from 'cloudinary-react';
+import { Image, Transformation } from 'cloudinary-react';
 import Grid from '@mui/material/Grid';
 import Stack from '@mui/material/Stack';
 import { styled } from '@mui/material/styles';
@@ -91,11 +91,11 @@ export default function Profile() {
       alignItems="stretch">
       <Grid item direction="column" xs={4}>
         <Image
-          style={{ width: "250px", height: "250px", borderRadius: "10px" }}
-          alt="Profile Picture"
+          style={{width: "100%", minWidth: "50%", minHeight: "25%", borderRadius: "10px", overflow: "hidden", position: "relative", }}
           cloudName={`${process.env.REACT_APP_CLOUDINARY_CLOUD_NAME}`}
           publicID={image}
-        />
+        >
+        </Image>
         <Stack direction="row" alignItems="center" spacing={2}>
           <label htmlFor="contained-button-file">
             <Input
@@ -109,7 +109,6 @@ export default function Profile() {
           </label>
           <Button
               fullWidth
-              label="Upload Image"
               variant="contained"
               component="span"
               onClick={uploadImage}
@@ -140,7 +139,7 @@ export default function Profile() {
           ),
           }}
           sx={{
-            marginTop: 2
+            marginTop: 1
           }}
         />
         <TextField
@@ -148,6 +147,7 @@ export default function Profile() {
           label="Course"
           variant="outlined"
           size="small"
+          fullWidth
           defaultValue={user.course}
           onChange={(e) => setCourse(e.target.value)}
           InputProps={{
@@ -171,9 +171,9 @@ export default function Profile() {
         <Divider sx={{ marginTop: 1, width: "97%" }} />
         <TextField
           name="linkedin"
-          label="LinkedIn"
           variant="outlined"
           size="small"
+          fullWidth
           defaultValue={user.linkedin}
           onChange={(e) => setLinkedin(e.target.value)}
           InputProps={{
@@ -189,9 +189,9 @@ export default function Profile() {
         />
         <TextField
           name="instagram"
-          label="Instagram"
           variant="outlined"
           size="small"
+          fullWidth
           defaultValue={user.instagram}
           onChange={(e) => setInstagram(e.target.value)}
           InputProps={{
@@ -207,9 +207,9 @@ export default function Profile() {
         />
         <TextField
           name="phone"
-          label="Phone Number"
           variant="outlined"
           size="small"
+          fullWidth
           defaultValue={user.phone}
           onChange={(e) => setPhone(e.target.value)}
           InputProps={{
@@ -241,13 +241,10 @@ export default function Profile() {
           }}
         />
         <Button
-          label="Update Profile"
           sx={{float: "right", marginTop: 30}}
           variant="contained"
           type="submit"
         >
-          
-          
           Update Profile
         </Button>
       </Grid>
