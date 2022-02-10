@@ -132,18 +132,18 @@ module.exports.loginPost = async (req, res) => {
 		const user = await User.findOne({ uniEmail });
 
 		if (!user) {
-			throw Error("Incorrect credentials.");
+			throw Error(MESSAGES.LOGIN.INVALID_CREDENTIALS);
 		}
 
 		// Check input vs hashed, stored password
 		const auth = await bcrypt.compare(password, user.password);
 
 		if (!auth) {
-			throw Error("Incorrect credentials.");
+			throw Error(MESSAGES.LOGIN.INVALID_CREDENTIALS);
 		}
 
 		if (!user.active) {
-			throw Error("University email not yet verified.");
+			throw Error(MESSAGES.LOGIN.INACTIVE_ACCOUNT);
 		}
 
 		// Generate cookie to log in user

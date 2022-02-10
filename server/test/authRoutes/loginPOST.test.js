@@ -6,10 +6,7 @@ const Cookies = require("expect-cookies");
 const User = require("../../models/User");
 const University = require("../../models/University");
 const { generateTestUser, getEmail } = require('../fixtures/generateTestUser');
-
-// Magic values
-const INCORRECT_CREDENTIALS = "Incorrect credentials.";
-const INACTIVE_ACCOUNT = "University email not yet verified.";
+const { MESSAGES } = require("../../helpers/messages");
 
 dotenv.config();
 
@@ -34,7 +31,7 @@ describe("POST /login", () => {
   });
 
   // Helpers
-  async function isInvalidCredentials(uniEmail, password,	msg = INCORRECT_CREDENTIALS) {
+  async function isInvalidCredentials(uniEmail, password,	msg = MESSAGES.LOGIN.INVALID_CREDENTIALS) {
     const response = await supertest(app)
       .post("/login")
       .send({
@@ -97,7 +94,7 @@ describe("POST /login", () => {
     await isInvalidCredentials(
       "pac.to@kcl.ac.uk",
       "Password123",
-      INACTIVE_ACCOUNT
+      MESSAGES.LOGIN.INACTIVE_ACCOUNT
     );
   });
 });
