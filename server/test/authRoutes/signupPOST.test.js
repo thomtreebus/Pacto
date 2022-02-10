@@ -1,7 +1,6 @@
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const supertest = require("supertest");
-const bcrypt = require("bcrypt");
 const app = require("../app");
 const Cookies = require("expect-cookies");
 const { createToken } = require("../controllers/authController");

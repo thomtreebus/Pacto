@@ -22,26 +22,6 @@ const MISSING_CODE = "Code query empty.";
 const INVALID_CODE = "Invalid or expired code.";
 const VERIFY_SUCCESS_RESPONSE_TEXT = "Success! You may now close this page."; // recall this is a special case
 
-// global helpers and magic values
-const TEST_USER_EMAIL = "pac.to@kcl.ac.uk";
-const generateTestUser = async () => {
-	const uni = await University.create( { name: "kcl", domains: ["kcl.ac.uk"] });
-
-	const salt = await bcrypt.genSalt(SALT_ROUNDS);
-	const hashedPassword = await bcrypt.hash("Password123", salt);
-
-	const user = await User.create({
-		firstName: "pac",
-		lastName: "to",
-		uniEmail: TEST_USER_EMAIL,
-		password: hashedPassword,
-		university: uni
-	});
-
-	await uni.users.push(user);
-	await uni.save();
-	return user;
-};
 
 describe("Authentication routes", () => {
 	beforeAll(async () => {
