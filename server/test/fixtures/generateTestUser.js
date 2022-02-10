@@ -1,7 +1,8 @@
-const University = require("../models/University");
-const User = require("../models/User");
+const University = require("../../models/University");
+const User = require("../../models/User");
 const bcrypt = require("bcrypt");
 
+const SALT_ROUNDS = 10;
 module.exports.generateTestUser = async () => {
   // Dummy uni
 	const uni = await University.create( { name: "kcl", domains: ["kcl.ac.uk"] });

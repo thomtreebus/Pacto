@@ -1,17 +1,14 @@
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const supertest = require("supertest");
-const app = require("../app");
-const Cookies = require("expect-cookies");
-const { createToken } = require("../controllers/authController");
-const University = require("../models/University");
-const User = require("../models/User");
-const emailHandler = require('../helpers/emailHandlers');
-const { JsonWebTokenError } = require("jsonwebtoken");
-const { MESSAGES } = require("../helpers/messages");
+const app = require("../../app");
+const University = require("../../models/University");
+const User = require("../../models/User");
+const emailHandler = require('../../helpers/emailHandlers');
+const { MESSAGES } = require("../../helpers/messages");
 const { generateTestUser } = require('../fixtures/generateTestUser');
 
-jest.mock("../helpers/emailHandlers");
+jest.mock("../../helpers/emailHandlers");
 dotenv.config();
 
 const REAL_UNI_EMAIL = "aaron.monte@kcl.ac.uk";
@@ -36,7 +33,6 @@ describe("POST /signup", () => {
 
 	afterEach(async () => {
 		await User.deleteMany({});
-		await EmailVerificationCode.deleteMany({});
 		await University.deleteMany({});
 	});
 

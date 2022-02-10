@@ -12,9 +12,7 @@ const { JsonWebTokenError } = require("jsonwebtoken");
 const { MESSAGES } = require("../helpers/messages");
 const { generateTestUser } = require('./fixtures/generateTestUser');
 
-
 // post login magic values
-const SALT_ROUNDS = 10;
 const INCORRECT_CREDENTIALS = "Incorrect credentials.";
 const INACTIVE_ACCOUNT = "University email not yet verified.";
 
