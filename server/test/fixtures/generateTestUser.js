@@ -3,6 +3,7 @@ const User = require("../../models/User");
 const bcrypt = require("bcrypt");
 
 const SALT_ROUNDS = 10;
+const USER_EMAIL = "pac.to@kcl.ac.uk";
 module.exports.generateTestUser = async () => {
   // Dummy uni
 	const uni = await University.create( { name: "kcl", domains: ["kcl.ac.uk"] });
@@ -13,7 +14,7 @@ module.exports.generateTestUser = async () => {
 	const user = await User.create({
 		firstName: "pac",
 		lastName: "to",
-		uniEmail: "pac.to@kcl.ac.uk",
+		uniEmail: USER_EMAIL,
 		password: hashedPassword,
 		university: uni
 	});
@@ -22,3 +23,5 @@ module.exports.generateTestUser = async () => {
 	await uni.save();
 	return user;
 };
+
+module.exports.getEmail = () => {return USER_EMAIL;}

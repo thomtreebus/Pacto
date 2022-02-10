@@ -6,11 +6,13 @@ const Cookies = require("expect-cookies");
 const { createToken } = require("../../controllers/authController");
 const User = require("../../models/User");
 const University = require("../../models/University");
-const { generateTestUser } = require('../fixtures/generateTestUser');
+const { generateTestUser, getEmail } = require('../fixtures/generateTestUser');
 
 // post login magic values
 const INCORRECT_CREDENTIALS = "Incorrect credentials.";
 const INACTIVE_ACCOUNT = "University email not yet verified.";
+
+
 
 dotenv.config();
 
@@ -90,7 +92,7 @@ describe("POST /login", () => {
 
   it("rejects inactive user with correct credentials", async () => {
     await User.findOneAndUpdate(
-      { uniEmail: TEST_USER_EMAIL },
+      { uniEmail: getEmail() },
       { active: false }
     );
     await isInvalidCredentials(
@@ -98,32 +100,5 @@ describe("POST /login", () => {
       "Password123",
       INACTIVE_ACCOUNT
     );
-  });
-});
-
-describe("GET /logout", () => {
-  beforeEach(async () => {
-    const user = await generateTestUser();
-    user.active = true;
-    await user.save();
-  });
-
-  it("clears the cookie even for non-logged in users", async () => {
-    const response = await supertest(app)
-      .get("/logout")
-      .expect(Cookies.set({name: "jwt", options: ["max-age"]}));
-
-    expect(response.statusCode).toBe(200);
-  });
-
-  it("returns OK and cookie with max-age set when user logged in", async () => {
-    const user = await User.findOne({ uniEmail: TEST_USER_EMAIL });
-    const token = createToken(user._id);
-    const response = await supertest(app)
-      .get("/logout")
-      .set("Cookie", [`jwt=${token}`])
-      .expect(Cookies.set({name: "jwt", options: ["max-age"]}));
-
-    expect(response.statusCode).toBe(200);
   });
 });
