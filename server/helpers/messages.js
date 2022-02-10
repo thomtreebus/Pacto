@@ -36,3 +36,16 @@ module.exports.MESSAGES = {
     SUCCESS_RESPONSE_WHOLE_BODY: "Success! You may now close this page."
   }
 }
+
+module.exports.PACT_MESSAGES = {
+  UNIVERSITY: {
+    BLANK: "University cannot be blank",
+  },
+  CATEGORY: {
+    BLANK: "Category cannot be blank",
+    INVALID_CHOICE: "The category must be either society, subject, module or other",
+  },
+  DESCRIPTION: {
+    BLANK: "Category cannot be blank",
+  }
+}

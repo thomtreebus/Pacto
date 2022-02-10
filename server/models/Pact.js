@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const { PACT_MESSAGES } = require('../helpers/messages');
 const Schema = mongoose.Schema;
 
 const PactSchema = mongoose.Schema({
@@ -11,19 +12,22 @@ const PactSchema = mongoose.Schema({
   university: {
     type: Schema.Types.ObjectId,
     ref: 'University',
-    required: true
+    required: [true, PACT_MESSAGES.UNIVERSITY.BLANK]
   },
 
   category: {
     type: String,
-    enum: ["society", "subject", "module", "other"],
-    required: true,
+    enum: {
+      values : ["society", "subject", "module", "other"],
+      message: PACT_MESSAGES.CATEGORY.INVALID_CHOICE 
+    },
+    required: [true, PACT_MESSAGES.CATEGORY.BLANK],
     default: "other"
   },
 
   description: {
     type: String,
-    required: true,
+    required: [true, PACT_MESSAGES.DESCRIPTION.BLANK],
     default: "A Pact that doesn't know what it wants to be..."
   },
   
