@@ -2,7 +2,7 @@ const University = require("../models/University");
 const User = require("../models/User");
 const bcrypt = require("bcrypt");
 
-const generateTestUser = async () => {
+module.exports.generateTestUser = async () => {
   // Dummy uni
 	const uni = await University.create( { name: "kcl", domains: ["kcl.ac.uk"] });
 

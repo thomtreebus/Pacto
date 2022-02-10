@@ -8,7 +8,8 @@ const University = require("../models/University");
 const User = require("../models/User");
 const emailHandler = require('../helpers/emailHandlers');
 const { JsonWebTokenError } = require("jsonwebtoken");
-const { MESSAGES } = require("../helpers/messages")
+const { MESSAGES } = require("../helpers/messages");
+const { generateTestUser } = require('../fixtures/generateTestUser');
 
 jest.mock("../helpers/emailHandlers");
 dotenv.config();

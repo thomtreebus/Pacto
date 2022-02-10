@@ -9,7 +9,9 @@ const { createToken } = require("../controllers/authController");
 const University = require("../models/University");
 const User = require("../models/User");
 const { JsonWebTokenError } = require("jsonwebtoken");
-const { MESSAGES } = require("../helpers/messages")
+const { MESSAGES } = require("../helpers/messages");
+const { generateTestUser } = require('./fixtures/generateTestUser');
+
 
 // post login magic values
 const SALT_ROUNDS = 10;
