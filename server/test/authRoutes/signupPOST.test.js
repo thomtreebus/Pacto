@@ -3,10 +3,11 @@ const dotenv = require("dotenv");
 const supertest = require("supertest");
 const app = require("../../app");
 const University = require("../../models/University");
+const EmailVerificationCode = require("../../models/EmailVerificationCode");
 const User = require("../../models/User");
 const emailHandler = require('../../helpers/emailHandlers');
 const { MESSAGES } = require("../../helpers/messages");
-const { generateTestUser } = require('../fixtures/generateTestUser');
+const { generateTestUser } = require("../fixtures/generateTestUser");
 
 jest.mock("../../helpers/emailHandlers");
 dotenv.config();
@@ -33,6 +34,7 @@ describe("POST /signup", () => {
 
 	afterEach(async () => {
 		await User.deleteMany({});
+    await EmailVerificationCode.deleteMany({});
 		await University.deleteMany({});
 	});
 
