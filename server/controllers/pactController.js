@@ -7,6 +7,8 @@ const handleFieldErrors = require('../helpers/errorHandler');
 
 // POST pact
 module.exports.pactPost = async (req, res) => {
+	let jsonErrors = [];
+
 	try {
 		const user = req.user;
     const { name } = req.body;
@@ -39,7 +41,7 @@ module.exports.pactPost = async (req, res) => {
 		else {
 			jsonErrors.push(jsonError(null, err.message));
 		}
-		res.status(400).json(jsonResponse(null, [jsonError(null, err.message)]));
+		res.status(400).json(jsonResponse(null, allErrors));
 	}
 };
 
