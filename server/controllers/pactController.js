@@ -10,6 +10,8 @@ module.exports.pactPost = async (req, res) => {
     const user = req.user;
 
     const pact = await Pact.create({ name, university:user.university, members:[user], moderators:[user] });
+		req.user.university.pacts.push(pact);
+		req.user.university.save();
 
 		res.status(201).json(jsonResponse(pact, []));
 	} 
@@ -31,7 +33,7 @@ module.exports.pactsGet = async (req, res) => {
 		pacts.forEach(async pact => {
 			await pact.populate({path: 'members', model: User})
 			.populate({path: 'moderators', model: User})
-			.populate({path: 'university', model: Univeristy});
+			.populate({path: 'university', model: University});
 		});
 
 		res.status(200).json(jsonResponse(pacts, []));
