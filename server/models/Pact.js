@@ -42,8 +42,21 @@ const PactSchema = mongoose.Schema({
     required: true
   }],
 
+  image: {
+    type: String,
+    default: "https://avatars.dicebear.com/api/identicon/temp.svg"
+  },
+
   // POSTS AND EVENTS TO BE ADDED
 
+});
+
+PactSchema.pre('validate',  function(next) {
+  if(this.image.includes('dicebear.com')) {
+    console.log(this.image)
+    this.image = `https://avatars.dicebear.com/api/identicon/${this.name}.svg`
+  }
+  next();
 });
 
 const Pact = mongoose.model('Pacts', PactSchema);
