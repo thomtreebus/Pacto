@@ -6,14 +6,12 @@ const app = require("../../app");
 const University = require("../../models/University");
 const User = require("../../models/User");
 const { generateTestUser, getEmail } = require('../fixtures/generateTestUser');
+const { MESSAGES } = require("../../helpers/messages");
 
 dotenv.config();
 
 // Magic values
 const VERIFICATION_CODE = "kaushik12";
-const MISSING_CODE = "Code query empty.";
-const INVALID_CODE = "Invalid or expired code.";
-const VERIFY_SUCCESS_RESPONSE_TEXT = "Success! You may now close this page."; // recall this is a special case
 
 describe("GET /verify", () => {
   beforeAll(async () => {
@@ -45,7 +43,7 @@ describe("GET /verify", () => {
     return response;
   }
 
-  async function isResponseUnsuccessful(response, msg = INVALID_CODE) {
+  async function isResponseUnsuccessful(response, msg = MESSAGES.VERIFICATION.INVALID_CODE) {
     expect(response.statusCode).toBe(400);
     expect(response.body.errors.length).toBe(1);
     expect(response.body.errors[0].message).toBe(msg);
@@ -53,7 +51,7 @@ describe("GET /verify", () => {
 
   async function isResponseSuccessful(response) {
     expect(response.statusCode).toBe(200);
-    expect(response.text).toBe(VERIFY_SUCCESS_RESPONSE_TEXT);
+    expect(response.text).toBe(MESSAGES.VERIFICATION.SUCCESS_RESPONSE_WHOLE_BODY);
   }
 
   // Tests
@@ -75,7 +73,7 @@ describe("GET /verify", () => {
 
   it("fails to verify inactive user with no code param", async () => {
     const response = await getVerifyWithCode("");
-    isResponseUnsuccessful(response, MISSING_CODE);
+    isResponseUnsuccessful(response, MESSAGES.VERIFICATION.MISSING_CODE);
 
     const user = await User.findOne({ uniEmail: getEmail() });
     expect(user.active).toBe(false);
