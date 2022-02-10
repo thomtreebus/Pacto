@@ -1,22 +1,33 @@
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
-const EmailVerificationCode = require("../models/EmailVerificationCode");
 const supertest = require("supertest");
-const bcrypt = require("bcrypt");
-const app = require("../app");
+const app = require("../../app");
 const Cookies = require("expect-cookies");
-const { createToken } = require("../controllers/authController");
-const University = require("../models/University");
-const User = require("../models/User");
-const { JsonWebTokenError } = require("jsonwebtoken");
-const { MESSAGES } = require("../helpers/messages");
-const { generateTestUser } = require('./fixtures/generateTestUser');
+const { createToken } = require("../../controllers/authController");
+const User = require("../../models/User");
+const University = require("../../models/University");
+const { generateTestUser } = require('../fixtures/generateTestUser');
 
 // post login magic values
 const INCORRECT_CREDENTIALS = "Incorrect credentials.";
 const INACTIVE_ACCOUNT = "University email not yet verified.";
 
+dotenv.config();
+
 describe("POST /login", () => {
+  beforeAll(async () => {
+		await mongoose.connect(process.env.TEST_DB_CONNECTION_URL);
+	});
+
+	afterAll(async () => {
+		await mongoose.connection.close();
+	});
+
+	afterEach(async () => {
+		await User.deleteMany({});
+		await University.deleteMany({});
+	});
+
   beforeEach(async () => {
     const user = await generateTestUser();
     user.active = true;
