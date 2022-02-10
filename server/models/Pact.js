@@ -53,7 +53,6 @@ const PactSchema = mongoose.Schema({
 
 PactSchema.pre('validate',  function(next) {
   if(this.image.includes('dicebear.com')) {
-    console.log(this.image)
     this.image = `https://avatars.dicebear.com/api/identicon/${this.name}.svg`
   }
   next();
