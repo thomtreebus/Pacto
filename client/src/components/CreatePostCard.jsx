@@ -95,7 +95,6 @@ export default function CreatePostCard() {
             </IconButton>
           </label>
         </Stack>
-
         <Button variant="contained" sx={{marginTop: '8px'}}>Post</Button>
       </TabPanel>
       <TabPanel value={value} index={2}>
