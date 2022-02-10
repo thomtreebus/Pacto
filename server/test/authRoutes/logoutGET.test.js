@@ -1,12 +1,12 @@
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const supertest = require("supertest");
-const app = require("../app");
+const app = require("../../app");
 const Cookies = require("expect-cookies");
-const { createToken } = require("../controllers/authController");
-const University = require("../models/University");
-const User = require("../models/User");
-const { generateTestUser } = require('./fixtures/generateTestUser');
+const { createToken } = require("../../controllers/authController");
+const University = require("../../models/University");
+const User = require("../../models/User");
+const { generateTestUser, getEmail } = require('../fixtures/generateTestUser');
 
 dotenv.config();
 
