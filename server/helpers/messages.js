@@ -46,6 +46,6 @@ module.exports.PACT_MESSAGES = {
     INVALID_CHOICE: "The category must be either society, subject, module or other",
   },
   DESCRIPTION: {
-    BLANK: "Category cannot be blank",
+    BLANK: "Description cannot be blank",
   }
 }
