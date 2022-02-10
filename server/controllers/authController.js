@@ -132,18 +132,18 @@ module.exports.loginPost = async (req, res) => {
 		const user = await User.findOne({ uniEmail });
 
 		if (!user) {
-			throw Error("Incorrect credentials.");
+			throw Error(MESSAGES.LOGIN.INVALID_CREDENTIALS);
 		}
 
 		// Check input vs hashed, stored password
 		const auth = await bcrypt.compare(password, user.password);
 
 		if (!auth) {
-			throw Error("Incorrect credentials.");
+			throw Error(MESSAGES.LOGIN.INVALID_CREDENTIALS);
 		}
 
 		if (!user.active) {
-			throw Error("University email not yet verified.");
+			throw Error(MESSAGES.LOGIN.INACTIVE_ACCOUNT);
 		}
 
 		// Generate cookie to log in user
@@ -168,13 +168,13 @@ module.exports.verifyGet = async (req, res) => {
 		// Get code from query param
 		const code = req.query.code;
 		if (!code) {
-			throw Error("Code query empty.");
+			throw Error(MESSAGES.VERIFICATION.MISSING_CODE);
 		}
 
 		// Find associated user and make them active.
 		const linker = await EmailVerificationCode.findOne({ code });
 		if (!linker) {
-			throw Error("Invalid or expired code.");
+			throw Error(MESSAGES.VERIFICATION.INVALID_CODE);
 		}
 
 		// Add user to their university
@@ -184,7 +184,7 @@ module.exports.verifyGet = async (req, res) => {
 		// await university.populate({ path: 'users', model: User});
 
 		await linker.delete();
-		res.status(200).send("Success! You may now close this page.");
+		res.status(200).send(MESSAGES.VERIFICATION.SUCCESS_RESPONSE_WHOLE_BODY);
 	}
   catch (err) {
 		res.status(400).json(jsonResponse(null, [jsonError(null, err.message)]));

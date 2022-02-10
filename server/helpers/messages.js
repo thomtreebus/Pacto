@@ -25,5 +25,14 @@ module.exports.MESSAGES = {
     NO_LOWERCASE: "Password must contain at least one lowercase character",
     NO_UPPERCASE: "Password must contain at least one uppercase character",
     NO_NUMBERS: "Password must contain at least one number"
+  },
+  LOGIN: {
+    INVALID_CREDENTIALS: "Invalid credentials",
+    INACTIVE_ACCOUNT: "University email not yet verified"
+  },
+  VERIFICATION: {
+    MISSING_CODE: "Code query empty",
+    INVALID_CODE: "Invalid or expired code",
+    SUCCESS_RESPONSE_WHOLE_BODY: "Success! You may now close this page."
   }
 }
