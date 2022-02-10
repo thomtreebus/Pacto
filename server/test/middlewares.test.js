@@ -11,28 +11,9 @@ const { jsonResponse } = require("../helpers/responseHandlers");
 const { createToken } = require("../controllers/authController");
 const University = require('../models/University');
 const { MESSAGES } = require("../helpers/messages");
+const {generateTestUser} = require("./fixtures/generateTestUser");
 
 dotenv.config();
-
-const getTestUser = async () => {
-  const uni = await University.create( { name: "kcl", domains: ["kcl.ac.uk"] });
-  const uniEmail = "pac.to@kcl.ac.uk";
-  const password = "Password123";
-  const salt = await bcrypt.genSalt(10);
-  const hashedPassword = await bcrypt.hash(password, salt);
-
-  // Create a test user
-  const user = await User.create({
-    firstName: "pac",
-    lastName: "to",
-    uniEmail: uniEmail,
-    password: hashedPassword,
-    university: uni,
-    active: true
-  });
-
-  return user;
-}
 
 describe("Middlewares", () => {
   beforeAll(async () => {
@@ -47,7 +28,7 @@ describe("Middlewares", () => {
     await User.deleteMany({});
   });
 
-  describe("Authentification Middleware", () => {
+  describe("Authentication Middleware", () => {
     app.get("/mockRoute", checkAuthenticated, function (req, res) {
       res.status(200).json(jsonResponse(req.user, []));
     });
@@ -71,7 +52,9 @@ describe("Middlewares", () => {
     });
 
     it("accepts authorised access", async () => {
-      const user = await getTestUser();
+      const user = await generateTestUser();
+      user.active = true;
+      await user.save();
 
       const token = createToken(user._id);
       const response = await supertest(app)
@@ -87,9 +70,7 @@ describe("Middlewares", () => {
     });
 
     it("rejects inactive user", async () => {
-      const user = await getTestUser();
-      user.active = false;
-      await user.save();
+      const user = await generateTestUser();
 
       const token = createToken(user._id);
       let response = await supertest(app)
@@ -102,12 +83,12 @@ describe("Middlewares", () => {
     });
   });
 
-  describe("Not Authentificated Middleware", () => {
+  describe("Not Authenticated Middleware", () => {
     app.get("/mockRoute2", checkNotAuthenticated, function (req, res) {
       res.status(200).json(jsonResponse("no authenticated user", []));
     });
 
-    it("accepts non-authentificated access", async () => {
+    it("accepts non-authenticated access", async () => {
       const response = await supertest(app).get("/mockRoute2");
       expect(response.body.message).toBeDefined();
       expect(response.body.message).toBe("no authenticated user");
@@ -123,8 +104,10 @@ describe("Middlewares", () => {
       expect(response.body.errors.length).toBe(0);
     });
 
-    it("rejects authentificated access", async () => {
-      const user = await getTestUser();
+    it("rejects authenticated access", async () => {
+      const user = await generateTestUser();
+      user.active = true;
+      await user.save();
 
       const token = createToken(user._id);
       const response = await supertest(app)
