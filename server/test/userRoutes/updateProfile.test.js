@@ -3,13 +3,13 @@ const dotenv = require("dotenv");
 const EmailVerificationCode = require("../models/EmailVerificationCode");
 const supertest = require("supertest");
 const bcrypt = require("bcrypt");
-const app = require("../app");
+const app = require("../../app");
 const Cookies = require("expect-cookies");
-const { createToken } = require("../controllers/authController");
-const User = require("../models/User");
-const emailHandler = require('../helpers/emailHandlers');
+const { createToken } = require("../../controllers/authController");
+const User = require("../../models/User");
+const emailHandler = require('../../helpers/emailHandlers');
 const { JsonWebTokenError } = require("jsonwebtoken");
-const { MESSAGES } = require("../helpers/messages")
+const { MESSAGES } = require("../../helpers/messages")
 
 describe("User routes", () => { 
   beforeAll(async () => {
@@ -27,4 +27,5 @@ describe("User routes", () => {
   });
   
   
+
 });
