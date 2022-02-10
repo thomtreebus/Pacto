@@ -12,10 +12,6 @@ const { JsonWebTokenError } = require("jsonwebtoken");
 const { MESSAGES } = require("../helpers/messages");
 const { generateTestUser } = require('./fixtures/generateTestUser');
 
-// post login magic values
-const INCORRECT_CREDENTIALS = "Incorrect credentials.";
-const INACTIVE_ACCOUNT = "University email not yet verified.";
-
 // get verify magic values
 const VERIFICATION_CODE = "kaushik12";
 const MISSING_CODE = "Code query empty.";

@@ -3,7 +3,6 @@ const dotenv = require("dotenv");
 const supertest = require("supertest");
 const app = require("../../app");
 const Cookies = require("expect-cookies");
-const { createToken } = require("../../controllers/authController");
 const User = require("../../models/User");
 const University = require("../../models/University");
 const { generateTestUser, getEmail } = require('../fixtures/generateTestUser');
@@ -11,8 +10,6 @@ const { generateTestUser, getEmail } = require('../fixtures/generateTestUser');
 // post login magic values
 const INCORRECT_CREDENTIALS = "Incorrect credentials.";
 const INACTIVE_ACCOUNT = "University email not yet verified.";
-
-
 
 dotenv.config();
 
