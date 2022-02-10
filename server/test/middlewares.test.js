@@ -9,7 +9,8 @@ const { checkAuthenticated } = require("../middleware/authMiddleware");
 const { checkNotAuthenticated } = require("../middleware/notAuthMiddleware");
 const { jsonResponse } = require("../helpers/responseHandlers");
 const { createToken } = require("../controllers/authController");
-const University = require('../models/University')
+const University = require('../models/University');
+const { MESSAGES } = require("../helpers/messages");
 
 dotenv.config();
 
@@ -55,7 +56,7 @@ describe("Middlewares", () => {
       const response = await supertest(app).get("/mockRoute");
       expect(response.body.message).toBe(null);
       expect(response.body.errors[0].field).toBe(null);
-      expect(response.body.errors[0].message).toBe("You have to login");
+      expect(response.body.errors[0].message).toBe(MESSAGES.AUTH.IS_NOT_LOGGED_IN);
       expect(response.body.errors.length).toBe(1);
     });
 
@@ -65,7 +66,7 @@ describe("Middlewares", () => {
         .set("Cookie", ["jwt=wrong"]);
       expect(response.body.message).toBe(null);
       expect(response.body.errors[0].field).toBe(null);
-      expect(response.body.errors[0].message).toBe("You have to login");
+      expect(response.body.errors[0].message).toBe(MESSAGES.AUTH.IS_NOT_LOGGED_IN);
       expect(response.body.errors.length).toBe(1);
     });
 
@@ -96,7 +97,7 @@ describe("Middlewares", () => {
         .set("Cookie", [`jwt=${token}`]);
       expect(response.body.message).toBe(null);
       expect(response.body.errors[0].field).toBe(null);
-      expect(response.body.errors[0].message).toBe("User has not verified their email");
+      expect(response.body.errors[0].message).toBe(MESSAGES.AUTH.IS_INACTIVE);
       expect(response.body.errors.length).toBe(1);
     });
   });
@@ -131,7 +132,7 @@ describe("Middlewares", () => {
         .set("Cookie", [`jwt=${token}`]);
         expect(response.body.message).toBe(null);
         expect(response.body.errors[0].field).toBe(null);
-        expect(response.body.errors[0].message).toBe("You must not be logged in");
+        expect(response.body.errors[0].message).toBe(MESSAGES.AUTH.IS_LOGGED_IN);
         expect(response.body.errors.length).toBe(1);
     });
   });

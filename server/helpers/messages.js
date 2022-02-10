@@ -35,7 +35,7 @@ module.exports.MESSAGES = {
     INVALID_CODE: "Invalid or expired code",
     SUCCESS_RESPONSE_WHOLE_BODY: "Success! You may now close this page."
   },
-  AUTH_MIDDLEWARE: {
+  AUTH: {
     IS_LOGGED_IN: "User is already authenticated",
     IS_INACTIVE: "User has not verified their university email",
     IS_NOT_LOGGED_IN: "User is not logged in"

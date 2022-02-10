@@ -2,6 +2,7 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 const { jsonResponse, jsonError } = require("../helpers/responseHandlers");
 const University = require('../models/University');
+const { MESSAGES } = require("../helpers/messages");
 
 const checkAuthenticated = async (req, res, next) => {
   const token = req.cookies.jwt;
@@ -11,7 +12,7 @@ const checkAuthenticated = async (req, res, next) => {
       if (err) {
         res
           .status(401)
-          .json(jsonResponse(null, [jsonError(null, "You have to login")]));
+          .json(jsonResponse(null, [jsonError(null, MESSAGES.AUTH.IS_NOT_LOGGED_IN)]));
       } 
       else {
         let user = await User.findById(decodedToken.id);
@@ -22,7 +23,7 @@ const checkAuthenticated = async (req, res, next) => {
           //throw Error("User has not verified their email");
           res
           .status(401)
-          .json(jsonResponse(null, [jsonError(null, "User has not verified their email")]));
+          .json(jsonResponse(null, [jsonError(null, MESSAGES.AUTH.IS_INACTIVE)]));
         }
 
         next();
@@ -32,7 +33,7 @@ const checkAuthenticated = async (req, res, next) => {
   else {
     res
       .status(401)
-      .json(jsonResponse(null, [jsonError(null, "You have to login")]));
+      .json(jsonResponse(null, [jsonError(null, MESSAGES.AUTH.IS_NOT_LOGGED_IN)]));
   }
 };
 
