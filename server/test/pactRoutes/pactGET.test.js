@@ -1,0 +1,10 @@
+const Pact = require("../../models/Pact");
+const User = require("../../models/User");
+const University = require("../../models/University");
+const mongoose = require("mongoose");
+const dotenv = require("dotenv");
+const supertest = require("supertest");
+const app = require("../../app");
+const { generateTestUser, getEmail } = require("../fixtures/generateTestUser");
+const { createToken } = require("../../controllers/authController");
+const { PACT_MESSAGES } = require("../../helpers/messages");

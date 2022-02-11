@@ -3,7 +3,7 @@ const University = require("../models/University");
 const User = require("../models/User");
 const {jsonResponse, jsonError} = require("../helpers/responseHandlers");
 const handleFieldErrors = require('../helpers/errorHandler');
-
+const { MESSAGES, PACT_MESSAGES } = require("../helpers/messages")
 
 // POST pact
 module.exports.pactPost = async (req, res) => {
@@ -79,7 +79,7 @@ module.exports.pactGet = async (req, res) => {
     const university = req.user.university;
 
 		if (!university){
-			throw Error("User not authenticated");
+			throw Error(MESSAGES.AUTH.IS_NOT_LOGGED_IN);
 		}
 
 		const pact = await Pact.findOne({ university, _id:req.params.id });
