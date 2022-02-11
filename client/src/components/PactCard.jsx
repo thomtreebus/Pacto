@@ -8,7 +8,7 @@ import PactChip from "./PactChip";
 
 export default function PactCard({ pact, joined }) {
 	return (
-		<Grid item xs={3}>
+		<Grid item xs={12} s={6} md={4} lg={3}>
 			<Card sx={{ maxWidth: 345 }}>
 				<CardHeader
 					avatar={<Avatar>P</Avatar>}
@@ -25,9 +25,23 @@ export default function PactCard({ pact, joined }) {
 						}}
 					>
 						<PactChip pact={pact} />
-						<Typography variant="body2" sx={{ marginBottom: "10px" }}>
-							{pact.description}
-						</Typography>
+						<div
+							style={{
+								overflow: "hidden",
+								textOverflow: "ellipsis",
+								width: "13rem",
+							}}
+						>
+							<Typography
+								variant="body2"
+								sx={{
+									marginBottom: "10px",
+								}}
+								noWrap
+							>
+								{pact.description}
+							</Typography>
+						</div>
 					</Box>
 
 					<Box
