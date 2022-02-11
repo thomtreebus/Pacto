@@ -6,7 +6,9 @@ const PactSchema = mongoose.Schema({
   name: {
     type: String,
     required: true,
-    unique: true
+    unique: true,
+    maxLength: [33, PACT_MESSAGES.NAME.MAX_LENGTH_EXCEEDED],
+    minLength: [2, PACT_MESSAGES.NAME.MIN_LENGTH_NOT_MET]
   },
 
   university: {
@@ -21,19 +23,22 @@ const PactSchema = mongoose.Schema({
       values : ["society", "course", "module", "other"],
       message: PACT_MESSAGES.CATEGORY.INVALID_CHOICE 
     },
-    required: true,
+    required: [true, PACT_MESSAGES.CATEGORY.BLANK],
     default: "other"
   },
 
   description: {
     type: String,
-    required: true,
-    default: "A Pact that doesn't know what it wants to be..."
+    required: [true, PACT_MESSAGES.DESCRIPTION.BLANK],
+    default: "A Pact that doesn't know what it wants to be...",
+    maxLength: [33, PACT_MESSAGES.DESCRIPTION.MAX_LENGTH_EXCEEDED],
+    minLength: [2, PACT_MESSAGES.DESCRIPTION.MIN_LENGTH_NOT_MET]
   },
   
   members: [{
     type: Schema.Types.ObjectId,
-    ref: 'User'
+    ref: 'User',
+    required: true
   }],
 
   moderators: [{
