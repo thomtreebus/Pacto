@@ -8,4 +8,6 @@ const { checkAuthenticated } = require("../middleware/authMiddleware");
 
 router.put("/:id", checkAuthenticated, users.updateProfile);
 
+router.get("/:id", checkAuthenticated, users.viewProfile);
+
 module.exports = router;
