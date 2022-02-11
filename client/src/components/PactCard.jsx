@@ -14,7 +14,7 @@ export default function PactCard({ pact, joined }) {
 		<Grid item xs={12} s={6} md={4} lg={3}>
 			<Card>
 				<CardHeader
-					avatar={<Avatar src={pact.image} />}
+					avatar={<Avatar src={pact.image} alt="pact-image" />}
 					title={pact.name}
 					sx={{ paddingBlock: 1 }}
 				/>
@@ -54,7 +54,8 @@ export default function PactCard({ pact, joined }) {
 							display: "flex",
 						}}
 					>
-						<PeopleAltRoundedIcon /> {pact.members.length}
+						<PeopleAltRoundedIcon />{" "}
+						<span data-testid="member-length"> {pact.members.length} </span>
 					</Box>
 				</CardContent>
 				<CardActions disableSpacing>
@@ -65,7 +66,7 @@ export default function PactCard({ pact, joined }) {
 							startIcon={<AddIcon />}
 							onClick={() => history.push(`/pact/${pact._id}`)}
 						>
-							Join
+							View
 						</Button>
 					) : (
 						<Button
@@ -74,7 +75,7 @@ export default function PactCard({ pact, joined }) {
 							startIcon={<VisibilityIcon />}
 							onClick={() => history.push(`/pact/${pact._id}`)}
 						>
-							View
+							Join
 						</Button>
 					)}
 				</CardActions>
