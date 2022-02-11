@@ -5,7 +5,7 @@ import Landing from "./pages/LandingPage";
 import Feed from "./pages/Feed";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { CssBaseline } from "@mui/material";
-import Profile from "./pages/Profile";
+import EditProfile from "./pages/EditProfile";
 import PrivateRoute from "./components/PrivateRoute";
 import AuthRoute from "./components/AuthRoute";
 import NotFound from "./pages/NotFound";
@@ -30,7 +30,7 @@ function App() {
 					<BaseLayout>
 						<Switch>
 							<PrivateRoute path="/profile">
-								<Profile />
+								<EditProfile />
 							</PrivateRoute>
 							<PrivateRoute path="/feed">
 								<h1>Feed</h1>

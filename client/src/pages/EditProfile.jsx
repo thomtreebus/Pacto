@@ -3,7 +3,7 @@ import Axios from 'axios';
 import { useHistory } from "react-router-dom";
 import { useState } from "react";
 import { useAuth } from '../providers/AuthProvider';
-import { Image, Transformation } from 'cloudinary-react';
+import { Image } from 'cloudinary-react';
 import Grid from '@mui/material/Grid';
 import Stack from '@mui/material/Stack';
 import { styled } from '@mui/material/styles';
@@ -25,7 +25,7 @@ const Input = styled('input')({
   display: 'none',
 });
 
-export default function Profile() {
+export default function EditProfile() {
 
   const { user } = useAuth();
   const history = useHistory();
