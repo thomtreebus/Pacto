@@ -7,6 +7,7 @@ const supertest = require("supertest");
 const app = require("../../app");
 const { generateTestUser, getEmail } = require("../fixtures/generateTestUser");
 const { createToken } = require("../../controllers/authController");
+const { PACT_MESSAGES } = require("../../helpers/messages");
 
 dotenv.config();
 
@@ -114,25 +115,48 @@ describe("POST /pact", () => {
 
   describe("Name validation", () => {
     it("rejects when name is not unique", async () => {
+      // Create valid pact with NAME
+      await isValidPact({
+        name: NAME
+      });
 
+      // Attempt to create pact with the same name
+      await isInvalidPact({
+        name: NAME
+      }, "name", PACT_MESSAGES.NAME.NOT_UNIQUE);
     });
 
     it("rejects when name exceeds 33 characters", async () => {
+      await isInvalidPact({
+        name: "x".repeat(34)
+      }, "name", PACT_MESSAGES.NAME.MAX_LENGTH_EXCEEDED);
+    });
 
+    it("accepts when name is exactly 33 characters", async () => {
+      await isValidPact({
+        name: "x".repeat(33)
+      });
     });
 
     it("rejects when name is shorter than 2 characters", async () => {
-
+      await isInvalidPact({
+        name: "x"
+      }, "name", PACT_MESSAGES.NAME.MIN_LENGTH_NOT_MET);
     });
 
     it("rejects when name is blank", async () => {
-
+      await isInvalidPact({
+        name: ""
+      }, "name", PACT_MESSAGES.NAME.BLANK);
     });
   });
 
   describe("Description validation", () => {
     it("rejects when description exceeds 255 characters", async () => {
-
+      await isInvalidPact({
+        name: NAME,
+        description: "x".repeat(256)
+      }, "description", PACT_MESSAGES.DESCRIPTION.MAX_LENGTH_EXCEEDED);
     });
 
     it("rejects when description is blank", async () => {

@@ -49,6 +49,9 @@ module.exports.MESSAGES = {
 module.exports.PACT_MESSAGES = {
   NAME : {
     NOT_UNIQUE: `Name ${UNIQUE_MESSAGE}`,
+    MAX_LENGTH_EXCEEDED: "Name cannot exceed 33 characters",
+    MIN_LENGTH_NOT_MET: "Name must be at least 2 characters",
+    BLANK: "Name is a required field"
   },
   UNIVERSITY: {
     BLANK: "University cannot be blank",
