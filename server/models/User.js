@@ -55,7 +55,7 @@ const UserSchema = Schema({
   },
   image: {
     type: String,
-    default: "https://res.cloudinary.com/djlwzi9br/image/upload/v1644324688/gxflstl5ivocqp7pswav.png"
+    default: "https://res.cloudinary.com/djlwzi9br/image/upload/v1644582632/pacto-logo_zzeh98.png"
   },
   bio: {
     type: String,
