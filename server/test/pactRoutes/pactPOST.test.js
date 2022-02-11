@@ -159,18 +159,34 @@ describe("POST /pact", () => {
       }, "description", PACT_MESSAGES.DESCRIPTION.MAX_LENGTH_EXCEEDED);
     });
 
-    it("rejects when description is blank", async () => {
+    it("accepts when description is exactly 255 characters", async () => {
+      await isValidPact({
+        name: NAME,
+        description: "x".repeat(255)
+      });
+    });
 
+    it("rejects when description is blank", async () => {
+      await isInvalidPact({
+        name: NAME,
+        description: ""
+      }, "description", PACT_MESSAGES.DESCRIPTION.BLANK);
     });
   });
 
   describe("Category validation", () => {
     it("rejects when category is not a valid input", async () => {
-
+      await isInvalidPact({
+        name: NAME,
+        category: "pactostuff"
+      }, "category", PACT_MESSAGES.CATEGORY.INVALID_CHOICE);
     });
 
     it("rejects when category is blank", async () => {
-
+      await isInvalidPact({
+        name: NAME,
+        category: ""
+      }, "category", PACT_MESSAGES.CATEGORY.BLANK);
     });
   });
 });

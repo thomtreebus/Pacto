@@ -53,10 +53,14 @@ module.exports.PACT_MESSAGES = {
     MIN_LENGTH_NOT_MET: "Name must be at least 2 characters",
     BLANK: "Name is a required field"
   },
+  DESCRIPTION : {
+    BLANK: "Description is a required field"
+  },
   UNIVERSITY: {
     BLANK: "University cannot be blank",
   },
   CATEGORY: {
     INVALID_CHOICE: "The category must be either society, course, module or other",
+    BLANK: "Category is a required field"
   },
 }
