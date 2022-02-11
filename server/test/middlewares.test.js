@@ -26,6 +26,7 @@ describe("Middlewares", () => {
 
   afterEach(async () => {
     await User.deleteMany({});
+    await University.deleteMany({});
   });
 
   describe("Authentication Middleware", () => {
