@@ -1,6 +1,7 @@
 const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 const { jsonResponse, jsonError } = require("../helpers/responseHandlers");
+const { MESSAGES } = require("../helpers/messages");
 
 const checkNotAuthenticated = (req, res, next) => {
   const token = req.cookies.jwt;
@@ -14,7 +15,7 @@ const checkNotAuthenticated = (req, res, next) => {
       else {
         res
           .status(401)
-          .json(jsonResponse(null, [jsonError(null, "You must not be logged in")]));
+          .json(jsonResponse(null, [jsonError(null, MESSAGES.AUTH.IS_LOGGED_IN)]));
       }
     });
   } 

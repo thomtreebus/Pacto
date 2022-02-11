@@ -6,6 +6,7 @@ const { createToken } = require("../../controllers/authController");
 const University = require("../../models/University");
 const User = require("../../models/User");
 const { generateTestUser } = require('../fixtures/generateTestUser');
+const { MESSAGES } = require("../../helpers/messages");
 
 dotenv.config();
 
@@ -41,11 +42,11 @@ describe("GET /me", () => {
     expect(response.body.errors.length).toBe(0);
   });
 
-  it("returns an error when the user is not logged in", async () => {
+  it("uses checkAuthenticated middleware", async () => {
     let response = await supertest(app).get("/me");
     expect(response.body.message).toBe(null);
     expect(response.body.errors[0].field).toBe(null);
-    expect(response.body.errors[0].message).toBe("You have to login");
+    expect(response.body.errors[0].message).toBe(MESSAGES.AUTH.IS_NOT_LOGGED_IN);
     expect(response.body.errors.length).toBe(1);
   });
 });

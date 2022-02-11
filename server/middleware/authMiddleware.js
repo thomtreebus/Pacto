@@ -2,6 +2,7 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 const { jsonResponse, jsonError } = require("../helpers/responseHandlers");
 const University = require('../models/University');
+const { MESSAGES } = require("../helpers/messages");
 
 const checkAuthenticated = async (req, res, next) => {
   const token = req.cookies.jwt;
@@ -12,7 +13,7 @@ const checkAuthenticated = async (req, res, next) => {
         res.cookie("jwt", "", { maxAge: 1 });
         res
           .status(401)
-          .json(jsonResponse(null, [jsonError(null, "You have to login")]));
+          .json(jsonResponse(null, [jsonError(null, MESSAGES.AUTH.IS_NOT_LOGGED_IN)]));
       } 
       else {
 
@@ -24,14 +25,14 @@ const checkAuthenticated = async (req, res, next) => {
           if(!user.active){
             res
             .status(401)
-            .json(jsonResponse(null, [jsonError(null, "User has not verified their email")]));
+            .json(jsonResponse(null, [jsonError(null, MESSAGES.AUTH.IS_INACTIVE)]));
           } else {
             next();
           }
         }
         catch (err) {
           res.cookie("jwt", "", { maxAge: 1 });
-          res.status(401).json(jsonResponse(null, [jsonError(null, "You have to login")]))
+          res.status(401).json(jsonResponse(null, [jsonError(null, MESSAGES.AUTH.IS_NOT_LOGGED_IN)]));
         }
       }
     });
@@ -39,7 +40,7 @@ const checkAuthenticated = async (req, res, next) => {
   else {
     res
       .status(401)
-      .json(jsonResponse(null, [jsonError(null, "You have to login")]));
+      .json(jsonResponse(null, [jsonError(null, MESSAGES.AUTH.IS_NOT_LOGGED_IN)]));
   }
 };
 
