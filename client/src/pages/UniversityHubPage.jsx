@@ -100,8 +100,13 @@ export default function UniversityHubPage() {
 						disabled={!search}
 						color="primary"
 						onClick={() => setSearch("")}
+						data-testid="search-button"
 					>
-						{search ? <CloseIcon /> : <SearchIcon />}
+						{search ? (
+							<CloseIcon data-testid="clear-icon" />
+						) : (
+							<SearchIcon data-testid="search-icon" />
+						)}
 					</IconButton>
 				</Card>
 			</Box>
@@ -130,6 +135,7 @@ export default function UniversityHubPage() {
 				aria-label="add"
 				sx={{ position: "absolute", top: 75, right: 250 }}
 				onClick={() => history.push("/create-pact")}
+				data-testid="floating-action-button"
 			>
 				<AddIcon />
 			</Fab>
