@@ -82,6 +82,13 @@ describe("POST /pact", () => {
     });
   });
 
+  it("uses checkAuthentication middleware", async () =>{
+    await supertest(app)
+      .post("/pact")
+      .send({name: NAME})
+      .expect(401);
+  });
+
   it("assigns default category and description if absent", async () =>{
     const res = await isValidPact({
       name: NAME
