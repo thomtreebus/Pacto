@@ -112,7 +112,41 @@ describe("POST /pact", () => {
     });
   });
 
-  // describe("Name validation", () => {
-  //   it("rejects when name is not unique")
-  // });
+  describe("Name validation", () => {
+    it("rejects when name is not unique", async () => {
+
+    });
+
+    it("rejects when name exceeds 33 characters", async () => {
+
+    });
+
+    it("rejects when name is shorter than 2 characters", async () => {
+
+    });
+
+    it("rejects when name is blank", async () => {
+
+    });
+  });
+
+  describe("Description validation", () => {
+    it("rejects when description exceeds 255 characters", async () => {
+
+    });
+
+    it("rejects when description is blank", async () => {
+
+    });
+  });
+
+  describe("Category validation", () => {
+    it("rejects when category is not a valid input", async () => {
+
+    });
+
+    it("rejects when category is blank", async () => {
+
+    });
+  });
 });
