@@ -63,7 +63,6 @@ export default function UniversityHubPage() {
 					backgroundRepeat: "no-repeat",
 					backgroundPosition: "center",
 					backgroundSize: "cover",
-					maxWidth: "1300px",
 					borderRadius: "25px",
 					boxShadow: 2,
 					marginInline: "auto",

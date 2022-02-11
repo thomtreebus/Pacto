@@ -9,9 +9,9 @@ import PactChip from "./PactChip";
 export default function PactCard({ pact, joined }) {
 	return (
 		<Grid item xs={12} s={6} md={4} lg={3}>
-			<Card sx={{ maxWidth: 345 }}>
+			<Card>
 				<CardHeader
-					avatar={<Avatar>P</Avatar>}
+					avatar={<Avatar src={pact.image} />}
 					title={pact.name}
 					sx={{ paddingBlock: 1 }}
 				/>
