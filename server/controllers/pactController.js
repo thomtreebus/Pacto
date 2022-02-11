@@ -2,48 +2,71 @@ const Pact = require("../models/Pact");
 const University = require("../models/University");
 const User = require("../models/User");
 const {jsonResponse, jsonError} = require("../helpers/responseHandlers");
+const handleFieldErrors = require('../helpers/errorHandler');
+
 
 // POST pact
 module.exports.pactPost = async (req, res) => {
+	let jsonErrors = [];
+
 	try {
+		const user = req.user;
     const { name } = req.body;
-    const user = req.user;
+    const optionalAttributes = ['description', 'category'];
 
-    const pact = await Pact.create({ name, university:user.university, members:[user], moderators:[user] });
+		const newPact = { 
+			name,
+			university:user.university,
+		  members:[user],
+			moderators:[user]
+		}
 
-		await pact.populate({path: 'university', model: University})
-		.populate({path: 'members', model: User})
-		.populate({path: 'moderators', model: User});
+		// If the attribute is in the body we can add it otherwise leave undefined
+		// If it is undefined mongo will use default values
+		optionalAttributes.forEach((attribute) => {
+			req.body[attribute] && (newPact[attribute] = req.body[attribute]);
+		});
 
+    const pact = await Pact.create(newPact);
+		req.user.university.pacts.push(pact);
+		req.user.university.save();
+		
 		res.status(201).json(jsonResponse(pact, []));
 	} 
   catch (err) {
-		res.status(400).json(jsonResponse(null, [jsonError(null, err.message)]));
+		const allErrors = handleFieldErrors(err);
+    if(allErrors){
+			allErrors.forEach((myErr) => jsonErrors.push(myErr));
+		} 
+		else {
+			jsonErrors.push(jsonError(null, err.message));
+		}
+		res.status(400).json(jsonResponse(null, jsonErrors));
 	}
 };
 
 // GET pacts (all pacts in user's hub)
-module.exports.pactsGet = async (req, res) => {
-	try {
-    const university = req.user.university;
+// module.exports.pactsGet = async (req, res) => {
+// 	try {
+//     const university = req.user.university;
 
-		if (!university){
-			throw Error("User not authenticated");
-		}
+// 		if (!university){
+// 			throw Error("User not authenticated");
+// 		}
 
-		const pacts = await Pact.find({ university });
-		pacts.forEach(async pact => {
-			await pact.populate({path: 'members', model: User})
-			.populate({path: 'moderators', model: User})
-			.populate({path: 'university', model: Univeristy});
-		});
+// 		const pacts = await Pact.find({ university });
+// 		pacts.forEach(async pact => {
+// 			await pact.populate({path: 'members', model: User})
+// 			.populate({path: 'moderators', model: User})
+// 			.populate({path: 'university', model: University});
+// 		});
 
-		res.status(200).json(jsonResponse(pacts, []));
-	} 
-  catch (err) {
-		res.status(400).json(jsonResponse(null, [jsonError(null, err.message)]));
-	}
-};
+// 		res.status(200).json(jsonResponse(pacts, []));
+// 	} 
+//   catch (err) {
+// 		res.status(400).json(jsonResponse(null, [jsonError(null, err.message)]));
+// 	}
+// };
 
 // GET pact (by id)
 module.exports.pactGet = async (req, res) => {

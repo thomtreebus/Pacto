@@ -1,3 +1,7 @@
+UNIQUE_MESSAGE =  "already in use";
+
+module.exports.UNIQUE_MESSAGE = UNIQUE_MESSAGE;
+
 module.exports.MESSAGES = {
   FIRST_NAME: {
     BLANK: "First name is a required field",
@@ -12,7 +16,7 @@ module.exports.MESSAGES = {
   EMAIL: {
     BLANK: "Email cannot be blank",
     INVALID_FORMAT: "Must be a valid email",
-    NOT_UNIQUE: "Email already in use",
+    NOT_UNIQUE: `Email ${UNIQUE_MESSAGE}`,
     UNI: {
       NON_UNI_EMAIL: "Email must be associated with a supported UK university"
     }
@@ -40,4 +44,16 @@ module.exports.MESSAGES = {
     IS_INACTIVE: "User has not verified their university email",
     IS_NOT_LOGGED_IN: "User is not logged in"
   }
+}
+
+module.exports.PACT_MESSAGES = {
+  NAME : {
+    NOT_UNIQUE: `Name ${UNIQUE_MESSAGE}`,
+  },
+  UNIVERSITY: {
+    BLANK: "University cannot be blank",
+  },
+  CATEGORY: {
+    INVALID_CHOICE: "The category must be either society, course, module or other",
+  },
 }

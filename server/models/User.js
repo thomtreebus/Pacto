@@ -58,7 +58,9 @@ const UserSchema = Schema({
     ref: 'University',
     required: true
   },
-  image: ImageSchema,
+  image: {
+    type: String,
+  },
   bio: {
     type: String,
     required: false,
