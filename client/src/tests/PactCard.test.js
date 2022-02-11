@@ -3,13 +3,6 @@ import PactCard from "../components/PactCard";
 import "@testing-library/jest-dom";
 import testPacts from "./utils/testPacts";
 import { BrowserRouter } from "react-router-dom";
-// {
-// 	name: "Pact1",
-// 	description: "No description provided",
-// 	category: "course",
-// 	image: "https://avatars.dicebear.com/api/identicon/temp.svg",
-// 	members: ["01"],
-// },
 
 describe("Pact Card Tests", () => {
 	describe("renders the correct static elements of the pact", () => {
