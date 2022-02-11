@@ -72,6 +72,11 @@ describe("POST /pact", () => {
     expect(response.body.message.moderators.length).toBe(1);
     expect(response.body.errors.length).toBe(0);
 
+    const updatedUser = await User.findOne({ uniEmail: getEmail() });
+    expect(updatedUser.pacts.length).toBe(1);
+    await updatedUser.populate({path: "university", model: University});
+    expect(updatedUser.university.pacts.length).toBe(1);
+
     return response;
   }
 

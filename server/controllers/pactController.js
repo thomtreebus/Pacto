@@ -28,8 +28,12 @@ module.exports.pactPost = async (req, res) => {
 		});
 
     const pact = await Pact.create(newPact);
-		req.user.university.pacts.push(pact);
-		req.user.university.save();
+
+		user.pacts.push(pact);
+		await user.save();
+
+		user.university.pacts.push(pact);
+		await user.university.save();
 
 		await pact.populate({ path: 'university', model: University });
 		await pact.populate({ path: "members", model: User });
