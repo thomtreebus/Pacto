@@ -17,7 +17,7 @@ const DESCRIPTION = "This is my 1st pact."
 const CATEGORY = "course";
 
 const DEFAULT_DESCRIPTION = "A Pact that doesn't know what it wants to be...";
-const DEFAULT_CATEFORY = "other";
+const DEFAULT_CATEGORY = "other";
 
 describe("POST /pact", () => {
   beforeAll(async () => {
@@ -82,7 +82,7 @@ describe("POST /pact", () => {
     });
   });
 
-  it("uses checkAuthentication middleware", async () =>{
+  it("uses checkAuthenticated middleware", async () =>{
     await supertest(app)
       .post("/pact")
       .send({name: NAME})
@@ -95,7 +95,7 @@ describe("POST /pact", () => {
     });
 
     expect(res.body.message.description).toBe(DEFAULT_DESCRIPTION);
-    expect(res.body.message.category).toBe(DEFAULT_CATEFORY);
+    expect(res.body.message.category).toBe(DEFAULT_CATEGORY);
   });
 
   it("accepts valid pact with description", async () =>{
@@ -173,11 +173,13 @@ describe("POST /pact", () => {
       });
     });
 
-    it("rejects when description is blank", async () => {
-      await isInvalidPact({
+    it("handles when description is blank, by using default", async () => {
+      const res = await isValidPact({
         name: NAME,
         description: ""
-      }, "description", PACT_MESSAGES.DESCRIPTION.BLANK);
+      });
+
+      expect(res.body.message.description).toBe(DEFAULT_DESCRIPTION);
     });
   });
 
@@ -189,11 +191,13 @@ describe("POST /pact", () => {
       }, "category", PACT_MESSAGES.CATEGORY.INVALID_CHOICE);
     });
 
-    it("rejects when category is blank", async () => {
-      await isInvalidPact({
+    it("handles when category is blank, using default", async () => {
+      const res = await isValidPact({
         name: NAME,
         category: ""
-      }, "category", PACT_MESSAGES.CATEGORY.BLANK);
+      });
+
+      expect(res.body.message.category).toBe(DEFAULT_CATEGORY);
     });
   });
 });

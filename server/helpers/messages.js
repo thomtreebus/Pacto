@@ -54,7 +54,8 @@ module.exports.PACT_MESSAGES = {
     BLANK: "Name is a required field"
   },
   DESCRIPTION : {
-    BLANK: "Description is a required field"
+    BLANK: "Description is a required field",
+    MAX_LENGTH_EXCEEDED: "Description cannot exceed 255 characters",
   },
   UNIVERSITY: {
     BLANK: "University cannot be blank",

@@ -39,7 +39,6 @@ module.exports.pactPost = async (req, res) => {
 	} 
   catch (err) {
 		const allErrors = handleFieldErrors(err);
-		console.log(err.message)
     if(allErrors){
 			allErrors.forEach((myErr) => jsonErrors.push(myErr));
 		} 
