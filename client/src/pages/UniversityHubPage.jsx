@@ -34,9 +34,15 @@ export default function UniversityHubPage() {
 
 	useEffect(() => {
 		if (data) {
-			setPacts(data.message.pacts);
+			setPacts(
+				data.message.pacts.filter(
+					(pact) =>
+						(category === "all" ? true : pact.category === category) &&
+						pact.name.toLowerCase().includes(search)
+				)
+			);
 		}
-	}, [data, pacts]);
+	}, [data, category, search]);
 
 	if (isLoading) {
 		return <Loading />;
@@ -88,7 +94,7 @@ export default function UniversityHubPage() {
 						sx={{ ml: 1, flex: 1 }}
 						placeholder="Search Pacts"
 						value={search}
-						onChange={(e) => setSearch(e.target.value)}
+						onChange={(e) => setSearch(e.target.value.toLowerCase())}
 					/>
 					<IconButton
 						sx={{ p: "10px" }}

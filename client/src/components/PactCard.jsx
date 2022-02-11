@@ -29,7 +29,7 @@ export default function PactCard({ pact, joined }) {
 							style={{
 								overflow: "hidden",
 								textOverflow: "ellipsis",
-								width: "13rem",
+								width: "100%",
 							}}
 						>
 							<Typography
