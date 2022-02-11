@@ -18,6 +18,8 @@ export default function PactChip({ pact }) {
 	} else if (pact.category === "society") {
 		icon = <PeopleIcon />;
 		color = "error";
+	} else {
+		pact.category = "other";
 	}
 
 	return (

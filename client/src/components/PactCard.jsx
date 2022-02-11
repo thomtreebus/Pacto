@@ -5,8 +5,11 @@ import AddIcon from "@mui/icons-material/Add";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import PeopleAltRoundedIcon from "@mui/icons-material/PeopleAltRounded";
 import PactChip from "./PactChip";
+import { useHistory } from "react-router-dom";
 
 export default function PactCard({ pact, joined }) {
+	const history = useHistory();
+
 	return (
 		<Grid item xs={12} s={6} md={4} lg={3}>
 			<Card>
@@ -60,6 +63,7 @@ export default function PactCard({ pact, joined }) {
 							variant="contained"
 							sx={{ width: "100%" }}
 							startIcon={<AddIcon />}
+							onClick={() => history.push(`/pact/${pact._id}`)}
 						>
 							Join
 						</Button>
@@ -68,6 +72,7 @@ export default function PactCard({ pact, joined }) {
 							variant="outlined"
 							sx={{ width: "100%" }}
 							startIcon={<VisibilityIcon />}
+							onClick={() => history.push(`/pact/${pact._id}`)}
 						>
 							View
 						</Button>
