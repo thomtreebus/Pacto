@@ -64,9 +64,9 @@ describe("POST /pact", () => {
       .expect(201);
     
     expect(response.body.message).toBeDefined();
-    expect(response.body.message.university).toBe(user.university);
-    expect(response.body.message.members[0]).toBe(user);
-    expect(response.body.message.moderators[0]).toBe(user);
+    expect(response.body.message.university._id.toString()).toEqual(user.university._id.toString());
+    expect(response.body.message.members[0]._id.toString()).toEqual(user._id.toString());
+    expect(response.body.message.moderators[0]._id.toString()).toEqual(user._id.toString());
     expect(response.body.message.members.length).toBe(1);
     expect(response.body.message.moderators.length).toBe(1);
     expect(response.body.errors.length).toBe(0);
@@ -75,13 +75,13 @@ describe("POST /pact", () => {
   }
 
   // Tests
-  it("accepts valid pact with no optional attributes", () =>{
+  it("accepts valid pact with no optional attributes", async () =>{
     await isValidPact({
       name: NAME
     });
   });
 
-  it("assigns default category and description if absent", () =>{
+  it("assigns default category and description if absent", async () =>{
     const res = await isValidPact({
       name: NAME
     });
@@ -90,21 +90,21 @@ describe("POST /pact", () => {
     expect(res.body.message.category).toBe(DEFAULT_CATEFORY);
   });
 
-  it("accepts valid pact with description", () =>{
+  it("accepts valid pact with description", async () =>{
     await isValidPact({
       name: NAME,
       description: DESCRIPTION 
     });
   });
 
-  it("accepts valid pact with category", () =>{
+  it("accepts valid pact with category", async () =>{
     await isValidPact({
       name: NAME,
       category: CATEGORY 
     });
   });
 
-  it("accepts valid pact with all optional attributes", () =>{
+  it("accepts valid pact with all optional attributes", async () =>{
     await isValidPact({
       name: NAME,
       description: DESCRIPTION,

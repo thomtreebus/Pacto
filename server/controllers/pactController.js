@@ -30,11 +30,16 @@ module.exports.pactPost = async (req, res) => {
     const pact = await Pact.create(newPact);
 		req.user.university.pacts.push(pact);
 		req.user.university.save();
+
+		await pact.populate({ path: 'university', model: University });
+		await pact.populate({ path: "members", model: User });
+		await pact.populate({ path: "moderators", model: User });
 		
 		res.status(201).json(jsonResponse(pact, []));
 	} 
   catch (err) {
 		const allErrors = handleFieldErrors(err);
+		console.log(err.message)
     if(allErrors){
 			allErrors.forEach((myErr) => jsonErrors.push(myErr));
 		} 
