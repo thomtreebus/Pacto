@@ -25,14 +25,14 @@ const checkAuthenticated = async (req, res, next) => {
           if(!user.active){
             res
             .status(401)
-            .json(jsonResponse(null, [jsonError(null, MESSAGE.AUTH.IS_INACTIVE)]));
+            .json(jsonResponse(null, [jsonError(null, MESSAGES.AUTH.IS_INACTIVE)]));
           } else {
             next();
           }
         }
         catch (err) {
           res.cookie("jwt", "", { maxAge: 1 });
-          res.status(401).json(jsonResponse(null, [jsonError(null, MESSAGE.AUTH.IS_NOT_LOGGED_IN)]));
+          res.status(401).json(jsonResponse(null, [jsonError(null, MESSAGES.AUTH.IS_NOT_LOGGED_IN)]));
         }
       }
     });

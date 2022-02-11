@@ -52,7 +52,7 @@ describe("Middlewares", () => {
     });
 
     it("rejects valid token for nonexisting user", async () => {
-      const user = await getTestUser();
+      const user = await generateTestUser();
       
       const token = createToken(user._id + 1);
       const response = await supertest(app)
@@ -60,7 +60,7 @@ describe("Middlewares", () => {
         .set("Cookie", [`jwt=${token}`]);
       expect(response.body.message).toBe(null);
       expect(response.body.errors[0].field).toBe(null);
-      expect(response.body.errors[0].message).toBe("You have to login");
+      expect(response.body.errors[0].message).toBe(MESSAGES.AUTH.IS_NOT_LOGGED_IN);
       expect(response.body.errors.length).toBe(1);
     });
 
