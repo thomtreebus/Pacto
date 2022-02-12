@@ -63,7 +63,7 @@ export default function PactCard({ pact, joined }) {
 						<Button
 							variant="contained"
 							sx={{ width: "100%" }}
-							startIcon={<AddIcon />}
+							startIcon={<VisibilityIcon />}
 							onClick={() => history.push(`/pact/${pact._id}`)}
 						>
 							View
@@ -72,7 +72,7 @@ export default function PactCard({ pact, joined }) {
 						<Button
 							variant="outlined"
 							sx={{ width: "100%" }}
-							startIcon={<VisibilityIcon />}
+							startIcon={<AddIcon />}
 							onClick={() => history.push(`/pact/${pact._id}`)}
 						>
 							Join
