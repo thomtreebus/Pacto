@@ -5,7 +5,7 @@ import MockComponent from "./utils/MockComponent";
 import { rest } from "msw";
 import { setupServer } from "msw/node";
 import { Route } from "react-router-dom";
-import Profile from "../pages/Profile";
+import Profile from "../pages/EditProfile";
 
 describe("Profile Page Tests", () => {
   const server = setupServer(
@@ -127,6 +127,63 @@ describe("Profile Page Tests", () => {
       const universityText = await screen.findByText("pac to");
       expect(universityText).toBeInTheDocument();
     });
+
+  });
+
+  describe("Check interaction with elements", () => {
+    it("should be able to type into instagram field", async () => {
+      const inputElement = await screen.findByRole("textbox", {
+        name: "Instagram",
+      });
+      const testValue = "pacto"
+      fireEvent.change(inputElement, { target: { value: testValue } });
+      expect(inputElement.value).toBe(testValue);
+    });
+
+    it("should be able to type into Phone field", async () => {
+      const inputElement = await screen.findByRole("textbox", {
+        name: "Phone Number",
+      });
+      const testValue = "07777777777";
+      fireEvent.change(inputElement, { target: { value: testValue } });
+      expect(inputElement.value).toBe(testValue);
+    });
+
+    it("should be able to type into LinkedIn field", async () => {
+      const inputElement = await screen.findByRole("textbox", {
+        name: "LinkedIn",
+      });
+      const testValue = "Pacto";
+      fireEvent.change(inputElement, { target: { value: testValue } });
+      expect(inputElement.value).toBe(testValue);
+    });
+
+    it("should be able to type into Course field", async () => {
+      const inputElement = await screen.findByRole("textbox", {
+        name: "Course",
+      });
+      const testValue = "Art";
+      fireEvent.change(inputElement, { target: { value: testValue } });
+      expect(inputElement.value).toBe(testValue);
+    });
+
+    it("should be able to type into Location field", async () => {
+      const inputElement = await screen.findByRole("textbox", {
+        name: "Location",
+      });
+      const testValue = "Antartica";
+      fireEvent.change(inputElement, { target: { value: testValue } });
+      expect(inputElement.value).toBe(testValue);
+    });
+
+    it("should be able to type into Bio field", async () => {
+      const inputElement = await screen.findByRole("textbox", {
+        name: "Bio",
+      });
+      const testValue = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.";
+      fireEvent.change(inputElement, { target: { value: testValue } });
+      expect(inputElement.value).toBe(testValue);
+    })
 
 
   });
