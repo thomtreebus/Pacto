@@ -96,6 +96,7 @@ export default function PrimarySearchAppBar() {
 
 	const handleProfileClick = () => {
 		history.push("/profile");
+		handleMenuClose();
 	}
 
 	const menuId = "primary-search-account-menu";

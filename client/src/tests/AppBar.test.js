@@ -45,6 +45,9 @@ describe("App Bar Tests", () => {
         <Route exact path="/feed">
           <h1>Redirected to feed</h1>
         </Route>
+        <Route exact path="/profile">
+          <h1>Redirected to profile</h1>
+        </Route>
       </MockComponent>
       );
     await waitForElementToBeRemoved(() => screen.getByText("Loading"));
@@ -159,6 +162,14 @@ describe("App Bar Tests", () => {
       const profileItemElement = screen.getByTestId("profile-item-mobile");
       fireEvent.click(profileItemElement);
       await waitFor(() => expect(menuElement).not.toBeVisible());
+    });
+
+    it("should redirect to profile view when profile button is pressed", async () => {
+      const buttonElement = screen.getByTestId("profile-item");
+      fireEvent.click(buttonElement);
+      const redirectMessage = await screen.findByText(/Redirected to profile/i);
+      expect(redirectMessage).toBeInTheDocument();
+      expect(window.location.pathname).toBe("/profile");
     });
   });
 });
