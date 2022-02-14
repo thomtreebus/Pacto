@@ -6,6 +6,8 @@ import { rest } from "msw";
 import { setupServer } from "msw/node";
 import { Route } from "react-router-dom";
 import Profile from "../pages/EditProfile";
+import userEvent from "@testing-library/user-event";
+import {act} from "react-dom/test-utils";
 
 describe("Profile Page Tests", () => {
   const server = setupServer(
@@ -15,9 +17,17 @@ describe("Profile Page Tests", () => {
             firstName: "pac",
             lastName: "to",
             friends: [],
-            university: { // subject to change
+            bio: "hello world",
+            course: 'Digital arts',
+            location: 'London',
+            image: "https://res.cloudinary.com/djlwzi9br/image/upload/v1644581875/man1_qexxnb.jpg",
+            university: { // data structure subject to change
               name: "King's College London",
             },
+            _id: 1,
+            instagram: "pactoInsta",
+            linkedin: "pactoLinkedIn",
+            phone: "07999999999",
           }, errors: [] })
       );
     }),
