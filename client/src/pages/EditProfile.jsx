@@ -102,6 +102,7 @@ export default function EditProfile() {
             <Input
               accept="image/*"
               id="contained-button-file"
+              data-testid="image-upload-icon"
               type="file"
               onChange={(e) => { setUploadImage(e.target.files[0]) }} />
             <IconButton color="primary" component="span">

@@ -64,6 +64,7 @@ describe("Profile Page Tests", () => {
         name: "Instagram"
       });
       expect(instagramField).toBeInTheDocument();
+      expect(instagramField.value).toBe("pactoInsta");
     });
 
     it("should render the Phone number field", async () => {
@@ -71,6 +72,7 @@ describe("Profile Page Tests", () => {
         name: "Phone Number"
       });
       expect(phoneNumberField).toBeInTheDocument();
+      expect(phoneNumberField.value).toBe("07999999999");
     });
 
     it("should render the LinkedIn field", async () => {
@@ -78,6 +80,7 @@ describe("Profile Page Tests", () => {
         name: "LinkedIn"
       });
       expect(linkedInField).toBeInTheDocument();
+      expect(linkedInField.value).toBe("pactoLinkedIn");
     });
 
     it("should render the Course field", async () => {
@@ -85,6 +88,7 @@ describe("Profile Page Tests", () => {
         name: "Course"
       });
       expect(courseField).toBeInTheDocument();
+      expect(courseField.value).toBe("Digital arts");
     });
 
     it("should render the Location field", async () => {
@@ -92,6 +96,7 @@ describe("Profile Page Tests", () => {
         name: "Location"
       });
       expect(locationField).toBeInTheDocument();
+      expect(locationField.value).toBe("London");
     });
 
     it("should render the Bio field", async () => {
@@ -108,12 +113,10 @@ describe("Profile Page Tests", () => {
       expect(uploadImageButton).toBeInTheDocument();
     });
 
-    /*
     it("should render the select image icon button", async () => {
-      const selectImageButton = await screen.findByLabelText("Select Image")
+      const selectImageButton = await screen.findByTestId("image-upload-icon")
       expect(selectImageButton).toBeInTheDocument();
     });
-    */
 
     it("should render the update profile button", async () => {
       const updateProfileButton = await screen.findByRole("button", {
@@ -131,6 +134,7 @@ describe("Profile Page Tests", () => {
     it("should render the user's profile picture", async () => {
       const profilePicture = await screen.findByAltText("Profile Picture");
       expect(profilePicture).toBeInTheDocument();
+      expect(profilePicture.getAttribute('src')).toBe("https://res.cloudinary.com/djlwzi9br/image/upload/v1644581875/man1_qexxnb.jpg");
     });
 
     it("should render the user's name", async () => {
