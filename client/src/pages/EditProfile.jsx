@@ -89,6 +89,7 @@ export default function EditProfile() {
       <Grid item direction="column" xs={4}>
         <Image
           style={{width: "100%", minWidth: "50%", minHeight: "25%", borderRadius: "10px", overflow: "hidden", position: "relative", }}
+          alt="Profile Picture"
           cloudName={`${process.env.REACT_APP_CLOUDINARY_CLOUD_NAME}`}
           publicID={image}
         >
@@ -98,6 +99,7 @@ export default function EditProfile() {
             <Input
               accept="image/*"
               id="contained-button-file"
+              data-testid="image-upload-icon"
               type="file"
               onChange={(e) => { uploadImage(e.target.files[0])}} />
             <IconButton color="primary" component="span">
@@ -106,6 +108,7 @@ export default function EditProfile() {
           </label>
           <Button
               fullWidth
+              label="Upload Image"
               variant="contained"
               component="span"
               onClick={uploadImage}
@@ -168,6 +171,7 @@ export default function EditProfile() {
         <Divider sx={{ marginTop: 1, width: "97%" }} />
         <TextField
           name="linkedin"
+          label="LinkedIn"
           variant="outlined"
           size="small"
           fullWidth
@@ -186,6 +190,7 @@ export default function EditProfile() {
         />
         <TextField
           name="instagram"
+          label="Instagram"
           variant="outlined"
           size="small"
           fullWidth
@@ -204,6 +209,7 @@ export default function EditProfile() {
         />
         <TextField
           name="phone"
+          label="Phone Number"
           variant="outlined"
           size="small"
           fullWidth
@@ -238,6 +244,7 @@ export default function EditProfile() {
           }}
         />
         <Button
+          label="Update Profile"
           sx={{float: "right", marginTop: 30}}
           variant="contained"
           type="submit"
