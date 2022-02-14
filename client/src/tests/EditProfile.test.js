@@ -134,8 +134,8 @@ describe("Profile Page Tests", () => {
     });
 
     it("should render the user's name", async () => {
-      const universityText = await screen.findByText("pac to");
-      expect(universityText).toBeInTheDocument();
+      const usersName = await screen.findByText("pac to");
+      expect(usersName).toBeInTheDocument();
     });
 
   });
