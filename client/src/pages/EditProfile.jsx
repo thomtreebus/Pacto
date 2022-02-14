@@ -37,20 +37,17 @@ export default function EditProfile() {
   const [instagram, setInstagram] = useState(user.instagram);
   const [phone, setPhone] = useState(user.phone);
   const [image, setImage] = useState(user.image);
-  const [imageToUpload, setUploadImage] = useState(user.image);
 
-  const uploadImage = () => {
+  const uploadImage = (newImage) => {
     console.log(image);
     const data = new FormData();
 
     data.append("api_key", process.env.REACT_APP_CLOUDINARY_KEY);
-    data.append("file", imageToUpload);
+    data.append("file", newImage);
     data.append("upload_preset", "n2obmbt1");
 
     Axios.post(`https://api.cloudinary.com/v1_1/${process.env.REACT_APP_CLOUDINARY_CLOUD_NAME}/image/upload`, data)
       .then((res) => {
-        console.log(res)
-        console.log(res.data.secure_url);
         setImage(res.data.url);
       })
       .catch((err) => {
@@ -102,7 +99,7 @@ export default function EditProfile() {
               accept="image/*"
               id="contained-button-file"
               type="file"
-              onChange={(e) => { setUploadImage(e.target.files[0]) }} />
+              onChange={(e) => { uploadImage(e.target.files[0])}} />
             <IconButton color="primary" component="span">
               <PhotoIcon />
             </IconButton>
