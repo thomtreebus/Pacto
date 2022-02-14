@@ -201,6 +201,69 @@ describe("Profile Page Tests", () => {
       expect(inputElement.value).toBe(testValue);
     })
 
+    it("uploaded image contents should be saved as a state", async () => {
+      const image = new File(['testImage'], 'testImage.png', {type: 'image/png'})
+      const buttonElement = await screen.findByTestId(
+        "image-upload-icon"
+      );
+      await userEvent.upload(buttonElement, image);
+      expect(buttonElement.files[0]).toBe(image);
+      expect(buttonElement.files).toHaveLength(1);
+    });
 
+    it("uploaded image updates profile image shown", async () => {
+      const imageUrl = "http://res.cloudinary.com/djlwzi9br/image/upload/v1644796162/qrbhfhmml4hwa5y0dvu9.png"
+      server.use(
+        rest.post(`https://api.cloudinary.com/v1_1/${process.env.REACT_APP_CLOUDINARY_CLOUD_NAME}/image/upload`, (req, res, ctx) => {
+          return res(
+            ctx.status(201),
+            ctx.json({
+                url: imageUrl,
+                secure_url: imageUrl,
+            }),
+          );
+        })
+      );
+
+      const image = new File(['testImage'], 'testImage.png', {type: 'image/png'});
+      const previousImage = (await screen.findByAltText("Profile Picture")).getAttribute('src');
+
+      const buttonElement = await screen.findByTestId(
+        "image-upload-icon"
+      );
+      await userEvent.upload(buttonElement, image);
+      const uploadImageButton = await screen.findByRole("button", {
+        name: "Upload Image"
+      });
+
+      await act( async () => {
+        await userEvent.click(uploadImageButton);
+      });
+
+      const updatedImage = (await screen.findByAltText("Profile Picture")).getAttribute('src');
+      expect(updatedImage).toBe("http://res.cloudinary.com/djlwzi9br/image/upload/v1644796162/qrbhfhmml4hwa5y0dvu9.png");
+      expect(previousImage===updatedImage).toBe(false);
+    });
+
+    it("update profile button sends post request", async () => {
+      server.use(
+        rest.put(`${process.env.REACT_APP_URL}/users/1`, (req, res, ctx) => {
+          return res(
+            ctx.status(201),
+            ctx.json({
+              message: 'Success',
+              errors: [],
+            })
+          );
+        })
+      );
+      const updateProfileButton = await screen.findByRole("button", {
+        name: "Update Profile"
+      });
+      await userEvent.click(updateProfileButton);
+      // expect(window.location.pathname).toBe("/profile");
+    });
   });
+
+
 });
