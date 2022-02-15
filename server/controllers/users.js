@@ -52,7 +52,7 @@ module.exports.viewProfile = async(req, res) => {
 
     // await user.populate({ path: 'user', model: User })
     
-    res.status(200).json(jsonResponse(pact, []));
+    res.status(200).json(jsonResponse(user, []));
 
   } catch (err) {
     res.status(status).json(jsonResponse(null, [jsonError(null, err.message)]));

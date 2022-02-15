@@ -95,7 +95,7 @@ export default function PrimarySearchAppBar() {
 	};
 
 	const handleProfileClick = () => {
-		history.push("/profile");
+		history.push("/edit-profile");
 		handleMenuClose();
 	}
 

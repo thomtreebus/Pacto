@@ -1,5 +1,6 @@
 import Login from "./pages/LoginPage";
 import SignUp from "./pages/SignupPage";
+import Profile from "./pages/Profile";
 import BaseLayout from "./layouts/BaseLayout";
 import Landing from "./pages/LandingPage";
 import Feed from "./pages/Feed";
@@ -29,8 +30,11 @@ function App() {
 				<PrivateRoute path="*">
 					<BaseLayout>
 						<Switch>
-							<PrivateRoute path="/profile">
+							<PrivateRoute path="/edit-profile">
 								<EditProfile />
+							</PrivateRoute>
+							<PrivateRoute path="/user/:id">
+								<Profile />
 							</PrivateRoute>
 							<PrivateRoute path="/feed">
 								<h1>Feed</h1>
