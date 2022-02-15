@@ -1,6 +1,7 @@
 const Pact = require("../../models/Pact");
+const University = require("../../models/University");
 
-const myPact = null;
+let myPact = null;
 
 module.exports.generateTestPact = async (foundingUser) => {
   if(!foundingUser.active){
@@ -16,10 +17,12 @@ module.exports.generateTestPact = async (foundingUser) => {
     moderators: [foundingUser]
   });
 
-  await foundingUser.university.pacts.push(pact);
-  foundingUser.university.save();
+  await foundingUser.populate({ path: 'university', model: University});
 
-  await foundingUser.pacts.push(pact);
+  foundingUser.university.pacts.push(pact);
+  await foundingUser.university.save();
+
+  foundingUser.pacts.push(pact);
   await foundingUser.save();
 
   myPact = pact;
@@ -30,6 +33,6 @@ module.exports.getTestPactId = async () => {
   if (myPact) {
     return myPact._id;
   } else {
-    throw Error("Pact not generated.")
+    throw Error("Pact not generated")
   }
 }

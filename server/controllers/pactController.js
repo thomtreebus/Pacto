@@ -63,9 +63,10 @@ module.exports.pactGet = async (req, res) => {
 			throw Error(MESSAGES.AUTH.IS_NOT_LOGGED_IN);
 		}
 
-		const pact = await Pact.findOne({ university, _id:req.params.id });
-
-		if (!pact){
+		try {
+			const pact = await Pact.findOne({ university, _id:req.params.id });
+		}
+		catch (err) {
 			status = 404;
 			throw Error("Pact not found");
 		}

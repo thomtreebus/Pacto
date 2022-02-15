@@ -33,13 +33,18 @@ describe("GET /pact/:id", () =>{
 		await University.deleteMany({});
 	});
 
-  // Helpers
-  const getPact = async (id, token) => {
+  // Tests
+  it("returns appropriate error when id invalid", async () =>{
+    const user = await User.findOne({ uniEmail: getEmail() });
+
+    const token = createToken(user._id);
+    const id = "gibberish";
+
     const response = await supertest(app)
       .get("/pact/"+id)
-      .set("Cookie", [`jwt=${token}`]);
+      .set("Cookie", [`jwt=${token}`])
+      .expect(404);
 
-    return response;
-  }
-
+    expect(response.body.errors[0].message).toBe("Pact not found");
+  });  
 });
