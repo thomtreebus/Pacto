@@ -52,10 +52,10 @@ describe("GET /pact/:id", () =>{
     const user = await User.findOne({ uniEmail: getEmail() });
 
     const token = createToken(user._id);
-    const id = getTestPactId();
+    const id = await getTestPactId();
 
     const response = await supertest(app)
-      .get("/pact/"+id)
+      .get("/pact/"+id.toString())
       .set("Cookie", [`jwt=${token}`])
       .expect(200);
 

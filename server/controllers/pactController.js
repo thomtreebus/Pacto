@@ -75,9 +75,7 @@ module.exports.pactGet = async (req, res) => {
 			throw Error("Pact not found");
 		}
 
-		await pact.populate({path: 'university', model: University})
-		.populate({path: 'members', model: User})
-		.populate({path: 'moderators', model: User});
+		// the pact is already populated
 
 		res.status(200).json(jsonResponse(pact, []));
 	} 
