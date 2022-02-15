@@ -6,15 +6,20 @@ import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import Icon from "../assets/pacto-logo.ico";
 import Typography from "@mui/material/Typography";
+import { Link, useHistory } from "react-router-dom";
+import { useAuth } from "../providers/AuthProvider";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
 import MenuItem from '@mui/material/MenuItem';
 
 export default function LoginPage() {
+	const { setIsAuthenticated } = useAuth();
+	const { user } = useAuth();
   const [category, setCategory] = React.useState('Subject')
 	const [snackbarOpen, setSnackbarOpen] = React.useState(false);
 	const [snackbarMessage, setSnackbarMessage] = React.useState(null);
 	const [isButtonDisabled, setIsButtonDisabled] = React.useState(false);
+	const history = useHistory();
 
 	const handleClose = () => {
 		setSnackbarOpen(false);
@@ -23,12 +28,44 @@ export default function LoginPage() {
   const handleCategoryChange = (event) => {
     setCategory(event.target.value)
   };
-
   
 	const handleSubmit = async (event) => {
 		event.preventDefault();
 		setIsButtonDisabled(true);
 		const data = new FormData(event.currentTarget);
+
+		try {
+
+			const response = await fetch(`${process.env.REACT_APP_URL}/pact`, {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				credentials: "include",
+				body: JSON.stringify({
+					name: data.get("pact-name"),
+					category: data.get("category"),
+					description: data.get("description"),
+				}),
+			});
+
+			const json = await response.json();
+
+			if (response.status !== 200) {
+				setSnackbarMessage(json.errors[0].message);
+				setSnackbarOpen(true);
+				setIsButtonDisabled(false);
+				return;
+			}
+
+			setIsAuthenticated(true);
+			history.push("/feed");
+		} catch (err) {
+			setSnackbarMessage(err.message);
+			setSnackbarOpen(true);
+			setIsButtonDisabled(false);
+			return;
+		}
 	};
 
 	return (
