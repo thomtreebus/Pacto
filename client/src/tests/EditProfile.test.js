@@ -8,7 +8,6 @@ import { Route } from "react-router-dom";
 import Profile from "../pages/EditProfile";
 import userEvent from "@testing-library/user-event";
 import {act} from "react-dom/test-utils";
-import {bindReporter} from "web-vitals/dist/modules/lib/bindReporter";
 
 describe("Profile Page Tests", () => {
   const server = setupServer(
