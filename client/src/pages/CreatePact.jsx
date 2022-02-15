@@ -6,20 +6,20 @@ import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import Icon from "../assets/pacto-logo.ico";
 import Typography from "@mui/material/Typography";
-import { Link, useHistory } from "react-router-dom";
-import { useAuth } from "../providers/AuthProvider";
+import { useHistory } from "react-router-dom";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
 import MenuItem from '@mui/material/MenuItem';
 
 export default function LoginPage() {
-	const { setIsAuthenticated } = useAuth();
-	const { user } = useAuth();
   const [category, setCategory] = React.useState('Subject')
 	const [snackbarOpen, setSnackbarOpen] = React.useState(false);
 	const [snackbarMessage, setSnackbarMessage] = React.useState(null);
 	const [isButtonDisabled, setIsButtonDisabled] = React.useState(false);
 	const history = useHistory();
+
+	const [apiPactNameError, setApiPactNameError] = React.useState('');
+	const [apiPactDescriptionError, setApiPactDescriptionError] = React.useState('');
 
 	const handleClose = () => {
 		setSnackbarOpen(false);
@@ -31,41 +31,45 @@ export default function LoginPage() {
   
 	const handleSubmit = async (event) => {
 		event.preventDefault();
-		setIsButtonDisabled(true);
 		const data = new FormData(event.currentTarget);
 
-		try {
+		setApiPactNameError('');
+		setApiPactDescriptionError('');
 
-			const response = await fetch(`${process.env.REACT_APP_URL}/pact`, {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				credentials: "include",
-				body: JSON.stringify({
-					name: data.get("pact-name"),
-					category: data.get("category"),
-					description: data.get("description"),
-				}),
-			});
+		const response = await fetch(`${process.env.REACT_APP_URL}/pact`, {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			credentials: "include",
+			body: JSON.stringify({
+				name: data.get("pact-name"),
+				category: data.get("category"),
+				description: data.get("description"),
+			}),
+		});
 
-			const json = await response.json();
+		const json = await response.json();
+		
+		Object.values(json['errors']).forEach(err => {
+			const field = err["field"];
+			const message = err["message"];
 
-			if (response.status !== 200) {
-				setSnackbarMessage(json.errors[0].message);
-				setSnackbarOpen(true);
-				setIsButtonDisabled(false);
-				return;
+			if (field === "name"){
+				setApiPactNameError(message)
+			}
+			if (field === "description"){
+				setApiPactDescriptionError(message)
 			}
 
-			setIsAuthenticated(true);
-			history.push("/feed");
-		} catch (err) {
-			setSnackbarMessage(err.message);
-			setSnackbarOpen(true);
-			setIsButtonDisabled(false);
+		});
+
+		if (response.status !== 201) {
 			return;
 		}
+
+		history.push("/feed");
+		
 	};
 
 	return (
@@ -98,7 +102,8 @@ export default function LoginPage() {
 								fullWidth
 								label="Pact Name"
 								name="pact-name"
-                helperText="What is the name of your Pact?"
+								error={apiPactNameError.length !== 0}
+                helperText={apiPactNameError}
 								autoFocus
 							/>
 
@@ -123,7 +128,7 @@ export default function LoginPage() {
               </MenuItem>
               <MenuItem value="Society" data-testid="society-item">
                 Society
-              </MenuItem>
+              </MenuItem>apiLastNameError
               <MenuItem value="Other" data-testid="other-item">
                 Other
               </MenuItem>
@@ -137,7 +142,8 @@ export default function LoginPage() {
               fullWidth
               multiline
               rows={4}
-              helperText="What is your pact about?"
+							error={apiPactDescriptionError.length !== 0}
+              helperText={apiPactDescriptionError}
             />
             
 							
