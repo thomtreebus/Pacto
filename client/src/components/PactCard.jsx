@@ -9,6 +9,7 @@ import { useHistory } from "react-router-dom";
 
 export default function PactCard({ pact, joined }) {
 	const history = useHistory();
+	const DESCRIPTION_LENGTH = 42;
 
 	return (
 		<Grid item xs={12} s={6} md={4} lg={3}>
@@ -28,23 +29,16 @@ export default function PactCard({ pact, joined }) {
 						}}
 					>
 						<PactChip pact={pact} />
-						<div
-							style={{
-								overflow: "hidden",
-								textOverflow: "ellipsis",
-								width: "100%",
+
+						<Typography
+							variant="body2"
+							sx={{
+								marginBottom: "10px",
 							}}
 						>
-							<Typography
-								variant="body2"
-								sx={{
-									marginBottom: "10px",
-								}}
-								noWrap
-							>
-								{pact.description}
-							</Typography>
-						</div>
+							{pact.description.substr(0, DESCRIPTION_LENGTH + 1)}{" "}
+							{pact.description.length > DESCRIPTION_LENGTH && `...`}
+						</Typography>
 					</Box>
 
 					<Box
