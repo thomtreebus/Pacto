@@ -14,7 +14,6 @@ import MenuItem from '@mui/material/MenuItem';
 export default function LoginPage() {
   const [category, setCategory] = React.useState('Subject')
 	const [snackbarOpen, setSnackbarOpen] = React.useState(false);
-	const [snackbarMessage, setSnackbarMessage] = React.useState(null);
 	const [isButtonDisabled, setIsButtonDisabled] = React.useState(false);
 	const history = useHistory();
 
@@ -164,17 +163,6 @@ export default function LoginPage() {
 					</Box>
           <Grid container component="main" sx={{ height: "100%" }}>
 				</Grid>
-			<Snackbar
-				anchorOrigin={{ vertical: "top", horizontal: "center" }}
-				open={snackbarOpen}
-				autoHideDuration={6000}
-				onClose={handleClose}
-				data-testid="snackbar"
-			>
-				<Alert severity="error" onClose={handleClose}>
-					{snackbarMessage}
-				</Alert>
-			</Snackbar>
 		</>
 	);
 }
