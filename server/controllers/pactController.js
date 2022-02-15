@@ -11,10 +11,6 @@ module.exports.pactPost = async (req, res) => {
 
     const pact = await Pact.create({ name, university:user.university, members:[user], moderators:[user] });
 
-		await pact.populate({path: 'university', model: University})
-		.populate({path: 'members', model: User})
-		.populate({path: 'moderators', model: User});
-
 		res.status(201).json(jsonResponse(pact, []));
 	} 
   catch (err) {

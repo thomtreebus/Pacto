@@ -2,6 +2,7 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 const { jsonResponse, jsonError } = require("../helpers/responseHandlers");
 const University = require('../models/University');
+const Pact = require("../models/Pact");
 
 const checkAuthenticated = async (req, res, next) => {
   const token = req.cookies.jwt;
@@ -16,6 +17,7 @@ const checkAuthenticated = async (req, res, next) => {
       else {
         let user = await User.findById(decodedToken.id);
         await user.populate({path: 'university', model: University});
+        await user.populate({path: 'pacts', model: Pact});
         req.user = user;
 
         if(!user.active){
