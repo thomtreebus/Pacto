@@ -77,6 +77,12 @@ const UserSchema = Schema({
       ref: 'User'
     }
   ],
+  pacts: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: 'Pact'
+    }
+  ],
   instagram: {
     type: String,
     required: false
