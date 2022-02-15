@@ -126,7 +126,7 @@ describe("POST /pact", () => {
   });
 
   describe("Name validation", () => {
-    it("rejects when name is not unique", async () => {
+    it("rejects when name is not unique within university", async () => {
       // Create valid pact with NAME
       await isValidPact({
         name: NAME
@@ -136,6 +136,18 @@ describe("POST /pact", () => {
       await isInvalidPact({
         name: NAME
       }, "name", PACT_MESSAGES.NAME.NOT_UNIQUE);
+    });
+
+    it("accepts when name is not unique outside university", async () => {
+      // Create valid pact with NAME in another uni
+      const uni = await University.create({name: "Dummy Uni", domains:["dummy.ac.uk"]});
+      //const user = await User.create({firstName: "John", lastName: "Doe", uniEmail: "johndoe@example.com", password: "Password123", university: uni});
+      await Pact.create({name: NAME, university: uni, members:[], moderators:[]});
+
+      // Attempt to create pact with the same name
+      await isValidPact({
+        name: NAME
+      });
     });
 
     it("rejects when name exceeds 33 characters", async () => {

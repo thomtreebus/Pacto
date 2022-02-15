@@ -53,29 +53,6 @@ module.exports.pactPost = async (req, res) => {
 	}
 };
 
-// GET pacts (all pacts in user's hub)
-// module.exports.pactsGet = async (req, res) => {
-// 	try {
-//     const university = req.user.university;
-
-// 		if (!university){
-// 			throw Error("User not authenticated");
-// 		}
-
-// 		const pacts = await Pact.find({ university });
-// 		pacts.forEach(async pact => {
-// 			await pact.populate({path: 'members', model: User})
-// 			.populate({path: 'moderators', model: User})
-// 			.populate({path: 'university', model: University});
-// 		});
-
-// 		res.status(200).json(jsonResponse(pacts, []));
-// 	} 
-//   catch (err) {
-// 		res.status(400).json(jsonResponse(null, [jsonError(null, err.message)]));
-// 	}
-// };
-
 // GET pact (by id)
 module.exports.pactGet = async (req, res) => {
 	let status = 400;

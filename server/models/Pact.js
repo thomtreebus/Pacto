@@ -6,7 +6,6 @@ const PactSchema = mongoose.Schema({
   name: {
     type: String,
     required: [true, PACT_MESSAGES.NAME.BLANK],
-    unique: true,
     maxLength: [33, PACT_MESSAGES.NAME.MAX_LENGTH_EXCEEDED],
     minLength: [2, PACT_MESSAGES.NAME.MIN_LENGTH_NOT_MET]
   },
@@ -61,6 +60,8 @@ PactSchema.pre('validate',  function(next) {
   }
   next();
 });
+
+PactSchema.index({ name: 1, university: 1}, { unique: [true, PACT_MESSAGES.NAME.NOT_UNIQUE] });
 
 const Pact = mongoose.model('Pacts', PactSchema);
 
