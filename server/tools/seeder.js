@@ -58,15 +58,12 @@ async function createUser(firstName, lastName, university) {
 		uniEmail: `${firstName.toLowerCase()}.${lastName.toLowerCase()}@kcl.ac.uk`,
 		password: hashedPassword,
 		active: true,
-		university: university._id,
+		university: university,
 		course: COURSES[Math.floor(Math.random() * COURSES.length)],
 		location: CITIES[Math.floor(Math.random() * CITIES.length)],
 		image: IMAGES[Math.floor(Math.random() * IMAGES.length)],
 		bio: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi bibendum varius orci, nec scelerisque magna tempor ut. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Cras a felis in nunc tincidunt rhoncus. Sed ut ante blandit lorem accumsan accumsan at eget ex. Phasellus aliquet eros massa, non malesuada orci feugiat quis. Duis at pulvinar dui. Pellentesque vestibulum erat arcu. Nunc ac sem sodales arcu ullamcorper commodo.",
-		hobbies: ["Studying", "Video Games", "Football"],
-		instagram: `${firstName.toLowerCase()}${lastName.toLowerCase()}`,
-		linkedin: `${firstName} ${lastName}`,
-		phone: "123456789",
+		hobbies : ["Studying", "Video Games", "Football"]
 	});
 
 	university.users.push(user);
@@ -118,7 +115,6 @@ async function populatePacts() {
 
 async function seed() {
 	const university = await University.create({name : "King's College London", domains: ["@kcl.ac.uk"]});
-	console.log(university);
 	await seedPacts(university);
 	await seedUsers(university);
 	await populatePacts();

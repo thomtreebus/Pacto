@@ -4,13 +4,12 @@ const { handleVerification } = require("../helpers/emailHandlers");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const { jsonResponse, jsonError } = require("../helpers/responseHandlers");
-const { async } = require("crypto-random-string");
 const ApiCache = require("../helpers/ApiCache");
 const University = require("../models/University");
 const { MESSAGES } = require("../helpers/messages");
-const {passwordValidators} = require('../helpers/customSignupValidators')
+const {passwordValidators} = require('../helpers/customSignupValidators');
 const { isEmail } = require('validator');
-const handleFieldErrors = require("../helpers/fieldErrorsHandler");
+const handleFieldErrors = require('../helpers/errorHandler');
 
 // Magic numbers
 const COOKIE_MAX_AGE = 432000; // 432000 = 5 days
@@ -143,7 +142,6 @@ module.exports.loginPost = async (req, res) => {
 // GET /logout
 module.exports.logoutGet = (req, res) => {
 	res.cookie("jwt", "", { maxAge: 1 });
-	// console.log(req.user);
 	res.status(200).json(jsonResponse(null, []));
 };
 
