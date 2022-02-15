@@ -8,6 +8,9 @@ import { useQuery } from "react-query";
 import Loading from "./Loading";
 import { useEffect } from "react";
 import Typography from "@mui/material/Typography";
+import Stack from "@mui/material/Stack";
+import Chip from "@mui/material/Chip";
+import Divider from "@mui/material/Divider";
 import InstagramIcon from '@mui/icons-material/Instagram';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import WhatsAppIcon from '@mui/icons-material/WhatsApp';
@@ -31,8 +34,10 @@ export default function Profile () {
   
   if (isLoading) {
 		return <Loading />;
-  } else {
-    
+  }
+
+  const handleInstagramClick = () => {
+    console.log("hello!")
   }
 
   return (
@@ -44,23 +49,36 @@ export default function Profile () {
       spacing={2}
       justify="center"
       justifyContent="center"
-      alignItems="stretch">
-      <Grid item direction="column" xs={4}>
+      alignItems="stretch"
+    >
+      <Grid item direction="column" xs={8}>
+        <Stack direction="row" alignItems="center" spacing={2} sx={{}}>
         <Image
-          style={{width: "100%", minWidth: "50%", minHeight: "25%", borderRadius: "10px", overflow: "hidden", position: "relative", }}
+          style={{width: "100px", height: "100px", border: "3px solid #616161", borderRadius: "180px", overflow: "hidden", position: "relative", }}
           alt="Profile Picture"
           cloudName={`${process.env.REACT_APP_CLOUDINARY_CLOUD_NAME}`}
           publicID={user.image}>
         </Image>
-        <Typography variant="body1"> {user.instagram} </Typography>
+        <Stack direction="column" alignItems="left" sx={{}}>
+          <Typography variant="h4">{user.firstName} {user.lastName}</Typography>
+          <Typography variant="subtitle1" sx={{ color: "#1976d2", marginTop: "2px" }}>  Engineering student at King's College London </Typography>
+          <Typography variant="subtitle1" sx={{ color: "#616161", }}>  {user.location} </Typography>
+        </Stack>
+      </Stack>
+      <Stack direction="row" alignItems="center" spacing={2} sx={{marginTop: "2px"}}>
+          <Chip label="username" icon={<InstagramIcon />} variant="outlined" component="a" target="_blank" clickable href={`https://www.instagram.com/`} />
+          <Chip label={`${user.firstName} ${user.lastName}`} icon={<LinkedInIcon />} variant="outlined" component="a" target="_blank" clickable href={`https://www.linkedin.com/`} />
+          <Chip label="+44 (0) 123456789" icon={<WhatsAppIcon />} variant="outlined"/>
+      </Stack>
+      <Divider sx={{marginTop: "10px", marginBottom: "10px"}}></Divider>
+      <Typography variant="body1" sx={{}}> {user.bio} </Typography>
+      </Grid>
+      
+      
+      <Grid item direction="column" xs={4}>
+        <Typography>Friends</Typography>
       </Grid>
 
-      <Grid item direction="column" xs={8}>
-        <Typography variant="h4">{user.firstName} {user.lastName}</Typography>
-        <Typography variant="subtitle1" sx={{ color: "#1976d2" }}>  King's College London </Typography>
-        <Typography variant="body1"> {user.bio} </Typography>
-
-      </Grid>
     </Grid>
   )
 }
