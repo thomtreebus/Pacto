@@ -32,6 +32,7 @@ export default function LoginPage() {
 	const handleSubmit = async (event) => {
 		event.preventDefault();
 		const data = new FormData(event.currentTarget);
+		setIsButtonDisabled(true);
 
 		setApiPactNameError('');
 		setApiPactDescriptionError('');
@@ -62,6 +63,7 @@ export default function LoginPage() {
 				setApiPactDescriptionError(message)
 			}
 
+			setIsButtonDisabled(false);
 		});
 
 		if (response.status !== 201) {
