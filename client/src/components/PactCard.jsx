@@ -5,13 +5,16 @@ import AddIcon from "@mui/icons-material/Add";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import PeopleAltRoundedIcon from "@mui/icons-material/PeopleAltRounded";
 import PactChip from "./PactChip";
+import { useHistory } from "react-router-dom";
 
 export default function PactCard({ pact, joined }) {
+	const history = useHistory();
+
 	return (
-		<Grid item xs={3}>
-			<Card sx={{ maxWidth: 345 }}>
+		<Grid item xs={12} s={6} md={4} lg={3}>
+			<Card>
 				<CardHeader
-					avatar={<Avatar>P</Avatar>}
+					avatar={<Avatar src={pact.image} alt="pact-image" />}
 					title={pact.name}
 					sx={{ paddingBlock: 1 }}
 				/>
@@ -25,9 +28,23 @@ export default function PactCard({ pact, joined }) {
 						}}
 					>
 						<PactChip pact={pact} />
-						<Typography variant="body2" sx={{ marginBottom: "10px" }}>
-							{pact.description}
-						</Typography>
+						<div
+							style={{
+								overflow: "hidden",
+								textOverflow: "ellipsis",
+								width: "100%",
+							}}
+						>
+							<Typography
+								variant="body2"
+								sx={{
+									marginBottom: "10px",
+								}}
+								noWrap
+							>
+								{pact.description}
+							</Typography>
+						</div>
 					</Box>
 
 					<Box
@@ -37,7 +54,8 @@ export default function PactCard({ pact, joined }) {
 							display: "flex",
 						}}
 					>
-						<PeopleAltRoundedIcon /> {pact.members.length}
+						<PeopleAltRoundedIcon />{" "}
+						<span data-testid="member-length"> {pact.members.length} </span>
 					</Box>
 				</CardContent>
 				<CardActions disableSpacing>
@@ -45,17 +63,19 @@ export default function PactCard({ pact, joined }) {
 						<Button
 							variant="contained"
 							sx={{ width: "100%" }}
-							startIcon={<AddIcon />}
+							startIcon={<VisibilityIcon />}
+							onClick={() => history.push(`/pact/${pact._id}`)}
 						>
-							Join
+							View
 						</Button>
 					) : (
 						<Button
 							variant="outlined"
 							sx={{ width: "100%" }}
-							startIcon={<VisibilityIcon />}
+							startIcon={<AddIcon />}
+							onClick={() => history.push(`/pact/${pact._id}`)}
 						>
-							View
+							Join
 						</Button>
 					)}
 				</CardActions>
