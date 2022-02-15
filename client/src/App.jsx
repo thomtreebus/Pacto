@@ -41,7 +41,7 @@ function App() {
 							<PrivateRoute exact path="/hub">
 								<UniversityHubPage />
 							</PrivateRoute>
-							<PrivateRoute path="/pact/:pactID">
+							<PrivateRoute exact path="/pact/:pactID">
 								<PactPage />
 							</PrivateRoute>
 							<PrivateRoute path="*">
