@@ -10,7 +10,7 @@ export default function BaseLayout({children}) {
   return (
     <>
       <AppBar />
-      <Box sx={{display:'flex', alignItems: "center"}}>
+      <Box sx={{display:'flex', alignItems: "center", maxWidth: "100%"}}>
       <SideBar />
       <Box sx={{
 						my: 8,
