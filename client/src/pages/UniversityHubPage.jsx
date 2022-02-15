@@ -72,8 +72,22 @@ export default function UniversityHubPage() {
 					alignItems: "center",
 					textShadow: "1px 1.5px #1a237e",
 					color: "white",
+					position: "relative",
 				}}
 			>
+				<Fab
+					aria-label="add"
+					sx={{
+						position: "absolute",
+						top: 0,
+						right: 0,
+						transform: "translate(20%, -20%)",
+					}}
+					onClick={() => history.push("/create-pact")}
+					data-testid="floating-action-button"
+				>
+					<AddIcon />
+				</Fab>
 				<Typography variant="h3" sx={{ fontWeight: "bold" }}>
 					Find your pact
 				</Typography>
@@ -131,14 +145,6 @@ export default function UniversityHubPage() {
 				</TabContext>
 			</Box>
 			<PactGrid pacts={pacts} />
-			<Fab
-				aria-label="add"
-				sx={{ position: "absolute", top: 75, right: 250 }}
-				onClick={() => history.push("/create-pact")}
-				data-testid="floating-action-button"
-			>
-				<AddIcon />
-			</Fab>
 		</Box>
 	);
 }
