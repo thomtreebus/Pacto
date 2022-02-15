@@ -57,7 +57,7 @@ export default function UniversityHubPage() {
 		>
 			<Box
 				sx={{
-					width: "100%",
+					maxWidth: "100%",
 					height: "35vh",
 					backgroundImage: `url(${background})`,
 					backgroundRepeat: "no-repeat",
@@ -88,19 +88,26 @@ export default function UniversityHubPage() {
 				>
 					<AddIcon />
 				</Fab>
-				<Typography variant="h3" sx={{ fontWeight: "bold" }}>
+				<Typography
+					variant="h3"
+					sx={{ fontWeight: "bold", textAlign: "center" }}
+				>
 					Find your pact
 				</Typography>
-				<Typography variant="h5" sx={{ fontWeight: "bold" }}>
+				<Typography
+					variant="h5"
+					sx={{ fontWeight: "bold", textAlign: "center" }}
+				>
 					There's a pact for everything if not, make one...
 				</Typography>
 				<Card
 					sx={{
 						p: "2px 4px",
-						marginTop: "10px",
+						marginBlock: "10px",
 						display: "flex",
 						alignItems: "center",
-						width: 400,
+						maxWidth: 400,
+						width: "70%",
 					}}
 				>
 					<InputBase
@@ -125,7 +132,14 @@ export default function UniversityHubPage() {
 				</Card>
 			</Box>
 			<Divider sx={{ marginTop: "15px" }} />
-			<Box>
+			<Box
+				sx={{
+					maxWidth: "100%",
+					marginInline: "auto",
+				}}
+				width={{ xs: "0px", lg: "100%" }}
+				height={{ xs: "10px", lg: "100%" }}
+			>
 				<TabContext value={category}>
 					<Box
 						sx={{

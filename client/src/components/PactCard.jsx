@@ -54,7 +54,7 @@ export default function PactCard({ pact, joined }) {
 							display: "flex",
 						}}
 					>
-						<PeopleAltRoundedIcon />{" "}
+						<PeopleAltRoundedIcon />
 						<span data-testid="member-length"> {pact.members.length} </span>
 					</Box>
 				</CardContent>
