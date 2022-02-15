@@ -50,7 +50,12 @@ let PactSchema = mongoose.Schema({
     default: "https://avatars.dicebear.com/api/identicon/temp.svg"
   },
 
-  // POSTS AND EVENTS TO BE ADDED
+  posts: [{
+    type: Schema.Types.ObjectId,
+    ref: 'Post'
+  }]
+
+  // EVENTS TO BE ADDED
 
 });
 
