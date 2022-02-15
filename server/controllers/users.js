@@ -14,9 +14,9 @@ module.exports.updateProfile = async(req, res) => {
       throw Error("User does not exist");
     }
 
-    if (req.user._id != id) {
+    if (req.user._id !== id) {
       status = 401;
-      throw Errror("Can not update someone else's profile")
+      throw Error("Can not update someone else's profile")
     }
     const updatedUser = await User.findByIdAndUpdate(id, { ...req.body }).catch((error) => {
       status = 500;
