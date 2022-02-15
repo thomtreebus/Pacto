@@ -11,6 +11,7 @@ const { createToken } = require("../controllers/authController");
 const University = require('../models/University');
 const { MESSAGES } = require("../helpers/messages");
 const {generateTestUser} = require("./fixtures/generateTestUser");
+const User = require("../models/User");
 
 dotenv.config();
 

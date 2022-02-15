@@ -8,9 +8,11 @@ module.exports.postPost = async (req, res) => {
 	try {
     const user = req.user;
     const { pact, title, text, image, link, type } = req.body;
+		// Check user is in pact
 		const userPacts = await user.pacts.filter(userPact => userPact._id === pact._id);
 		if(userPacts.length === 1) {
 			const post = await Post.create({ author:user, pact=userPacts[0], title, image, text, link, type });
+			// Add post to the pact
 			await Pact.findByIdAndUpdate(pact, {$push: {posts: post}});
 			res.status(201).json(jsonResponse(post, []));
 		} else {
