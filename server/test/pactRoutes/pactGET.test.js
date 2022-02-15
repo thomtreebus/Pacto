@@ -6,5 +6,40 @@ const dotenv = require("dotenv");
 const supertest = require("supertest");
 const app = require("../../app");
 const { generateTestUser, getEmail } = require("../fixtures/generateTestUser");
+const { generateTestPact, getTestPactId } = require("../fixtures/generateTestPact");
 const { createToken } = require("../../controllers/authController");
 const { PACT_MESSAGES } = require("../../helpers/messages");
+
+describe("GET /pact/:id", () =>{
+  beforeAll(async () => {
+		await mongoose.connect(process.env.TEST_DB_CONNECTION_URL);
+	});
+
+	afterAll(async () => {
+		await mongoose.connection.close();
+	});
+
+  beforeEach(async () => {
+    const user = await generateTestUser();
+    user.active = true;
+    await user.save();
+
+    await generateTestPact(user);
+  });
+
+	afterEach(async () => {
+		await User.deleteMany({});
+    await Pact.deleteMany({});
+		await University.deleteMany({});
+	});
+
+  // Helpers
+  const getPact = async (id, token) => {
+    const response = await supertest(app)
+      .get("/pact/"+id)
+      .set("Cookie", [`jwt=${token}`]);
+
+    return response;
+  }
+
+});

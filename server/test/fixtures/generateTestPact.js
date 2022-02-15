@@ -1,5 +1,7 @@
 const Pact = require("../../models/Pact");
 
+const myPact = null;
+
 module.exports.generateTestPact = async (foundingUser) => {
   if(!foundingUser.active){
     throw Error("The founding user provided is not active")
@@ -20,5 +22,14 @@ module.exports.generateTestPact = async (foundingUser) => {
   await foundingUser.pacts.push(pact);
   await foundingUser.save();
 
+  myPact = pact;
   return pact;
+}
+
+module.exports.getTestPactId = async () => {
+  if (myPact) {
+    return myPact._id;
+  } else {
+    throw Error("Pact not generated.")
+  }
 }
