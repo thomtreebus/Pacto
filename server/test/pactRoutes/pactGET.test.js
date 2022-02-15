@@ -47,4 +47,18 @@ describe("GET /pact/:id", () =>{
 
     expect(response.body.errors[0].message).toBe("Pact not found");
   });  
+
+  it("returns pact relating to id given", async () =>{
+    const user = await User.findOne({ uniEmail: getEmail() });
+
+    const token = createToken(user._id);
+    const id = getTestPactId();
+
+    const response = await supertest(app)
+      .get("/pact/"+id)
+      .set("Cookie", [`jwt=${token}`])
+      .expect(200);
+
+    expect(response.body.message).toBeDefined();
+  });  
 });
