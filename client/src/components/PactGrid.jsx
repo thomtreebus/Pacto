@@ -1,6 +1,6 @@
 import React from "react";
 import PactCard from "../components/PactCard";
-import { Grid, Typography, Box } from "@mui/material";
+import { Grid, Typography } from "@mui/material";
 import { useAuth } from "../providers/AuthProvider";
 
 export default function PactGrid({ pacts }) {
