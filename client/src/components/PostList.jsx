@@ -1,9 +1,9 @@
-import { List, ListItem } from "@mui/material"
+import { Grid, List, ListItem } from "@mui/material"
 import PostCard from "./PostCard"
 
 export default function PostList({ posts }) {
   return (
-    <List sx={{ width: "85%" }}>
+    <List>
       {
         posts.map((post, index) => (
           <ListItem key={index}>

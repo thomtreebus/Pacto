@@ -13,7 +13,7 @@ export default function PostCard({ post }) {
   })()
 
   return (
-    <div className="post" style={{ minWidth: "100%" }}>
+    <div style={{ minWidth: "100%" }}>
       <ConcretePostCard post={post}/>
     </div>
   )

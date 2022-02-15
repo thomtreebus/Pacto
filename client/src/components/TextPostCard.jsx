@@ -1,14 +1,18 @@
 import { Box, Card, CardContent, IconButton } from "@mui/material";
 import { useState } from "react";
 import { Typography } from "@mui/material";
+import { useHistory } from "react-router-dom";
 
 import ThumbUpRoundedIcon from "@mui/icons-material/ThumbUpRounded";
 import ThumbDownRoundedIcon from "@mui/icons-material/ThumbDownRounded";
+import CommentIcon from '@mui/icons-material/Comment';
 
 export default function TextPostCard({ post }) {
   const [thumbUp, setThumbUp] = useState(post.upvoted);
   const [thumbDown, setThumbDown] = useState(post.downvoted);
   const [likes, setLikes] = useState(post.votes);
+
+  const history = useHistory();
 
   const handleLikeEvent = (event) => {
     // Dispatch message to server about like event
@@ -66,7 +70,7 @@ export default function TextPostCard({ post }) {
 
           <Box sx={{ overflow: "hidden" }}>
             <Typography variant="caption">
-              Posted by {post.author.firstName + " " + post.author.lastName} on {post.date}
+              Posted by <span onClick={() => history.push(`/${post.author._id}`)} className="link">{post.author.firstName + " " + post.author.lastName}</span> on {post.date}
             </Typography>
 
             <Typography variant="h6">
@@ -77,7 +81,8 @@ export default function TextPostCard({ post }) {
               {post.text}
             </Typography>
 
-            <Typography variant="subtitle2">
+            <Typography variant="subtitle2" className="link">
+              <CommentIcon sx={{ verticalAlign: "middle", marginRight: "5px" }} />
               {post.comments.length} {post.comments.length === 1 ? "Comment" : "Comments"}
             </Typography>
           </Box>
