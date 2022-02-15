@@ -4,12 +4,12 @@ const { handleVerification } = require("../helpers/emailHandlers");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const { jsonResponse, jsonError } = require("../helpers/responseHandlers");
-const { async } = require("crypto-random-string");
 const ApiCache = require("../helpers/ApiCache");
 const University = require("../models/University");
 const { MESSAGES } = require("../helpers/messages");
-const {passwordValidators} = require('../helpers/customSignupValidators')
+const {passwordValidators} = require('../helpers/customSignupValidators');
 const { isEmail } = require('validator');
+const handleFieldErrors = require('../helpers/errorHandler');
 
 // Magic numbers
 const COOKIE_MAX_AGE = 432000; // 432000 = 5 days
@@ -22,23 +22,6 @@ const createToken = (id) => {
 	});
 };
 module.exports.createToken = createToken;
-
-// Helper function returns to give us errors as a json object.
-const handleFieldErrors = (err) => {
-  let fieldErrors = [];
-	if(err.code === 11000){
-		fieldErrors.push(jsonError('uniEmail', MESSAGES.EMAIL.NOT_UNIQUE));
-	}
-  if (err.message.includes('Users validation failed')) {
-    Object.values(err.errors).forEach((properties) => {
-      fieldErrors.push(jsonError(properties.path, properties.message));
-    });
-  }
-  return fieldErrors;
-}
-
-// helper function to decide whether a password is valid.
-
 
 // POST /signup
 module.exports.signupPost = async (req, res) => {
@@ -132,18 +115,18 @@ module.exports.loginPost = async (req, res) => {
 		const user = await User.findOne({ uniEmail });
 
 		if (!user) {
-			throw Error("Incorrect credentials.");
+			throw Error(MESSAGES.LOGIN.INVALID_CREDENTIALS);
 		}
 
 		// Check input vs hashed, stored password
 		const auth = await bcrypt.compare(password, user.password);
 
 		if (!auth) {
-			throw Error("Incorrect credentials.");
+			throw Error(MESSAGES.LOGIN.INVALID_CREDENTIALS);
 		}
 
 		if (!user.active) {
-			throw Error("University email not yet verified.");
+			throw Error(MESSAGES.LOGIN.INACTIVE_ACCOUNT);
 		}
 
 		// Generate cookie to log in user
@@ -159,7 +142,6 @@ module.exports.loginPost = async (req, res) => {
 // GET /logout
 module.exports.logoutGet = (req, res) => {
 	res.cookie("jwt", "", { maxAge: 1 });
-	// console.log(req.user);
 	res.status(200).json(jsonResponse(null, []));
 };
 
@@ -169,13 +151,13 @@ module.exports.verifyGet = async (req, res) => {
 		// Get code from query param
 		const code = req.query.code;
 		if (!code) {
-			throw Error("Code query empty.");
+			throw Error(MESSAGES.VERIFICATION.MISSING_CODE);
 		}
 
 		// Find associated user and make them active.
 		const linker = await EmailVerificationCode.findOne({ code });
 		if (!linker) {
-			throw Error("Invalid or expired code.");
+			throw Error(MESSAGES.VERIFICATION.INVALID_CODE);
 		}
 
 		// Add user to their university
@@ -185,7 +167,7 @@ module.exports.verifyGet = async (req, res) => {
 		// await university.populate({ path: 'users', model: User});
 
 		await linker.delete();
-		res.status(200).send("Success! You may now close this page.");
+		res.status(200).send(MESSAGES.VERIFICATION.SUCCESS_RESPONSE_WHOLE_BODY);
 	}
   catch (err) {
 		res.status(400).json(jsonResponse(null, [jsonError(null, err.message)]));

@@ -58,7 +58,13 @@ const UserSchema = Schema({
     ref: 'University',
     required: true
   },
-  image: ImageSchema,
+  pacts: [{
+    type: Schema.Types.ObjectId,
+    ref: 'Pact'
+  }],
+  image: {
+    type: String,
+  },
   bio: {
     type: String,
     required: false,
