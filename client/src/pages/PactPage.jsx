@@ -1,8 +1,10 @@
+import { Grid } from "@mui/material";
 import { Box } from "@mui/system";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import AboutPact from "../components/AboutPact";
 import PostList from "../components/PostList";
-import Error from "./Error";
+import ErrorPage from "./Error";
 import Loading from "./Loading";
 
 export default function PactPage() {
@@ -33,10 +35,17 @@ export default function PactPage() {
   return (
     <>
     { isLoading && <Loading /> }
-    { error && <Error /> }
-    <Box sx={{ maxWidth: "50vw" }}>
-      { posts && <PostList posts={posts}/> }
-    </Box>
+    { error && <ErrorPage /> }
+      <Grid container width={"50vw"}>
+        <Grid item xs={12} lg={8}>
+          { posts && <PostList posts={testdata}/> }
+        </Grid>
+        <Grid item lg={4}>
+          <Box sx={{ paddingTop: "16px", paddingRight: "16px" }} display={{ xs: "none", lg: "block" }} position={"sticky"} top={65}>
+            <AboutPact pact={{ description: "Hello I am Pact", posts: [0,0,0,0,0,0,0,0], members: [0,0,0,0,0,0], name: "The Coolest Pact" }} />
+          </Box>
+        </Grid>
+      </Grid>
     </>
   );
 }
