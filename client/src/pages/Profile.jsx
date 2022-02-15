@@ -79,7 +79,7 @@ export default function Profile () {
           <CardContent>
             <Stack direction="row" alignItems="center" spacing={2} sx={{}}>
               <Chip label={`${user.friends.length} Friends`} icon={<GroupIcon />} variant="outlined" />
-              <Chip label={`${user.friends.length} Pacts`} icon={<GroupIcon />} variant="outlined"/>
+              <Chip label={`${user.pacts.length} Pacts`} icon={<GroupIcon />} variant="outlined"/>
             </Stack>
           </CardContent>
         <CardActions>

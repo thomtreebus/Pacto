@@ -74,8 +74,9 @@ const UserSchema = Schema({
   friends: [
     {
       type: Schema.Types.ObjectId,
-      ref: 'User'
-    }
+      ref: 'User',
+      default: []
+    },
   ],
   pacts: [
     {
