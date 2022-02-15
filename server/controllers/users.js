@@ -1,10 +1,12 @@
 const User = require('../models/User');
 const mongoose = require('mongoose');
 const {jsonResponse, jsonError} = require("../helpers/responseHandlers");
+const handleFieldErrors = require("../helpers/fieldErrorsHandler");
 
 
 module.exports.updateProfile = async(req, res) => {
   let status = 400;
+  const jsonErrors = {};
   try {
     const { id } = req.params; 
 
@@ -14,16 +16,24 @@ module.exports.updateProfile = async(req, res) => {
       throw Error("User does not exist");
     }
 
-    if (req.user._id != id) {
+    if (req.user._id !== id) {
       status = 401;
-      throw Errror("Can not update someone else's profile")
+      throw Error("Can not update someone else's profile")
     }
     const updatedUser = await User.findByIdAndUpdate(id, { ...req.body }).catch((error) => {
       status = 500;
     });
 
   } catch (err) {
-    res.status(status).json(jsonResponse(null, [jsonError(null, err.message)]));
+    // converts error array into json array.
+    const fieldErrors = handleFieldErrors(err);
+    if(fieldErrors){
+      fieldErrors.forEach((myErr) => jsonErrors.push(myErr));
+    }
+    else {
+      jsonErrors.push(jsonError(null, err.message));
+    }
+    res.status(status).json(jsonResponse(null, jsonErrors));
   }
 }
 

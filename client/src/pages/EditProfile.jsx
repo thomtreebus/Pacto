@@ -38,6 +38,13 @@ export default function EditProfile() {
   const [phone, setPhone] = useState(user.phone);
   const [image, setImage] = useState(user.image);
 
+  const [apiBioError, setApiBioError] = React.useState('');
+  const [apiLocationError, setApiLocationError] = React.useState('');
+  const [apiCourseError, setApiCourseError] = React.useState('');
+  const [apiLinkedInError, setApiLinkedInError] = React.useState('');
+  const [apiInstagramError, setApiInstagramError] = React.useState('');
+  const [apiPhoneError, setApiPhoneError] = React.useState('');
+
   const uploadImage = (newImage) => {
     console.log(image);
     const data = new FormData();
@@ -60,18 +67,48 @@ export default function EditProfile() {
 
     const data = { bio, location, course, linkedin, instagram, phone, image }
 
-    await fetch(`${process.env.REACT_APP_URL}/users/${user._id}`, {
+    const res = await fetch(`${process.env.REACT_APP_URL}/users/${user._id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
       },
       credentials: "include",
       body: JSON.stringify(data)
-    }).then(() => {
-      console.log("Data ", JSON.stringify(data));
-      history.push('/profile');
     });
-  
+
+    //redirects user when form is correct
+    if (res.status === 500){
+      console.log("Data ", JSON.stringify(data));
+      return history.push('/profile');
+    }
+
+    const resJson = await res.json();
+
+    // Displays errors retrieved from response
+    Object.values(resJson['errors']).forEach(err =>{
+      const field = err["field"];
+      const message = err["message"]
+
+      if (field === "instagram"){
+        setApiInstagramError(message);
+      }
+      else if (field === "linkedin"){
+        setApiLinkedInError(message);
+      }
+      else if (field === "phone"){
+        setApiPhoneError(message);
+      }
+      else if (field === "course"){
+        setApiCourseError(message);
+      }
+      else if (field === "location"){
+        setApiLocationError(message);
+      }
+      else if (field === "bio"){
+        setApiBioError(message);
+      }
+    })
+
   }
 
 
@@ -125,6 +162,7 @@ export default function EditProfile() {
           name="location"
           label="Location"
           variant="outlined"
+          helperText={apiLocationError}
           fullWidth
           defaultValue={user.location}
           onChange={(e) => {
@@ -146,6 +184,7 @@ export default function EditProfile() {
           name="course"
           label="Course"
           variant="outlined"
+          helperText={apiCourseError}
           size="small"
           fullWidth
           defaultValue={user.course}
@@ -173,6 +212,7 @@ export default function EditProfile() {
           name="linkedin"
           label="LinkedIn"
           variant="outlined"
+          helperText={apiLinkedInError}
           size="small"
           fullWidth
           defaultValue={user.linkedin}
@@ -191,6 +231,7 @@ export default function EditProfile() {
         <TextField
           name="instagram"
           label="Instagram"
+          helperText={apiInstagramError}
           variant="outlined"
           size="small"
           fullWidth
@@ -210,6 +251,7 @@ export default function EditProfile() {
         <TextField
           name="phone"
           label="Phone Number"
+          helperText={apiPhoneError}
           variant="outlined"
           size="small"
           fullWidth
@@ -234,6 +276,7 @@ export default function EditProfile() {
         <TextField
           name="bio"
           label="Bio"
+          helperText={apiBioError}
           multiline
           rows={6}
           defaultValue={user.bio}
