@@ -31,6 +31,12 @@ describe("Profile Page Tests", () => {
           }, errors: [] })
       );
     }),
+    rest.post(`https://api.cloudinary.com/v1_1/${process.env.REACT_APP_CLOUDINARY_CLOUD_NAME}/image/upload`, (req, res, ctx) => {
+      return res(
+        ctx.status(201),
+        ctx.json({}),
+      );
+    })
 
   );
 
@@ -232,12 +238,13 @@ describe("Profile Page Tests", () => {
       const buttonElement = await screen.findByTestId(
         "image-upload-icon"
       );
-      await userEvent.upload(buttonElement, image);
-      const uploadImageButton = await screen.findByRole("button", {
-        name: "Upload Image"
-      });
+
 
       await act( async () => {
+        await userEvent.upload(buttonElement, image);
+        const uploadImageButton = await screen.findByRole("button", {
+          name: "Upload Image"
+        });
         await userEvent.click(uploadImageButton);
       });
 
@@ -266,5 +273,161 @@ describe("Profile Page Tests", () => {
     });
   });
 
+  describe("Handles field errors", () => {
+    it("Shows instagram field error", async () => {
+      const errMsg = "invalid instagram name"
+      server.use(
+        rest.put(`${process.env.REACT_APP_URL}/users/1`, (req, res, ctx) => {
+          return res(
+            ctx.status(400),
+            ctx.json({
+              message: '',
+              errors: [
+                {
+                  field: "instagram",
+                  message: errMsg
+                }
+              ],
+            })
+          );
+        })
+      );
+      const updateProfileButton = await screen.findByRole("button", {
+        name: "Update Profile"
+      });
+      await userEvent.click(updateProfileButton);
+      const screenErrorMessage = await screen.findByText(errMsg);
+      expect(screenErrorMessage).toBeInTheDocument();
+    });
 
+    it("Shows linkedin field error", async () => {
+      const errMsg = "invalid linkedin name"
+      server.use(
+        rest.put(`${process.env.REACT_APP_URL}/users/1`, (req, res, ctx) => {
+          return res(
+            ctx.status(400),
+            ctx.json({
+              message: '',
+              errors: [
+                {
+                  field: "linkedin",
+                  message: errMsg
+                }
+              ],
+            })
+          );
+        })
+      );
+      const updateProfileButton = await screen.findByRole("button", {
+        name: "Update Profile"
+      });
+      await userEvent.click(updateProfileButton);
+      const screenErrorMessage = await screen.findByText(errMsg);
+      expect(screenErrorMessage).toBeInTheDocument();
+    });
+
+    it("Shows phone field error", async () => {
+      const errMsg = "invalid phone number"
+      server.use(
+        rest.put(`${process.env.REACT_APP_URL}/users/1`, (req, res, ctx) => {
+          return res(
+            ctx.status(400),
+            ctx.json({
+              message: '',
+              errors: [
+                {
+                  field: "phone",
+                  message: errMsg
+                }
+              ],
+            })
+          );
+        })
+      );
+      const updateProfileButton = await screen.findByRole("button", {
+        name: "Update Profile"
+      });
+      await userEvent.click(updateProfileButton);
+      const screenErrorMessage = await screen.findByText(errMsg);
+      expect(screenErrorMessage).toBeInTheDocument();
+    });
+
+    it("Shows course field error", async () => {
+      const errMsg = "invalid course name"
+      server.use(
+        rest.put(`${process.env.REACT_APP_URL}/users/1`, (req, res, ctx) => {
+          return res(
+            ctx.status(400),
+            ctx.json({
+              message: '',
+              errors: [
+                {
+                  field: "course",
+                  message: errMsg
+                }
+              ],
+            })
+          );
+        })
+      );
+      const updateProfileButton = await screen.findByRole("button", {
+        name: "Update Profile"
+      });
+      await userEvent.click(updateProfileButton);
+      const screenErrorMessage = await screen.findByText(errMsg);
+      expect(screenErrorMessage).toBeInTheDocument();
+    });
+
+    it("Shows location field error", async () => {
+      const errMsg = "invalid location name"
+      server.use(
+        rest.put(`${process.env.REACT_APP_URL}/users/1`, (req, res, ctx) => {
+          return res(
+            ctx.status(400),
+            ctx.json({
+              message: '',
+              errors: [
+                {
+                  field: "location",
+                  message: errMsg
+                }
+              ],
+            })
+          );
+        })
+      );
+      const updateProfileButton = await screen.findByRole("button", {
+        name: "Update Profile"
+      });
+      await userEvent.click(updateProfileButton);
+      const screenErrorMessage = await screen.findByText(errMsg);
+      expect(screenErrorMessage).toBeInTheDocument();
+    });
+
+    it("Shows bio field error", async () => {
+      const errMsg = "invalid bio name"
+      server.use(
+        rest.put(`${process.env.REACT_APP_URL}/users/1`, (req, res, ctx) => {
+          return res(
+            ctx.status(400),
+            ctx.json({
+              message: '',
+              errors: [
+                {
+                  field: "bio",
+                  message: errMsg
+                }
+              ],
+            })
+          );
+        })
+      );
+      const updateProfileButton = await screen.findByRole("button", {
+        name: "Update Profile"
+      });
+      await userEvent.click(updateProfileButton);
+      const screenErrorMessage = await screen.findByText(errMsg);
+      expect(screenErrorMessage).toBeInTheDocument();
+    });
+  });
 });
