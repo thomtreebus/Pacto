@@ -123,7 +123,7 @@ export default function EditProfile() {
       justify="center"
       justifyContent="center"
       alignItems="stretch">
-      <Grid item direction="column" xs={4}>
+      <Grid item container direction="column" xs={4}>
         <Image
           style={{width: "100%", minWidth: "50%", minHeight: "25%", borderRadius: "10px", overflow: "hidden", position: "relative", }}
           alt="Profile Picture"
@@ -143,8 +143,7 @@ export default function EditProfile() {
               <PhotoIcon />
             </IconButton>
           </label>
-          </Stack>
-        
+        </Stack>
 
         <TextField
           name="location"
@@ -258,7 +257,7 @@ export default function EditProfile() {
         />
         
       </Grid>
-      <Grid item direction="column" xs={8}>
+      <Grid item container direction="column" xs={8}>
         <Typography variant="h4">{user.firstName} {user.lastName}</Typography>
         <Typography variant="subtitle1" sx={{ color: "#1976d2" }}> King's College London </Typography>
         <TextField

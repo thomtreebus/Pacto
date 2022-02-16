@@ -12,6 +12,7 @@ import Typography from "@mui/material/Typography";
 import Stack from "@mui/material/Stack";
 import Chip from "@mui/material/Chip";
 import Divider from "@mui/material/Divider";
+import Button from "@mui/material/Button"
 import PropTypes from 'prop-types';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
@@ -23,6 +24,8 @@ import InstagramIcon from '@mui/icons-material/Instagram';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import WhatsAppIcon from '@mui/icons-material/WhatsApp';
 import GroupIcon from '@mui/icons-material/Group';
+import PersonAddIcon from '@mui/icons-material/PersonAdd';
+import ForumIcon from '@mui/icons-material/Forum';
 
 
 
@@ -134,12 +137,13 @@ export default function Profile() {
             </Tabs>
           </Box>
           <TabPanel value={value} index={0}>
+            Posts
           </TabPanel>
           <TabPanel value={value} index={1}>
-            Item Two
+            Comments
           </TabPanel>
           <TabPanel value={value} index={2}>
-            Item Three
+            Pacts
           </TabPanel>
         </Box>
       </Grid>
@@ -147,10 +151,11 @@ export default function Profile() {
       <Grid container item direction="column" xs={4}>
         <Card sx={{ minWidth: 275 }}>
           <CardContent>
-            <Stack direction="row" alignItems="center" spacing={2} sx={{}}>
+            <Stack direction="row" alignItems="center" spacing={2} fullWidth justifyContent="center">
               <Chip label={`${user.friends.length} Friends`} icon={<GroupIcon />} variant="outlined" />
-              <Chip label={`${user.pacts.length} Pacts`} icon={<GroupIcon />} variant="outlined"/>
+              <Chip label={`${user.pacts.length} Pacts`} icon={<ForumIcon />} variant="outlined" />
             </Stack>
+            <Button variant="outlined" fullWidth startIcon={<PersonAddIcon />} sx={{marginTop: "4px"}}>Send Friend Request</Button>
           </CardContent>
           <CardActions>
           </CardActions>
