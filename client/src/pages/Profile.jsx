@@ -134,7 +134,6 @@ export default function Profile() {
             </Tabs>
           </Box>
           <TabPanel value={value} index={0}>
-            Item One
           </TabPanel>
           <TabPanel value={value} index={1}>
             Item Two

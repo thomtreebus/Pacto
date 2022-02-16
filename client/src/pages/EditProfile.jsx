@@ -143,18 +143,6 @@ export default function EditProfile() {
               <PhotoIcon />
             </IconButton>
           </label>
-          <Button
-              fullWidth
-              label="Upload Image"
-              variant="contained"
-              component="span"
-              onClick={uploadImage}
-              sx={{
-                marginTop: 1
-              }}
-              >
-              Upload Image
-            </Button>
           </Stack>
         
 
