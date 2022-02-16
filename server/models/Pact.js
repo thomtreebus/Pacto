@@ -5,8 +5,9 @@ const Schema = mongoose.Schema;
 const PactSchema = mongoose.Schema({
   name: {
     type: String,
-    required: true,
-    unique: true
+    required: [true, PACT_MESSAGES.NAME.BLANK],
+    maxLength: [33, PACT_MESSAGES.NAME.MAX_LENGTH_EXCEEDED],
+    minLength: [2, PACT_MESSAGES.NAME.MIN_LENGTH_NOT_MET]
   },
 
   university: {
@@ -21,19 +22,21 @@ const PactSchema = mongoose.Schema({
       values : ["society", "course", "module", "other"],
       message: PACT_MESSAGES.CATEGORY.INVALID_CHOICE 
     },
-    required: true,
+    required: [true, PACT_MESSAGES.CATEGORY.BLANK],
     default: "other"
   },
 
   description: {
     type: String,
-    required: true,
-    default: "A Pact that doesn't know what it wants to be..."
+    required: [true, PACT_MESSAGES.DESCRIPTION.BLANK],
+    default: "A Pact that doesn't know what it wants to be...",
+    maxLength: [255, PACT_MESSAGES.DESCRIPTION.MAX_LENGTH_EXCEEDED]
   },
   
   members: [{
     type: Schema.Types.ObjectId,
-    ref: 'User'
+    ref: 'User',
+    required: true
   }],
 
   moderators: [{
@@ -57,6 +60,8 @@ PactSchema.pre('validate',  function(next) {
   }
   next();
 });
+
+PactSchema.index({ name: 1, university: 1}, { unique: [true, PACT_MESSAGES.NAME.NOT_UNIQUE] });
 
 const Pact = mongoose.model('Pacts', PactSchema);
 

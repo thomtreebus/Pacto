@@ -58,6 +58,10 @@ const UserSchema = Schema({
     ref: 'University',
     required: true
   },
+  pacts: [{
+    type: Schema.Types.ObjectId,
+    ref: 'Pact'
+  }],
   image: {
     type: String,
   },
@@ -79,6 +83,12 @@ const UserSchema = Schema({
     {
       type: Schema.Types.ObjectId,
       ref: 'User'
+    }
+  ],
+  pacts: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: 'Pact'
     }
   ],
 });
