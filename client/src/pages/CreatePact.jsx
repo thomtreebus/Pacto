@@ -42,7 +42,7 @@ export default function LoginPage() {
 			body: JSON.stringify({
 				name: data.get("pact-name"),
 				category: data.get("category"),
-				description: data.get("description"),
+				description: data.get("description")
 			}),
 		});
 
@@ -69,7 +69,8 @@ export default function LoginPage() {
 			return;
 		}
 
-		history.push("/feed");
+		history.push(`/pact/${json.message._id}`);
+		console.log(json)
 		
 	};
 
