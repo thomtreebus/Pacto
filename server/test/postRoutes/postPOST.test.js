@@ -14,37 +14,6 @@ const Post = require('../../models/Post')
 
 dotenv.config();
 
-// const getTestPact = async () => {
-//   const uni = await University.create( { name: "kcl", domains: ["kcl.ac.uk"] });
-//   const uniEmail = "pac.to@kcl.ac.uk";
-//   const password = "Password123";
-//   const salt = await bcrypt.genSalt(10);
-//   const hashedPassword = await bcrypt.hash(password, salt);
-
-//   // Create a test user
-//   const user = await User.create({
-//     firstName: "pac",
-//     lastName: "to",
-//     uniEmail: uniEmail,
-//     password: hashedPassword,
-//     university: uni,
-//     active: true
-//   });
-//   uni.users.push(user);
-//   uni.save();
-
-//   // Create a test pact
-//   const pact = await Pact.create({
-//     name: "Chess club",
-//     university: uni,
-//     category: "society",
-//     members: [user],
-//     moderators: [user]
-//   })
-
-//   return pact;
-// }
-
 // const getNoMemberPact = async () => {
 //   const uni = await University.create( { name: "kcl", domains: ["kcl.ac.uk"] });
 

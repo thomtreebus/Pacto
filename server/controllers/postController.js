@@ -28,25 +28,22 @@ module.exports.postPost = async (req, res) => {
 
 // GET pact (by id)
 module.exports.postGet = async (req, res) => {
-	let status = 400;
 	try {
-
 		const post = await Post.findOne({ pact: req.params.pactid, _id:req.params.id });
   	if (!post){
-			status = 404;
-			throw Error("Post not found");
+			res.status(404).json(jsonResponse(null, [jsonError(null, "Post not found")]));
 		}
-
 		const postPact = post.pact;
-		if(req.user.pacts.includes(postPact)) {
+		if(req.user.pacts.includes(postPact._id)) {
+			await post.populate({ path: 'upvoters', model: User });
+			await post.populate({ path: 'downvoters', model: User });
 			res.status(200).json(jsonResponse(post, []));
 		} else {
-			res.status(status).json(jsonResponse(null, [jsonError(null, "User is not in pact")]));
-		}		
-		// populate upvoters and downvoters
+			res.status(400).json(jsonResponse(null, [jsonError(null, "User is not in this pact")]));
+		}
 	} 
   catch (err) {
-		res.status(status).json(jsonResponse(null, [jsonError(null, err.message)]));
+		res.status(400).json(jsonResponse(null, [jsonError(null, err.message)]));
 	}
 
 	// POST upvote
