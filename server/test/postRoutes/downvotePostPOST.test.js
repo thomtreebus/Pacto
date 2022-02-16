@@ -8,7 +8,7 @@ const { generateTestUser, getEmail, generateNextTestUser } = require("../fixture
 const { generateTestPact, getTestPactId } = require("../fixtures/generateTestPact");
 const { generateTestPost, getTestPostId } = require("../fixtures/generateTestPost");
 const { jsonResponse } = require("../../helpers/responseHandlers");
-const University = require('../../models/University')
+const { MESSAGES } = require("../../helpers/messages");
 const User = require("../../models/User");
 const Pact = require('../../models/Pact')
 const Post = require('../../models/Post')
@@ -125,6 +125,42 @@ describe("POST /post/downvote/:pactid/:id", () => {
     expect(responsePost.upvoters).toStrictEqual([]);
     expect(responsePost.downvoters[0]._id).toBe(user1._id.toString());
     expect(responsePost.downvoters[1]._id).toBe(user2._id.toString());
+  });
+
+  it("user not logged in can't downvote", async () => {
+    const pact = await Pact.findOne({ id: getTestPactId() });
+    const post = await Post.findOne({ id: getTestPostId() });
+
+    const response = await supertest(app)
+    .post(`/pact/${ pact._id }/post/downvote/${ post._id }`)
+    .expect(401);
+
+    expect(response.body.message).toBe(null);
+    expect(response.body.errors[0].field).toBe(null);
+    expect(response.body.errors[0].message).toBe(MESSAGES.AUTH.IS_NOT_LOGGED_IN);
+    expect(response.body.errors.length).toBe(1);
+  });
+
+  it("user not in pact can't downvote", async () => {
+    const pact = await Pact.findOne({ id: getTestPactId() });
+    const post = await Post.findOne({ id: getTestPostId() });
+
+    // Creating the user who is not in the pact, but who is in the correct uni
+    const user = await generateNextTestUser("User");
+    user.active = true;
+    await user.save();
+    const token = createToken(user._id);
+
+    const response = await supertest(app)
+    .post(`/pact/${ pact._id }/post/downvote/${ post._id }`)
+    .set("Cookie", [`jwt=${ token }`])
+    .expect(401);
+
+    console.log(response.body.errors[0].message);
+    expect(response.body.message).toBe(null);
+    expect(response.body.errors[0].field).toBe(null);
+    expect(response.body.errors[0].message).toBe(MESSAGES.AUTH.IS_NOT_IN_PACT);
+    expect(response.body.errors.length).toBe(1);
   });
   
 });

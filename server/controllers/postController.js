@@ -3,6 +3,7 @@ const Pact = require("../models/Pact");
 const University = require("../models/University");
 const User = require("../models/User");
 const { jsonResponse, jsonError } = require("../helpers/responseHandlers");
+const { MESSAGES } = require("../helpers/messages");
 
 // POST post
 module.exports.postPost = async (req, res) => {
@@ -90,7 +91,7 @@ module.exports.upvotePostPost = async (req, res) => {
 				await post.populate({ path: 'downvoters', model: User });
 				res.status(200).json(jsonResponse(post, []));
 			} else {
-				res.status(400).json(jsonResponse(null, [jsonError(null, "User is not in this pact")]));
+				res.status(401).json(jsonResponse(null, [jsonError(null, MESSAGES.AUTH.IS_NOT_IN_PACT)]));
 			}
 		}
 	} 
@@ -142,7 +143,7 @@ module.exports.downvotePostPost = async (req, res) => {
 				await post.populate({ path: 'downvoters', model: User });
 				res.status(200).json(jsonResponse(post, []));
 			} else {
-				res.status(400).json(jsonResponse(null, [jsonError(null, "User is not in this pact")]));
+				res.status(401).json(jsonResponse(null, [jsonError(null, MESSAGES.AUTH.IS_NOT_IN_PACT)]));
 			}
 		}
 	} 

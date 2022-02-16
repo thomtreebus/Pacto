@@ -58,7 +58,7 @@ describe("Middlewares", () => {
       const token = createToken(user._id + 1);
       const response = await supertest(app)
         .get("/mockRoute")
-        .set("Cookie", [`jwt=${token}`]);
+        .set("Cookie", [`jwt=${ token }`]);
       expect(response.body.message).toBe(null);
       expect(response.body.errors[0].field).toBe(null);
       expect(response.body.errors[0].message).toBe(MESSAGES.AUTH.IS_NOT_LOGGED_IN);
@@ -73,7 +73,7 @@ describe("Middlewares", () => {
       const token = createToken(user._id);
       const response = await supertest(app)
         .get("/mockRoute")
-        .set("Cookie", [`jwt=${token}`]);
+        .set("Cookie", [`jwt=${ token }`]);
       expect(response.body.message).toBeDefined();
       expect(response.body.message._id).toBeDefined();
       expect(response.body.message.firstName).toBeDefined();
@@ -89,7 +89,7 @@ describe("Middlewares", () => {
       const token = createToken(user._id);
       let response = await supertest(app)
         .get("/mockRoute")
-        .set("Cookie", [`jwt=${token}`]);
+        .set("Cookie", [`jwt=${ token }`]);
       expect(response.body.message).toBe(null);
       expect(response.body.errors[0].field).toBe(null);
       expect(response.body.errors[0].message).toBe(MESSAGES.AUTH.IS_INACTIVE);
