@@ -54,44 +54,44 @@ module.exports.upvotePostPost = async (req, res) => {
 		const post = await Post.findOne({ pact: req.params.pactId, _id:req.params.postId });
 		if (!post){
 			res.status(404).json(jsonResponse(null, [jsonError(null, "Post not found")]));
-		}
-
-		// Checking user is in the pact
-		const postPact = post.pact;
-		if(req.user.pacts.includes(postPact._id)) {
-			// Checking if user already upvoted or downvoted
-			if(post.upvoters.includes(req.user._id)) {
-				// Cancel upvote
-				const index = post.upvoters.indexOf(req.user._id);
-				if (index > -1) {
-					post.upvoters.splice(index, 1); // 2nd parameter means remove one item only
-					post.votes = post.votes - 1;
-				} else {
-					console.log("error in upvote post code");
-				}
-			} else {
-				if(post.downvoters.includes(req.user._id)) {
-					// remove downvote
-					const index = post.downvoters.indexOf(req.user._id);
+		} else {
+			// Checking user is in the pact
+			const postPact = post.pact;
+			if(req.user.pacts.includes(postPact._id)) {
+				// Checking if user already upvoted or downvoted
+				if(post.upvoters.includes(req.user._id)) {
+					// Cancel upvote
+					const index = post.upvoters.indexOf(req.user._id);
 					if (index > -1) {
-						post.downvoters.splice(index, 1);
-						post.votes = post.votes + 1;
+						post.upvoters.splice(index, 1); // 2nd parameter means remove one item only
+						post.votes = post.votes - 1;
 					} else {
 						console.log("error in upvote post code");
 					}
+				} else {
+					if(post.downvoters.includes(req.user._id)) {
+						// remove downvote
+						const index = post.downvoters.indexOf(req.user._id);
+						if (index > -1) {
+							post.downvoters.splice(index, 1);
+							post.votes = post.votes + 1;
+						} else {
+							console.log("error in upvote post code");
+						}
+					}
+					// just normal upvote
+					post.upvoters.push(req.user._id);
+					post.votes = post.votes + 1;
 				}
-				// just normal upvote
-				post.upvoters.push(req.user._id);
-				post.votes = post.votes + 1;
-			}
-			post.save()
+				post.save()
 
-			// Populating before returning the post
-			await post.populate({ path: 'upvoters', model: User });
-			await post.populate({ path: 'downvoters', model: User });
-			res.status(200).json(jsonResponse(post, []));
-		} else {
-			res.status(400).json(jsonResponse(null, [jsonError(null, "User is not in this pact")]));
+				// Populating before returning the post
+				await post.populate({ path: 'upvoters', model: User });
+				await post.populate({ path: 'downvoters', model: User });
+				res.status(200).json(jsonResponse(post, []));
+			} else {
+				res.status(400).json(jsonResponse(null, [jsonError(null, "User is not in this pact")]));
+			}
 		}
 	} 
 	catch (err) {
@@ -102,17 +102,48 @@ module.exports.upvotePostPost = async (req, res) => {
 // POST downvote
 module.exports.downvotePostPost = async (req, res) => {
 	try {
-		const post = await Post.findOne({ pact: req.params.pactid, _id:req.params.id });
+		// Checking post exists
+		const post = await Post.findOne({ pact: req.params.pactId, _id:req.params.postId });
 		if (!post){
 			res.status(404).json(jsonResponse(null, [jsonError(null, "Post not found")]));
-		}
-		const postPact = post.pact;
-		if(req.user.pacts.includes(postPact._id)) {
-			await post.populate({ path: 'upvoters', model: User });
-			await post.populate({ path: 'downvoters', model: User });
-			res.status(200).json(jsonResponse(post, []));
 		} else {
-			res.status(400).json(jsonResponse(null, [jsonError(null, "User is not in this pact")]));
+			// Checking user is in the pact
+			const postPact = post.pact;
+			if(req.user.pacts.includes(postPact._id)) {
+				// Checking if user already upvoted or downvoted
+				if(post.downvoters.includes(req.user._id)) {
+					// Cancel downvote
+					const index = post.downvoters.indexOf(req.user._id);
+					if (index > -1) {
+						post.downvoters.splice(index, 1); 
+						post.votes = post.votes + 1;
+					} else {
+						console.log("error in downvote post code");
+					}
+				} else {
+					if(post.upvoters.includes(req.user._id)) {
+						// remove upvote
+						const index = post.upvoters.indexOf(req.user._id);
+						if (index > -1) {
+							post.upvoters.splice(index, 1);
+							post.votes = post.votes - 1;
+						} else {
+							console.log("error in upvote post code");
+						}
+					}
+					// just normal downvote
+					post.downvoters.push(req.user._id);
+					post.votes = post.votes - 1;
+				}
+				post.save()
+
+				// Populating before returning the post
+				await post.populate({ path: 'upvoters', model: User });
+				await post.populate({ path: 'downvoters', model: User });
+				res.status(200).json(jsonResponse(post, []));
+			} else {
+				res.status(400).json(jsonResponse(null, [jsonError(null, "User is not in this pact")]));
+			}
 		}
 	} 
 	catch (err) {

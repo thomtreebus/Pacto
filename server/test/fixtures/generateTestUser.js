@@ -34,7 +34,7 @@ module.exports.generateNextTestUser = async (name) => {
 	const salt = await bcrypt.genSalt(SALT_ROUNDS);
 	const hashedPassword = await bcrypt.hash("Password123", salt);
 
-	const customEmail = name + ".to@kcl.ac.uk";
+	const customEmail = name.toLowerCase() + ".to@kcl.ac.uk";
 
 	const user = await User.create({
 		firstName: name,

@@ -15,7 +15,7 @@ const Post = require('../../models/Post')
 
 dotenv.config();
 
-describe("POST /post/upvote/:pactid/:id", () => {
+describe("POST /post/downvote/:pactid/:id", () => {
   beforeAll(async () => {
     await mongoose.connect(process.env.TEST_DB_CONNECTION_URL);
   });
@@ -42,7 +42,7 @@ describe("POST /post/upvote/:pactid/:id", () => {
     await Pact.deleteMany({});
   });
 
-  it("upvote post with valid pact id and user part of pact", async () => {
+  it("downvote post with valid pact id and user part of pact", async () => {
     const user = await User.findOne({ uniEmail: getEmail() });
     const pact = await Pact.findOne({ id: getTestPactId() });
     const post = await Post.findOne({ id: getTestPostId() });
@@ -51,20 +51,20 @@ describe("POST /post/upvote/:pactid/:id", () => {
     const oldVotes = post.votes;
 
     const response = await supertest(app)
-    .post(`/pact/${ pact._id }/post/upvote/${ post._id }`)
-    .set("Cookie", [`jwt=${token}`])
+    .post(`/pact/${ pact._id }/post/downvote/${ post._id }`)
+    .set("Cookie", [`jwt=${ token }`])
     .expect(200);
     expect(response.body.message).toBeDefined();
     expect(response.body.errors.length).toBe(0);
 
     const responsePost = response.body.message;
     expect(responsePost.author).toBe(user._id.toString());
-    expect(responsePost.votes).toBe(oldVotes + 1);
-    expect(responsePost.upvoters[0]._id).toBe(user._id.toString());
-    expect(responsePost.downvoters).toStrictEqual([]);
+    expect(responsePost.votes).toBe(oldVotes - 1);
+    expect(responsePost.upvoters).toStrictEqual([]);
+    expect(responsePost.downvoters[0]._id).toBe(user._id.toString());
   });
 
-  it("upvote twice does not change the votes count", async () => {
+  it("down twice does not change the votes count", async () => {
     const user = await User.findOne({ uniEmail: getEmail() });
     const pact = await Pact.findOne({ id: getTestPactId() });
     const post = await Post.findOne({ id: getTestPostId() });
@@ -73,11 +73,11 @@ describe("POST /post/upvote/:pactid/:id", () => {
     const oldVotes = post.votes;
 
     let response;
-    // upvote twice in a row
+    // downvote twice in a row
     for(let i = 0; i < 2; i++) {
       response = await supertest(app)
-      .post(`/pact/${ pact._id }/post/upvote/${ post._id }`)
-      .set("Cookie", [`jwt=${token}`])
+      .post(`/pact/${ pact._id }/post/downvote/${ post._id }`)
+      .set("Cookie", [`jwt=${ token }`])
       .expect(200);
       expect(response.body.message).toBeDefined();
       expect(response.body.errors.length).toBe(0);
@@ -90,7 +90,7 @@ describe("POST /post/upvote/:pactid/:id", () => {
     expect(responsePost.downvoters).toStrictEqual([]);
   });
 
-  it("two different users upvotes is cummulative", async () => {
+  it("two different users downvotes is cummulative", async () => {
     const user1 = await User.findOne({ uniEmail: getEmail() });
     const pact = await Pact.findOne({ id: getTestPactId() });
     const post = await Post.findOne({ id: getTestPostId() });
@@ -107,24 +107,24 @@ describe("POST /post/upvote/:pactid/:id", () => {
 
     const oldVotes = post.votes;
 
-    // 1st user upvote
+    // 1st user downvote
     await supertest(app)
-    .post(`/pact/${ pact._id }/post/upvote/${ post._id }`)
+    .post(`/pact/${ pact._id }/post/downvote/${ post._id }`)
     .set("Cookie", [`jwt=${token1}`])
     .expect(200);
 
-    // 2nd user upvote
+    // 2nd user downvote
     const response = await supertest(app)
-    .post(`/pact/${ pact._id }/post/upvote/${ post._id }`)
+    .post(`/pact/${ pact._id }/post/downvote/${ post._id }`)
     .set("Cookie", [`jwt=${token2}`])
     .expect(200);
 
     const responsePost = response.body.message;
     expect(responsePost.author).toBe(user1._id.toString());
-    expect(responsePost.votes).toBe(oldVotes + 2);
-    expect(responsePost.upvoters[0]._id).toBe(user1._id.toString());
-    expect(responsePost.upvoters[1]._id).toBe(user2._id.toString());
-    expect(responsePost.downvoters).toStrictEqual([]);
+    expect(responsePost.votes).toBe(oldVotes - 2);
+    expect(responsePost.upvoters).toStrictEqual([]);
+    expect(responsePost.downvoters[0]._id).toBe(user1._id.toString());
+    expect(responsePost.downvoters[1]._id).toBe(user2._id.toString());
   });
   
 });
