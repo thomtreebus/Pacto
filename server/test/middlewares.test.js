@@ -9,6 +9,9 @@ const { checkAuthenticated } = require("../middleware/authMiddleware");
 const { checkNotAuthenticated } = require("../middleware/notAuthMiddleware");
 const { jsonResponse } = require("../helpers/responseHandlers");
 const { createToken } = require("../controllers/authController");
+const University = require('../models/University');
+const { MESSAGES } = require("../helpers/messages");
+const {generateTestUser} = require("./fixtures/generateTestUser");
 
 dotenv.config();
 
@@ -23,9 +26,10 @@ describe("Middlewares", () => {
 
   afterEach(async () => {
     await User.deleteMany({});
+    await University.deleteMany({});
   });
 
-  describe("Authentification Middleware", () => {
+  describe("Authentication Middleware", () => {
     app.get("/mockRoute", checkAuthenticated, function (req, res) {
       res.status(200).json(jsonResponse(req.user, []));
     });
@@ -34,7 +38,7 @@ describe("Middlewares", () => {
       const response = await supertest(app).get("/mockRoute");
       expect(response.body.message).toBe(null);
       expect(response.body.errors[0].field).toBe(null);
-      expect(response.body.errors[0].message).toBe("You have to login");
+      expect(response.body.errors[0].message).toBe(MESSAGES.AUTH.IS_NOT_LOGGED_IN);
       expect(response.body.errors.length).toBe(1);
     });
 
@@ -44,23 +48,27 @@ describe("Middlewares", () => {
         .set("Cookie", ["jwt=wrong"]);
       expect(response.body.message).toBe(null);
       expect(response.body.errors[0].field).toBe(null);
-      expect(response.body.errors[0].message).toBe("You have to login");
+      expect(response.body.errors[0].message).toBe(MESSAGES.AUTH.IS_NOT_LOGGED_IN);
+      expect(response.body.errors.length).toBe(1);
+    });
+
+    it("rejects valid token for nonexisting user", async () => {
+      const user = await generateTestUser();
+      
+      const token = createToken(user._id + 1);
+      const response = await supertest(app)
+        .get("/mockRoute")
+        .set("Cookie", [`jwt=${token}`]);
+      expect(response.body.message).toBe(null);
+      expect(response.body.errors[0].field).toBe(null);
+      expect(response.body.errors[0].message).toBe(MESSAGES.AUTH.IS_NOT_LOGGED_IN);
       expect(response.body.errors.length).toBe(1);
     });
 
     it("accepts authorised access", async () => {
-      const uniEmail = "pac.to@kcl.ac.uk";
-      const password = "Password123";
-      const salt = await bcrypt.genSalt(10);
-      const hashedPassword = await bcrypt.hash(password, salt);
-
-      // Create a test user
-      const user = await User.create({
-        firstName: "pac",
-        lastName: "to",
-        uniEmail: uniEmail,
-        password: hashedPassword,
-      });
+      const user = await generateTestUser();
+      user.active = true;
+      await user.save();
 
       const token = createToken(user._id);
       const response = await supertest(app)
@@ -74,14 +82,27 @@ describe("Middlewares", () => {
       expect(response.body.message.password).toBeDefined();
       expect(response.body.errors.length).toBe(0);
     });
+
+    it("rejects inactive user", async () => {
+      const user = await generateTestUser();
+
+      const token = createToken(user._id);
+      let response = await supertest(app)
+        .get("/mockRoute")
+        .set("Cookie", [`jwt=${token}`]);
+      expect(response.body.message).toBe(null);
+      expect(response.body.errors[0].field).toBe(null);
+      expect(response.body.errors[0].message).toBe(MESSAGES.AUTH.IS_INACTIVE);
+      expect(response.body.errors.length).toBe(1);
+    });
   });
 
-  describe("Not Authentificated Middleware", () => {
+  describe("Not Authenticated Middleware", () => {
     app.get("/mockRoute2", checkNotAuthenticated, function (req, res) {
       res.status(200).json(jsonResponse("no authenticated user", []));
     });
 
-    it("accepts non-authentificated access", async () => {
+    it("accepts non-authenticated access", async () => {
       const response = await supertest(app).get("/mockRoute2");
       expect(response.body.message).toBeDefined();
       expect(response.body.message).toBe("no authenticated user");
@@ -97,19 +118,10 @@ describe("Middlewares", () => {
       expect(response.body.errors.length).toBe(0);
     });
 
-    it("rejects authentificated access", async () => {
-      const uniEmail = "pac.to@kcl.ac.uk";
-      const password = "Password123";
-      const salt = await bcrypt.genSalt(10);
-      const hashedPassword = await bcrypt.hash(password, salt);
-
-      // Create a test user
-      const user = await User.create({
-        firstName: "pac",
-        lastName: "to",
-        uniEmail: uniEmail,
-        password: hashedPassword,
-      });
+    it("rejects authenticated access", async () => {
+      const user = await generateTestUser();
+      user.active = true;
+      await user.save();
 
       const token = createToken(user._id);
       const response = await supertest(app)
@@ -117,7 +129,7 @@ describe("Middlewares", () => {
         .set("Cookie", [`jwt=${token}`]);
         expect(response.body.message).toBe(null);
         expect(response.body.errors[0].field).toBe(null);
-        expect(response.body.errors[0].message).toBe("You must not be logged in");
+        expect(response.body.errors[0].message).toBe(MESSAGES.AUTH.IS_LOGGED_IN);
         expect(response.body.errors.length).toBe(1);
     });
   });
