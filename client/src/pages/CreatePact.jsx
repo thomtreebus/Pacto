@@ -21,7 +21,7 @@ export default function LoginPage() {
 
 
   const handleCategoryChange = (event) => {
-    setCategory(event.target.value)
+    setCategory(event.target.value);
   };
   
 	const handleSubmit = async (event) => {
@@ -41,11 +41,12 @@ export default function LoginPage() {
 			credentials: "include",
 			body: JSON.stringify({
 				name: data.get("pact-name"),
-				category: data.get("category"),
+				category: data.get("category-select"),
 				description: data.get("description")
 			}),
 		});
 
+		console.log(response);
 		const json = await response.json();
 		
 		Object.values(json['errors']).forEach(err => {
@@ -66,6 +67,8 @@ export default function LoginPage() {
 		});
 
 		if (response.status !== 201) {
+			setIsButtonDisabled(true)
+			console.log(json);
 			return;
 		}
 
@@ -115,31 +118,33 @@ export default function LoginPage() {
               margin="normal"
               required
 							fullWidth
-              id="outlined-select-currency"
+              id="category-select"
+							name="category-select"
               select
               value={category}
               onChange={handleCategoryChange}
-              label="Select"
+              label="Category"
 							error={apiPactCategoryError.length !== 0}
               helperText={apiPactCategoryError}
             >
-              <MenuItem value="Subject" data-testid="subject-item">
-                Subject
-              </MenuItem>
-              <MenuItem value="Module" data-testid="module-item">
-                Module
-              </MenuItem>
-              <MenuItem value="Society" data-testid="society-item">
+              <MenuItem value={"society"} data-testid="subject-item">
                 Society
               </MenuItem>
-              <MenuItem value="Other" data-testid="other-item">
+              <MenuItem value={"course"} data-testid="module-item">
+                Course
+              </MenuItem>
+              <MenuItem value={"module"} data-testid="society-item">
+                Module
+              </MenuItem>
+              <MenuItem value={"other"} data-testid="other-item">
                 Other
               </MenuItem>
             </TextField>
 
             <TextField
+							name="description"
               margin="normal"
-              id="outlined-multiline-static"
+              id="description"
               label="Description"
               required
               fullWidth
