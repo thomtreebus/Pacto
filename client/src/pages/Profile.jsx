@@ -12,6 +12,10 @@ import Typography from "@mui/material/Typography";
 import Stack from "@mui/material/Stack";
 import Chip from "@mui/material/Chip";
 import Divider from "@mui/material/Divider";
+import PropTypes from 'prop-types';
+import Tabs from '@mui/material/Tabs';
+import Tab from '@mui/material/Tab';
+import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
@@ -20,10 +24,46 @@ import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import WhatsAppIcon from '@mui/icons-material/WhatsApp';
 import GroupIcon from '@mui/icons-material/Group';
 
+
+
+function TabPanel(props) {
+  const { children, value, index, ...other } = props;
+
+  return (
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`simple-tabpanel-${index}`}
+      aria-labelledby={`simple-tab-${index}`}
+      {...other}
+    >
+      {value === index && (
+        <Box sx={{ p: 3 }}>
+          <Typography>{children}</Typography>
+        </Box>
+      )}
+    </div>
+  );
+}
+
+TabPanel.propTypes = {
+  children: PropTypes.node,
+  index: PropTypes.number.isRequired,
+  value: PropTypes.number.isRequired,
+};
+
+function a11yProps(index) {
+  return {
+    id: `simple-tab-${index}`,
+    'aria-controls': `simple-tabpanel-${index}`,
+  };
+}
+
 export default function Profile() {
   const [user, setUser] = useState(null);
   const { id } = useParams();
   const history = useHistory();
+  const [value, setValue] = useState(0);
 
   const { isLoading, data } = useQuery("userData", () =>
     fetch(`${process.env.REACT_APP_URL}/users/${id}`, {
@@ -40,6 +80,14 @@ export default function Profile() {
       console.log(data);
     }
   }, [data]);
+
+  
+
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+  };
+
+
   
   if (isLoading) {
     return <Loading />;
@@ -56,8 +104,6 @@ export default function Profile() {
     >
       <Grid container item direction="column" xs={8}>
         <Stack direction="row" alignItems="center" spacing={2} sx={{}}>
-          {/* {user && <Chip label={`${user.friends.length} Friends`} icon={<GroupIcon />} variant="outlined" />} */}
-
           <Image
             style={{ width: "100px", height: "100px", border: "3px solid #616161", borderRadius: "180px", overflow: "hidden", position: "relative", }}
             alt="Profile Picture"
@@ -78,15 +124,32 @@ export default function Profile() {
         </Stack>
         <Divider sx={{ marginTop: "10px", marginBottom: "10px" }}></Divider>
         <Typography variant="body1" sx={{}}> {user.bio} </Typography>
+        {/* <Divider sx={{ marginTop: "10px" }}></Divider> */}
+        <Box sx={{ width: '100%' }}>
+          <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+            <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
+              <Tab label="Posts" {...a11yProps(0)} />
+              <Tab label="Comments" {...a11yProps(1)} />
+              <Tab label="Pacts" {...a11yProps(2)} />
+            </Tabs>
+          </Box>
+          <TabPanel value={value} index={0}>
+            Item One
+          </TabPanel>
+          <TabPanel value={value} index={1}>
+            Item Two
+          </TabPanel>
+          <TabPanel value={value} index={2}>
+            Item Three
+          </TabPanel>
+        </Box>
       </Grid>
-      
       
       <Grid container item direction="column" xs={4}>
         <Card sx={{ minWidth: 275 }}>
           <CardContent>
             <Stack direction="row" alignItems="center" spacing={2} sx={{}}>
-              
-              { user && <Chip label={`${user.friends.length} Friends`} icon={<GroupIcon />} variant="outlined" />}
+              <Chip label={`${user.friends.length} Friends`} icon={<GroupIcon />} variant="outlined" />
               <Chip label={`${user.pacts.length} Pacts`} icon={<GroupIcon />} variant="outlined"/>
             </Stack>
           </CardContent>
