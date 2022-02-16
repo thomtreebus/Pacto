@@ -6,6 +6,7 @@ const app = require("../../app");
 const { createToken } = require("../../controllers/authController");
 const { generateTestUser, getEmail } = require("../fixtures/generateTestUser");
 const { generateTestPact, getTestPactId } = require("../fixtures/generateTestPact");
+const { generateTestPost, getTestPostId } = require("../fixtures/generateTestPost");
 const { jsonResponse } = require("../../helpers/responseHandlers");
 const University = require('../../models/University')
 const User = require("../../models/User");
@@ -27,7 +28,7 @@ dotenv.config();
 //   return pact;
 // }
 
-describe("POST /post/:pactid", () => {
+describe("POST /post", () => {
   beforeAll(async () => {
     await mongoose.connect(process.env.TEST_DB_CONNECTION_URL);
   });
@@ -43,6 +44,9 @@ describe("POST /post/:pactid", () => {
     // Makes user a member and mod of pact
     const pact = await generateTestPact(user);
     await pact.save();
+    // User posts a post in the pact
+    const post = await generateTestPost(user, pact);
+    await post.save();
   });
 
   afterEach(async () => {
@@ -51,31 +55,24 @@ describe("POST /post/:pactid", () => {
     await Pact.deleteMany({});
   });
 
-  it("can create post with valid pact id and user part of pact", async () => {
+  it("can upvote post with valid pact id and user part of pact", async () => {
     const user = await User.findOne({ uniEmail: getEmail() });
     const pact = await Pact.findOne({ id: getTestPactId() });
+    const post = await Post.findOne({ id: getTestPostId() });
     const token = createToken(user._id);
+
+    const oldVotes = post.votes;
+
     const response = await supertest(app)
-    .post("/post/" + pact._id)
+    .post("/post/upvote/" + pact._id + "/" + post._id)
     .set("Cookie", [`jwt=${token}`])
-    .send({
-      author: user,
-      title: "Dummy title",
-      text: "Dummy text",
-      type: "text",
-      link: "somelink"
-    })
-    .expect(201)
+    .expect(200);
     expect(response.body.message).toBeDefined();
     expect(response.body.errors.length).toBe(0);
 
-    const post = response.body.message;
-    expect(post.author).toBe(user._id.toString());
-    expect(post.title).toBe("Dummy title");
-    expect(post.text).toBe("Dummy text");
-    expect(post.type).toBe("text");
-    expect(post.link).toBe("somelink");
-    expect(post.votes).toBe(0);
+    const responsePost = response.body.message;
+    expect(responsePost.author).toBe(user._id.toString());
+    expect(responsePost.votes).toBe(oldVotes + 1);
   });
 
   // test for cases it doesn't work, like user not part of pact

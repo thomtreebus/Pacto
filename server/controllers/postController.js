@@ -45,9 +45,78 @@ module.exports.postGet = async (req, res) => {
   catch (err) {
 		res.status(400).json(jsonResponse(null, [jsonError(null, err.message)]));
 	}
+};
 
-	// POST upvote
+// POST upvote post
+module.exports.upvotePostPost = async (req, res) => {
+	try {
+		// Checking post exists
+		const post = await Post.findOne({ pact: req.params.pactid, _id:req.params.id });
+		if (!post){
+			res.status(404).json(jsonResponse(null, [jsonError(null, "Post not found")]));
+		}
 
-	// POST downvote
+		// Checking user is in the pact
+		const postPact = post.pact;
+		if(req.user.pacts.includes(postPact._id)) {
+			// Checking if user already upvoted or downvoted
+			if(post.upvoters.includes(req.user)) {
+				// Cancel upvote
+				const index = post.upvoters.indexOf(req.user);
+				if (index > -1) {
+					post.upvoters.splice(index, 1); // 2nd parameter means remove one item only
+					post.votes = post.votes - 1;
+				} else {
+					console.log("error in upvote post code");
+				}
+			} else {
+				if(post.downvoters.includes(req.user)) {
+					// remove downvote
+					const index = post.downvoters.indexOf(req.user);
+					if (index > -1) {
+						post.downvoters.splice(index, 1);
+						post.votes = post.votes + 1;
+					} else {
+						console.log("error in upvote post code");
+					}
+				}
+				// just normal upvote
+				post.upvoters.push(req.user);
+				post.votes = post.votes + 1;
+			}
+			post.save()
+
+			// Populating before returning the post
+			await post.populate({ path: 'upvoters', model: User });
+			await post.populate({ path: 'downvoters', model: User });
+			res.status(200).json(jsonResponse(post, []));
+		} else {
+			res.status(400).json(jsonResponse(null, [jsonError(null, "User is not in this pact")]));
+		}
+	} 
+	catch (err) {
+		res.status(400).json(jsonResponse(null, [jsonError(null, err.message)]));
+	}
+};
+
+// POST downvote
+module.exports.downvotePostPost = async (req, res) => {
+	try {
+		const post = await Post.findOne({ pact: req.params.pactid, _id:req.params.id });
+		if (!post){
+			res.status(404).json(jsonResponse(null, [jsonError(null, "Post not found")]));
+		}
+		const postPact = post.pact;
+		if(req.user.pacts.includes(postPact._id)) {
+			await post.populate({ path: 'upvoters', model: User });
+			await post.populate({ path: 'downvoters', model: User });
+			res.status(200).json(jsonResponse(post, []));
+		} else {
+			res.status(400).json(jsonResponse(null, [jsonError(null, "User is not in this pact")]));
+		}
+	} 
+	catch (err) {
+		res.status(400).json(jsonResponse(null, [jsonError(null, err.message)]));
+	}
 };
 

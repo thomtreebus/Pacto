@@ -28,7 +28,7 @@ dotenv.config();
 //   return pact;
 // }
 
-describe("GET /post", () => {
+describe("GET /post/:pactid/:id", () => {
   beforeAll(async () => {
     await mongoose.connect(process.env.TEST_DB_CONNECTION_URL);
   });
