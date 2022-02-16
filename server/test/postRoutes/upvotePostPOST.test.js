@@ -111,14 +111,12 @@ describe("POST /post/upvote/:pactid/:id", () => {
 
     // Creating 2nd user
     const user2 = await generateNextTestUser("SecondUser");
+    user2.active = true;
     await user2.pacts.push(pact);
     await user2.save();
     await pact.members.push(user2);
     await pact.save();
     const token2 = createToken(user2._id);
-
-    console.log(user2);
-    console.log(pact);
 
     const oldVotes = post.votes;
 
@@ -135,8 +133,8 @@ describe("POST /post/upvote/:pactid/:id", () => {
     .expect(200);
 
     const responsePost = response.body.message;
-    expect(responsePost.author).toBe(user._id.toString());
-    expect(responsePost.votes).toBe(oldvotes + 2);
+    expect(responsePost.author).toBe(user1._id.toString());
+    expect(responsePost.votes).toBe(oldVotes + 2);
     expect(responsePost.upvoters[0]._id).toBe(user1._id.toString());
     expect(responsePost.upvoters[1]._id).toBe(user2._id.toString());
     expect(responsePost.downvoters).toStrictEqual([]);
