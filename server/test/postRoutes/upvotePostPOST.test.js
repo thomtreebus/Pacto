@@ -156,6 +156,27 @@ describe("POST /post/upvote/:pactid/:id", () => {
     .set("Cookie", [`jwt=${ token }`])
     .expect(401);
 
+    expect(response.body.message).toBe(null);
+    expect(response.body.errors[0].field).toBe(null);
+    expect(response.body.errors[0].message).toBe(MESSAGES.AUTH.IS_NOT_IN_PACT);
+    expect(response.body.errors.length).toBe(1);
+  });
+
+  it("user not in the pact's university can't upvote", async () => {
+    const pact = await Pact.findOne({ id: getTestPactId() });
+    const post = await Post.findOne({ id: getTestPostId() });
+
+    // Creating the user who is not in the pact, but who is in the correct uni
+    const user = await generateNextTestUser("User");
+    user.active = true;
+    await user.save();
+    const token = createToken(user._id);
+
+    const response = await supertest(app)
+    .post(`/pact/${ pact._id }/post/upvote/${ post._id }`)
+    .set("Cookie", [`jwt=${ token }`])
+    .expect(401);
+
     console.log(response.body.errors[0].message);
     expect(response.body.message).toBe(null);
     expect(response.body.errors[0].field).toBe(null);

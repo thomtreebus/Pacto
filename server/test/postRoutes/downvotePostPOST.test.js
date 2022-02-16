@@ -156,7 +156,6 @@ describe("POST /post/downvote/:pactid/:id", () => {
     .set("Cookie", [`jwt=${ token }`])
     .expect(401);
 
-    console.log(response.body.errors[0].message);
     expect(response.body.message).toBe(null);
     expect(response.body.errors[0].field).toBe(null);
     expect(response.body.errors[0].message).toBe(MESSAGES.AUTH.IS_NOT_IN_PACT);
