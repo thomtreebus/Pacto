@@ -7,22 +7,18 @@ import Grid from "@mui/material/Grid";
 import Icon from "../assets/pacto-logo.ico";
 import Typography from "@mui/material/Typography";
 import { useHistory } from "react-router-dom";
-import Snackbar from "@mui/material/Snackbar";
-import Alert from "@mui/material/Alert";
 import MenuItem from '@mui/material/MenuItem';
 
 export default function LoginPage() {
-  const [category, setCategory] = React.useState('Subject')
-	const [snackbarOpen, setSnackbarOpen] = React.useState(false);
+  const [category, setCategory] = React.useState('');
 	const [isButtonDisabled, setIsButtonDisabled] = React.useState(false);
 	const history = useHistory();
 
 	const [apiPactNameError, setApiPactNameError] = React.useState('');
+	const [apiPactCategoryError, setApiPactCategoryError] = React.useState('');
 	const [apiPactDescriptionError, setApiPactDescriptionError] = React.useState('');
 
-	const handleClose = () => {
-		setSnackbarOpen(false);
-	};
+
 
   const handleCategoryChange = (event) => {
     setCategory(event.target.value)
@@ -34,6 +30,7 @@ export default function LoginPage() {
 		setIsButtonDisabled(true);
 
 		setApiPactNameError('');
+		setApiPactCategoryError('');
 		setApiPactDescriptionError('');
 
 		const response = await fetch(`${process.env.REACT_APP_URL}/pact`, {
@@ -56,10 +53,13 @@ export default function LoginPage() {
 			const message = err["message"];
 
 			if (field === "name"){
-				setApiPactNameError(message)
+				setApiPactNameError(message);
+			}
+			if(field === "category"){
+				setApiPactCategoryError(message);
 			}
 			if (field === "description"){
-				setApiPactDescriptionError(message)
+				setApiPactDescriptionError(message);
 			}
 
 			setIsButtonDisabled(false);
@@ -119,7 +119,8 @@ export default function LoginPage() {
               value={category}
               onChange={handleCategoryChange}
               label="Select"
-              helperText="What type of Pact is this?"
+							error={apiPactCategoryError.length !== 0}
+              helperText={apiPactCategoryError}
             >
               <MenuItem value="Subject" data-testid="subject-item">
                 Subject
@@ -129,7 +130,7 @@ export default function LoginPage() {
               </MenuItem>
               <MenuItem value="Society" data-testid="society-item">
                 Society
-              </MenuItem>apiLastNameError
+              </MenuItem>
               <MenuItem value="Other" data-testid="other-item">
                 Other
               </MenuItem>
@@ -146,6 +147,17 @@ export default function LoginPage() {
 							error={apiPactDescriptionError.length !== 0}
               helperText={apiPactDescriptionError}
             />
+						<Button
+              fullWidth
+              label="Upload Image"
+              variant="contained"
+              component="span"
+              sx={{
+                marginTop: 1
+              }}
+              >
+              Upload Image
+            </Button>
             
 							
 							<Button
