@@ -4,7 +4,7 @@ const supertest = require("supertest");
 const bcrypt = require("bcrypt");
 const app = require("../../app");
 const { createToken } = require("../../controllers/authController");
-const { generateTestUser, getEmail } = require("../fixtures/generateTestUser");
+const { generateTestUser, getEmail, generateNextTestUser } = require("../fixtures/generateTestUser");
 const { generateTestPact, getTestPactId } = require("../fixtures/generateTestPact");
 const { generateTestPost, getTestPostId } = require("../fixtures/generateTestPost");
 const { jsonResponse } = require("../../helpers/responseHandlers");
@@ -28,7 +28,7 @@ dotenv.config();
 //   return pact;
 // }
 
-describe("POST /post", () => {
+describe("POST /post/upvote/:pactid/:id", () => {
   beforeAll(async () => {
     await mongoose.connect(process.env.TEST_DB_CONNECTION_URL);
   });
@@ -55,7 +55,7 @@ describe("POST /post", () => {
     await Pact.deleteMany({});
   });
 
-  it("can upvote post with valid pact id and user part of pact", async () => {
+  it("upvote post with valid pact id and user part of pact", async () => {
     const user = await User.findOne({ uniEmail: getEmail() });
     const pact = await Pact.findOne({ id: getTestPactId() });
     const post = await Post.findOne({ id: getTestPostId() });
@@ -73,7 +73,73 @@ describe("POST /post", () => {
     const responsePost = response.body.message;
     expect(responsePost.author).toBe(user._id.toString());
     expect(responsePost.votes).toBe(oldVotes + 1);
+    expect(responsePost.upvoters[0]._id).toBe(user._id.toString());
+    expect(responsePost.downvoters).toStrictEqual([]);
   });
 
-  // test for cases it doesn't work, like user not part of pact
+  it("upvote twice does not change the votes count", async () => {
+    const user = await User.findOne({ uniEmail: getEmail() });
+    const pact = await Pact.findOne({ id: getTestPactId() });
+    const post = await Post.findOne({ id: getTestPostId() });
+    const token = createToken(user._id);
+
+    const oldVotes = post.votes;
+
+    let response;
+    // upvote twice in a row
+    for(let i = 0; i < 2; i++) {
+      response = await supertest(app)
+      .post("/post/upvote/" + pact._id + "/" + post._id)
+      .set("Cookie", [`jwt=${token}`])
+      .expect(200);
+      expect(response.body.message).toBeDefined();
+      expect(response.body.errors.length).toBe(0);
+    }
+
+    const responsePost = response.body.message;
+    expect(responsePost.author).toBe(user._id.toString());
+    expect(responsePost.votes).toBe(oldVotes + 0);
+    expect(responsePost.upvoters).toStrictEqual([]);
+    expect(responsePost.downvoters).toStrictEqual([]);
+  });
+
+  it("two different users upvote is cummulative", async () => {
+    const user1 = await User.findOne({ uniEmail: getEmail() });
+    const pact = await Pact.findOne({ id: getTestPactId() });
+    const post = await Post.findOne({ id: getTestPostId() });
+    const token1 = createToken(user1._id);
+
+    // Creating 2nd user
+    const user2 = await generateNextTestUser("SecondUser");
+    await user2.pacts.push(pact);
+    await user2.save();
+    await pact.members.push(user2);
+    await pact.save();
+    const token2 = createToken(user2._id);
+
+    console.log(user2);
+    console.log(pact);
+
+    const oldVotes = post.votes;
+
+    // 1st user upvote
+    await supertest(app)
+    .post("/post/upvote/" + pact._id + "/" + post._id)
+    .set("Cookie", [`jwt=${token1}`])
+    .expect(200);
+
+    // 2nd user upvote
+    const response = await supertest(app)
+    .post("/post/upvote/" + pact._id + "/" + post._id)
+    .set("Cookie", [`jwt=${token2}`])
+    .expect(200);
+
+    const responsePost = response.body.message;
+    expect(responsePost.author).toBe(user._id.toString());
+    expect(responsePost.votes).toBe(oldvotes + 2);
+    expect(responsePost.upvoters[0]._id).toBe(user1._id.toString());
+    expect(responsePost.upvoters[1]._id).toBe(user2._id.toString());
+    expect(responsePost.downvoters).toStrictEqual([]);
+  });
+  
 });

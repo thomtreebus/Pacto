@@ -60,9 +60,9 @@ module.exports.upvotePostPost = async (req, res) => {
 		const postPact = post.pact;
 		if(req.user.pacts.includes(postPact._id)) {
 			// Checking if user already upvoted or downvoted
-			if(post.upvoters.includes(req.user)) {
+			if(post.upvoters.includes(req.user._id)) {
 				// Cancel upvote
-				const index = post.upvoters.indexOf(req.user);
+				const index = post.upvoters.indexOf(req.user._id);
 				if (index > -1) {
 					post.upvoters.splice(index, 1); // 2nd parameter means remove one item only
 					post.votes = post.votes - 1;
@@ -70,9 +70,9 @@ module.exports.upvotePostPost = async (req, res) => {
 					console.log("error in upvote post code");
 				}
 			} else {
-				if(post.downvoters.includes(req.user)) {
+				if(post.downvoters.includes(req.user._id)) {
 					// remove downvote
-					const index = post.downvoters.indexOf(req.user);
+					const index = post.downvoters.indexOf(req.user._id);
 					if (index > -1) {
 						post.downvoters.splice(index, 1);
 						post.votes = post.votes + 1;
@@ -81,7 +81,7 @@ module.exports.upvotePostPost = async (req, res) => {
 					}
 				}
 				// just normal upvote
-				post.upvoters.push(req.user);
+				post.upvoters.push(req.user._id);
 				post.votes = post.votes + 1;
 			}
 			post.save()
