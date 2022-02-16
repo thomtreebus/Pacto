@@ -11,7 +11,7 @@ module.exports.postPost = async (req, res) => {
 		const userUni = user.university;
     const { title, text, image, link, type } = req.body;
 		// Checking user is in pact, will throw an error if not found
-		const pact = await Pact.findOne({ university:userUni, _id:req.params.pactid });
+		const pact = await Pact.findOne({ university:userUni, _id:req.params.pactId });
 		if (!pact.members.includes(user._id) || !pact){
 			res.status(400).json(jsonResponse(null, [jsonError(null, "User is not in the pact they are trying to post into")]));
 		} else {
@@ -29,7 +29,7 @@ module.exports.postPost = async (req, res) => {
 // GET pact (by id)
 module.exports.postGet = async (req, res) => {
 	try {
-		const post = await Post.findOne({ pact: req.params.pactid, _id:req.params.id });
+		const post = await Post.findOne({ pact: req.params.pactId, _id:req.params.postId });
   	if (!post){
 			res.status(404).json(jsonResponse(null, [jsonError(null, "Post not found")]));
 		}
@@ -51,7 +51,7 @@ module.exports.postGet = async (req, res) => {
 module.exports.upvotePostPost = async (req, res) => {
 	try {
 		// Checking post exists
-		const post = await Post.findOne({ pact: req.params.pactid, _id:req.params.id });
+		const post = await Post.findOne({ pact: req.params.pactId, _id:req.params.postId });
 		if (!post){
 			res.status(404).json(jsonResponse(null, [jsonError(null, "Post not found")]));
 		}

@@ -3,9 +3,9 @@ const router = express.Router();
 const postController = require("../controllers/postController");
 const { checkAuthenticated } = require("../middleware/authMiddleware");
 
-router.post("/post/:pactid", checkAuthenticated, postController.postPost);
-router.post("/post/upvote/:pactid/:id", checkAuthenticated, postController.upvotePostPost);
-router.post("/post/downvote/:pactid/:id", checkAuthenticated, postController.downvotePostPost);
-router.get("/post/:pactid/:id", checkAuthenticated, postController.postGet);
+router.post("/pact/:pactId/post", checkAuthenticated, postController.postPost);
+router.get("/pact/:pactId/post/:postId", checkAuthenticated, postController.postGet);
+router.post("/pact/:pactId/post/upvote/:postId", checkAuthenticated, postController.upvotePostPost);
+router.post("/pact/:pactId/post/downvote/:postId", checkAuthenticated, postController.downvotePostPost);
 
 module.exports = router;

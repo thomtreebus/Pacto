@@ -94,11 +94,13 @@ async function seedUsers(university) {
 
 async function addUserToPact(user, pact) {
 	pact.members.push(user);
+	user.pacts.push(pact);
 
 	if(chance.integer({min: 0, max: 1})) {
 		pact.moderators.push(user);
 	}
 
+	await user.save();
 	await pact.save();
 }
 

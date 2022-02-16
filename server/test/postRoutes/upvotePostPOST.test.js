@@ -64,7 +64,7 @@ describe("POST /post/upvote/:pactid/:id", () => {
     const oldVotes = post.votes;
 
     const response = await supertest(app)
-    .post("/post/upvote/" + pact._id + "/" + post._id)
+    .post(`/pact/${ pact._id }/post/upvote/${ post._id }`)
     .set("Cookie", [`jwt=${token}`])
     .expect(200);
     expect(response.body.message).toBeDefined();
@@ -89,7 +89,7 @@ describe("POST /post/upvote/:pactid/:id", () => {
     // upvote twice in a row
     for(let i = 0; i < 2; i++) {
       response = await supertest(app)
-      .post("/post/upvote/" + pact._id + "/" + post._id)
+      .post(`/pact/${ pact._id }/post/upvote/${ post._id }`)
       .set("Cookie", [`jwt=${token}`])
       .expect(200);
       expect(response.body.message).toBeDefined();
@@ -124,13 +124,13 @@ describe("POST /post/upvote/:pactid/:id", () => {
 
     // 1st user upvote
     await supertest(app)
-    .post("/post/upvote/" + pact._id + "/" + post._id)
+    .post(`/pact/${ pact._id }/post/upvote/${ post._id }`)
     .set("Cookie", [`jwt=${token1}`])
     .expect(200);
 
     // 2nd user upvote
     const response = await supertest(app)
-    .post("/post/upvote/" + pact._id + "/" + post._id)
+    .post(`/pact/${ pact._id }/post/upvote/${ post._id }`)
     .set("Cookie", [`jwt=${token2}`])
     .expect(200);
 

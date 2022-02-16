@@ -28,7 +28,7 @@ dotenv.config();
 //   return pact;
 // }
 
-describe("GET /post/:pactid/:id", () => {
+describe("GET /pact/:pactId/post/:postId", () => {
   beforeAll(async () => {
     await mongoose.connect(process.env.TEST_DB_CONNECTION_URL);
   });
@@ -62,7 +62,7 @@ describe("GET /post/:pactid/:id", () => {
     const token = createToken(user._id);
 
     const response = await supertest(app)
-    .get("/post/" + pact._id + "/" + post._id)
+    .get(`/pact/${ pact._id }/post/${ post._id }`)
     .set("Cookie", [`jwt=${token}`])
     .expect(200);
     expect(response.body.message).toBeDefined();

@@ -27,7 +27,7 @@ dotenv.config();
 //   return pact;
 // }
 
-describe("POST /post/:pactid", () => {
+describe("POST /pact/:pactId/post", () => {
   beforeAll(async () => {
     await mongoose.connect(process.env.TEST_DB_CONNECTION_URL);
   });
@@ -56,8 +56,8 @@ describe("POST /post/:pactid", () => {
     const pact = await Pact.findOne({ id: getTestPactId() });
     const token = createToken(user._id);
     const response = await supertest(app)
-    .post("/post/" + pact._id)
-    .set("Cookie", [`jwt=${token}`])
+    .post(`/pact/${ pact._id }/post`)
+    .set("Cookie", [`jwt=${ token }`])
     .send({
       author: user,
       title: "Dummy title",
