@@ -1,6 +1,5 @@
 const jwt = require("jsonwebtoken");
 const User = require("../models/User");
-const User = require("../models/User");
 const { jsonResponse, jsonError } = require("../helpers/responseHandlers");
 const University = require('../models/University');
 const { MESSAGES, PACT_MESSAGES } = require("../helpers/messages");
