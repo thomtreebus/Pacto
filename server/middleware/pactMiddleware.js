@@ -27,7 +27,9 @@ const checkIsMemberOfPact = async (req, res, next) => {
       throw Error(PACT_MESSAGES.NOT_FOUND);
     }
 
-    if(pact.members.includes(user)){
+    const id = user._id.toString();
+
+    if(pact.members.map(usr => usr.toString()).includes(id)){
       req.pact = pact;
       next();
     } else {
