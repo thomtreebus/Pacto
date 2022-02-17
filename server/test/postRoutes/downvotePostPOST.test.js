@@ -8,11 +8,11 @@ const { generateTestUser, getEmail, generateNextTestUser } = require("../fixture
 const { generateTestPact, getTestPactId } = require("../fixtures/generateTestPact");
 const { generateTestPost, getTestPostId } = require("../fixtures/generateTestPost");
 const { jsonResponse } = require("../../helpers/responseHandlers");
-const { MESSAGES } = require("../../helpers/messages");
+const { MESSAGES, PACT_MESSAGES } = require("../../helpers/messages");
 const User = require("../../models/User");
-const Pact = require('../../models/Pact')
+const Pact = require('../../models/Pact');
 const Post = require('../../models/Post');
-const University = require("../../models/University");
+const University = require('../../models/University');
 
 dotenv.config();
 
@@ -160,7 +160,7 @@ describe("POST /post/downvote/:pactid/:id", () => {
 
     expect(response.body.message).toBe(null);
     expect(response.body.errors[0].field).toBe(null);
-    expect(response.body.errors[0].message).toBe(MESSAGES.AUTH.IS_NOT_IN_PACT);
+    expect(response.body.errors[0].message).toBe(PACT_MESSAGES.NOT_AUTHORISED);
     expect(response.body.errors.length).toBe(1);
   });
 
@@ -177,11 +177,11 @@ describe("POST /post/downvote/:pactid/:id", () => {
     const response = await supertest(app)
     .post(`/pact/${ pact._id }/post/downvote/${ post._id }`)
     .set("Cookie", [`jwt=${ token }`])
-    .expect(401);
+    .expect(404);
 
     expect(response.body.message).toBe(null);
     expect(response.body.errors[0].field).toBe(null);
-    expect(response.body.errors[0].message).toBe(MESSAGES.AUTH.IS_NOT_IN_PACT);
+    expect(response.body.errors[0].message).toBe(PACT_MESSAGES.NOT_FOUND);
     expect(response.body.errors.length).toBe(1);
   });
 

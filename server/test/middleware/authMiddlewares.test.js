@@ -2,20 +2,20 @@ const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const supertest = require("supertest");
 const bcrypt = require("bcrypt");
-const app = require("../app");
+const app = require("../../app");
 
-const { checkAuthenticated } = require("../middleware/authMiddleware");
-const { checkNotAuthenticated } = require("../middleware/notAuthMiddleware");
-const { jsonResponse } = require("../helpers/responseHandlers");
-const { createToken } = require("../controllers/authController");
-const University = require('../models/University');
-const { MESSAGES } = require("../helpers/messages");
-const {generateTestUser} = require("./fixtures/generateTestUser");
-const User = require("../models/User");
+const { checkAuthenticated } = require("../../middleware/authMiddleware");
+const { checkNotAuthenticated } = require("../../middleware/notAuthMiddleware");
+const { jsonResponse } = require("../../helpers/responseHandlers");
+const { createToken } = require("../../controllers/authController");
+const University = require('../../models/University');
+const { MESSAGES } = require("../../helpers/messages");
+const {generateTestUser} = require("../fixtures/generateTestUser");
+const User = require("../../models/User");
 
 dotenv.config();
 
-describe("Middlewares", () => {
+describe("Auth Middlewares", () => {
   beforeAll(async () => {
     await mongoose.connect(process.env.TEST_DB_CONNECTION_URL);
   });

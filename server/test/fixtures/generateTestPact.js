@@ -29,7 +29,7 @@ module.exports.generateTestPact = async (foundingUser) => {
   return pact;
 }
 
-module.exports.getTestPactId = async () => {
+module.exports.getTestPactId = () => {
   if (myPact) {
     return myPact._id;
   } else {

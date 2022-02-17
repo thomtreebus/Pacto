@@ -8,10 +8,10 @@ const { generateTestUser, getEmail } = require("../fixtures/generateTestUser");
 const { generateTestPact, getTestPactId } = require("../fixtures/generateTestPact");
 const { generateTestPost, getTestPostId } = require("../fixtures/generateTestPost");
 const { jsonResponse } = require("../../helpers/responseHandlers");
-const University = require('../../models/University')
 const User = require("../../models/User");
-const Pact = require('../../models/Pact')
-const Post = require('../../models/Post')
+const Pact = require('../../models/Pact');
+const University = require('../../models/University');
+const Post = require('../../models/Post');
 
 dotenv.config();
 
@@ -53,6 +53,7 @@ describe("GET /pact/:pactId/post/:postId", () => {
     await User.deleteMany({});
     await Post.deleteMany({});
     await Pact.deleteMany({});
+    await University.deleteMany({});
   });
 
   it("can get a post with valid pact id and user part of pact", async () => {
