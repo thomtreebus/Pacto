@@ -113,13 +113,6 @@ describe("Profile Page Tests", () => {
       expect(bioField.value).toBe("hello world")
     });
 
-    it("should render the \"upload image\" button", async () => {
-      const uploadImageButton = await screen.findByRole("button", {
-        name: "Upload Image"
-      });
-      expect(uploadImageButton).toBeInTheDocument();
-    });
-
     it("should render the select image icon button", async () => {
       const selectImageButton = await screen.findByTestId("image-upload-icon")
       expect(selectImageButton).toBeInTheDocument();
@@ -242,10 +235,6 @@ describe("Profile Page Tests", () => {
 
       await act( async () => {
         await userEvent.upload(buttonElement, image);
-        const uploadImageButton = await screen.findByRole("button", {
-          name: "Upload Image"
-        });
-        await userEvent.click(uploadImageButton);
       });
 
       // wait 1 second due to some react delays
