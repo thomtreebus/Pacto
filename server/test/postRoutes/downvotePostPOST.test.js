@@ -11,7 +11,8 @@ const { jsonResponse } = require("../../helpers/responseHandlers");
 const { MESSAGES } = require("../../helpers/messages");
 const User = require("../../models/User");
 const Pact = require('../../models/Pact')
-const Post = require('../../models/Post')
+const Post = require('../../models/Post');
+const University = require("../../models/University");
 
 dotenv.config();
 
@@ -40,6 +41,7 @@ describe("POST /post/downvote/:pactid/:id", () => {
     await User.deleteMany({});
     await Post.deleteMany({});
     await Pact.deleteMany({});
+    await University.deleteMany({});
   });
 
   it("downvote post with valid pact id and user part of pact", async () => {
@@ -177,11 +179,51 @@ describe("POST /post/downvote/:pactid/:id", () => {
     .set("Cookie", [`jwt=${ token }`])
     .expect(401);
 
-    console.log(response.body.errors[0].message);
     expect(response.body.message).toBe(null);
     expect(response.body.errors[0].field).toBe(null);
     expect(response.body.errors[0].message).toBe(MESSAGES.AUTH.IS_NOT_IN_PACT);
     expect(response.body.errors.length).toBe(1);
+  });
+
+  it("user can downvote two different posts", async () => {
+    const user = await User.findOne({ uniEmail: getEmail() });
+    const pact = await Pact.findOne({ id: getTestPactId() });
+    let post1 = await Post.findOne({ id: getTestPostId() });
+    let post2 = await generateTestPost(user, pact, "Second post");
+    const token = createToken(user._id);
+
+    const response1 = await supertest(app)
+    .post(`/pact/${ pact._id }/post/downvote/${ post1._id }`)
+    .set("Cookie", [`jwt=${ token }`])
+    .expect(200);
+    const responsePost1 = response1.body.message;
+    expect(responsePost1.author).toBe(user._id.toString());
+    expect(responsePost1.votes).toBe(-1);
+    expect(responsePost1.upvoters).toStrictEqual([]);
+    expect(responsePost1.downvoters.length).toBe(1);
+    expect(responsePost1.downvoters[0]._id).toBe(user._id.toString());
+
+    const response2 = await supertest(app)
+    .post(`/pact/${ pact._id }/post/downvote/${ post2._id }`)
+    .set("Cookie", [`jwt=${ token }`])
+    .expect(200);
+    const responsePost2 = response2.body.message;
+    expect(responsePost2.author).toBe(user._id.toString());
+    expect(responsePost2.votes).toBe(-1);
+    expect(responsePost2.upvoters).toStrictEqual([]);
+    expect(responsePost2.downvoters.length).toBe(1);
+    expect(responsePost2.downvoters[0]._id).toBe(user._id.toString());
+
+    post1 = await Post.findOne({ id: responsePost1._id });
+    post2 = await Post.findOne({ id: getTestPostId() });
+    expect(post1.votes).toBe(-1);
+    expect(post2.votes).toBe(-1);
+    expect(post1.upvoters).toStrictEqual([]);
+    expect(post2.upvoters).toStrictEqual([]);
+    expect(post1.downvoters.length).toBe(1);
+    expect(post2.downvoters.length).toBe(1);
+    expect(post1.downvoters[0]._id.toString()).toBe(user._id.toString());
+    expect(post2.downvoters[0]._id.toString()).toBe(user._id.toString());
   });
   
 });
