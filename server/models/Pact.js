@@ -61,8 +61,7 @@ PactSchema.pre('validate',  function(next) {
   next();
 });
 
-PactSchema.index({ name: 1, university: 1}, { unique: [true, PACT_MESSAGES.NAME.NOT_UNIQUE] });
+PactSchema.index({ name: 1, university: 1}, { unique: true });
 
 const Pact = mongoose.model('Pacts', PactSchema);
-
 module.exports = Pact;
