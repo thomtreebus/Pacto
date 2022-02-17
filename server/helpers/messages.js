@@ -65,7 +65,8 @@ module.exports.PACT_MESSAGES = {
     INVALID_CHOICE: "The category must be either society, course, module or other",
     BLANK: "Category is a required field"
   },
-  NOT_FOUND: "Pact not found"
+  NOT_FOUND: "Pact not found",
+  NOT_AUTHORISED: "User is not a member of this pact"
 }
 
 module.exports.POST_MESSAGES = {
