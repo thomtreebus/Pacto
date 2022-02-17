@@ -53,6 +53,7 @@ describe("GET /pact/:pactId/post/:postId", () => {
     await User.deleteMany({});
     await Post.deleteMany({});
     await Pact.deleteMany({});
+    await University.deleteMany({});
   });
 
   it("can get a post with valid pact id and user part of pact", async () => {

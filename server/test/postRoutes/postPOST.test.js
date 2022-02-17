@@ -49,6 +49,7 @@ describe("POST /pact/:pactId/post", () => {
     await User.deleteMany({});
     await Post.deleteMany({});
     await Pact.deleteMany({});
+    await University.deleteMany({});
   });
 
   it("can create post with valid pact id and user part of pact", async () => {

@@ -43,7 +43,7 @@ describe("CheckIsMemberOfPact Middleware", () => {
     const pact = await generateTestPact(foundingUser);
   });
 
-  app.get("/mockRoute/:id", checkAuthenticated, checkIsMemberOfPact, function (req, res) {
+  app.get("/mockRoute/:pactId", checkAuthenticated, checkIsMemberOfPact, function (req, res) {
     res.status(200).json(jsonResponse(req.pact, []));
   });
 
@@ -71,7 +71,7 @@ describe("CheckIsMemberOfPact Middleware", () => {
   });
 
   it("rejects when check authenticated not run prior", async () =>{
-    app.get("/badMock/:id", checkIsMemberOfPact, function (req, res) {
+    app.get("/badMock/:pactId", checkIsMemberOfPact, function (req, res) {
       res.status(200).json(jsonResponse(req.pact, []));
     });
     

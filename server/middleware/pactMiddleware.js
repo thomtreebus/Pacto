@@ -17,7 +17,7 @@ const checkIsMemberOfPact = async (req, res, next) => {
 
     let pact = null;
 		try {
-			pact = await Pact.findOne({ university: user.university, _id:req.params.id });
+			pact = await Pact.findOne({ university: user.university, _id:req.params.pactId });
 		}
 		catch (err) {
 			pact = null;

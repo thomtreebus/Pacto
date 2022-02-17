@@ -55,32 +55,11 @@ module.exports.pactPost = async (req, res) => {
 
 // GET pact (by id)
 module.exports.pactGet = async (req, res) => {
-	let status = 400;
 	try {
-    const university = req.user.university;
-
-		if (!university){
-			throw Error(MESSAGES.AUTH.IS_NOT_LOGGED_IN);
-		}
-
-		let pact = null;
-		try {
-			pact = await Pact.findOne({ university, _id:req.params.id });
-		}
-		catch (err) {
-			pact = null;
-		}
-		if (!pact){
-			status = 404;
-			throw Error("Pact not found");
-		}
-
-		// the pact is already populated
-
-		res.status(200).json(jsonResponse(pact, []));
+		res.status(200).json(jsonResponse(req.pact, []));
 	} 
   catch (err) {
-		res.status(status).json(jsonResponse(null, [jsonError(null, err.message)]));
+		res.status(400).json(jsonResponse(null, [jsonError(null, err.message)]));
 	}
 };
 

@@ -40,6 +40,7 @@ describe("POST /post/downvote/:pactid/:id", () => {
     await User.deleteMany({});
     await Post.deleteMany({});
     await Pact.deleteMany({});
+    await University.deleteMany({});
   });
 
   it("downvote post with valid pact id and user part of pact", async () => {
