@@ -131,17 +131,18 @@ module.exports.downvotePostPost = async (req, res) => {
 };
 
 // DELETE post
-module.exports.postDelete = async (req, res) => {
-	try {
-		const post = await Post.findOne({ pact: req.pact, _id:req.params.postId });
-		if (!post){
-			res.status(404).json(jsonResponse(null, [jsonError(null, POST_MESSAGES.NOT_FOUND)]));
-		}
-		Post.deleteOne( { _id: post._id } );
-		res.status(200).json(jsonResponse(post, []));
-	} 
-	catch (err) {
-		res.status(400).json(jsonResponse(null, [jsonError(null, err.message)]));
-	}
-};
+// module.exports.postDelete = async (req, res) => {
+// 	try {
+// 		// maybe delete post from pact's posts array?
+// 		const post = await Post.findOne({ pact: req.pact, _id:req.params.postId });
+// 		if (!post){
+// 			res.status(404).json(jsonResponse(null, [jsonError(null, POST_MESSAGES.NOT_FOUND)]));
+// 		}
+// 		Post.deleteOne( { _id: post._id } );
+// 		res.status(200).json(jsonResponse(post, []));
+// 	} 
+// 	catch (err) {
+// 		res.status(400).json(jsonResponse(null, [jsonError(null, err.message)]));
+// 	}
+// };
 

@@ -43,7 +43,6 @@ module.exports.MESSAGES = {
     IS_LOGGED_IN: "User is already authenticated",
     IS_INACTIVE: "User has not verified their university email",
     IS_NOT_LOGGED_IN: "User is not logged in",
-    IS_NOT_IN_PACT: "User is not in this pact",
   }
 }
 
@@ -70,6 +69,5 @@ module.exports.PACT_MESSAGES = {
 }
 
 module.exports.POST_MESSAGES = {
-  // NOT_FOUND: "Pact not found"
   NOT_FOUND: "Post not found"
 }

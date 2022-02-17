@@ -319,4 +319,6 @@ describe("POST /post/upvote/:pactid/:id", () => {
     expect(responsePost.upvoters[0]._id).toBe(user._id.toString());
     expect(responsePost.downvoters).toStrictEqual([]);
   });
+
+  
 });
