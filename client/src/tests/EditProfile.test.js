@@ -206,9 +206,11 @@ describe("Profile Page Tests", () => {
       const buttonElement = await screen.findByTestId(
         "image-upload-icon"
       );
-      await userEvent.upload(buttonElement, image);
-      expect(buttonElement.files[0]).toBe(image);
-      expect(buttonElement.files).toHaveLength(1);
+      await act(async () => {
+        await userEvent.upload(buttonElement, image);
+        expect(buttonElement.files[0]).toBe(image);
+        expect(buttonElement.files).toHaveLength(1);
+      });
     });
 
     it("uploaded image updates profile image shown", async () => {
@@ -235,14 +237,13 @@ describe("Profile Page Tests", () => {
 
       await act( async () => {
         await userEvent.upload(buttonElement, image);
+        // wait 1 second due to some react delays
+        await new Promise(resolve => setTimeout(resolve, 1000));
+
+        const updatedImage = (await screen.findByAltText("Profile Picture")).getAttribute('src');
+        expect(updatedImage).toBe("http://res.cloudinary.com/djlwzi9br/image/upload/v1644796162/qrbhfhmml4hwa5y0dvu9.png");
+        expect(previousImage===updatedImage).toBe(false);
       });
-
-      // wait 1 second due to some react delays
-      await new Promise(resolve => setTimeout(resolve, 1000));
-
-      const updatedImage = (await screen.findByAltText("Profile Picture")).getAttribute('src');
-      expect(updatedImage).toBe("http://res.cloudinary.com/djlwzi9br/image/upload/v1644796162/qrbhfhmml4hwa5y0dvu9.png");
-      expect(previousImage===updatedImage).toBe(false);
     });
 
     it("update profile button sends post request", async () => {
