@@ -177,11 +177,11 @@ describe("POST /post/upvote/:pactid/:id", () => {
     const response = await supertest(app)
     .post(`/pact/${ pact._id }/post/upvote/${ post._id }`)
     .set("Cookie", [`jwt=${ token }`])
-    .expect(401);
+    .expect(404);
 
     expect(response.body.message).toBe(null);
     expect(response.body.errors[0].field).toBe(null);
-    expect(response.body.errors[0].message).toBe(PACT_MESSAGES.NOT_AUTHORISED);
+    expect(response.body.errors[0].message).toBe(PACT_MESSAGES.NOT_FOUND);
     expect(response.body.errors.length).toBe(1);
   });
 
