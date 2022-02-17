@@ -102,7 +102,7 @@ module.exports.joinPact = async (req, res) => {
 		await targetPact.save();
 		await targetUser.save();
 
-		res.json({message : "join pact"});
+		res.json(jsonResponse(PACT_MESSAGES.SUCCESSFUL_JOIN, []));
 	}
 	catch (err) {
 		res.status(404).json(jsonResponse(null, [jsonError(null, PACT_MESSAGES.NOT_FOUND)]));
