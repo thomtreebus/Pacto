@@ -3,6 +3,7 @@ import React from 'react';
 import { useState } from "react";
 import { Image } from 'cloudinary-react';
 import { useHistory } from "react-router-dom";
+import { useAuth } from '../providers/AuthProvider';
 import Grid from '@mui/material/Grid';
 import {useParams } from "react-router-dom";
 import { useQuery } from "react-query";
@@ -17,6 +18,7 @@ import PropTypes from 'prop-types';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
+import Link from '@mui/material/Link';
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
@@ -26,7 +28,7 @@ import WhatsAppIcon from '@mui/icons-material/WhatsApp';
 import GroupIcon from '@mui/icons-material/Group';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import ForumIcon from '@mui/icons-material/Forum';
-
+import EditIcon from '@mui/icons-material/Edit';
 
 
 function TabPanel(props) {
@@ -63,6 +65,9 @@ function a11yProps(index) {
 }
 
 export default function Profile() {
+
+  // const { loggedInUser } = useAuth();
+  // console.log("currentUser: ", loggedInUser);
   const [user, setUser] = useState(null);
   const { id } = useParams();
   const history = useHistory();
@@ -80,7 +85,6 @@ export default function Profile() {
         history.replace("/not-found");
       }
       setUser(data.message);
-      console.log(data);
     }
   }, [data]);
 
@@ -156,6 +160,9 @@ export default function Profile() {
               <Chip label={`${user.pacts.length} Pacts`} icon={<ForumIcon />} variant="outlined" />
             </Stack>
             <Button variant="outlined" fullWidth startIcon={<PersonAddIcon />} sx={{marginTop: "4px"}}>Send Friend Request</Button>
+            {<Button variant="contained" fullWidth color="error" onClick={() => history.push("/edit-profile")} startIcon={<EditIcon />} sx={{ marginTop: "2px" }}>
+              Edit Profile </Button>
+              }
           </CardContent>
           <CardActions>
           </CardActions>
