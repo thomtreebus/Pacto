@@ -10,8 +10,9 @@ const { generateTestPost, getTestPostId } = require("../fixtures/generateTestPos
 const { jsonResponse } = require("../../helpers/responseHandlers");
 const University = require('../../models/University')
 const User = require("../../models/User");
-const Pact = require('../../models/Pact')
-const Post = require('../../models/Post')
+const Pact = require('../../models/Pact');
+const University = require('../../models/University');
+const Post = require('../../models/Post');
 
 dotenv.config();
 

@@ -7,10 +7,10 @@ const { createToken } = require("../../controllers/authController");
 const { generateTestUser, getEmail } = require("../fixtures/generateTestUser");
 const { generateTestPact, getTestPactId } = require("../fixtures/generateTestPact");
 const { jsonResponse } = require("../../helpers/responseHandlers");
-const University = require('../../models/University')
+const University = require('../../models/University');
 const User = require("../../models/User");
-const Pact = require('../../models/Pact')
-const Post = require('../../models/Post')
+const Pact = require('../../models/Pact');
+const Post = require('../../models/Post');
 
 dotenv.config();
 
