@@ -8,7 +8,7 @@ const { generateTestUser, getEmail, generateNextTestUser } = require("../fixture
 const { generateTestPact, getTestPactId } = require("../fixtures/generateTestPact");
 const { generateTestPost, getTestPostId } = require("../fixtures/generateTestPost");
 const { jsonResponse } = require("../../helpers/responseHandlers");
-const { MESSAGES } = require("../../helpers/messages");
+const { MESSAGES, PACT_MESSAGES } = require("../../helpers/messages");
 const University = require('../../models/University');
 const User = require("../../models/User");
 const Pact = require('../../models/Pact');
@@ -160,7 +160,7 @@ describe("POST /post/upvote/:pactid/:id", () => {
 
     expect(response.body.message).toBe(null);
     expect(response.body.errors[0].field).toBe(null);
-    expect(response.body.errors[0].message).toBe(MESSAGES.AUTH.IS_NOT_IN_PACT);
+    expect(response.body.errors[0].message).toBe(PACT_MESSAGES.NOT_AUTHORISED);
     expect(response.body.errors.length).toBe(1);
   });
 
@@ -182,7 +182,7 @@ describe("POST /post/upvote/:pactid/:id", () => {
     console.log(response.body.errors[0].message);
     expect(response.body.message).toBe(null);
     expect(response.body.errors[0].field).toBe(null);
-    expect(response.body.errors[0].message).toBe(MESSAGES.AUTH.IS_NOT_IN_PACT);
+    expect(response.body.errors[0].message).toBe(PACT_MESSAGES.NOT_AUTHORISED);
     expect(response.body.errors.length).toBe(1);
   });
   

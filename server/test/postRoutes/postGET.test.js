@@ -8,7 +8,6 @@ const { generateTestUser, getEmail } = require("../fixtures/generateTestUser");
 const { generateTestPact, getTestPactId } = require("../fixtures/generateTestPact");
 const { generateTestPost, getTestPostId } = require("../fixtures/generateTestPost");
 const { jsonResponse } = require("../../helpers/responseHandlers");
-const University = require('../../models/University')
 const User = require("../../models/User");
 const Pact = require('../../models/Pact');
 const University = require('../../models/University');
