@@ -9,7 +9,7 @@ import Profile from "../pages/EditProfile";
 import userEvent from "@testing-library/user-event";
 import {act} from "react-dom/test-utils";
 
-describe("Profile Page Tests", () => {
+describe("Edit Profile Page Tests", () => {
   const server = setupServer(
     rest.get(`${process.env.REACT_APP_URL}/me`, (req, res, ctx) => {
       return res(
@@ -113,13 +113,6 @@ describe("Profile Page Tests", () => {
       expect(bioField.value).toBe("hello world")
     });
 
-    it("should render the \"upload image\" button", async () => {
-      const uploadImageButton = await screen.findByRole("button", {
-        name: "Upload Image"
-      });
-      expect(uploadImageButton).toBeInTheDocument();
-    });
-
     it("should render the select image icon button", async () => {
       const selectImageButton = await screen.findByTestId("image-upload-icon")
       expect(selectImageButton).toBeInTheDocument();
@@ -213,9 +206,11 @@ describe("Profile Page Tests", () => {
       const buttonElement = await screen.findByTestId(
         "image-upload-icon"
       );
-      await userEvent.upload(buttonElement, image);
-      expect(buttonElement.files[0]).toBe(image);
-      expect(buttonElement.files).toHaveLength(1);
+      await act(async () => {
+        await userEvent.upload(buttonElement, image);
+        expect(buttonElement.files[0]).toBe(image);
+        expect(buttonElement.files).toHaveLength(1);
+      });
     });
 
     it("uploaded image updates profile image shown", async () => {
@@ -242,15 +237,13 @@ describe("Profile Page Tests", () => {
 
       await act( async () => {
         await userEvent.upload(buttonElement, image);
-        const uploadImageButton = await screen.findByRole("button", {
-          name: "Upload Image"
-        });
-        await userEvent.click(uploadImageButton);
-      });
+        // wait 1 second due to some react delays
+        await new Promise(resolve => setTimeout(resolve, 1000));
 
-      const updatedImage = (await screen.findByAltText("Profile Picture")).getAttribute('src');
-      expect(updatedImage).toBe("http://res.cloudinary.com/djlwzi9br/image/upload/v1644796162/qrbhfhmml4hwa5y0dvu9.png");
-      expect(previousImage===updatedImage).toBe(false);
+        const updatedImage = (await screen.findByAltText("Profile Picture")).getAttribute('src');
+        expect(updatedImage).toBe("http://res.cloudinary.com/djlwzi9br/image/upload/v1644796162/qrbhfhmml4hwa5y0dvu9.png");
+        expect(previousImage===updatedImage).toBe(false);
+      });
     });
 
     it("update profile button sends post request", async () => {
