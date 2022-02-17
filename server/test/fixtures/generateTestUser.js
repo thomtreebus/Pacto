@@ -27,9 +27,12 @@ module.exports.generateTestUser = async () => {
 module.exports.getEmail = () => {return USER_EMAIL;}
 
 // Must be used after generateTestUser has been called!!
-module.exports.generateNextTestUser = async (name) => {
+module.exports.generateNextTestUser = async (name, notkcl = false, uniname = "") => {
   // Dummy uni
-	const uni = await University.findOne( { name: "kcl", domains: ["kcl.ac.uk"] });
+	let uni = await University.findOne( { name: "kcl", domains: ["kcl.ac.uk"] });
+	if(notkcl) {
+		uni = await University.create( { name: uniname, domains: [`${ uniname }.ac.uk`] });
+	}
 
 	const salt = await bcrypt.genSalt(SALT_ROUNDS);
 	const hashedPassword = await bcrypt.hash("Password123", salt);

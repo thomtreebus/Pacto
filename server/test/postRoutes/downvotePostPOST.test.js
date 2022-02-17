@@ -163,5 +163,67 @@ describe("POST /post/downvote/:pactid/:id", () => {
     expect(response.body.errors[0].message).toBe(PACT_MESSAGES.NOT_AUTHORISED);
     expect(response.body.errors.length).toBe(1);
   });
+
+  it("user not in the pact's university can't downvote", async () => {
+    const pact = await Pact.findOne({ id: getTestPactId() });
+    const post = await Post.findOne({ id: getTestPostId() });
+
+    // Creating the user who is not in the correct uni
+    const user = await generateNextTestUser("User", notkcl=true, "ucl");
+    user.active = true;
+    await user.save();
+    const token = createToken(user._id);
+
+    const response = await supertest(app)
+    .post(`/pact/${ pact._id }/post/downvote/${ post._id }`)
+    .set("Cookie", [`jwt=${ token }`])
+    .expect(401);
+
+    expect(response.body.message).toBe(null);
+    expect(response.body.errors[0].field).toBe(null);
+    expect(response.body.errors[0].message).toBe(MESSAGES.AUTH.IS_NOT_IN_PACT);
+    expect(response.body.errors.length).toBe(1);
+  });
+
+  it("user can downvote two different posts", async () => {
+    const user = await User.findOne({ uniEmail: getEmail() });
+    const pact = await Pact.findOne({ id: getTestPactId() });
+    let post1 = await Post.findOne({ id: getTestPostId() });
+    let post2 = await generateTestPost(user, pact, "Second post");
+    const token = createToken(user._id);
+
+    const response1 = await supertest(app)
+    .post(`/pact/${ pact._id }/post/downvote/${ post1._id }`)
+    .set("Cookie", [`jwt=${ token }`])
+    .expect(200);
+    const responsePost1 = response1.body.message;
+    expect(responsePost1.author).toBe(user._id.toString());
+    expect(responsePost1.votes).toBe(-1);
+    expect(responsePost1.upvoters).toStrictEqual([]);
+    expect(responsePost1.downvoters.length).toBe(1);
+    expect(responsePost1.downvoters[0]._id).toBe(user._id.toString());
+
+    const response2 = await supertest(app)
+    .post(`/pact/${ pact._id }/post/downvote/${ post2._id }`)
+    .set("Cookie", [`jwt=${ token }`])
+    .expect(200);
+    const responsePost2 = response2.body.message;
+    expect(responsePost2.author).toBe(user._id.toString());
+    expect(responsePost2.votes).toBe(-1);
+    expect(responsePost2.upvoters).toStrictEqual([]);
+    expect(responsePost2.downvoters.length).toBe(1);
+    expect(responsePost2.downvoters[0]._id).toBe(user._id.toString());
+
+    post1 = await Post.findOne({ id: responsePost1._id });
+    post2 = await Post.findOne({ id: getTestPostId() });
+    expect(post1.votes).toBe(-1);
+    expect(post2.votes).toBe(-1);
+    expect(post1.upvoters).toStrictEqual([]);
+    expect(post2.upvoters).toStrictEqual([]);
+    expect(post1.downvoters.length).toBe(1);
+    expect(post2.downvoters.length).toBe(1);
+    expect(post1.downvoters[0]._id.toString()).toBe(user._id.toString());
+    expect(post2.downvoters[0]._id.toString()).toBe(user._id.toString());
+  });
   
 });
