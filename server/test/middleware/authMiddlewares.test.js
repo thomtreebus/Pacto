@@ -15,7 +15,7 @@ const User = require("../../models/User");
 
 dotenv.config();
 
-describe("Middlewares", () => {
+describe("Auth Middlewares", () => {
   beforeAll(async () => {
     await mongoose.connect(process.env.TEST_DB_CONNECTION_URL);
   });

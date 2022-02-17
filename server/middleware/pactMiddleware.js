@@ -19,6 +19,7 @@ const checkIsMemberOfPact = async (req, res, next) => {
     const user = req.user;
 
     if(pact.members.includes(user)){
+      req.pact = pact;
       next();
     } else {
       status = 401;
