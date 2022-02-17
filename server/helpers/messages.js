@@ -42,7 +42,7 @@ module.exports.MESSAGES = {
   AUTH: {
     IS_LOGGED_IN: "User is already authenticated",
     IS_INACTIVE: "User has not verified their university email",
-    IS_NOT_LOGGED_IN: "User is not logged in"
+    IS_NOT_LOGGED_IN: "User is not logged in",
   }
 }
 
@@ -64,5 +64,10 @@ module.exports.PACT_MESSAGES = {
     INVALID_CHOICE: "The category must be either society, course, module or other",
     BLANK: "Category is a required field"
   },
-  NOT_FOUND: "Pact not found"
+  NOT_FOUND: "Pact not found",
+  NOT_AUTHORISED: "User is not a member of this pact"
+}
+
+module.exports.POST_MESSAGES = {
+  NOT_FOUND: "Post not found"
 }
