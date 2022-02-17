@@ -225,5 +225,77 @@ describe("POST /post/upvote/:pactid/:id", () => {
     expect(post1.upvoters[0]._id.toString()).toBe(user._id.toString());
     expect(post2.upvoters[0]._id.toString()).toBe(user._id.toString());
   });
+
+  it("upvote of downvoted post by same user", async () => {
+    const user1 = await User.findOne({ uniEmail: getEmail() });
+    const pact = await Pact.findOne({ id: getTestPactId() });
+    const post = await Post.findOne({ id: getTestPostId() });
+    const token = createToken(user1._id);
+
+    // 1st downvote
+    const response1 = await supertest(app)
+    .post(`/pact/${ pact._id }/post/downvote/${ post._id }`)
+    .set("Cookie", [`jwt=${ token }`])
+    .expect(200);
+    const responsePost1 = response1.body.message;
+    expect(responsePost1.author).toBe(user1._id.toString());
+    expect(responsePost1.votes).toBe(-1);
+    expect(responsePost1.upvoters).toStrictEqual([]);
+    expect(responsePost1.downvoters.length).toBe(1);
+    expect(responsePost1.downvoters[0]._id).toBe(user1._id.toString());
+
+    // 2nd upvote
+    const response2 = await supertest(app)
+    .post(`/pact/${ pact._id }/post/upvote/${ post._id }`)
+    .set("Cookie", [`jwt=${ token }`])
+    .expect(200);
+    const responsePost2 = response2.body.message;
+    expect(responsePost2.author).toBe(user1._id.toString());
+    expect(responsePost2.votes).toBe(1);
+    expect(responsePost2.downvoters).toStrictEqual([]);
+    expect(responsePost2.upvoters.length).toBe(1);
+    expect(responsePost2.upvoters[0]._id).toBe(user1._id.toString());
+  });
+
+  it("upvote of downvoted post by different users", async () => {
+    const user1 = await User.findOne({ uniEmail: getEmail() });
+    const pact = await Pact.findOne({ id: getTestPactId() });
+    const post = await Post.findOne({ id: getTestPostId() });
+    const token1 = createToken(user1._id);
+
+    // Creating 2nd user
+    const user2 = await generateNextTestUser("SecondUser");
+    user2.active = true;
+    await user2.pacts.push(pact);
+    await user2.save();
+    await pact.members.push(user2);
+    await pact.save();
+    const token2 = createToken(user2._id);
+
+    // 1st user downvote
+    const response1 = await supertest(app)
+    .post(`/pact/${ pact._id }/post/downvote/${ post._id }`)
+    .set("Cookie", [`jwt=${ token1 }`])
+    .expect(200);
+    const responsePost1 = response1.body.message;
+    expect(responsePost1.author).toBe(user1._id.toString());
+    expect(responsePost1.votes).toBe(-1);
+    expect(responsePost1.upvoters).toStrictEqual([]);
+    expect(responsePost1.downvoters.length).toBe(1);
+    expect(responsePost1.downvoters[0]._id).toBe(user1._id.toString());
+
+    // 2nd user upvote
+    const response2 = await supertest(app)
+    .post(`/pact/${ pact._id }/post/upvote/${ post._id }`)
+    .set("Cookie", [`jwt=${ token2 }`])
+    .expect(200);
+    const responsePost2 = response2.body.message;
+    expect(responsePost2.author).toBe(user1._id.toString());
+    expect(responsePost2.votes).toBe(0);
+    expect(responsePost2.downvoters.length).toBe(1);
+    expect(responsePost2.downvoters[0]._id).toBe(user1._id.toString());
+    expect(responsePost2.upvoters.length).toBe(1);
+    expect(responsePost2.upvoters[0]._id).toBe(user2._id.toString());
+  });
   
 });
