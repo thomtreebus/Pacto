@@ -9,7 +9,7 @@ import Profile from "../pages/EditProfile";
 import userEvent from "@testing-library/user-event";
 import {act} from "react-dom/test-utils";
 
-describe("Profile Page Tests", () => {
+describe("Edit Profile Page Tests", () => {
   const server = setupServer(
     rest.get(`${process.env.REACT_APP_URL}/me`, (req, res, ctx) => {
       return res(
