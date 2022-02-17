@@ -297,5 +297,26 @@ describe("POST /post/upvote/:pactid/:id", () => {
     expect(responsePost2.upvoters.length).toBe(1);
     expect(responsePost2.upvoters[0]._id).toBe(user2._id.toString());
   });
-  
+
+  it("upvote of non-existing post doesn't work", async () => {
+    const user = await User.findOne({ uniEmail: getEmail() });
+    const pact = await Pact.findOne({ id: getTestPactId() });
+    const post = await Post.findOne({ id: getTestPostId() });
+    const token = createToken(user._id);
+
+    const oldVotes = post.votes;
+
+    const response = await supertest(app)
+    .post(`/pact/${ pact._id }/post/upvote/${ post._id }`)
+    .set("Cookie", [`jwt=${token}`])
+    .expect(200);
+    expect(response.body.message).toBeDefined();
+    expect(response.body.errors.length).toBe(0);
+
+    const responsePost = response.body.message;
+    expect(responsePost.author).toBe(user._id.toString());
+    expect(responsePost.votes).toBe(oldVotes + 1);
+    expect(responsePost.upvoters[0]._id).toBe(user._id.toString());
+    expect(responsePost.downvoters).toStrictEqual([]);
+  });
 });

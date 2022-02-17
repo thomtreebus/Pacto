@@ -70,5 +70,6 @@ module.exports.PACT_MESSAGES = {
 }
 
 module.exports.POST_MESSAGES = {
-  NOT_FOUND: "Pact not found"
+  // NOT_FOUND: "Pact not found"
+  NOT_FOUND: "Post not found"
 }

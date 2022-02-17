@@ -3,7 +3,7 @@ const Pact = require("../models/Pact");
 const University = require("../models/University");
 const User = require("../models/User");
 const { jsonResponse, jsonError } = require("../helpers/responseHandlers");
-const { MESSAGES } = require("../helpers/messages");
+const { POST_MESSAGES } = require("../helpers/messages");
 
 // POST post
 module.exports.postPost = async (req, res) => {
@@ -27,7 +27,7 @@ module.exports.postGet = async (req, res) => {
 	try {
 		const post = await Post.findOne({ pact: req.pact, _id:req.params.postId });
   	if (!post){
-			res.status(404).json(jsonResponse(null, [jsonError(null, "Post not found")]));
+			res.status(404).json(jsonResponse(null, [jsonError(null, POST_MESSAGES.NOT_FOUND)]));
 		}
 		await post.populate({ path: 'upvoters', model: User });
 		await post.populate({ path: 'downvoters', model: User });
@@ -44,7 +44,7 @@ module.exports.upvotePostPost = async (req, res) => {
 		// Checking post exists
 		const post = await Post.findOne({ pact: req.pact, _id:req.params.postId });
 		if (!post){
-			res.status(404).json(jsonResponse(null, [jsonError(null, "Post not found")]));
+			res.status(404).json(jsonResponse(null, [jsonError(null, POST_MESSAGES.NOT_FOUND)]));
 		} else {
 			// Checking if user already upvoted or downvoted
 			if(post.upvoters.includes(req.user._id)) {
@@ -90,7 +90,7 @@ module.exports.downvotePostPost = async (req, res) => {
 		// Checking post exists
 		const post = await Post.findOne({ pact: req.params.pactId, _id:req.params.postId });
 		if (!post){
-			res.status(404).json(jsonResponse(null, [jsonError(null, "Post not found")]));
+			res.status(404).json(jsonResponse(null, [jsonError(null, POST_MESSAGES.NOT_FOUND)]));
 		} else {
 			// Checking if user already upvoted or downvoted
 			if(post.downvoters.includes(req.user._id)) {
@@ -124,6 +124,21 @@ module.exports.downvotePostPost = async (req, res) => {
 			await post.populate({ path: 'downvoters', model: User });
 			res.status(200).json(jsonResponse(post, []));
 		}
+	} 
+	catch (err) {
+		res.status(400).json(jsonResponse(null, [jsonError(null, err.message)]));
+	}
+};
+
+// DELETE post
+module.exports.postDelete = async (req, res) => {
+	try {
+		const post = await Post.findOne({ pact: req.pact, _id:req.params.postId });
+		if (!post){
+			res.status(404).json(jsonResponse(null, [jsonError(null, POST_MESSAGES.NOT_FOUND)]));
+		}
+		Post.deleteOne( { _id: post._id } );
+		res.status(200).json(jsonResponse(post, []));
 	} 
 	catch (err) {
 		res.status(400).json(jsonResponse(null, [jsonError(null, err.message)]));
