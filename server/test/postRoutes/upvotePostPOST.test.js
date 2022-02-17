@@ -166,8 +166,8 @@ describe("POST /post/upvote/:pactid/:id", () => {
     const pact = await Pact.findOne({ id: getTestPactId() });
     const post = await Post.findOne({ id: getTestPostId() });
 
-    // Creating the user who is not in the pact, but who is in the correct uni
-    const user = await generateNextTestUser("User");
+    // Creating the user who is not in the correct uni
+    const user = await generateNextTestUser("User", notkcl=true, "ucl");
     user.active = true;
     await user.save();
     const token = createToken(user._id);

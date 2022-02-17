@@ -161,5 +161,27 @@ describe("POST /post/downvote/:pactid/:id", () => {
     expect(response.body.errors[0].message).toBe(MESSAGES.AUTH.IS_NOT_IN_PACT);
     expect(response.body.errors.length).toBe(1);
   });
+
+  it("user not in the pact's university can't downvote", async () => {
+    const pact = await Pact.findOne({ id: getTestPactId() });
+    const post = await Post.findOne({ id: getTestPostId() });
+
+    // Creating the user who is not in the correct uni
+    const user = await generateNextTestUser("User", notkcl=true, "ucl");
+    user.active = true;
+    await user.save();
+    const token = createToken(user._id);
+
+    const response = await supertest(app)
+    .post(`/pact/${ pact._id }/post/downvote/${ post._id }`)
+    .set("Cookie", [`jwt=${ token }`])
+    .expect(401);
+
+    console.log(response.body.errors[0].message);
+    expect(response.body.message).toBe(null);
+    expect(response.body.errors[0].field).toBe(null);
+    expect(response.body.errors[0].message).toBe(MESSAGES.AUTH.IS_NOT_IN_PACT);
+    expect(response.body.errors.length).toBe(1);
+  });
   
 });
