@@ -84,3 +84,6 @@ module.exports.pactGet = async (req, res) => {
 	}
 };
 
+module.exports.joinPact = async (req, res) => {
+	res.joinPact({message : "join pact"});
+};

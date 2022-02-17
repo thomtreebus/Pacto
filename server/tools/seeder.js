@@ -103,7 +103,8 @@ async function addUserToPact(user, pact) {
 }
 
 async function populatePacts() {
-	const users = await User.find({});
+	const preProgrammedUser = await User.findOne({firstName : "pac", secondName: "to"})
+	const users = await User.find({ _id: {$ne: preProgrammedUser._id}})
 	const pacts = await Pact.find({});
 
 	for (let i = 0; i < users.length; i++) {
