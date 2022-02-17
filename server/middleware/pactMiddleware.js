@@ -9,13 +9,23 @@ const Pact = require("../models/Pact");
 const checkIsMemberOfPact = async (req, res, next) => {
   let status = 400;
   try {
-    const pact = await Pact.findById(req.params.id);
+    const user = req.user;
+    if (!user){
+      status = 401;
+      throw Error(MESSAGES.AUTH.IS_NOT_LOGGED_IN);
+    }
+
+    let pact = null;
+		try {
+			pact = await Pact.findOne({ university: user.university, _id:req.params.id });
+		}
+		catch (err) {
+			pact = null;
+		}
     if (!pact) {
       status = 404;
       throw Error(PACT_MESSAGES.NOT_FOUND);
     }
-
-    const user = req.user;
 
     if(pact.members.includes(user)){
       req.pact = pact;
@@ -26,7 +36,7 @@ const checkIsMemberOfPact = async (req, res, next) => {
     }
   }
   catch (err) {
-    res.status(status).json(jsonResponse(null, jsonError(null, err.message)));
+    res.status(status).json(jsonResponse(null, [jsonError(null, err.message)]));
   }
 };
 
