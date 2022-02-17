@@ -2,17 +2,17 @@ const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const supertest = require("supertest");
 const bcrypt = require("bcrypt");
-const app = require("../../app");
-const { createToken } = require("../../controllers/authController");
-const { generateTestUser, getEmail, generateNextTestUser } = require("../fixtures/generateTestUser");
-const { generateTestPact, getTestPactId } = require("../fixtures/generateTestPact");
-const { generateTestPost, getTestPostId } = require("../fixtures/generateTestPost");
-const { jsonResponse } = require("../../helpers/responseHandlers");
-const { MESSAGES, PACT_MESSAGES } = require("../../helpers/messages");
-const User = require("../../models/User");
-const Pact = require('../../models/Pact');
-const Post = require('../../models/Post');
-const University = require('../../models/University');
+const app = require("../../../app");
+const { createToken } = require("../../../controllers/authController");
+const { generateTestUser, getEmail, generateNextTestUser } = require("../../fixtures/generateTestUser");
+const { generateTestPact, getTestPactId } = require("../../fixtures/generateTestPact");
+const { generateTestPost, getTestPostId } = require("../../fixtures/generateTestPost");
+const { jsonResponse } = require("../../../helpers/responseHandlers");
+const { MESSAGES, PACT_MESSAGES } = require("../../../helpers/messages");
+const User = require("../../../models/User");
+const Pact = require('../../../models/Pact');
+const Post = require('../../../models/Post');
+const University = require('../../../models/University');
 
 dotenv.config();
 
