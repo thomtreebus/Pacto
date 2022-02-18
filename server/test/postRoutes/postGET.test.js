@@ -97,7 +97,7 @@ describe("GET /pact/:pactId/post/:postId", () => {
   });
 
   it("check uses pactMiddleware", async () => {
-    // Creating the user who is not in the correct uni but not in the pact
+    // Creating the user who is in the correct uni but not in the pact
     const user = await generateNextTestUser("User");
     user.active = true;
     await user.save();

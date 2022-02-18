@@ -4,7 +4,7 @@ const supertest = require("supertest");
 const bcrypt = require("bcrypt");
 const app = require("../../app");
 const { createToken } = require("../../controllers/authController");
-const { generateTestUser, getTestUserEmail } = require("../fixtures/generateTestUser");
+const { generateTestUser, getTestUserEmail, generateNextTestUser } = require("../fixtures/generateTestUser");
 const { generateTestPact, getTestPactId } = require("../fixtures/generateTestPact");
 const { MESSAGES, PACT_MESSAGES } = require("../../helpers/messages");
 const { jsonResponse } = require("../../helpers/responseHandlers");
@@ -65,6 +65,59 @@ describe("POST /pact/:pactId/post", () => {
     expect(post.type).toBe("text");
     expect(post.link).toBe("somelink");
     expect(post.votes).toBe(0);
+  });
+
+
+  // Check uses pactMiddleware
+  it("user who is not in the correct uni cannot post", async () => {
+    const user = await generateNextTestUser("User", notkcl = true, uniname = "ucl");
+    user.active = true;
+    await user.save();
+    const token = createToken(user._id);
+
+    const pact = await Pact.findOne({ id: getTestPactId() });
+
+    const response = await supertest(app)
+    .post(`/pact/${ pact._id }/post`)
+    .set("Cookie", [`jwt=${ token }`])
+    .send({
+      author: user,
+      title: "Dummy title",
+      text: "Dummy text",
+      type: "text",
+      link: "somelink"
+    })
+    .expect(404);
+    expect(response.body.message).toBe(null);
+    expect(response.body.errors[0].field).toBe(null);
+    expect(response.body.errors[0].message).toBe(PACT_MESSAGES.NOT_FOUND);
+    expect(response.body.errors.length).toBe(1);
+  });
+
+  // Check uses pactMiddleware
+  it("user who is in the correct uni but not in the pact cannot post", async () => {
+    const user = await generateNextTestUser("User");
+    user.active = true;
+    await user.save();
+    const token = createToken(user._id);
+
+    const pact = await Pact.findOne({ id: getTestPactId() });
+
+    const response = await supertest(app)
+    .post(`/pact/${ pact._id }/post`)
+    .set("Cookie", [`jwt=${ token }`])
+    .send({
+      author: user,
+      title: "Dummy title",
+      text: "Dummy text",
+      type: "text",
+      link: "somelink"
+    })
+    .expect(401);
+    expect(response.body.message).toBe(null);
+    expect(response.body.errors[0].field).toBe(null);
+    expect(response.body.errors[0].message).toBe(PACT_MESSAGES.NOT_AUTHORISED);
+    expect(response.body.errors.length).toBe(1);
   });
 
   it("check uses authMiddleware", async () => {
