@@ -5,7 +5,7 @@ const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const supertest = require("supertest");
 const app = require("../../app");
-const { generateTestUser, getEmail } = require("../fixtures/generateTestUser");
+const { generateTestUser, getTestUserEmail } = require("../fixtures/generateTestUser");
 const { generateTestPact, getTestPactId } = require("../fixtures/generateTestPact");
 const { createToken } = require("../../controllers/authController");
 const { PACT_MESSAGES } = require("../../helpers/messages");
@@ -35,7 +35,7 @@ describe("GET /pact/:id", () =>{
 
   // Tests
   it("returns appropriate error when id invalid", async () =>{
-    const user = await User.findOne({ uniEmail: getEmail() });
+    const user = await User.findOne({ uniEmail: getTestUserEmail() });
 
     const token = createToken(user._id);
     const id = "gibberish";
@@ -49,7 +49,7 @@ describe("GET /pact/:id", () =>{
   });  
 
   it("returns pact relating to id given", async () =>{
-    const user = await User.findOne({ uniEmail: getEmail() });
+    const user = await User.findOne({ uniEmail: getTestUserEmail() });
 
     const token = createToken(user._id);
     const id = await getTestPactId();

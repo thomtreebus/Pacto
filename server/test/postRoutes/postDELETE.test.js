@@ -4,7 +4,7 @@ const supertest = require("supertest");
 const bcrypt = require("bcrypt");
 const app = require("../../app");
 const { createToken } = require("../../controllers/authController");
-const { generateTestUser, getEmail } = require("../fixtures/generateTestUser");
+const { generateTestUser, getTestUserEmail } = require("../fixtures/generateTestUser");
 const { generateTestPact, getTestPactId } = require("../fixtures/generateTestPact");
 const { generateTestPost, getTestPostId } = require("../fixtures/generateTestPost");
 const { jsonResponse } = require("../../helpers/responseHandlers");
@@ -49,7 +49,7 @@ describe("POST /post/upvote/:pactid/:id", () => {
   });
 
   // it("upvote post with valid pact id and user part of pact", async () => {
-  //   const user = await User.findOne({ uniEmail: getEmail() });
+  //   const user = await User.findOne({ uniEmail: getTestUserEmail() });
   //   const pact = await Pact.findOne({ id: getTestPactId() });
   //   const post = await Post.findOne({ id: getTestPostId() });
   //   const token = createToken(user._id);

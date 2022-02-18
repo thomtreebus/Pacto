@@ -4,8 +4,9 @@ const supertest = require("supertest");
 const bcrypt = require("bcrypt");
 const app = require("../../app");
 const { createToken } = require("../../controllers/authController");
-const { generateTestUser, getEmail } = require("../fixtures/generateTestUser");
+const { generateTestUser, getTestUserEmail } = require("../fixtures/generateTestUser");
 const { generateTestPact, getTestPactId } = require("../fixtures/generateTestPact");
+const { MESSAGES, PACT_MESSAGES } = require("../../helpers/messages");
 const { jsonResponse } = require("../../helpers/responseHandlers");
 const University = require('../../models/University');
 const User = require("../../models/User");
@@ -13,19 +14,6 @@ const Pact = require('../../models/Pact');
 const Post = require('../../models/Post');
 
 dotenv.config();
-
-// const getNoMemberPact = async () => {
-//   const uni = await University.create( { name: "kcl", domains: ["kcl.ac.uk"] });
-
-//   // Create a test pact
-//   const pact = await Pact.create({
-//     name: "Chess club",
-//     university: uni,
-//     category: "subject"
-//   })
-
-//   return pact;
-// }
 
 describe("POST /pact/:pactId/post", () => {
   beforeAll(async () => {
@@ -53,7 +41,7 @@ describe("POST /pact/:pactId/post", () => {
   });
 
   it("can create post with valid pact id and user part of pact", async () => {
-    const user = await User.findOne({ uniEmail: getEmail() });
+    const user = await User.findOne({ uniEmail: getTestUserEmail() });
     const pact = await Pact.findOne({ id: getTestPactId() });
     const token = createToken(user._id);
     const response = await supertest(app)
@@ -79,5 +67,22 @@ describe("POST /pact/:pactId/post", () => {
     expect(post.votes).toBe(0);
   });
 
-  // test for cases it doesn't work, like user not part of pact
+  it("check uses authMiddleware", async () => {
+    const user = await User.findOne({ uniEmail: getTestUserEmail() });
+    const pact = await Pact.findOne({ id: getTestPactId() });
+
+    const response = await supertest(app)
+    .post(`/pact/${ pact._id }/post`)
+    .send({
+      author: user,
+      title: "Dummy title",
+      text: "Dummy text",
+      type: "text",
+      link: "somelink"
+    })
+    expect(response.body.message).toBe(null);
+    expect(response.body.errors[0].field).toBe(null);
+    expect(response.body.errors[0].message).toBe(MESSAGES.AUTH.IS_NOT_LOGGED_IN);
+    expect(response.body.errors.length).toBe(1);
+  });
 });

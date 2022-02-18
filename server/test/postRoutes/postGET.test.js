@@ -4,7 +4,7 @@ const supertest = require("supertest");
 const bcrypt = require("bcrypt");
 const app = require("../../app");
 const { createToken } = require("../../controllers/authController");
-const { generateTestUser, getEmail, generateNextTestUser } = require("../fixtures/generateTestUser");
+const { generateTestUser, getTestUserEmail, generateNextTestUser } = require("../fixtures/generateTestUser");
 const { generateTestPact, getTestPactId } = require("../fixtures/generateTestPact");
 const { generateTestPost, getTestPostId } = require("../fixtures/generateTestPost");
 const { jsonResponse } = require("../../helpers/responseHandlers");
@@ -45,7 +45,7 @@ describe("GET /pact/:pactId/post/:postId", () => {
   });
 
   it("can get a post with valid pact id and user part of pact", async () => {
-    const user = await User.findOne({ uniEmail: getEmail() });
+    const user = await User.findOne({ uniEmail: getTestUserEmail() });
     const pact = await Pact.findOne({ id: getTestPactId() });
     const post = await Post.findOne({ id: getTestPostId() });
     const token = createToken(user._id);
@@ -67,7 +67,7 @@ describe("GET /pact/:pactId/post/:postId", () => {
   });
 
   it("can get a post with valid pact id and another user part of pact", async () => {
-    const user = await User.findOne({ uniEmail: getEmail() });
+    const user = await User.findOne({ uniEmail: getTestUserEmail() });
     const pact = await Pact.findOne({ id: getTestPactId() });
     const post = await Post.findOne({ id: getTestPostId() });
 
@@ -96,27 +96,7 @@ describe("GET /pact/:pactId/post/:postId", () => {
     expect(responsePost.votes).toBe(post.votes);
   });
 
-  it("user not in pact's uni cannot get a pact's post", async () => {
-    // Creating the user who is not in the correct uni
-    const user = await generateNextTestUser("User", notkcl=true, "ucl");
-    user.active = true;
-    await user.save();
-    const token = createToken(user._id);
-
-    const pact = await Pact.findOne({ id: getTestPactId() });
-    const post = await Post.findOne({ id: getTestPostId() });
-
-    const response = await supertest(app)
-    .get(`/pact/${ pact._id }/post/${ post._id }`)
-    .set("Cookie", [`jwt=${token}`])
-    .expect(404);
-    expect(response.body.message).toBe(null);
-    expect(response.body.errors[0].field).toBe(null);
-    expect(response.body.errors[0].message).toBe(PACT_MESSAGES.NOT_FOUND);
-    expect(response.body.errors.length).toBe(1);
-  });
-
-  it("user in uni but not in pact cannot get post", async () => {
+  it("check uses pactMiddleware", async () => {
     // Creating the user who is not in the correct uni but not in the pact
     const user = await generateNextTestUser("User");
     user.active = true;
@@ -136,7 +116,7 @@ describe("GET /pact/:pactId/post/:postId", () => {
     expect(response.body.errors.length).toBe(1);
   });
 
-  it("cannot get post if not logged in", async () => {
+  it("check uses authMiddleware", async () => {
     const pact = await Pact.findOne({ id: getTestPactId() });
     const post = await Post.findOne({ id: getTestPostId() });
 
