@@ -8,7 +8,7 @@ const { generateTestUser, getTestUserEmail, generateNextTestUser } = require("..
 const { generateTestPact, getTestPactId } = require("../fixtures/generateTestPact");
 const { generateTestPost, getTestPostId } = require("../fixtures/generateTestPost");
 const { jsonResponse } = require("../../helpers/responseHandlers");
-const { MESSAGES, PACT_MESSAGES } = require("../../helpers/messages");
+const { MESSAGES, PACT_MESSAGES, POST_MESSAGES } = require("../../helpers/messages");
 const User = require("../../models/User");
 const Pact = require('../../models/Pact');
 const University = require('../../models/University');
@@ -94,6 +94,22 @@ describe("GET /pact/:pactId/post/:postId", () => {
     expect(responsePost.type).toBe(post.type);
     expect(responsePost.link).toBe(post.link);
     expect(responsePost.votes).toBe(post.votes);
+  });
+
+  it("cannot get a non-existing post", async () => {
+    const user = await User.findOne({ uniEmail: getTestUserEmail() });
+    const pact = await Pact.findOne({ id: getTestPactId() });
+    const invalidPostId = 3;
+    const token = createToken(user._id);
+
+    const response = await supertest(app)
+    .get(`/pact/${ pact._id }/post/${ invalidPostId }`)
+    .set("Cookie", [`jwt=${token}`])
+    .expect(404);
+    expect(response.body.message).toBeDefined();
+    expect(response.body.errors.length).toBe(1);
+    expect(response.body.errors[0].field).toBe(null);
+    expect(response.body.errors[0].message).toBe(POST_MESSAGES.NOT_FOUND);
   });
 
   it("check uses pactMiddleware", async () => {

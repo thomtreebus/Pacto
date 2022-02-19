@@ -3,7 +3,7 @@ const Pact = require("../models/Pact");
 const University = require("../models/University");
 const User = require("../models/User");
 const { jsonResponse, jsonError } = require("../helpers/responseHandlers");
-const { POST_MESSAGES } = require("../helpers/messages");
+const { POST_MESSAGES, MESSAGES } = require("../helpers/messages");
 
 // POST post
 module.exports.postPost = async (req, res) => {
@@ -24,17 +24,20 @@ module.exports.postPost = async (req, res) => {
 
 // GET pact (by id)
 module.exports.postGet = async (req, res) => {
+	let post = null;
 	try {
-		const post = await Post.findOne({ pact: req.pact, _id:req.params.postId });
-  	if (!post){
-			res.status(404).json(jsonResponse(null, [jsonError(null, POST_MESSAGES.NOT_FOUND)]));
+		post = await Post.findOne({ pact: req.pact, _id:req.params.postId });
+		try {
+			await post.populate({ path: 'upvoters', model: User });
+			await post.populate({ path: 'downvoters', model: User });
+			res.status(200).json(jsonResponse(post, []));
+		} 
+		catch (err) {
+			res.status(400).json(jsonResponse(null, [jsonError(null, err.message)]));
 		}
-		await post.populate({ path: 'upvoters', model: User });
-		await post.populate({ path: 'downvoters', model: User });
-		res.status(200).json(jsonResponse(post, []));
-	} 
-  catch (err) {
-		res.status(400).json(jsonResponse(null, [jsonError(null, err.message)]));
+	}
+	catch (err) {
+		res.status(404).json(jsonResponse(null, [jsonError(null, POST_MESSAGES.NOT_FOUND)]));
 	}
 };
 
@@ -133,16 +136,23 @@ module.exports.downvotePostPost = async (req, res) => {
 // DELETE post
 module.exports.postDelete = async (req, res) => {
 	try {
-		// maybe delete post from pact's posts array?
 		const post = await Post.findOne({ pact: req.pact, _id:req.params.postId });
-		if (!post){
-			res.status(404).json(jsonResponse(null, [jsonError(null, POST_MESSAGES.NOT_FOUND)]));
+		try {
+			// Delete post from pact's posts array
+			const pact = await Pact.findOne( { id: post.pact });
+			await pact.posts.pull({ _id: post._id  });
+			await pact.save();
+
+			// Delete post
+			await Post.deleteOne( { _id: post._id } );
+			res.status(200).json(jsonResponse(post, []));
 		}
-		await Post.deleteOne( { _id: post._id } );
-		res.status(200).json(jsonResponse(post, []));
+		catch (err) {
+			res.status(400).json(jsonResponse(null, [jsonError(null, err.message)]));
+		}
 	} 
 	catch (err) {
-		res.status(400).json(jsonResponse(null, [jsonError(null, err.message)]));
+		res.status(404).json(jsonResponse(null, [jsonError(null, POST_MESSAGES.NOT_FOUND)]));
 	}
 };
 
