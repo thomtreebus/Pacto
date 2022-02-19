@@ -4,7 +4,7 @@ const supertest = require("supertest");
 const bcrypt = require("bcrypt");
 const app = require("../../app");
 const { createToken } = require("../../controllers/authController");
-const { generateTestUser, getTestUserEmail } = require("../fixtures/generateTestUser");
+const { generateTestUser, getTestUserEmail, generateNextTestUser } = require("../fixtures/generateTestUser");
 const { generateTestPact, getTestPactId } = require("../fixtures/generateTestPact");
 const { generateTestPost, getTestPostId } = require("../fixtures/generateTestPost");
 const { jsonResponse } = require("../../helpers/responseHandlers");
@@ -84,6 +84,65 @@ describe("DELETE /pact/:pactId/post/delete/:postId", () => {
     expect(response.body.errors[0].field).toBe(null);
     expect(response.body.errors[0].message).toBe(POST_MESSAGES.NOT_FOUND);
     expect(pact.posts.includes(invalidPostId)).toBe(false);
+  });
+
+  // Check uses pactMiddleware
+  it("user who is not in the correct uni cannot delete", async () => {
+    const user = await generateNextTestUser("User", notkcl = true, uniname = "ucl");
+    user.active = true;
+    await user.save();
+    const post = await Post.findOne({ id: getTestPostId() });
+    const pact = await Pact.findOne({ id: getTestPactId() });
+    const token = createToken(user._id);
+
+    expect(pact.posts.includes(post._id)).toBe(true);
+
+    const response = await supertest(app)
+    .delete(`/pact/${ pact._id }/post/delete/${ post._id }`)
+    .set("Cookie", [`jwt=${ token }`])
+    .expect(404);
+    expect(response.body.message).toBe(null);
+    expect(response.body.errors[0].field).toBe(null);
+    expect(response.body.errors[0].message).toBe(PACT_MESSAGES.NOT_FOUND);
+    expect(response.body.errors.length).toBe(1);
+
+    expect(pact.posts.includes(post._id)).toBe(true);
+    const notDeletedPost = await Post.findOne({ id: getTestPostId() });
+    expect(notDeletedPost).toBeDefined();
+  });
+
+  // Check uses pactMiddleware
+  it("user who is in the correct uni but not in the pact cannot post", async () => {
+    const user = await generateNextTestUser("User");
+    user.active = true;
+    await user.save();
+    const post = await Post.findOne({ id: getTestPostId() });
+    const pact = await Pact.findOne({ id: getTestPactId() });
+    const token = createToken(user._id);
+
+    expect(pact.posts.includes(post._id)).toBe(true);
+
+    const response = await supertest(app)
+    .delete(`/pact/${ pact._id }/post/delete/${ post._id }`)
+    .set("Cookie", [`jwt=${ token }`])
+    .expect(401);
+    expect(response.body.message).toBe(null);
+    expect(response.body.errors[0].field).toBe(null);
+    expect(response.body.errors[0].message).toBe(PACT_MESSAGES.NOT_AUTHORISED);
+    expect(response.body.errors.length).toBe(1);
+  });
+
+  it("check uses authMiddleware", async () => {
+    const pact = await Pact.findOne({ id: getTestPactId() });
+    const post = await Post.findOne({ id: getTestPostId() })
+
+    const response = await supertest(app)
+    .delete(`/pact/${ pact._id }/post/delete/${ post._id }`)
+    .expect(401);
+    expect(response.body.message).toBe(null);
+    expect(response.body.errors[0].field).toBe(null);
+    expect(response.body.errors[0].message).toBe(MESSAGES.AUTH.IS_NOT_LOGGED_IN);
+    expect(response.body.errors.length).toBe(1);
   });
 
 });
