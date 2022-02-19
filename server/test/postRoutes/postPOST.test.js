@@ -67,6 +67,43 @@ describe("POST /pact/:pactId/post", () => {
     expect(post.votes).toBe(0);
   });
 
+  it("can post twice the same content in same pact", async () => {
+    const user = await User.findOne({ uniEmail: getTestUserEmail() });
+    const pact = await Pact.findOne({ id: getTestPactId() });
+    const token = createToken(user._id);
+
+    const postContent = {
+                          author: user,
+                          title: "Dummy title",
+                          text: "Dummy text",
+                          type: "text",
+                          link: "somelink"
+                        };
+
+    const response1 = await supertest(app)
+    .post(`/pact/${ pact._id }/post`)
+    .set("Cookie", [`jwt=${ token }`])
+    .send(postContent)
+    .expect(201)
+    expect(response1.body.message).toBeDefined();
+    expect(response1.body.errors.length).toBe(0);
+
+    const response2 = await supertest(app)
+    .post(`/pact/${ pact._id }/post`)
+    .set("Cookie", [`jwt=${ token }`])
+    .send(postContent)
+    .expect(201)
+    expect(response2.body.message).toBeDefined();
+    expect(response2.body.errors.length).toBe(0);
+
+    const post = response2.body.message;
+    expect(post.author).toBe(user._id.toString());
+    expect(post.title).toBe("Dummy title");
+    expect(post.text).toBe("Dummy text");
+    expect(post.type).toBe("text");
+    expect(post.link).toBe("somelink");
+    expect(post.votes).toBe(0);
+  });
 
   // Check uses pactMiddleware
   it("user who is not in the correct uni cannot post", async () => {
