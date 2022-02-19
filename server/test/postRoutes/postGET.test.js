@@ -112,7 +112,8 @@ describe("GET /pact/:pactId/post/:postId", () => {
     expect(response.body.errors[0].message).toBe(POST_MESSAGES.NOT_FOUND);
   });
 
-  it("check uses pactMiddleware", async () => {
+  // Check uses pactMiddleware
+  it("user in correct uni but not in the pact cannot get the post", async () => {
     // Creating the user who is in the correct uni but not in the pact
     const user = await generateNextTestUser("User");
     user.active = true;
