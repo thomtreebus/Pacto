@@ -138,15 +138,19 @@ module.exports.postDelete = async (req, res) => {
 	try {
 		const post = await Post.findOne({ pact: req.pact, _id:req.params.postId });
 		try {
-			// if(post.author === req.user || req.pact.moderators.includes(req.user))
-			// Delete post from pact's posts array
-			const pact = await Pact.findOne( { id: post.pact });
-			await pact.posts.pull({ _id: post._id  });
-			await pact.save();
+			// Check user is the author or a mod
+			if(post.author.toString() === req.user._id.toString() || req.pact.moderators.includes(req.user._id)) {
+				// Delete post from pact's posts array
+				const pact = await Pact.findOne( { id: post.pact });
+				await pact.posts.pull({ _id: post._id  });
+				await pact.save();
 
-			// Delete post
-			await Post.deleteOne( { _id: post._id } );
-			res.status(200).json(jsonResponse(post, []));
+				// Delete post
+				await Post.deleteOne( { _id: post._id } );
+				res.status(200).json(jsonResponse(post, []));
+			} else {
+				res.status(401).json(jsonResponse(null, [jsonError(null, POST_MESSAGES.NOT_AUTHORISED.NOT_AUTHOR_NOT_MOD)]));
+			}
 		}
 		catch (err) {
 			res.status(400).json(jsonResponse(null, [jsonError(null, err.message)]));

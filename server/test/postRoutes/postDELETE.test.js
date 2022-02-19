@@ -145,14 +145,11 @@ describe("DELETE /pact/:pactId/post/delete/:postId", () => {
     .expect(401);
     expect(response.body.message).toBe(null);
     expect(response.body.errors[0].field).toBe(null);
-    expect(response.body.errors[0].message).toBe(PACT_MESSAGES.NOT_AUTHORISED);
+    expect(response.body.errors[0].message).toBe(POST_MESSAGES.NOT_AUTHORISED.NOT_AUTHOR_NOT_MOD);
     expect(response.body.errors.length).toBe(1);
 
-    const responsePost = response.body.message;
-    expect(responsePost.author).toBe(user._id.toString());
-
-    const notDeletedPost = await Post.findOne({ id: responsePost._id });
-    expect(notDeletedPost).toBe(post);
+    const notDeletedPost = await Post.findOne({ id: getTestPostId() });
+    expect(notDeletedPost).toStrictEqual(post);
 
     pact = await Pact.findOne({ id: getTestPactId() });
     expect(pact.posts.includes(post._id)).toBe(true);

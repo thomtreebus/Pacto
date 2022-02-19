@@ -69,5 +69,9 @@ module.exports.PACT_MESSAGES = {
 }
 
 module.exports.POST_MESSAGES = {
-  NOT_FOUND: "Post not found"
+  NOT_FOUND: "Post not found",
+  NOT_AUTHORISED: {
+    NOT_AUTHOR_NOT_MOD: "User is neither a mod nor the author of the post",
+    NOT_AUTHOR: "User is not the author of the post"
+  }
 }

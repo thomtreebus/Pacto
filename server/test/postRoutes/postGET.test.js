@@ -44,7 +44,7 @@ describe("GET /pact/:pactId/post/:postId", () => {
     await University.deleteMany({});
   });
 
-  it("can get a post with valid pact id and user part of pact", async () => {
+  it("author can get its post", async () => {
     const user = await User.findOne({ uniEmail: getTestUserEmail() });
     const pact = await Pact.findOne({ id: getTestPactId() });
     const post = await Post.findOne({ id: getTestPostId() });
@@ -66,7 +66,7 @@ describe("GET /pact/:pactId/post/:postId", () => {
     expect(responsePost.votes).toBe(post.votes);
   });
 
-  it("can get a post with valid pact id and another user part of pact", async () => {
+  it("other member of the pact can get the post", async () => {
     const user = await User.findOne({ uniEmail: getTestUserEmail() });
     const pact = await Pact.findOne({ id: getTestPactId() });
     const post = await Post.findOne({ id: getTestPostId() });
