@@ -44,9 +44,14 @@ describe("DELETE /pact/:pactId/post/delete/:postId", () => {
     await University.deleteMany({});
   });
 
-  it("can delete an existing post", async () => {
+  it("member can delete a post they made", async () => {
+    // The user is a member of the pact, not a mod
     const user = await User.findOne({ uniEmail: getTestUserEmail() });
     let pact = await Pact.findOne({ id: getTestPactId() });
+    expect(pact.moderators.includes(user._id)).toBe(true);
+    await pact.moderators.pull({ _id: user._id });
+    await pact.save();
+    expect(pact.moderators.includes(user._id)).toBe(false);
     const post = await Post.findOne({ id: getTestPostId() });
     const token = createToken(user._id);
     
@@ -86,6 +91,73 @@ describe("DELETE /pact/:pactId/post/delete/:postId", () => {
     expect(pact.posts.includes(invalidPostId)).toBe(false);
   });
 
+  it("moderator of a pact can delete any post in the pact", async () => {
+    const user = await User.findOne({ uniEmail: getTestUserEmail() });
+    let pact = await Pact.findOne({ id: getTestPactId() });
+    const post = await Post.findOne({ id: getTestPostId() });
+
+    // Creating 2nd user: a moderator
+    const user2 = await generateNextTestUser("Mod");
+    user2.active = true;
+    await user2.pacts.push(pact);
+    await user2.save();
+    await pact.members.push(user2);
+    await pact.moderators.push(user2);
+    await pact.save();
+    const token = createToken(user2._id);
+    
+    expect(pact.posts.includes(post._id)).toBe(true);
+    const response = await supertest(app)
+    .delete(`/pact/${ pact._id }/post/delete/${ post._id }`)
+    .set("Cookie", [`jwt=${token}`])
+    .expect(200);
+    expect(response.body.message).toBeDefined();
+    expect(response.body.errors.length).toBe(0);
+
+    const responsePost = response.body.message;
+    expect(responsePost.author).toBe(user._id.toString());
+
+    const deletedPost = await Post.findOne({ id: responsePost._id });
+    expect(deletedPost).toBe(null);
+
+    pact = await Pact.findOne({ id: getTestPactId() });
+    expect(pact.posts.includes(post._id)).toBe(false);
+  });
+
+  it("member of a pact cannot delete any other post than their own", async () => {
+    const user = await User.findOne({ uniEmail: getTestUserEmail() });
+    let pact = await Pact.findOne({ id: getTestPactId() });
+    const post = await Post.findOne({ id: getTestPostId() });
+
+    // Creating 2nd member (not mod) of pact
+    const user2 = await generateNextTestUser("Member");
+    user2.active = true;
+    await user2.pacts.push(pact);
+    await user2.save();
+    await pact.members.push(user2);
+    await pact.save();
+    const token = createToken(user2._id);
+    
+    expect(pact.posts.includes(post._id)).toBe(true);
+    const response = await supertest(app)
+    .delete(`/pact/${ pact._id }/post/delete/${ post._id }`)
+    .set("Cookie", [`jwt=${token}`])
+    .expect(401);
+    expect(response.body.message).toBe(null);
+    expect(response.body.errors[0].field).toBe(null);
+    expect(response.body.errors[0].message).toBe(PACT_MESSAGES.NOT_AUTHORISED);
+    expect(response.body.errors.length).toBe(1);
+
+    const responsePost = response.body.message;
+    expect(responsePost.author).toBe(user._id.toString());
+
+    const notDeletedPost = await Post.findOne({ id: responsePost._id });
+    expect(notDeletedPost).toBe(post);
+
+    pact = await Pact.findOne({ id: getTestPactId() });
+    expect(pact.posts.includes(post._id)).toBe(true);
+  });
+
   // Check uses pactMiddleware
   it("user who is not in the correct uni cannot delete", async () => {
     const user = await generateNextTestUser("User", notkcl = true, uniname = "ucl");
@@ -112,7 +184,7 @@ describe("DELETE /pact/:pactId/post/delete/:postId", () => {
   });
 
   // Check uses pactMiddleware
-  it("user who is in the correct uni but not in the pact cannot post", async () => {
+  it("user who is in the correct uni but not in the pact cannot delete", async () => {
     const user = await generateNextTestUser("User");
     user.active = true;
     await user.save();

@@ -138,6 +138,7 @@ module.exports.postDelete = async (req, res) => {
 	try {
 		const post = await Post.findOne({ pact: req.pact, _id:req.params.postId });
 		try {
+			// if(post.author === req.user || req.pact.moderators.includes(req.user))
 			// Delete post from pact's posts array
 			const pact = await Pact.findOne( { id: post.pact });
 			await pact.posts.pull({ _id: post._id  });
