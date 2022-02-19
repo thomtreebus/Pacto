@@ -110,7 +110,7 @@ module.exports.downvotePostPost = async (req, res) => {
 						post.upvoters.splice(index, 1);
 						post.votes = post.votes - 1;
 					} else {
-						console.log("error in upvote post code");
+						console.log("error in downvote post code");
 					}
 				}
 				// just normal downvote
@@ -131,18 +131,18 @@ module.exports.downvotePostPost = async (req, res) => {
 };
 
 // DELETE post
-// module.exports.postDelete = async (req, res) => {
-// 	try {
-// 		// maybe delete post from pact's posts array?
-// 		const post = await Post.findOne({ pact: req.pact, _id:req.params.postId });
-// 		if (!post){
-// 			res.status(404).json(jsonResponse(null, [jsonError(null, POST_MESSAGES.NOT_FOUND)]));
-// 		}
-// 		Post.deleteOne( { _id: post._id } );
-// 		res.status(200).json(jsonResponse(post, []));
-// 	} 
-// 	catch (err) {
-// 		res.status(400).json(jsonResponse(null, [jsonError(null, err.message)]));
-// 	}
-// };
+module.exports.postDelete = async (req, res) => {
+	try {
+		// maybe delete post from pact's posts array?
+		const post = await Post.findOne({ pact: req.pact, _id:req.params.postId });
+		if (!post){
+			res.status(404).json(jsonResponse(null, [jsonError(null, POST_MESSAGES.NOT_FOUND)]));
+		}
+		await Post.deleteOne( { _id: post._id } );
+		res.status(200).json(jsonResponse(post, []));
+	} 
+	catch (err) {
+		res.status(400).json(jsonResponse(null, [jsonError(null, err.message)]));
+	}
+};
 

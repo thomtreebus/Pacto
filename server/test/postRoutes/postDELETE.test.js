@@ -16,7 +16,7 @@ const { passwordValidators } = require("../../helpers/customSignupValidators");
 
 dotenv.config();
 
-describe("POST /post/upvote/:pactid/:id", () => {
+describe("DELETE /pact/:pactId/post/delete/:postId", () => {
   beforeAll(async () => {
     await mongoose.connect(process.env.TEST_DB_CONNECTION_URL);
   });
@@ -44,30 +44,24 @@ describe("POST /post/upvote/:pactid/:id", () => {
     await University.deleteMany({});
   });
 
-  it("passes", async () => {
-    expect(true).toBe(true);
+  it("can delete an existing post", async () => {
+    const user = await User.findOne({ uniEmail: getTestUserEmail() });
+    const pact = await Pact.findOne({ id: getTestPactId() });
+    const post = await Post.findOne({ id: getTestPostId() });
+    const token = createToken(user._id);
+
+    const response = await supertest(app)
+    .delete(`/pact/${ pact._id }/post/delete/${ post._id }`)
+    .set("Cookie", [`jwt=${token}`])
+    .expect(200);
+    expect(response.body.message).toBeDefined();
+    expect(response.body.errors.length).toBe(0);
+
+    const responsePost = response.body.message;
+    expect(responsePost.author).toBe(user._id.toString());
+
+    const deletedPost = await Post.findOne({ id: responsePost._id });
+    expect(deletedPost).toBe(null);
   });
-
-  // it("upvote post with valid pact id and user part of pact", async () => {
-  //   const user = await User.findOne({ uniEmail: getTestUserEmail() });
-  //   const pact = await Pact.findOne({ id: getTestPactId() });
-  //   const post = await Post.findOne({ id: getTestPostId() });
-  //   const token = createToken(user._id);
-
-  //   const oldVotes = post.votes;
-
-  //   const response = await supertest(app)
-  //   .post(`/pact/${ pact._id }/post/upvote/${ post._id }`)
-  //   .set("Cookie", [`jwt=${token}`])
-  //   .expect(200);
-  //   expect(response.body.message).toBeDefined();
-  //   expect(response.body.errors.length).toBe(0);
-
-  //   const responsePost = response.body.message;
-  //   expect(responsePost.author).toBe(user._id.toString());
-  //   expect(responsePost.votes).toBe(oldVotes + 1);
-  //   expect(responsePost.upvoters[0]._id).toBe(user._id.toString());
-  //   expect(responsePost.downvoters).toStrictEqual([]);
-  // });
 
 });
