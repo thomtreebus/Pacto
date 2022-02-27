@@ -5,7 +5,7 @@ import MockComponent from "./utils/MockComponent";
 import { rest } from "msw";
 import { setupServer } from "msw/node";
 import { Route } from "react-router-dom";
-import Profile from "../pages/EditProfile";
+import EditProfile from "../pages/EditProfile";
 import userEvent from "@testing-library/user-event";
 import {act} from "react-dom/test-utils";
 
@@ -55,7 +55,7 @@ describe("Edit Profile Page Tests", () => {
   beforeEach(async () => {
     render(
       <MockComponent>
-          <Profile />
+          <EditProfile />
           <Route exact path="/profile">
             <h1>Redirected to profile</h1>
           </Route>
