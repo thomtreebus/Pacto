@@ -30,6 +30,8 @@ export default function EditProfile() {
   const { user } = useAuth();
   const history = useHistory();
 
+  const [editProfileIsDisabled, setEditProfileIsDisabled] = useState(false);
+
   const [bio, setBio] = useState(user.bio);
   const [location, setLocation] = useState(user.location);
   const [course, setCourse] = useState(user.course);
@@ -63,6 +65,7 @@ export default function EditProfile() {
   }
 
   const handleSubmit = async (event) => {
+    setEditProfileIsDisabled(true);
     event.preventDefault();
 
     const data = { bio, location, course, linkedin, instagram, phone, image }
@@ -108,7 +111,7 @@ export default function EditProfile() {
         setApiBioError(message);
       }
     })
-
+    setEditProfileIsDisabled(false);
   }
 
 
@@ -278,6 +281,7 @@ export default function EditProfile() {
           sx={{float: "right", marginTop: 30}}
           variant="contained"
           type="submit"
+          disabled={editProfileIsDisabled}
         >
           Update Profile
         </Button>
