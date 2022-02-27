@@ -119,7 +119,7 @@ export default function Profile() {
           </Image>
           <Stack direction="column" alignItems="left" sx={{}}>
             <Typography variant="h4">{user.firstName} {user.lastName}</Typography>
-            <Typography variant="subtitle1" sx={{ color: "#1976d2", marginTop: "2px" }}>  Engineering student at King's College London </Typography>
+            <Typography variant="subtitle1" sx={{ color: "#1976d2", marginTop: "2px" }}>  {user.course} student at {user.university.name} </Typography>
             <Typography variant="subtitle1" sx={{ color: "#616161", }}>  {user.location} </Typography>
           </Stack>
         </Stack>
