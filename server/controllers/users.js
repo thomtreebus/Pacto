@@ -2,6 +2,7 @@ const User = require('../models/User');
 const mongoose = require('mongoose');
 const {jsonResponse, jsonError} = require("../helpers/responseHandlers");
 const handleFieldErrors = require("../helpers/fieldErrorsHandler");
+const University = require("../models/University");
 
 
 module.exports.updateProfile = async(req, res) => {
@@ -54,7 +55,9 @@ module.exports.viewProfile = async(req, res) => {
       throw Error("User does not exist");
     }
 
-    const user = await User.findOne({ university, _id:req.params.id });
+    const user = await User.findOne({ university, _id:req.params.id }).populate(
+      {path: 'university', model: University}
+    );
 
 		if (!user){
 			status = 404;
