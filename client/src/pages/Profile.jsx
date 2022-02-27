@@ -125,9 +125,9 @@ export default function Profile() {
         </Stack>
         <Divider sx={{ marginTop: "10px", marginBottom: "10px" }}></Divider>
         <Stack direction="row" alignItems="center" spacing={2} sx={{ marginTop: "2px" }}>
-          <Chip label="username" icon={<InstagramIcon />} variant="outlined" component="a" target="_blank" clickable href={`https://www.instagram.com/`} />
+          <Chip label={`${user.instagram}`} icon={<InstagramIcon />} variant="outlined" testid="instagram-icon" component="a" target="_blank" clickable href={`https://www.instagram.com/`} />
           <Chip label={`${user.firstName} ${user.lastName}`} icon={<LinkedInIcon />} variant="outlined" component="a" target="_blank" clickable href={`https://www.linkedin.com/`} />
-          <Chip label="+44 (0) 123456789" icon={<WhatsAppIcon />} variant="outlined" />
+          <Chip label={`${user.phone}`} icon={<WhatsAppIcon />} variant="outlined" />
         </Stack>
         <Divider sx={{ marginTop: "10px", marginBottom: "10px" }}></Divider>
         <Typography variant="body1" sx={{}}> {user.bio} </Typography>
