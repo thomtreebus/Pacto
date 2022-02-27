@@ -6,17 +6,16 @@ const handleFieldErrors = require("../helpers/fieldErrorsHandler");
 
 module.exports.updateProfile = async(req, res) => {
   let status = 400;
-  const jsonErrors = {};
+  const jsonErrors = [];
   try {
-    const { id } = req.params; 
+    const { id } = req.params;
 
     // if (!mongoose.Types.ObjectId.isValid(id)) return res.status(404).send(`No user with id: ${id}`);
     if (!mongoose.Types.ObjectId.isValid(id)) {
       status = 404;
       throw Error("User does not exist");
     }
-
-    if (req.user._id !== id) {
+    if (req.user._id.toString() !== id.toString()) {
       status = 401;
       throw Error("Can not update someone else's profile")
     }
@@ -27,12 +26,14 @@ module.exports.updateProfile = async(req, res) => {
   } catch (err) {
     // converts error array into json array.
     const fieldErrors = handleFieldErrors(err);
-    if(fieldErrors){
+    if(fieldErrors.length !== 0){
       fieldErrors.forEach((myErr) => jsonErrors.push(myErr));
     }
     else {
       jsonErrors.push(jsonError(null, err.message));
     }
+  }
+  finally {
     res.status(status).json(jsonResponse(null, jsonErrors));
   }
 }
