@@ -84,14 +84,10 @@ export default function LoginPage() {
 			>
 				<Box
 					sx={{
-						// height: "calc(100vh - 68.5px)",
 						display: "flex",
 						flexDirection: "column",
 						alignItems: "center",
-						// backgroundColor: "white",
 						paddingInline: "200px",
-						// paddingBlock: "10px",
-						// marginTop: "68.5px" 
 					}}
 				>
 					<Avatar alt="Pacto Icon" src={Icon} />
@@ -110,66 +106,64 @@ export default function LoginPage() {
 							required
 							fullWidth
 							label="Pact Name"
+							data-testid="pact-name"
 							name="pact-name"
 							error={apiPactNameError.length !== 0}
 							helperText={apiPactNameError}
 							autoFocus
 						/>
-
-					<TextField
-						data-testid='category-select'
-						alignitems='center'
-						margin="normal"
-						required
-						fullWidth
-						id="category-select"
-						name="category-select"
-						select
-						value={category}
-						onChange={handleCategoryChange}
-						label="Category"
-						error={apiPactCategoryError.length !== 0}
-						helperText={apiPactCategoryError}
-					>
-						<MenuItem value={"society"} data-testid="subject-item">
-							Society
-						</MenuItem>
-						<MenuItem value={"course"} data-testid="module-item">
-							Course
-						</MenuItem>
-						<MenuItem value={"module"} data-testid="society-item">
-							Module
-						</MenuItem>
-						<MenuItem value={"other"} data-testid="other-item">
-							Other
-						</MenuItem>
-					</TextField>
-
-					<TextField
-						name="description"
-						margin="normal"
-						id="description"
-						label="Description"
-						required
-						fullWidth
-						multiline
-						rows={4}
-						error={apiPactDescriptionError.length !== 0}
-						helperText={apiPactDescriptionError}
-					/>
-					<Button
-						fullWidth
-						label="Upload Image"
-						variant="contained"
-						component="span"
-						sx={{
-							marginTop: 1
-						}}
+						<TextField
+							data-testid='category-select'
+							alignitems='center'
+							margin="normal"
+							required
+							fullWidth
+							id="category-select"
+							name="category-select"
+							select
+							value={category}
+							onChange={handleCategoryChange}
+							label="Category"
+							error={apiPactCategoryError.length !== 0}
+							helperText={apiPactCategoryError}
 						>
-						Upload Image
-					</Button>
-					
-						
+							<MenuItem value={"society"} data-testid="subject-item">
+								Society
+							</MenuItem>
+							<MenuItem value={"course"} data-testid="module-item">
+								Course
+							</MenuItem>
+							<MenuItem value={"module"} data-testid="society-item">
+								Module
+							</MenuItem>
+							<MenuItem value={"other"} data-testid="other-item">
+								Other
+							</MenuItem>
+						</TextField>
+						<TextField
+							name="description"
+							margin="normal"
+							data-testid="pact-description"
+							id="description"
+							label="Description"
+							required
+							fullWidth
+							multiline
+							rows={4}
+							error={apiPactDescriptionError.length !== 0}
+							helperText={apiPactDescriptionError}
+						/>
+						<Button
+							fullWidth
+							label="Upload Image"
+							variant="contained"
+							component="span"
+							sx={{
+								marginTop: 1
+							}}
+							>
+							Upload Image
+						</Button>
 						<Button
 							type="submit"
 							fullWidth
