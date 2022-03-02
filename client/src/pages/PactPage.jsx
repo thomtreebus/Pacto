@@ -21,7 +21,40 @@ const testdata = [
     votes: 6,
     upvoted: false,
     downvoted: false,
-    comments: [0,0,0,0]
+    comments: [0,0,0,0],
+    _id: 1
+  },
+  {
+    author: {
+      firstName: "Krishi",
+      lastName: "Wali",
+      _id: 1
+    },
+    date: "5/5/5",
+    title: "Lorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem",
+    link: "https://github.com/thom-treebus",
+    type: "link",
+    votes: 6,
+    upvoted: false,
+    downvoted: false,
+    comments: [0,0,0,0],
+    _id: 2
+  },
+  {
+    author: {
+      firstName: "Krishi",
+      lastName: "Wali",
+      _id: 1
+    },
+    date: "5/5/5",
+    title: "Lorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem",
+    image: "https://images.unsplash.com/photo-1635834887704-18e67ae7ceba?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=765&q=80",
+    type: "image",
+    votes: 6,
+    upvoted: false,
+    downvoted: false,
+    comments: [0,0,0,0],
+    _id: 3
   },
   {
     author: {
@@ -36,7 +69,8 @@ const testdata = [
     votes: 4,
     upvoted: false,
     downvoted: true,
-    comments: []
+    comments: [],
+    _id: 4
   },
   {
     author: {
@@ -51,7 +85,8 @@ const testdata = [
     votes: 8,
     upvoted: true,
     downvoted: false,
-    comments: [1,23,6,6,6,6,6,6,6]
+    comments: [1,23,6,6,6,6,6,6,6],
+    _id: 5
   },
   {
     author: {
@@ -66,7 +101,8 @@ const testdata = [
     votes: 6,
     upvoted: false,
     downvoted: false,
-    comments: [0,0,0,0]
+    comments: [0,0,0,0],
+    _id: 6
   },
   {
     author: {
@@ -81,7 +117,8 @@ const testdata = [
     votes: 4,
     upvoted: false,
     downvoted: true,
-    comments: []
+    comments: [],
+    _id: 7
   },
   {
     author: {
@@ -96,7 +133,8 @@ const testdata = [
     votes: 8,
     upvoted: true,
     downvoted: false,
-    comments: [1,23,6,6,6,6,6,6,6]
+    comments: [1,23,6,6,6,6,6,6,6],
+    _id: 8
   },
 ];
 
@@ -123,7 +161,7 @@ export default function PactPage() {
       setError(err);
       setIsLoading(false);
     })
-  }, [])
+  }, [pactID])
 
   return (
     <>
