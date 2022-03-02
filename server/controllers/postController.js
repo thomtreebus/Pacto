@@ -1,6 +1,7 @@
 const Post = require("../models/Post");
 const Pact = require("../models/Pact");
 const University = require("../models/University");
+const Comment = require("../models/Comment");
 const User = require("../models/User");
 const { jsonResponse, jsonError } = require("../helpers/responseHandlers");
 const { POST_MESSAGES, MESSAGES } = require("../helpers/messages");

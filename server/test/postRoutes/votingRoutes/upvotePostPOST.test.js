@@ -60,7 +60,7 @@ describe("POST /post/upvote/:pactid/:id", () => {
     expect(response.body.errors.length).toBe(0);
 
     const responsePost = response.body.message;
-    expect(responsePost.author).toBe(user._id.toString());
+    expect(responsePost.author._id.toString()).toBe(user._id.toString());
     expect(responsePost.votes).toBe(oldVotes + 1);
     expect(responsePost.upvoters[0]._id).toBe(user._id.toString());
     expect(responsePost.downvoters).toStrictEqual([]);
@@ -86,7 +86,7 @@ describe("POST /post/upvote/:pactid/:id", () => {
     }
 
     const responsePost = response.body.message;
-    expect(responsePost.author).toBe(user._id.toString());
+    expect(responsePost.author._id.toString()).toBe(user._id.toString());
     expect(responsePost.votes).toBe(oldVotes);
     expect(responsePost.upvoters).toStrictEqual([]);
     expect(responsePost.downvoters).toStrictEqual([]);
@@ -122,7 +122,7 @@ describe("POST /post/upvote/:pactid/:id", () => {
     .expect(200);
 
     const responsePost = response.body.message;
-    expect(responsePost.author).toBe(user1._id.toString());
+    expect(responsePost.author._id.toString()).toBe(user1._id.toString());
     expect(responsePost.votes).toBe(oldVotes + 2);
     expect(responsePost.upvoters[0]._id).toBe(user1._id.toString());
     expect(responsePost.upvoters[1]._id).toBe(user2._id.toString());
@@ -197,7 +197,7 @@ describe("POST /post/upvote/:pactid/:id", () => {
     .set("Cookie", [`jwt=${ token }`])
     .expect(200);
     const responsePost1 = response1.body.message;
-    expect(responsePost1.author).toBe(user._id.toString());
+    expect(responsePost1.author._id.toString()).toBe(user._id.toString());
     expect(responsePost1.votes).toBe(1);
     expect(responsePost1.downvoters).toStrictEqual([]);
     expect(responsePost1.upvoters.length).toBe(1);
@@ -208,7 +208,7 @@ describe("POST /post/upvote/:pactid/:id", () => {
     .set("Cookie", [`jwt=${ token }`])
     .expect(200);
     const responsePost2 = response2.body.message;
-    expect(responsePost2.author).toBe(user._id.toString());
+    expect(responsePost2.author._id.toString()).toBe(user._id.toString());
     expect(responsePost2.votes).toBe(1);
     expect(responsePost2.downvoters).toStrictEqual([]);
     expect(responsePost2.upvoters.length).toBe(1);
@@ -238,7 +238,7 @@ describe("POST /post/upvote/:pactid/:id", () => {
     .set("Cookie", [`jwt=${ token }`])
     .expect(200);
     const responsePost1 = response1.body.message;
-    expect(responsePost1.author).toBe(user1._id.toString());
+    expect(responsePost1.author._id.toString()).toBe(user1._id.toString());
     expect(responsePost1.votes).toBe(-1);
     expect(responsePost1.upvoters).toStrictEqual([]);
     expect(responsePost1.downvoters.length).toBe(1);
@@ -250,7 +250,7 @@ describe("POST /post/upvote/:pactid/:id", () => {
     .set("Cookie", [`jwt=${ token }`])
     .expect(200);
     const responsePost2 = response2.body.message;
-    expect(responsePost2.author).toBe(user1._id.toString());
+    expect(responsePost2.author._id.toString()).toBe(user1._id.toString());
     expect(responsePost2.votes).toBe(1);
     expect(responsePost2.downvoters).toStrictEqual([]);
     expect(responsePost2.upvoters.length).toBe(1);
@@ -278,7 +278,7 @@ describe("POST /post/upvote/:pactid/:id", () => {
     .set("Cookie", [`jwt=${ token1 }`])
     .expect(200);
     const responsePost1 = response1.body.message;
-    expect(responsePost1.author).toBe(user1._id.toString());
+    expect(responsePost1.author._id.toString()).toBe(user1._id.toString());
     expect(responsePost1.votes).toBe(-1);
     expect(responsePost1.upvoters).toStrictEqual([]);
     expect(responsePost1.downvoters.length).toBe(1);
@@ -290,7 +290,7 @@ describe("POST /post/upvote/:pactid/:id", () => {
     .set("Cookie", [`jwt=${ token2 }`])
     .expect(200);
     const responsePost2 = response2.body.message;
-    expect(responsePost2.author).toBe(user1._id.toString());
+    expect(responsePost2.author._id.toString()).toBe(user1._id.toString());
     expect(responsePost2.votes).toBe(0);
     expect(responsePost2.downvoters.length).toBe(1);
     expect(responsePost2.downvoters[0]._id).toBe(user1._id.toString());
@@ -314,7 +314,7 @@ describe("POST /post/upvote/:pactid/:id", () => {
     expect(response.body.errors.length).toBe(0);
 
     const responsePost = response.body.message;
-    expect(responsePost.author).toBe(user._id.toString());
+    expect(responsePost.author._id.toString()).toBe(user._id.toString());
     expect(responsePost.votes).toBe(oldVotes + 1);
     expect(responsePost.upvoters[0]._id).toBe(user._id.toString());
     expect(responsePost.downvoters).toStrictEqual([]);

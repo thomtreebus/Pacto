@@ -58,7 +58,7 @@ describe("GET /pact/:pactId/post/:postId", () => {
     expect(response.body.errors.length).toBe(0);
 
     const responsePost = response.body.message;
-    expect(responsePost.author).toBe(user._id.toString());
+    expect(responsePost.author._id.toString()).toBe(user._id.toString());
     expect(responsePost.title).toBe(post.title);
     expect(responsePost.text).toBe(post.text);
     expect(responsePost.type).toBe(post.type);
@@ -88,7 +88,7 @@ describe("GET /pact/:pactId/post/:postId", () => {
     expect(response.body.errors.length).toBe(0);
 
     const responsePost = response.body.message;
-    expect(responsePost.author).toBe(user._id.toString());
+    expect(responsePost.author._id.toString()).toBe(user._id.toString());
     expect(responsePost.title).toBe(post.title);
     expect(responsePost.text).toBe(post.text);
     expect(responsePost.type).toBe(post.type);

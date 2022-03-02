@@ -16,7 +16,7 @@ const Post = require('../../models/Post');
 
 dotenv.config();
 
-describe("DELETE /pact/:pactId/post/delete/:postId", () => {
+describe("DELETE /pact/:pactId/post/:postId", () => {
   beforeAll(async () => {
     await mongoose.connect(process.env.TEST_DB_CONNECTION_URL);
   });
@@ -57,16 +57,12 @@ describe("DELETE /pact/:pactId/post/delete/:postId", () => {
     
     expect(pact.posts.includes(post._id)).toBe(true);
     const response = await supertest(app)
-    .delete(`/pact/${ pact._id }/post/delete/${ post._id }`)
+    .delete(`/pact/${ pact._id }/post/${ post._id }`)
     .set("Cookie", [`jwt=${token}`])
-    .expect(200);
-    expect(response.body.message).toBeDefined();
-    expect(response.body.errors.length).toBe(0);
+    .expect(204);
+    expect(response.body.toString()).toBe({}.toString());
 
-    const responsePost = response.body.message;
-    expect(responsePost.author).toBe(user._id.toString());
-
-    const deletedPost = await Post.findOne({ id: responsePost._id });
+    const deletedPost = await Post.findOne({ id: post._id });
     expect(deletedPost).toBe(null);
 
     pact = await Pact.findOne({ id: getTestPactId() });
@@ -81,10 +77,10 @@ describe("DELETE /pact/:pactId/post/delete/:postId", () => {
 
     expect(pact.posts.includes(invalidPostId)).toBe(false);
     const response = await supertest(app)
-    .delete(`/pact/${ pact._id }/post/delete/${ invalidPostId }`)
+    .delete(`/pact/${ pact._id }/post/${ invalidPostId }`)
     .set("Cookie", [`jwt=${token}`])
     .expect(404);
-    expect(response.body.message).toBeDefined();
+    expect(response.body.message).toBe(null);
     expect(response.body.errors.length).toBe(1);
     expect(response.body.errors[0].field).toBe(null);
     expect(response.body.errors[0].message).toBe(POST_MESSAGES.NOT_FOUND);
@@ -108,16 +104,12 @@ describe("DELETE /pact/:pactId/post/delete/:postId", () => {
     
     expect(pact.posts.includes(post._id)).toBe(true);
     const response = await supertest(app)
-    .delete(`/pact/${ pact._id }/post/delete/${ post._id }`)
+    .delete(`/pact/${ pact._id }/post/${ post._id }`)
     .set("Cookie", [`jwt=${token}`])
-    .expect(200);
-    expect(response.body.message).toBeDefined();
-    expect(response.body.errors.length).toBe(0);
+    .expect(204);
+    expect(response.body.toString()).toBe({}.toString());
 
-    const responsePost = response.body.message;
-    expect(responsePost.author).toBe(user._id.toString());
-
-    const deletedPost = await Post.findOne({ id: responsePost._id });
+    const deletedPost = await Post.findOne({ id: post._id });
     expect(deletedPost).toBe(null);
 
     pact = await Pact.findOne({ id: getTestPactId() });
@@ -140,7 +132,7 @@ describe("DELETE /pact/:pactId/post/delete/:postId", () => {
     
     expect(pact.posts.includes(post._id)).toBe(true);
     const response = await supertest(app)
-    .delete(`/pact/${ pact._id }/post/delete/${ post._id }`)
+    .delete(`/pact/${ pact._id }/post/${ post._id }`)
     .set("Cookie", [`jwt=${token}`])
     .expect(401);
     expect(response.body.message).toBe(null);
@@ -167,7 +159,7 @@ describe("DELETE /pact/:pactId/post/delete/:postId", () => {
     expect(pact.posts.includes(post._id)).toBe(true);
 
     const response = await supertest(app)
-    .delete(`/pact/${ pact._id }/post/delete/${ post._id }`)
+    .delete(`/pact/${ pact._id }/post/${ post._id }`)
     .set("Cookie", [`jwt=${ token }`])
     .expect(404);
     expect(response.body.message).toBe(null);
@@ -192,7 +184,7 @@ describe("DELETE /pact/:pactId/post/delete/:postId", () => {
     expect(pact.posts.includes(post._id)).toBe(true);
 
     const response = await supertest(app)
-    .delete(`/pact/${ pact._id }/post/delete/${ post._id }`)
+    .delete(`/pact/${ pact._id }/post/${ post._id }`)
     .set("Cookie", [`jwt=${ token }`])
     .expect(401);
     expect(response.body.message).toBe(null);
@@ -206,7 +198,7 @@ describe("DELETE /pact/:pactId/post/delete/:postId", () => {
     const post = await Post.findOne({ id: getTestPostId() })
 
     const response = await supertest(app)
-    .delete(`/pact/${ pact._id }/post/delete/${ post._id }`)
+    .delete(`/pact/${ pact._id }/post/${ post._id }`)
     .expect(401);
     expect(response.body.message).toBe(null);
     expect(response.body.errors[0].field).toBe(null);
