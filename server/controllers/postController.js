@@ -30,6 +30,9 @@ module.exports.postGet = async (req, res) => {
 		try {
 			await post.populate({ path: 'upvoters', model: User });
 			await post.populate({ path: 'downvoters', model: User });
+			await post.populate({ path: 'pact', model: Pact});
+			await post.populate({ path: 'author', model: User});
+			await post.populate({ path: 'comments', model: Comment});
 			res.status(200).json(jsonResponse(post, []));
 		} 
 		catch (err) {
@@ -74,11 +77,14 @@ module.exports.upvotePostPost = async (req, res) => {
 				post.upvoters.push(req.user._id);
 				post.votes = post.votes + 1;
 			}
-			post.save()
+			post.save();
 
 			// Populating before returning the post
 			await post.populate({ path: 'upvoters', model: User });
 			await post.populate({ path: 'downvoters', model: User });
+			await post.populate({ path: 'pact', model: Pact});
+			await post.populate({ path: 'author', model: User});
+			await post.populate({ path: 'comments', model: Comment});
 			res.status(200).json(jsonResponse(post, []));
 		}
 	} 
@@ -125,6 +131,9 @@ module.exports.downvotePostPost = async (req, res) => {
 			// Populating before returning the post
 			await post.populate({ path: 'upvoters', model: User });
 			await post.populate({ path: 'downvoters', model: User });
+			await post.populate({ path: 'pact', model: Pact});
+			await post.populate({ path: 'author', model: User});
+			await post.populate({ path: 'comments', model: Comment});
 			res.status(200).json(jsonResponse(post, []));
 		}
 	} 
@@ -147,7 +156,7 @@ module.exports.postDelete = async (req, res) => {
 
 				// Delete post
 				await Post.deleteOne( { _id: post._id } );
-				res.status(200).json(jsonResponse(post, []));
+				res.status(204).json(jsonResponse(null, []));
 			} else {
 				res.status(401).json(jsonResponse(null, [jsonError(null, POST_MESSAGES.NOT_AUTHORISED.NOT_AUTHOR_NOT_MOD)]));
 			}
