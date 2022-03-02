@@ -7,7 +7,7 @@ import ThumbUpRoundedIcon from "@mui/icons-material/ThumbUpRounded";
 import ThumbDownRoundedIcon from "@mui/icons-material/ThumbDownRounded";
 import CommentIcon from '@mui/icons-material/Comment';
 
-export default function TextPostCard({ post }) {
+export default function BasePostCard({ children, post }) {
   const [thumbUp, setThumbUp] = useState(post.upvoted);
   const [thumbDown, setThumbDown] = useState(post.downvoted);
   const [likes, setLikes] = useState(post.votes);
@@ -77,9 +77,7 @@ export default function TextPostCard({ post }) {
               {post.title}
             </Typography>
 
-            <Typography variant="body1">
-              {post.text}
-            </Typography>
+            {children}
 
             <Typography variant="subtitle2" className="link">
               <CommentIcon sx={{ verticalAlign: "middle", marginRight: "5px" }} />
