@@ -71,7 +71,9 @@ async function createUser(firstName, lastName, university) {
 }
 
 async function seedPacts(university) {
-	const names = chance.unique(chance.company, PACT_COUNT);
+	const pactNameGenerator = () => chance.sentence({ words: 2 })
+
+	const names = chance.unique(pactNameGenerator, PACT_COUNT);
 
 	for (let i = 0; i < names.length; i++) {
 		const category = PACT_CATEGORIES[chance.integer({min: 0, max: PACT_CATEGORIES.length - 1})];
