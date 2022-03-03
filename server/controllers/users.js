@@ -8,6 +8,7 @@ const University = require("../models/University");
 module.exports.updateProfile = async(req, res) => {
   let status = undefined;
   const jsonErrors = [];
+  let resMessage = null;
   try {
     const { id } = req.params;
 
@@ -20,11 +21,13 @@ module.exports.updateProfile = async(req, res) => {
       status = 401;
       throw Error("Can not update someone else's profile")
     }
-    const updatedUser = await User.findByIdAndUpdate(id, { ...req.body }).catch((error) => {
-      status = 500;
-    });
+    const updatedUser = await User.findByIdAndUpdate(id, { ...req.body });
+    status = 200
 
   } catch (err) {
+    if(!status){
+      status = 500;
+    }
     // converts error array into json array.
     const fieldErrors = errorHandler(err);
     if(fieldErrors.length !== 0){
