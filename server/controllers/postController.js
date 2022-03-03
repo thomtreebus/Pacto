@@ -134,29 +134,37 @@ module.exports.downvotePostPost = async (req, res) => {
 
 // DELETE post
 module.exports.postDelete = async (req, res) => {
+	let status = 400;
 	try {
-		const post = await Post.findOne({ pact: req.pact, _id:req.params.postId });
+		let post = null;
 		try {
-			// Check user is the author or a mod
-			if(post.author.toString() === req.user._id.toString() || req.pact.moderators.includes(req.user._id)) {
-				// Delete post from pact's posts array
-				const pact = await Pact.findOne( { id: post.pact });
-				await pact.posts.pull({ _id: post._id  });
-				await pact.save();
+			post = await Post.findOne({ pact: req.pact, _id:req.params.postId });
+		} catch {
+			post = null;
+		}
+		if(!post) {
+			status = 404;
+			throw Error(POST_MESSAGES.NOT_FOUND);
+		}
+		
+		// Check user is the author or a mod
+		if(post.author.toString() === req.user._id.toString() || req.pact.moderators.includes(req.user._id)) {
+			// Delete post from pact's posts array
+			const pact = await Pact.findOne( { id: post.pact });
+			await pact.posts.pull({ _id: post._id  });
+			await pact.save();
 
-				// Delete post
-				await Post.deleteOne( { _id: post._id } );
-				res.status(204).json(jsonResponse(null, []));
-			} else {
-				res.status(401).json(jsonResponse(null, [jsonError(null, POST_MESSAGES.NOT_AUTHORISED.NOT_AUTHOR_NOT_MOD)]));
-			}
-		}
-		catch (err) {
-			res.status(400).json(jsonResponse(null, [jsonError(null, err.message)]));
-		}
+			// Delete post
+			await Post.deleteOne( { _id: post._id } );
+			res.status(204).json(jsonResponse(null, []));
+			
+		} else {
+			status = 401;
+			throw Error(POST_MESSAGES.NOT_AUTHORISED.NOT_AUTHOR_NOT_MOD);
+		}		
 	} 
 	catch (err) {
-		res.status(404).json(jsonResponse(null, [jsonError(null, POST_MESSAGES.NOT_FOUND)]));
+		res.status(status).json(jsonResponse(null, [jsonError(null, err.message)]));
 	}
 };
 
