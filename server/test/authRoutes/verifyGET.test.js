@@ -5,7 +5,7 @@ const supertest = require("supertest");
 const app = require("../../app");
 const University = require("../../models/University");
 const User = require("../../models/User");
-const { generateTestUser, getEmail } = require('../fixtures/generateTestUser');
+const { generateTestUser, getTestUserEmail } = require('../fixtures/generateTestUser');
 const { MESSAGES } = require("../../helpers/messages");
 
 dotenv.config();
@@ -59,7 +59,7 @@ describe("GET /verify", () => {
     const response = await getVerifyWithCode(VERIFICATION_CODE);
     isResponseSuccessful(response);
 
-    const user = await User.findOne({ uniEmail: getEmail() });
+    const user = await User.findOne({ uniEmail: getTestUserEmail() });
     expect(user.active).toBe(true);
   });
 
@@ -67,7 +67,7 @@ describe("GET /verify", () => {
     const response = await getVerifyWithCode(VERIFICATION_CODE + "gibberish");
     isResponseUnsuccessful(response);
 
-    const user = await User.findOne({ uniEmail: getEmail() });
+    const user = await User.findOne({ uniEmail: getTestUserEmail() });
     expect(user.active).toBe(false);
   });
 
@@ -75,14 +75,14 @@ describe("GET /verify", () => {
     const response = await getVerifyWithCode("");
     isResponseUnsuccessful(response, MESSAGES.VERIFICATION.MISSING_CODE);
 
-    const user = await User.findOne({ uniEmail: getEmail() });
+    const user = await User.findOne({ uniEmail: getTestUserEmail() });
     expect(user.active).toBe(false);
   });
 
   it("identifies already used code as invalid, with user object not affected", async () => {
     const response = await getVerifyWithCode(VERIFICATION_CODE);
     isResponseSuccessful(response);
-    const user = await User.findOne({ uniEmail: getEmail() });
+    const user = await User.findOne({ uniEmail: getTestUserEmail() });
     expect(user.active).toBe(true);
 
     const responseAfterSuccess = await getVerifyWithCode(VERIFICATION_CODE);

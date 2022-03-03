@@ -1,6 +1,7 @@
 const Pact = require("../models/Pact");
 const University = require("../models/University");
 const User = require("../models/User");
+const Post = require("../models/Post");
 const {jsonResponse, jsonError} = require("../helpers/responseHandlers");
 const handleFieldErrors = require('../helpers/errorHandler');
 const { MESSAGES, PACT_MESSAGES } = require("../helpers/messages")
@@ -38,6 +39,7 @@ module.exports.pactPost = async (req, res) => {
 		await pact.populate({ path: 'university', model: University });
 		await pact.populate({ path: "members", model: User });
 		await pact.populate({ path: "moderators", model: User });
+		await pact.populate({ path: "posts", model: Post });
 		
 		res.status(201).json(jsonResponse(pact, []));
 	} 
@@ -56,7 +58,12 @@ module.exports.pactPost = async (req, res) => {
 // GET pact (by id)
 module.exports.pactGet = async (req, res) => {
 	try {
-		res.status(200).json(jsonResponse(req.pact, []));
+		const pact = req.pact;
+		await pact.populate({ path: 'university', model: University });
+		await pact.populate({ path: "members", model: User });
+		await pact.populate({ path: "moderators", model: User });
+		await pact.populate({ path: "posts", model: Post });
+		res.status(200).json(jsonResponse(pact, []));
 	} 
   catch (err) {
 		res.status(400).json(jsonResponse(null, [jsonError(null, err.message)]));

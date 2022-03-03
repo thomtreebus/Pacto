@@ -4,7 +4,7 @@ const supertest = require("supertest");
 const bcrypt = require("bcrypt");
 const app = require("../../../app");
 const { createToken } = require("../../../controllers/authController");
-const { generateTestUser, getEmail, generateNextTestUser } = require("../../fixtures/generateTestUser");
+const { generateTestUser, getTestUserEmail, generateNextTestUser } = require("../../fixtures/generateTestUser");
 const { generateTestPact, getTestPactId } = require("../../fixtures/generateTestPact");
 const { generateTestPost, getTestPostId } = require("../../fixtures/generateTestPost");
 const { jsonResponse } = require("../../../helpers/responseHandlers");
@@ -45,7 +45,7 @@ describe("POST /post/downvote/:pactid/:id", () => {
   });
 
   it("downvote post with valid pact id and user part of pact", async () => {
-    const user = await User.findOne({ uniEmail: getEmail() });
+    const user = await User.findOne({ uniEmail: getTestUserEmail() });
     const pact = await Pact.findOne({ id: getTestPactId() });
     const post = await Post.findOne({ id: getTestPostId() });
     const token = createToken(user._id);
@@ -60,14 +60,14 @@ describe("POST /post/downvote/:pactid/:id", () => {
     expect(response.body.errors.length).toBe(0);
 
     const responsePost = response.body.message;
-    expect(responsePost.author).toBe(user._id.toString());
+    expect(responsePost.author._id.toString()).toBe(user._id.toString());
     expect(responsePost.votes).toBe(oldVotes - 1);
     expect(responsePost.upvoters).toStrictEqual([]);
     expect(responsePost.downvoters[0]._id).toBe(user._id.toString());
   });
 
   it("down twice does not change the votes count", async () => {
-    const user = await User.findOne({ uniEmail: getEmail() });
+    const user = await User.findOne({ uniEmail: getTestUserEmail() });
     const pact = await Pact.findOne({ id: getTestPactId() });
     const post = await Post.findOne({ id: getTestPostId() });
     const token = createToken(user._id);
@@ -86,14 +86,14 @@ describe("POST /post/downvote/:pactid/:id", () => {
     }
 
     const responsePost = response.body.message;
-    expect(responsePost.author).toBe(user._id.toString());
+    expect(responsePost.author._id.toString()).toBe(user._id.toString());
     expect(responsePost.votes).toBe(oldVotes);
     expect(responsePost.upvoters).toStrictEqual([]);
     expect(responsePost.downvoters).toStrictEqual([]);
   });
 
   it("two different users downvotes is cummulative", async () => {
-    const user1 = await User.findOne({ uniEmail: getEmail() });
+    const user1 = await User.findOne({ uniEmail: getTestUserEmail() });
     const pact = await Pact.findOne({ id: getTestPactId() });
     const post = await Post.findOne({ id: getTestPostId() });
     const token1 = createToken(user1._id);
@@ -122,7 +122,7 @@ describe("POST /post/downvote/:pactid/:id", () => {
     .expect(200);
 
     const responsePost = response.body.message;
-    expect(responsePost.author).toBe(user1._id.toString());
+    expect(responsePost.author._id.toString()).toBe(user1._id.toString());
     expect(responsePost.votes).toBe(oldVotes - 2);
     expect(responsePost.upvoters).toStrictEqual([]);
     expect(responsePost.downvoters[0]._id).toBe(user1._id.toString());
@@ -186,7 +186,7 @@ describe("POST /post/downvote/:pactid/:id", () => {
   });
 
   it("user can downvote two different posts", async () => {
-    const user = await User.findOne({ uniEmail: getEmail() });
+    const user = await User.findOne({ uniEmail: getTestUserEmail() });
     const pact = await Pact.findOne({ id: getTestPactId() });
     let post1 = await Post.findOne({ id: getTestPostId() });
     let post2 = await generateTestPost(user, pact, "Second post");
@@ -197,7 +197,7 @@ describe("POST /post/downvote/:pactid/:id", () => {
     .set("Cookie", [`jwt=${ token }`])
     .expect(200);
     const responsePost1 = response1.body.message;
-    expect(responsePost1.author).toBe(user._id.toString());
+    expect(responsePost1.author._id.toString()).toBe(user._id.toString());
     expect(responsePost1.votes).toBe(-1);
     expect(responsePost1.upvoters).toStrictEqual([]);
     expect(responsePost1.downvoters.length).toBe(1);
@@ -208,7 +208,7 @@ describe("POST /post/downvote/:pactid/:id", () => {
     .set("Cookie", [`jwt=${ token }`])
     .expect(200);
     const responsePost2 = response2.body.message;
-    expect(responsePost2.author).toBe(user._id.toString());
+    expect(responsePost2.author._id.toString()).toBe(user._id.toString());
     expect(responsePost2.votes).toBe(-1);
     expect(responsePost2.upvoters).toStrictEqual([]);
     expect(responsePost2.downvoters.length).toBe(1);
@@ -227,7 +227,7 @@ describe("POST /post/downvote/:pactid/:id", () => {
   });
 
   it("downvote of upvoted post by same user", async () => {
-    const user1 = await User.findOne({ uniEmail: getEmail() });
+    const user1 = await User.findOne({ uniEmail: getTestUserEmail() });
     const pact = await Pact.findOne({ id: getTestPactId() });
     const post = await Post.findOne({ id: getTestPostId() });
     const token = createToken(user1._id);
@@ -238,7 +238,7 @@ describe("POST /post/downvote/:pactid/:id", () => {
     .set("Cookie", [`jwt=${ token }`])
     .expect(200);
     const responsePost1 = response1.body.message;
-    expect(responsePost1.author).toBe(user1._id.toString());
+    expect(responsePost1.author._id.toString()).toBe(user1._id.toString());
     expect(responsePost1.votes).toBe(1);
     expect(responsePost1.downvoters).toStrictEqual([]);
     expect(responsePost1.upvoters.length).toBe(1);
@@ -250,7 +250,7 @@ describe("POST /post/downvote/:pactid/:id", () => {
     .set("Cookie", [`jwt=${ token }`])
     .expect(200);
     const responsePost2 = response2.body.message;
-    expect(responsePost2.author).toBe(user1._id.toString());
+    expect(responsePost2.author._id.toString()).toBe(user1._id.toString());
     expect(responsePost2.votes).toBe(-1);
     expect(responsePost2.upvoters).toStrictEqual([]);
     expect(responsePost2.downvoters.length).toBe(1);
@@ -258,7 +258,7 @@ describe("POST /post/downvote/:pactid/:id", () => {
   });
 
   it("downvote of upvoted post by different users", async () => {
-    const user1 = await User.findOne({ uniEmail: getEmail() });
+    const user1 = await User.findOne({ uniEmail: getTestUserEmail() });
     const pact = await Pact.findOne({ id: getTestPactId() });
     const post = await Post.findOne({ id: getTestPostId() });
     const token1 = createToken(user1._id);
@@ -278,7 +278,7 @@ describe("POST /post/downvote/:pactid/:id", () => {
     .set("Cookie", [`jwt=${ token1 }`])
     .expect(200);
     const responsePost1 = response1.body.message;
-    expect(responsePost1.author).toBe(user1._id.toString());
+    expect(responsePost1.author._id.toString()).toBe(user1._id.toString());
     expect(responsePost1.votes).toBe(1);
     expect(responsePost1.downvoters).toStrictEqual([]);
     expect(responsePost1.upvoters.length).toBe(1);
@@ -290,7 +290,7 @@ describe("POST /post/downvote/:pactid/:id", () => {
     .set("Cookie", [`jwt=${ token2 }`])
     .expect(200);
     const responsePost2 = response2.body.message;
-    expect(responsePost2.author).toBe(user1._id.toString());
+    expect(responsePost2.author._id.toString()).toBe(user1._id.toString());
     expect(responsePost2.votes).toBe(0);
     expect(responsePost2.downvoters.length).toBe(1);
     expect(responsePost2.downvoters[0]._id).toBe(user2._id.toString());
