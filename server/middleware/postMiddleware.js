@@ -1,6 +1,8 @@
 const { jsonResponse, jsonError } = require("../helpers/responseHandlers");
-const { POST_MESSAGES } = require("../helpers/messages");
-const Post = require("../models/Pact");
+const { POST_MESSAGES, COMMENT_MESSAGES } = require("../helpers/messages");
+const Post = require("../models/Post");
+const Comment = require("../models/Comment");
+
 
 // checkIsMemberOfPact must be run first.
 module.exports.checkValidPost = async (req,res, next) => {
@@ -15,6 +17,27 @@ module.exports.checkValidPost = async (req,res, next) => {
     res.status(404).json(jsonResponse(null, jsonError(null, POST_MESSAGES.NOT_FOUND)));
   } else {
     req.post = post;
+    next();
+  }
+}
+
+// checkValidPost must be run first.
+module.exports.checkValidPostComment = async (req,res, next) => {
+  let comment = null;
+  try {
+    comment = await Comment.findOne({ _id: req.params.commentId });
+  } catch(err){
+    comment = null;
+  }
+
+  if(!req.post.comments.includes(comment)){
+    comment = null;
+  }
+
+  if(!comment){
+    res.status(404).json(jsonResponse(null, jsonError(null, POST_MESSAGES.NOT_FOUND)));
+  } else {
+    req.comment = comment;
     next();
   }
 }
