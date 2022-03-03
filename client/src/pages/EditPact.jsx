@@ -28,10 +28,6 @@ export default function EditPact() {
 		const [apiPactCategoryError, setApiPactCategoryError] = React.useState('');
 		const [apiPactDescriptionError, setApiPactDescriptionError] = React.useState('');
 
-    const handleCategoryChange = (event) => {
-        setCategory(event.target.value);
-    };
-	
 
 	useEffect(() => {
 		fetch(`${process.env.REACT_APP_URL}/pact/${pactId}`, {
@@ -43,7 +39,7 @@ export default function EditPact() {
 		  }
 		  return res.json();
 		}).then((resData) => {
-			data = resData.message;
+			const data = resData.message;
 			setName(data.name);
 			setCategory(data.category);
 			setDescription(data.description);
@@ -147,10 +143,10 @@ export default function EditPact() {
 							helperText={apiPactNameError}
 							autoFocus
 							value = {name}
-                            defaultValue = {name}
-                            onChange = {(e) => {
-                                setName(e.target.value)
-                            }}
+							defaultValue = {name}
+							onChange = {(e) => {
+									setName(e.target.value)
+							}}
 						/>
 
 					<TextField
@@ -161,16 +157,14 @@ export default function EditPact() {
 						fullWidth
 						id="category"
 						name="category"
-						//select
-						onChange={handleCategoryChange}
 						label="Category"
 						error={apiPactCategoryError.length !== 0}
 						helperText={apiPactCategoryError}
 						value = {category}
-                        defaultValue = {category}
-                        onChange = {(e) => {
-                            setCategory(e.target.value)
-                        }}
+						defaultValue = {category}
+						onChange = {(e) => {
+								setCategory(e.target.value)
+						}}
 					>
 					</TextField>
 
@@ -185,10 +179,10 @@ export default function EditPact() {
 						rows={4}
 						error={apiPactDescriptionError.length !== 0}
 						helperText={apiPactDescriptionError}
-                        value = {description}
-                        onChange = {(e) => {
-                            setDescription(e.target.value)
-                        }}
+						value = {description}
+						onChange = {(e) => {
+								setDescription(e.target.value)
+						}}
 					/>
 						<Button
 							type="submit"
