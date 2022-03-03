@@ -25,6 +25,7 @@ module.exports.updateProfile = async(req, res) => {
     status = 200
 
   } catch (err) {
+    // When status code is not defined use status 500
     if(!status){
       status = 500;
     }
