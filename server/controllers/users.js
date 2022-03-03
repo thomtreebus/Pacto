@@ -1,7 +1,7 @@
 const User = require('../models/User');
 const mongoose = require('mongoose');
 const {jsonResponse, jsonError} = require("../helpers/responseHandlers");
-const handleFieldErrors = require("../helpers/fieldErrorsHandler");
+const errorHandler = require("../helpers/errorHandler");
 const University = require("../models/University");
 
 
@@ -26,7 +26,7 @@ module.exports.updateProfile = async(req, res) => {
 
   } catch (err) {
     // converts error array into json array.
-    const fieldErrors = handleFieldErrors(err);
+    const fieldErrors = errorHandler(err);
     if(fieldErrors.length !== 0){
       fieldErrors.forEach((myErr) => jsonErrors.push(myErr));
     }
