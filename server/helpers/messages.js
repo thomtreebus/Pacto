@@ -75,3 +75,11 @@ module.exports.POST_MESSAGES = {
     NOT_AUTHOR: "User is not the author of the post"
   }
 }
+
+module.exports.COMMENT_MESSAGES = {
+  NOT_FOUND: "Comment not found",
+  NOT_AUTHORISED: {
+    VIEWING: "You are not authorised to view this comment",
+    MODIFY: "You are not authorised to modify this comment"
+  }
+}
