@@ -6,16 +6,13 @@ import TextField from "@mui/material/TextField";
 import Box from "@mui/material/Box";
 import Icon from "../assets/pacto-logo.ico";
 import { useHistory } from "react-router-dom";
-import MenuItem from '@mui/material/MenuItem';
 import { useState } from "react";
-import { useAuth } from '../providers/AuthProvider';
 import { useParams } from "react-router-dom";
 import { useEffect } from "react";
 
 export default function EditPact() {
 	const [isButtonDisabled, setIsButtonDisabled] = React.useState(false);
 	const { pactId } = useParams();
-    const { user } = useAuth();
 	const history = useHistory();
 	let data = {
 		name: "",
@@ -60,7 +57,6 @@ export default function EditPact() {
   
 	const handleSubmit = async (event) => {
 		event.preventDefault();
-		const data = { name, category, description }
 		setIsButtonDisabled(true);
 
 		setApiPactNameError('');
@@ -105,7 +101,7 @@ export default function EditPact() {
 			return;
 		}
 
-        if (response.status == 500) {
+        if (response.status === 500) {
             console.log(json)
             return history.push(`/editPact/${json.message._id}`);
         }
