@@ -5,10 +5,10 @@ const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const supertest = require("supertest");
 const app = require("../../app");
-const { generateTestUser, getEmail } = require("../fixtures/generateTestUser");
+const { generateTestUser, getTestUserEmail } = require("../fixtures/generateTestUser");
 const { generateTestPact, getTestPactId } = require("../fixtures/generateTestPact");
 const { createToken } = require("../../controllers/authController");
-const { PACT_MESSAGES } = require("../../helpers/messages");
+const { PACT_MESSAGES, MESSAGES } = require("../../helpers/messages");
 
 describe("GET /pact/:id", () =>{
   beforeAll(async () => {
@@ -35,7 +35,7 @@ describe("GET /pact/:id", () =>{
 
   // Tests
   it("returns appropriate error when id invalid", async () =>{
-    const user = await User.findOne({ uniEmail: getEmail() });
+    const user = await User.findOne({ uniEmail: getTestUserEmail() });
 
     const token = createToken(user._id);
     const id = "gibberish";
@@ -49,7 +49,7 @@ describe("GET /pact/:id", () =>{
   });  
 
   it("returns pact relating to id given", async () =>{
-    const user = await User.findOne({ uniEmail: getEmail() });
+    const user = await User.findOne({ uniEmail: getTestUserEmail() });
 
     const token = createToken(user._id);
     const id = await getTestPactId();
@@ -60,5 +60,17 @@ describe("GET /pact/:id", () =>{
       .expect(200);
 
     expect(response.body.message).toBeDefined();
+  });  
+
+  it("uses checkAuthenticated middleware", async () =>{
+    const token = "some gibberish";
+    const id = await getTestPactId();
+
+    const response = await supertest(app)
+      .get("/pact/"+id.toString())
+      .set("Cookie", [`jwt=${token}`])
+      .expect(401);
+
+    expect(response.body.errors[0].message).toBe(MESSAGES.AUTH.IS_NOT_LOGGED_IN);
   });  
 });
