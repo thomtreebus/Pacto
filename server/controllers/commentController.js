@@ -37,3 +37,27 @@ module.exports.commentPost = async (req, res) => {
     res.status(400).json(jsonResponse(null, jsonErrors));
   }
 }
+
+module.exports.commentDelete = async (req, res) => {
+  try {
+    // Checks already done in middleware. This is safe.
+    await Comment.deleteOne({ _id: req.comment._id });
+
+    if(req.post){
+      req.post.comments.pull(req.comment);
+      await req.post.save();
+    }
+    res.status(204).json(jsonResponse(null, []));
+  } catch(err){
+    res.status(400).json(jsonResponse(null, [jsonError(null, err.message)]));
+  }
+}
+
+module.exports.commentGet = async (req, res) => {
+  try {
+    const comment = req.comment;
+    res.status(200).json(jsonResponse(comment, []));
+  } catch(err){
+    res.status(400).json(jsonResponse(null, [jsonError(null, err.message)]));
+  }
+}
