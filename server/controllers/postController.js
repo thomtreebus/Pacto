@@ -52,29 +52,23 @@ module.exports.upvotePostPost = async (req, res) => {
 		const post = await Post.findOne({ pact: req.pact, _id:req.params.postId });
 		if (!post){
 			res.status(404).json(jsonResponse(null, [jsonError(null, POST_MESSAGES.NOT_FOUND)]));
-		} else {
+		} 
+		else {
 			// Checking if user already upvoted or downvoted
 			if(post.upvoters.includes(req.user._id)) {
 				// Cancel upvote
 				const index = post.upvoters.indexOf(req.user._id);
-				if (index > -1) {
-					post.upvoters.splice(index, 1); // 2nd parameter means remove one item only
-					post.votes = post.votes - 1;
-				} else {
-					console.log("error in upvote post code");
-				}
-			} else {
-				if(post.downvoters.includes(req.user._id)) {
+				post.upvoters.splice(index, 1); // 2nd parameter means remove one item only
+				post.votes = post.votes - 1;
+			} 
+			else if(post.downvoters.includes(req.user._id)) {
 					// remove downvote
-					const index = post.downvoters.indexOf(req.user._id);
-					if (index > -1) {
-						post.downvoters.splice(index, 1);
-						post.votes = post.votes + 1;
-					} else {
-						console.log("error in upvote post code");
-					}
-				}
-				// just normal upvote
+				const index = post.downvoters.indexOf(req.user._id);
+				post.downvoters.splice(index, 1);
+				post.votes = post.votes + 1;
+			}
+			else {
+				// Standard upvote
 				post.upvoters.push(req.user._id);
 				post.votes = post.votes + 1;
 			}
@@ -101,29 +95,22 @@ module.exports.downvotePostPost = async (req, res) => {
 		const post = await Post.findOne({ pact: req.params.pactId, _id:req.params.postId });
 		if (!post){
 			res.status(404).json(jsonResponse(null, [jsonError(null, POST_MESSAGES.NOT_FOUND)]));
-		} else {
+		} 
+		else {
 			// Checking if user already upvoted or downvoted
 			if(post.downvoters.includes(req.user._id)) {
 				// Cancel downvote
 				const index = post.downvoters.indexOf(req.user._id);
-				if (index > -1) {
-					post.downvoters.splice(index, 1); 
-					post.votes = post.votes + 1;
-				} else {
-					console.log("error in downvote post code");
-				}
+				post.downvoters.splice(index, 1); 
+				post.votes = post.votes + 1;
+			} 
+			else if(post.upvoters.includes(req.user._id)) {
+				// Remove upvote
+				const index = post.upvoters.indexOf(req.user._id);
+				post.upvoters.splice(index, 1);
+				post.votes = post.votes - 1;
 			} else {
-				if(post.upvoters.includes(req.user._id)) {
-					// remove upvote
-					const index = post.upvoters.indexOf(req.user._id);
-					if (index > -1) {
-						post.upvoters.splice(index, 1);
-						post.votes = post.votes - 1;
-					} else {
-						console.log("error in downvote post code");
-					}
-				}
-				// just normal downvote
+				// Standard downvote
 				post.downvoters.push(req.user._id);
 				post.votes = post.votes - 1;
 			}
