@@ -6,7 +6,7 @@ const University = require("../models/University");
 
 
 module.exports.updateProfile = async(req, res) => {
-  let status = 400;
+  let status = undefined;
   const jsonErrors = [];
   try {
     const { id } = req.params;
@@ -35,7 +35,7 @@ module.exports.updateProfile = async(req, res) => {
     }
   }
   finally {
-    res.status(status).json(jsonResponse(null, jsonErrors));
+    res.status(status).json(jsonResponse(resMessage, jsonErrors));
   }
 }
 
