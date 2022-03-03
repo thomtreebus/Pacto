@@ -36,6 +36,12 @@ const CommentSchema = mongoose.Schema({
     required: true
   }],
 
+  parentComment: {
+    type: Schema.Types.ObjectId,
+    ref: 'Comment',
+    required: false
+  }
+
 });
 
 const Comment = mongoose.model('Comments', CommentSchema);

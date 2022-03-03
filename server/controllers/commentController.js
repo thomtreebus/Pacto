@@ -7,13 +7,14 @@ const handleFieldErrors = require('../helpers/errorHandler');
 const { MESSAGES, COMMENT_MESSAGES } = require("../helpers/messages");
 const { upvote, downvote } = require("../helpers/genericVoteMethods");
 
-module.exports.commentPost = async (req, res) => {
+const makeComment = async(req, res, parentComment=undefined) => {
   try {
     const { text } = req.body;
 
     const newComment = {
       text,
-      author: req.user
+      author: req.user,
+      parentComment
     }
 
     const comment = await Comment.create(newComment);
@@ -21,6 +22,11 @@ module.exports.commentPost = async (req, res) => {
 
     req.post.comments.push(comment);
     await req.post.save();
+
+    if(parentComment){
+      parentComment.childcomments.push(comment);
+      parentComment.save();
+    }
 
     await comment.populate({path: "author", model: User});
 
@@ -37,6 +43,14 @@ module.exports.commentPost = async (req, res) => {
 		}
     res.status(400).json(jsonResponse(null, jsonErrors));
   }
+}
+
+module.exports.commentPost = async (req, res) => {
+  makeComment(req,res);
+}
+
+module.exports.commentReplyPost = async (req, res) => {
+  makeComment(req,res,req.comment);
 }
 
 module.exports.commentDelete = async (req, res) => {
