@@ -5,6 +5,7 @@ const Comment = require("../models/Comment");
 const User = require("../models/User");
 const { jsonResponse, jsonError } = require("../helpers/responseHandlers");
 const { POST_MESSAGES, MESSAGES } = require("../helpers/messages");
+const { upvote, downvote } = require("../helpers/genericVoteMethods");
 
 // POST post
 module.exports.postPost = async (req, res) => {
@@ -54,33 +55,14 @@ module.exports.upvotePostPost = async (req, res) => {
 			res.status(404).json(jsonResponse(null, [jsonError(null, POST_MESSAGES.NOT_FOUND)]));
 		} 
 		else {
-			// Checking if user already upvoted or downvoted
-			if(post.upvoters.includes(req.user._id)) {
-				// Cancel upvote
-				const index = post.upvoters.indexOf(req.user._id);
-				post.upvoters.splice(index, 1); // 2nd parameter means remove one item only
-				post.votes = post.votes - 1;
-			} 
-			else if(post.downvoters.includes(req.user._id)) {
-					// Remove downvote
-				const index = post.downvoters.indexOf(req.user._id);
-				post.downvoters.splice(index, 1);
-				post.upvoters.push(req.user._id);
-				post.votes = post.votes + 2;
-			}
-			else {
-				// Standard upvote
-				post.upvoters.push(req.user._id);
-				post.votes = post.votes + 1;
-			}
-			post.save();
+			const updatedPost = upvote(post);
 
 			// Populating before returning the post
-			await post.populate({ path: 'upvoters', model: User });
-			await post.populate({ path: 'downvoters', model: User });
-			await post.populate({ path: 'pact', model: Pact});
-			await post.populate({ path: 'author', model: User});
-			await post.populate({ path: 'comments', model: Comment});
+			await updatedPost.populate({ path: 'upvoters', model: User });
+			await updatedPost.populate({ path: 'downvoters', model: User });
+			await updatedPost.populate({ path: 'pact', model: Pact});
+			await updatedPost.populate({ path: 'author', model: User});
+			await updatedPost.populate({ path: 'comments', model: Comment});
 			res.status(200).json(jsonResponse(post, []));
 		}
 	} 
@@ -98,33 +80,15 @@ module.exports.downvotePostPost = async (req, res) => {
 			res.status(404).json(jsonResponse(null, [jsonError(null, POST_MESSAGES.NOT_FOUND)]));
 		} 
 		else {
-			// Checking if user already upvoted or downvoted
-			if(post.downvoters.includes(req.user._id)) {
-				// Cancel downvote
-				const index = post.downvoters.indexOf(req.user._id);
-				post.downvoters.splice(index, 1); 
-				post.votes = post.votes + 1;
-			} 
-			else if(post.upvoters.includes(req.user._id)) {
-				// Remove upvote
-				const index = post.upvoters.indexOf(req.user._id);
-				post.upvoters.splice(index, 1);
-				post.downvoters.push(req.user._id);
-				post.votes = post.votes - 2;
-			} else {
-				// Standard downvote
-				post.downvoters.push(req.user._id);
-				post.votes = post.votes - 1;
-			}
-			post.save()
+			const updatedPost = downvote(post);
 
 			// Populating before returning the post
-			await post.populate({ path: 'upvoters', model: User });
-			await post.populate({ path: 'downvoters', model: User });
-			await post.populate({ path: 'pact', model: Pact});
-			await post.populate({ path: 'author', model: User});
-			await post.populate({ path: 'comments', model: Comment});
-			res.status(200).json(jsonResponse(post, []));
+			await updatedPost.populate({ path: 'upvoters', model: User });
+			await updatedPost.populate({ path: 'downvoters', model: User });
+			await updatedPost.populate({ path: 'pact', model: Pact});
+			await updatedPost.populate({ path: 'author', model: User});
+			await updatedPost.populate({ path: 'comments', model: Comment});
+			res.status(200).json(jsonResponse(updatedPost, []));
 		}
 	} 
 	catch (err) {
