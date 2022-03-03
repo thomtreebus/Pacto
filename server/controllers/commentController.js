@@ -5,6 +5,7 @@ const Post = require("../models/Post");
 const {jsonResponse, jsonError} = require("../helpers/responseHandlers");
 const handleFieldErrors = require('../helpers/errorHandler');
 const { MESSAGES, COMMENT_MESSAGES } = require("../helpers/messages");
+const { upvote, downvote } = require("../helpers/genericVoteMethods");
 
 module.exports.commentPost = async (req, res) => {
   try {
@@ -56,6 +57,29 @@ module.exports.commentDelete = async (req, res) => {
 module.exports.commentGet = async (req, res) => {
   try {
     const comment = req.comment;
+    await comment.populate({path: "author", model: User});
+    res.status(200).json(jsonResponse(comment, []));
+  } catch(err){
+    res.status(400).json(jsonResponse(null, [jsonError(null, err.message)]));
+  }
+}
+
+module.exports.commentUpvotePut = async (req, res) => {
+  try {
+    const comment = upvote(req.comment);
+    await comment.populate({path: "author", model: User});
+
+    res.status(200).json(jsonResponse(comment, []));
+  } catch(err){
+    res.status(400).json(jsonResponse(null, [jsonError(null, err.message)]));
+  }
+}
+
+module.exports.commentDownvotePut = async (req, res) => {
+  try {
+    const comment = downvote(req.comment);
+    await comment.populate({path: "author", model: User});
+
     res.status(200).json(jsonResponse(comment, []));
   } catch(err){
     res.status(400).json(jsonResponse(null, [jsonError(null, err.message)]));
