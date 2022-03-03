@@ -16,8 +16,7 @@ module.exports.downvote = async (obj, usr) => {
     obj.downvoters.push(usr._id);
     obj.votes = obj.votes - 1;
   }
-  obj.save();
-  return obj;
+  await obj.save();
 }
 
 module.exports.upvote = async (obj, usr) => {
@@ -38,6 +37,5 @@ module.exports.upvote = async (obj, usr) => {
     obj.upvoters.push(usr._id);
     obj.votes = obj.votes + 1;
   }
-  obj.save();
-  return obj;
+  await obj.save();
 }

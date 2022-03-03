@@ -55,14 +55,14 @@ module.exports.upvotePostPost = async (req, res) => {
 			res.status(404).json(jsonResponse(null, [jsonError(null, POST_MESSAGES.NOT_FOUND)]));
 		} 
 		else {
-			const updatedPost = upvote(post, req.user);
+			upvote(post, req.user);
 
 			// Populating before returning the post
-			await updatedPost.populate({ path: 'upvoters', model: User });
-			await updatedPost.populate({ path: 'downvoters', model: User });
-			await updatedPost.populate({ path: 'pact', model: Pact});
-			await updatedPost.populate({ path: 'author', model: User});
-			await updatedPost.populate({ path: 'comments', model: Comment});
+			await post.populate({ path: 'upvoters', model: User });
+			await post.populate({ path: 'downvoters', model: User });
+			await post.populate({ path: 'pact', model: Pact});
+			await post.populate({ path: 'author', model: User});
+			await post.populate({ path: 'comments', model: Comment});
 			res.status(200).json(jsonResponse(post, []));
 		}
 	} 
@@ -80,18 +80,19 @@ module.exports.downvotePostPost = async (req, res) => {
 			res.status(404).json(jsonResponse(null, [jsonError(null, POST_MESSAGES.NOT_FOUND)]));
 		} 
 		else {
-			const updatedPost = downvote(post, req.user);
+			downvote(post, req.user);
 
 			// Populating before returning the post
-			await updatedPost.populate({ path: 'upvoters', model: User });
-			await updatedPost.populate({ path: 'downvoters', model: User });
-			await updatedPost.populate({ path: 'pact', model: Pact});
-			await updatedPost.populate({ path: 'author', model: User});
-			await updatedPost.populate({ path: 'comments', model: Comment});
-			res.status(200).json(jsonResponse(updatedPost, []));
+			await post.populate({ path: 'upvoters', model: User });
+			await post.populate({ path: 'downvoters', model: User });
+			await post.populate({ path: 'pact', model: Pact});
+			await post.populate({ path: 'author', model: User});
+			await post.populate({ path: 'comments', model: Comment});
+			res.status(200).json(jsonResponse(post, []));
 		}
 	} 
 	catch (err) {
+		console.log(err.message);
 		res.status(400).json(jsonResponse(null, [jsonError(null, err.message)]));
 	}
 };
