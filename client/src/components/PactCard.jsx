@@ -6,11 +6,14 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import PeopleAltRoundedIcon from "@mui/icons-material/PeopleAltRounded";
 import PactChip from "./PactChip";
 import { useHistory } from "react-router-dom";
+import ErrorMessage from "./ErrorMessage";
 
 export default function PactCard({ pact, joined }) {
 	const history = useHistory();
 	const DESCRIPTION_LENGTH = 42;
 	const [isJoinButtonDisabled, setIsJoinButtonDisabled] = React.useState(false);
+	const [isError, setIsError] = React.useState(false);
+	const [errorMessage, setErrorMessage] = React.useState(null);
 
 	function handleViewButtonClick() {
 		history.push(`/pact/${pact._id}`);
@@ -18,11 +21,36 @@ export default function PactCard({ pact, joined }) {
 
 	async function handleJoinButtonClick() {
 		setIsJoinButtonDisabled(true);
+
+		const response = await fetch(
+			`${process.env.REACT_APP_URL}/pact/${pact._id}/join`,
+			{
+				method: "POST",
+				credentials: "include",
+			}
+		);
+
+		const json = await response.json();
+
+		console.log(json);
+
+		if (json.errors.length) {
+			setIsError(true);
+			setErrorMessage(json.errors[0].message);
+			setIsJoinButtonDisabled(false);
+			return;
+		}
+
 		history.push(`/pact/${pact._id}`);
 	}
 
 	return (
 		<Grid item xs={12} s={6} md={4} lg={3}>
+			<ErrorMessage
+				isOpen={isError}
+				setIsOpen={setIsError}
+				message={errorMessage}
+			/>
 			<Card>
 				<CardHeader
 					avatar={<Avatar src={pact.image} alt="pact-image" />}
