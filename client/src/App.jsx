@@ -3,6 +3,7 @@ import SignUp from "./pages/SignupPage";
 import BaseLayout from "./layouts/BaseLayout";
 import Landing from "./pages/LandingPage";
 import Feed from "./pages/Feed";
+import EditPact from "./pages/EditPact"
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { CssBaseline } from "@mui/material";
 import Profile from "./pages/Profile";
@@ -10,6 +11,7 @@ import PrivateRoute from "./components/PrivateRoute";
 import AuthRoute from "./components/AuthRoute";
 import NotFound from "./pages/NotFound";
 import UniversityHubPage from "./pages/UniversityHubPage";
+
 
 function App() {
 	return (
@@ -32,6 +34,9 @@ function App() {
 							<PrivateRoute path="/profile">
 								<h2>Profile</h2>
 								<Profile />
+							</PrivateRoute>
+							<PrivateRoute path="/pact/:pactId/edit-pact">
+								<EditPact />
 							</PrivateRoute>
 							<PrivateRoute path="/feed">
 								<h1>Feed</h1>
