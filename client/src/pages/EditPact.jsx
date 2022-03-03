@@ -14,19 +14,19 @@ export default function EditPact() {
 	const [isButtonDisabled, setIsButtonDisabled] = React.useState(false);
 	const { pactId } = useParams();
 	const history = useHistory();
-	let data = {
+	const defaultData = {
 		name: "",
 		category: "",
 		description: ""
 	};
 
-    const [name, setName] = useState(data.name)
-    const [category, setCategory] = useState(data.category)
-    const [description, setDescription] = useState(data.description)
+    const [name, setName] = useState(defaultData.name)
+    const [category, setCategory] = useState(defaultData.category)
+    const [description, setDescription] = useState(defaultData.description)
 
-	const [apiPactNameError, setApiPactNameError] = React.useState('');
-	const [apiPactCategoryError, setApiPactCategoryError] = React.useState('');
-	const [apiPactDescriptionError, setApiPactDescriptionError] = React.useState('');
+		const [apiPactNameError, setApiPactNameError] = React.useState('');
+		const [apiPactCategoryError, setApiPactCategoryError] = React.useState('');
+		const [apiPactDescriptionError, setApiPactDescriptionError] = React.useState('');
 
     const handleCategoryChange = (event) => {
         setCategory(event.target.value);
@@ -43,8 +43,6 @@ export default function EditPact() {
 		  }
 		  return res.json();
 		}).then((resData) => {
-			console.log(resData);
-			console.log(resData.message)
 			data = resData.message;
 			setName(data.name);
 			setCategory(data.category);
