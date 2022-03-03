@@ -2,7 +2,7 @@ const User = require('../models/User');
 
 
 module.exports.updateProfile = async(req, res) => {
-  const { id } = req.params; 
+  const id = req.params.userId; 
   console.log(req.body);
   const { firstName, lastName, personalEmail, course } = req.body;
 

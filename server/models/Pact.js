@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const { PACT_MESSAGES } = require('../helpers/messages');
 const Schema = mongoose.Schema;
 
-const PactSchema = mongoose.Schema({
+let PactSchema = mongoose.Schema({
   name: {
     type: String,
     required: [true, PACT_MESSAGES.NAME.BLANK],
@@ -50,7 +50,12 @@ const PactSchema = mongoose.Schema({
     default: "https://avatars.dicebear.com/api/identicon/temp.svg"
   },
 
-  // POSTS AND EVENTS TO BE ADDED
+  posts: [{
+    type: Schema.Types.ObjectId,
+    ref: 'Post'
+  }]
+
+  // EVENTS TO BE ADDED
 
 });
 

@@ -5,7 +5,7 @@ const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const supertest = require("supertest");
 const app = require("../../app");
-const { generateTestUser, getEmail } = require("../fixtures/generateTestUser");
+const { generateTestUser, getTestUserEmail } = require("../fixtures/generateTestUser");
 const { createToken } = require("../../controllers/authController");
 const { PACT_MESSAGES } = require("../../helpers/messages");
 
@@ -42,7 +42,7 @@ describe("POST /pact", () => {
 
   // Helpers
   const isInvalidPact = async (pactObject, expErrField, expErrMsg) => {
-    const user = await User.findOne({ uniEmail: getEmail() });
+    const user = await User.findOne({ uniEmail: getTestUserEmail() });
     const token = createToken(user._id);
     const response = await supertest(app)
       .post("/pact")
@@ -56,7 +56,7 @@ describe("POST /pact", () => {
   }
 
   const isValidPact = async (pactObject) => {
-    const user = await User.findOne({ uniEmail: getEmail() });
+    const user = await User.findOne({ uniEmail: getTestUserEmail() });
     const token = createToken(user._id);
     const response = await supertest(app)
       .post("/pact")
@@ -72,7 +72,7 @@ describe("POST /pact", () => {
     expect(response.body.message.moderators.length).toBe(1);
     expect(response.body.errors.length).toBe(0);
 
-    const updatedUser = await User.findOne({ uniEmail: getEmail() });
+    const updatedUser = await User.findOne({ uniEmail: getTestUserEmail() });
     expect(updatedUser.pacts.length).toBe(1);
     await updatedUser.populate({path: "university", model: University});
     expect(updatedUser.university.pacts.length).toBe(1);
