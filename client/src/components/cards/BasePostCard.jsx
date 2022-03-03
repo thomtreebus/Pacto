@@ -14,15 +14,24 @@ export default function BasePostCard({ children, post }) {
 
   const history = useHistory();
 
-  const handleLikeEvent = (event) => {
-    // Dispatch message to server about like event
-    // 0 => Post was unliked.
-    // 1 => Post was liked and undisliked.
-    // 2 => Post was liked.
-    // 3 => Post was undisliked.
-    // 4 => Post was disliked and unliked.
-    // 5 => Post was disliked.
-  }
+  const handleLikeEvent = async (eventCode) => {
+    const url = (() => {
+      switch(eventCode) {
+        case 0: return `pact/${post.pact._id}/post/upvote/${post._id}`;
+        case 1: return `pact/${post.pact._id}/post/downvote/${post._id}`;
+        default: return;
+      }
+    })()
+    try {
+			fetch(`${process.env.REACT_APP_URL}/${url}`, {
+				method: "POST",
+				credentials: "include",
+			});
+		} catch (err) {
+			console.log(err)
+			return;
+		}
+	};
 
   return (
     <Card sx={{ width: "100%" }}>
@@ -32,16 +41,14 @@ export default function BasePostCard({ children, post }) {
             <IconButton sx={{ paddingRight: 0, paddingLeft: 0, paddingTop: 0 ,paddingBottom: 0 }} onClick={() => {
               if (thumbUp) {
                 setLikes(likes - 1);
-                handleLikeEvent(0);
               } else if (thumbDown) {
                 setLikes(likes + 2);
                 setThumbDown(false);
-                handleLikeEvent(1);
               } else {
-                setLikes(likes + 1)
-                handleLikeEvent(2);
+                setLikes(likes + 1);
               }
               setThumbUp(!thumbUp);
+              handleLikeEvent(0);
             }}>
               <ThumbUpRoundedIcon color={thumbUp ? "primary" : "inherit"}/>
             </IconButton>
@@ -53,16 +60,14 @@ export default function BasePostCard({ children, post }) {
             <IconButton sx={{ paddingRight: 0, paddingLeft: 0, paddingTop: 0 ,paddingBottom: 0 }} onClick={() => {
               if (thumbDown) {
                 setLikes(likes + 1);
-                handleLikeEvent(3);
               } else if (thumbUp) {
                 setLikes(likes - 2);
                 setThumbUp(false);
-                handleLikeEvent(4);
               } else {
-                setLikes(likes - 1)
-                handleLikeEvent(5);
+                setLikes(likes - 1);
               }
               setThumbDown(!thumbDown);
+              handleLikeEvent(1);
             }}>
               <ThumbDownRoundedIcon color={thumbDown ? "secondary" : "inherit"}/>
             </IconButton>
