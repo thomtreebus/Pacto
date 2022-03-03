@@ -10,6 +10,16 @@ import { useHistory } from "react-router-dom";
 export default function PactCard({ pact, joined }) {
 	const history = useHistory();
 	const DESCRIPTION_LENGTH = 42;
+	const [isJoinButtonDisabled, setIsJoinButtonDisabled] = React.useState(false);
+
+	function handleViewButtonClick() {
+		history.push(`/pact/${pact._id}`);
+	}
+
+	async function handleJoinButtonClick() {
+		setIsJoinButtonDisabled(true);
+		history.push(`/pact/${pact._id}`);
+	}
 
 	return (
 		<Grid item xs={12} s={6} md={4} lg={3}>
@@ -58,7 +68,7 @@ export default function PactCard({ pact, joined }) {
 							variant="contained"
 							sx={{ width: "100%" }}
 							startIcon={<VisibilityIcon />}
-							onClick={() => history.push(`/pact/${pact._id}`)}
+							onClick={handleViewButtonClick}
 						>
 							View
 						</Button>
@@ -67,7 +77,8 @@ export default function PactCard({ pact, joined }) {
 							variant="outlined"
 							sx={{ width: "100%" }}
 							startIcon={<AddIcon />}
-							onClick={() => history.push(`/pact/${pact._id}`)}
+							onClick={handleJoinButtonClick}
+							disabled={isJoinButtonDisabled}
 						>
 							Join
 						</Button>
