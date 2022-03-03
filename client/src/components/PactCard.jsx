@@ -32,8 +32,6 @@ export default function PactCard({ pact, joined }) {
 
 		const json = await response.json();
 
-		console.log(json);
-
 		if (json.errors.length) {
 			setIsError(true);
 			setErrorMessage(json.errors[0].message);
