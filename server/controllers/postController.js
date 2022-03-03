@@ -62,10 +62,11 @@ module.exports.upvotePostPost = async (req, res) => {
 				post.votes = post.votes - 1;
 			} 
 			else if(post.downvoters.includes(req.user._id)) {
-					// remove downvote
+					// Remove downvote
 				const index = post.downvoters.indexOf(req.user._id);
 				post.downvoters.splice(index, 1);
-				post.votes = post.votes + 1;
+				post.upvoters.push(req.user._id);
+				post.votes = post.votes + 2;
 			}
 			else {
 				// Standard upvote
@@ -108,7 +109,8 @@ module.exports.downvotePostPost = async (req, res) => {
 				// Remove upvote
 				const index = post.upvoters.indexOf(req.user._id);
 				post.upvoters.splice(index, 1);
-				post.votes = post.votes - 1;
+				post.downvoters.push(req.user._id);
+				post.votes = post.votes - 2;
 			} else {
 				// Standard downvote
 				post.downvoters.push(req.user._id);
