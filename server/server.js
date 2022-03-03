@@ -13,5 +13,4 @@ const start = async () => {
 	});
 } 
 
-console.log(process.env.DB_CONNECTION_URL);
 start();
