@@ -11,4 +11,3 @@ router.delete('/:userId', checkAuthenticated, users.deleteUser);
 router.post('/:recipientId', checkAuthenticated, users.sendFriendRequest);
 router.put('/:friendRequestId/accept', checkAuthenticated, users.acceptFriendRequest);
 router.put('/:friendRequestId/reject', checkAuthenticated, users.rejectFriendRequest);
-  
