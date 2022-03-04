@@ -1,4 +1,4 @@
-import { Grid } from "@mui/material";
+import { Fab, Grid } from "@mui/material";
 import { Box } from "@mui/system";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
@@ -6,6 +6,8 @@ import AboutPact from "../components/AboutPact";
 import PostList from "../components/PostList";
 import ErrorPage from "./Error";
 import Loading from "./Loading";
+
+import AddIcon from '@mui/icons-material/Add';
 
 const testdata = [
   {
@@ -203,6 +205,11 @@ export default function PactPage() {
           </Box>
         </Grid>
       </Grid>
+      <Box position={"fixed"} bottom={50} right={300}>
+        <Fab color="primary" aria-label="add">
+          <AddIcon />
+        </Fab>
+      </Box>
     </>
   );
 }
