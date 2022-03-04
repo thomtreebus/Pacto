@@ -7,7 +7,12 @@ const users = require('../controllers/users');
 router.put('/:userId', checkAuthenticated, users.updateProfile);
 router.delete('/:userId', checkAuthenticated, users.deleteUser);
 
-  // route for friend requests
-router.post('/:recipientId', checkAuthenticated, users.sendFriendRequest);
-router.put('/:friendRequestId/accept', checkAuthenticated, users.acceptFriendRequest);
-router.put('/:friendRequestId/reject', checkAuthenticated, users.rejectFriendRequest);
+// routes for friends
+
+// requests:
+router.post('/friends/:recipientId', checkAuthenticated, users.sendFriendRequest);
+router.put('/friends/:friendRequestId/accept', checkAuthenticated, users.acceptFriendRequest);
+router.put('/friends/:friendRequestId/reject', checkAuthenticated, users.rejectFriendRequest);
+
+// removal:
+router.put('/friends/remove/:friendToRemoveId', checkAuthenticated, users.removeFriend);

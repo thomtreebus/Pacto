@@ -1,6 +1,6 @@
 const User = require('../models/User');
 const FriendRequest = require('../models/FriendRequest');
-const { FRIEND_REQUEST_MESSAGES } = require('../helpers/messages');
+const { FRIEND_MESSAGES, FRIEND_REQUEST_MESSAGES } = require('../helpers/messages');
 
 
 module.exports.updateProfile = async(req, res) => {
@@ -33,7 +33,7 @@ module.exports.sendFriendRequest = async (req, res) => {
     if(user.sentRequests.filter(r => r.recipient === recipientId).length !== 0) {
       res.status(400).json(jsonResponse(null, [jsonError(null, FRIEND_REQUEST_MESSAGES.ALREADY_SENT)]));
     } else if (recipient.friends.includes(user._id)){
-      res.status(400).json(jsonResponse(null, [jsonError(null, FRIEND_REQUEST_MESSAGES.ALREADY_FRIEND)]));
+      res.status(400).json(jsonResponse(null, [jsonError(null, FRIEND_MESSAGES.ALREADY_FRIEND)]));
     } else {
       // Send the request 
       const friendRequest = await FriendRequest.create({ requestor: user, recipient: recipient });
@@ -103,6 +103,29 @@ module.exports.rejectFriendRequest = async (req, res) => {
     } else {
       res.status(400).json(jsonResponse(null, [jsonError(null, FRIEND_REQUEST_MESSAGES.NOT_AUTHORISED.REJECT)]));
     }
+	} 
+  catch (err) {
+		res.status(400).json(jsonResponse(null, [jsonError(null, err.message)]));
+	}
+}
+
+module.exports.removeFriend = async (req, res) => {
+  try {
+    const user = req.user;
+
+    const { friendToRemoveId } = req.params;
+    if (!mongoose.Types.ObjectId.isValid(friendToRemoveId)) return res.status(404).send(`No user with id: ${ friendToRemoveId }`);
+    const friendToRemove = await User.findById(friendToRemoveId);
+
+    if(user.friends.includes(friendToRemoveId)) {
+      // Remove from friends lists
+      await User.findByIdAndUpdate(user._id, { $pull: { friends: friendToRemoveId } });
+      await User.findByIdAndUpdate(friendToRemove._id, { $pull: { friends: user._id } });
+
+      res.status(201).json(jsonResponse(null, []));
+    } else {
+      res.status(400).json(jsonResponse(null, [jsonError(null, FRIEND_MESSAGES.NOT_FRIEND)]));
+    } 
 	} 
   catch (err) {
 		res.status(400).json(jsonResponse(null, [jsonError(null, err.message)]));

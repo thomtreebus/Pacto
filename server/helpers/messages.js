@@ -78,11 +78,15 @@ module.exports.POST_MESSAGES = {
 	},
 };
 
+module.exports.FRIEND_MESSAGES = {
+	ALREADY_FRIEND: "Recipient is already a friend",
+	NOT_FRIEND: "Recipient is not a friend"
+};
+
 module.exports.FRIEND_REQUEST_MESSAGES = {
 	NOT_AUTHORISED: {
 		ACCEPT: "Cannot accept friend request for somebody else",
 		REJECT: "Cannot reject friend request for somebody else",
 	},
 	ALREADY_SENT: "Recipient has already got a friend request",
-	ALREADY_FRIEND: "Recipient is already a friend"
 };
