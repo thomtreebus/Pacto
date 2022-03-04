@@ -77,3 +77,12 @@ module.exports.POST_MESSAGES = {
 		NOT_AUTHOR: "User is not the author of the post",
 	},
 };
+
+module.exports.FRIEND_REQUEST_MESSAGES = {
+	NOT_AUTHORISED: {
+		ACCEPT: "Cannot accept friend request for somebody else",
+		REJECT: "Cannot reject friend request for somebody else",
+	},
+	ALREADY_SENT: "Recipient has already got a friend request",
+	ALREADY_FRIEND: "Recipient is already a friend"
+};
