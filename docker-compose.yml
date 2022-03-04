@@ -1,0 +1,52 @@
+version: "3"
+services:
+
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    ports:
+      - 3000:3000
+    networks:
+      - pacto
+    depends_on:
+      - server
+    links:
+      - server
+    command: npm start
+    stdin_open: true
+    tty: true
+
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    ports:
+      - 8000:8000
+    networks:
+      - pacto
+    depends_on:
+      - mongo
+    links:
+      - mongo
+    command: /usr/app/node_modules/.bin/nodemon -L src/server.js
+    environment:
+      - DB_CONNECTION_URL=mongodb://mongo/db
+      - TEST_DB_CONNECTION_URL=mongodb://mongo/test
+
+  mongo:
+    container_name: mongo
+    image: mongo
+    ports:
+      - 27017:27017
+    networks:
+      - pacto
+    volumes:
+      - mongodb:/data/db
+
+networks:
+  pacto:
+    driver: bridge
+
+volumes:
+  mongodb:

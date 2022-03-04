@@ -7,30 +7,31 @@ import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
-import Icon from '../assets/pacto-logo.ico';
+import Icon from "../assets/pacto-logo.ico";
 
 export default function SignupPage() {
-	
-	const [passwordConfirmError, setPasswordConfirmError] = React.useState('');
-	const [apiFirstNameError, setApiFirstNameError] = React.useState('');
-	const [apiLastNameError, setApiLastNameError] = React.useState('');
-	const [apiUniEmailError, setApiUniEmailError] = React.useState('');
-	const [apiPasswordError, setApiPasswordError] = React.useState('');
+	const [passwordConfirmError, setPasswordConfirmError] = React.useState("");
+	const [apiFirstNameError, setApiFirstNameError] = React.useState("");
+	const [apiLastNameError, setApiLastNameError] = React.useState("");
+	const [apiUniEmailError, setApiUniEmailError] = React.useState("");
+	const [apiPasswordError, setApiPasswordError] = React.useState("");
+	const [isButtonDisabled, setIsButtonDisabled] = React.useState(false);
 	const history = useHistory();
-
 
 	const handleSubmit = async (event) => {
 		event.preventDefault();
+		setIsButtonDisabled(true);
 		const data = new FormData(event.currentTarget);
 
-		setApiFirstNameError('');
-		setApiLastNameError('');
-		setApiUniEmailError('');
-		setApiPasswordError('');
-		setPasswordConfirmError('');
+		setApiFirstNameError("");
+		setApiLastNameError("");
+		setApiUniEmailError("");
+		setApiPasswordError("");
+		setPasswordConfirmError("");
 
-		if (data.get("password") !== data.get("confirmPassword")){
+		if (data.get("password") !== data.get("confirmPassword")) {
 			setPasswordConfirmError("Passwords do not match!");
+			setIsButtonDisabled(false);
 			return;
 		}
 
@@ -49,32 +50,31 @@ export default function SignupPage() {
 		});
 
 		const json = await response.json();
-		
-		Object.values(json['errors']).forEach(err => {
+
+		Object.values(json["errors"]).forEach((err) => {
 			const field = err["field"];
 			const message = err["message"];
 
-			if (field === "firstName"){
-				setApiFirstNameError(message)
+			if (field === "firstName") {
+				setApiFirstNameError(message);
 			}
-			if (field === "lastName"){
-				setApiLastNameError(message)
+			if (field === "lastName") {
+				setApiLastNameError(message);
 			}
-			if (field === "uniEmail"){
-				setApiUniEmailError(message)
+			if (field === "uniEmail") {
+				setApiUniEmailError(message);
 			}
-			if (field === "password"){
-				setApiPasswordError(message)
+			if (field === "password") {
+				setApiPasswordError(message);
 			}
-
 		});
 
 		if (response.status !== 201) {
+			setIsButtonDisabled(false);
 			return;
 		}
 
 		history.push("/login");
-		
 	};
 
 	return (
@@ -105,11 +105,11 @@ export default function SignupPage() {
 							/>
 						</Grid>
 						<Grid item xs={12} sm={6}>
-							<TextField 
-								required 
-								fullWidth 
+							<TextField
+								required
+								fullWidth
 								label="Last Name"
-								name="lastName" 
+								name="lastName"
 								error={apiLastNameError.length !== 0}
 								helperText={apiLastNameError}
 							/>
@@ -153,6 +153,7 @@ export default function SignupPage() {
 					<Button
 						type="submit"
 						fullWidth
+						disabled={isButtonDisabled}
 						variant="contained"
 						sx={{ mt: 3, mb: 2 }}
 					>

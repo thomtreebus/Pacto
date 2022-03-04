@@ -71,7 +71,9 @@ async function createUser(firstName, lastName, university) {
 }
 
 async function seedPacts(university) {
-	const names = chance.unique(chance.company, PACT_COUNT);
+	const pactNameGenerator = () => chance.sentence({ words: 2 })
+
+	const names = chance.unique(pactNameGenerator, PACT_COUNT);
 
 	for (let i = 0; i < names.length; i++) {
 		const category = PACT_CATEGORIES[chance.integer({min: 0, max: PACT_CATEGORIES.length - 1})];
@@ -94,16 +96,19 @@ async function seedUsers(university) {
 
 async function addUserToPact(user, pact) {
 	pact.members.push(user);
+	user.pacts.push(pact);
 
 	if(chance.integer({min: 0, max: 1})) {
 		pact.moderators.push(user);
 	}
 
+	await user.save();
 	await pact.save();
 }
 
 async function populatePacts() {
-	const users = await User.find({});
+	const preProgrammedUser = await User.findOne({firstName : "pac", secondName: "to"})
+	const users = await User.find({ _id: {$ne: preProgrammedUser._id}})
 	const pacts = await Pact.find({});
 
 	for (let i = 0; i < users.length; i++) {

@@ -8,7 +8,7 @@ import Icon from "../assets/pacto-logo.ico";
 import { useHistory } from "react-router-dom";
 import MenuItem from '@mui/material/MenuItem';
 
-export default function LoginPage() {
+export default function CreatePactPage() {
   const [category, setCategory] = React.useState('');
 	const [isButtonDisabled, setIsButtonDisabled] = React.useState(false);
 	const history = useHistory();
@@ -46,22 +46,22 @@ export default function LoginPage() {
 		});
 
 		const json = await response.json();
-		console.log(json);
 
 		Object.values(json['errors']).forEach(err => {
 			const field = err["field"];
 			const message = err["message"];
 
-			if (field === "name"){
-				setApiPactNameError(message);
+			switch (field) {
+				case "name":
+					setApiPactNameError(message);
+					break;
+				case "category":
+					setApiPactCategoryError(message);
+					break;
+				case "description":
+					setApiPactDescriptionError(message);
+					break;
 			}
-			if(field === "category"){
-				setApiPactCategoryError(message);
-			}
-			if (field === "description"){
-				setApiPactDescriptionError(message);
-			}
-
 			setIsButtonDisabled(false);
 		});
 
@@ -70,7 +70,6 @@ export default function LoginPage() {
 		}
 
 		history.push(`/pact/${json.message._id}`);
-		console.log(json)
 		
 	};
 
