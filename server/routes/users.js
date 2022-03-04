@@ -8,3 +8,7 @@ const users = require('../controllers/users');
 router.route('/:userId')
   .put(catchAsync(users.updateProfile))
   .delete(catchAsync(users.deleteUser));
+
+
+router.route('/:requestUserId')
+  .post(catchAsync(users.sendFriendRequest));
