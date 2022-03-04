@@ -11,6 +11,7 @@ import PrivateRoute from "./components/PrivateRoute";
 import AuthRoute from "./components/AuthRoute";
 import NotFound from "./pages/NotFound";
 import UniversityHubPage from "./pages/UniversityHubPage";
+import PactPage from "./pages/PactPage";
 
 function App() {
 	return (
@@ -42,6 +43,9 @@ function App() {
 							</PrivateRoute>
 							<PrivateRoute exact path="/hub">
 								<UniversityHubPage />
+							</PrivateRoute>
+							<PrivateRoute exact path="/pact/:pactID">
+								<PactPage />
 							</PrivateRoute>
 							<PrivateRoute path="*">
 								<NotFound />

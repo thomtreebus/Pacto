@@ -52,6 +52,7 @@ describe("POST /signup", () => {
       .expect(400);
 
     expect(response.body.message).toBe(null);
+    console.log(response.body);
     expect(response.body.errors[0].field).toBe(field);
     expect(response.body.errors[0].message).toBe(msg);
     let msgExists= false

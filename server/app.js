@@ -19,7 +19,9 @@ app.use(cookieParser());
 // Routes
 const pactRoute = require("./routes/pact");
 app.use("/", pactRoute);
-app.use("/", pactRoute);
+
+const postRoute = require("./routes/post");
+app.use("/", postRoute);
 
 const uniRoute = require("./routes/university");
 app.use("/", uniRoute);

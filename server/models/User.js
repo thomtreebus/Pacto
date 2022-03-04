@@ -53,6 +53,10 @@ const UserSchema = Schema({
     ref: 'University',
     required: true
   },
+  pacts: [{
+    type: Schema.Types.ObjectId,
+    ref: 'Pact'
+  }],
   image: {
     type: String,
     default: "https://res.cloudinary.com/djlwzi9br/image/upload/v1644582632/pacto-logo_zzeh98.png"

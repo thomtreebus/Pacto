@@ -3,7 +3,6 @@ import React from 'react';
 import { useState } from "react";
 import { Image } from 'cloudinary-react';
 import { useHistory } from "react-router-dom";
-import { useAuth } from '../providers/AuthProvider';
 import Grid from '@mui/material/Grid';
 import {useParams } from "react-router-dom";
 import { useQuery } from "react-query";
@@ -18,7 +17,6 @@ import PropTypes from 'prop-types';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
-import Link from '@mui/material/Link';
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
@@ -86,7 +84,7 @@ export default function Profile() {
       }
       setUser(data.message);
     }
-  }, [data]);
+  }, [data, history]);
 
   
 

@@ -10,19 +10,14 @@ import Grid from "@mui/material/Grid";
 import Icon from "../assets/pacto-logo.ico";
 import Typography from "@mui/material/Typography";
 import { useAuth } from "../providers/AuthProvider";
-import Snackbar from "@mui/material/Snackbar";
-import Alert from "@mui/material/Alert";
+import ErrorMessage from "../components/ErrorMessage";
 
 export default function LoginPage() {
-	const { setIsAuthenticated } = useAuth();
+	const { setIsAuthenticated, setUser } = useAuth();
 	const [snackbarOpen, setSnackbarOpen] = React.useState(false);
 	const [snackbarMessage, setSnackbarMessage] = React.useState(null);
 	const [isButtonDisabled, setIsButtonDisabled] = React.useState(false);
 	const history = useHistory();
-
-	const handleClose = () => {
-		setSnackbarOpen(false);
-	};
 
 	const handleSubmit = async (event) => {
 		event.preventDefault();
@@ -52,6 +47,7 @@ export default function LoginPage() {
 			}
 
 			setIsAuthenticated(true);
+			setUser(json.message);
 			history.push("/feed");
 		} catch (err) {
 			setSnackbarMessage(err.message);
@@ -142,17 +138,11 @@ export default function LoginPage() {
 				</Grid>
 			</Grid>
 
-			<Snackbar
-				anchorOrigin={{ vertical: "top", horizontal: "center" }}
-				open={snackbarOpen}
-				autoHideDuration={6000}
-				onClose={handleClose}
-				data-testid="snackbar"
-			>
-				<Alert severity="error" onClose={handleClose}>
-					{snackbarMessage}
-				</Alert>
-			</Snackbar>
+			<ErrorMessage
+				isOpen={snackbarOpen}
+				setIsOpen={setSnackbarOpen}
+				message={snackbarMessage}
+			/>
 		</>
 	);
 }
