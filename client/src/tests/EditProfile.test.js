@@ -1,4 +1,4 @@
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { render, screen, fireEvent } from "@testing-library/react";
 import { waitForElementToBeRemoved } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import MockComponent from "./utils/MockComponent";
@@ -202,12 +202,24 @@ describe("Edit Profile Page Tests", () => {
     })
 
     it("uploaded image contents should be saved as a state", async () => {
+      server.use(
+        rest.post(`https://api.cloudinary.com/v1_1/${process.env.REACT_APP_CLOUDINARY_CLOUD_NAME}/image/upload`, (req, res, ctx) => {
+          return res(
+            ctx.status(201),
+            ctx.json({
+              url: "imageUrl",
+              secure_url: "imageUrl",
+            }),
+          );
+        })
+      );
       const image = new File(['testImage'], 'testImage.png', {type: 'image/png'})
       const buttonElement = await screen.findByTestId(
         "image-upload-icon"
       );
       await act(async () => {
         await userEvent.upload(buttonElement, image);
+        await new Promise(resolve => setTimeout(resolve, 1000));
         expect(buttonElement.files[0]).toBe(image);
         expect(buttonElement.files).toHaveLength(1);
       });
@@ -261,8 +273,12 @@ describe("Edit Profile Page Tests", () => {
       const updateProfileButton = await screen.findByRole("button", {
         name: "Update Profile"
       });
-      await userEvent.click(updateProfileButton);
-      // expect(window.location.pathname).toBe("/profile");
+      await act( async () => {
+        await userEvent.click(updateProfileButton);
+        // expect(window.location.pathname).toBe("/profile");
+        await new Promise(resolve => setTimeout(resolve, 1000));
+      });
+
     });
   });
 
@@ -288,9 +304,13 @@ describe("Edit Profile Page Tests", () => {
       const updateProfileButton = await screen.findByRole("button", {
         name: "Update Profile"
       });
-      await userEvent.click(updateProfileButton);
-      const screenErrorMessage = await screen.findByText(errMsg);
-      expect(screenErrorMessage).toBeInTheDocument();
+      await act( async () => {
+        await userEvent.click(updateProfileButton);
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        const screenErrorMessage = await screen.findByText(errMsg);
+        expect(screenErrorMessage).toBeInTheDocument();
+      });
+
     });
 
     it("Shows linkedin field error", async () => {
@@ -314,9 +334,12 @@ describe("Edit Profile Page Tests", () => {
       const updateProfileButton = await screen.findByRole("button", {
         name: "Update Profile"
       });
-      await userEvent.click(updateProfileButton);
-      const screenErrorMessage = await screen.findByText(errMsg);
-      expect(screenErrorMessage).toBeInTheDocument();
+      await act( async () => {
+        await userEvent.click(updateProfileButton);
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        const screenErrorMessage = await screen.findByText(errMsg);
+        expect(screenErrorMessage).toBeInTheDocument();
+      });
     });
 
     it("Shows phone field error", async () => {
@@ -340,9 +363,12 @@ describe("Edit Profile Page Tests", () => {
       const updateProfileButton = await screen.findByRole("button", {
         name: "Update Profile"
       });
-      await userEvent.click(updateProfileButton);
-      const screenErrorMessage = await screen.findByText(errMsg);
-      expect(screenErrorMessage).toBeInTheDocument();
+      await act( async () => {
+        await userEvent.click(updateProfileButton);
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        const screenErrorMessage = await screen.findByText(errMsg);
+        expect(screenErrorMessage).toBeInTheDocument();
+      });
     });
 
     it("Shows course field error", async () => {
@@ -366,9 +392,12 @@ describe("Edit Profile Page Tests", () => {
       const updateProfileButton = await screen.findByRole("button", {
         name: "Update Profile"
       });
-      await userEvent.click(updateProfileButton);
-      const screenErrorMessage = await screen.findByText(errMsg);
-      expect(screenErrorMessage).toBeInTheDocument();
+      await act( async () => {
+        await userEvent.click(updateProfileButton);
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        const screenErrorMessage = await screen.findByText(errMsg);
+        expect(screenErrorMessage).toBeInTheDocument();
+      });
     });
 
     it("Shows location field error", async () => {
@@ -392,9 +421,12 @@ describe("Edit Profile Page Tests", () => {
       const updateProfileButton = await screen.findByRole("button", {
         name: "Update Profile"
       });
-      await userEvent.click(updateProfileButton);
-      const screenErrorMessage = await screen.findByText(errMsg);
-      expect(screenErrorMessage).toBeInTheDocument();
+      await act( async () => {
+        await userEvent.click(updateProfileButton);
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        const screenErrorMessage = await screen.findByText(errMsg);
+        expect(screenErrorMessage).toBeInTheDocument();
+      });
     });
 
     it("Shows bio field error", async () => {
@@ -418,9 +450,12 @@ describe("Edit Profile Page Tests", () => {
       const updateProfileButton = await screen.findByRole("button", {
         name: "Update Profile"
       });
-      await userEvent.click(updateProfileButton);
-      const screenErrorMessage = await screen.findByText(errMsg);
-      expect(screenErrorMessage).toBeInTheDocument();
+      await act( async () => {
+        await userEvent.click(updateProfileButton);
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        const screenErrorMessage = await screen.findByText(errMsg);
+        expect(screenErrorMessage).toBeInTheDocument();
+      });
     });
   });
 });
