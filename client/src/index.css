@@ -29,3 +29,8 @@
 .signin-link:hover {
 	transform: scale(1.05);
 }
+
+.link:hover {
+	text-decoration: underline;
+	cursor: pointer;
+}

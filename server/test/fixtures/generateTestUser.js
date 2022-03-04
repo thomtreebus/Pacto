@@ -24,7 +24,7 @@ module.exports.generateTestUser = async () => {
 	return user;
 };
 
-module.exports.getEmail = () => {return USER_EMAIL;}
+module.exports.getTestUserEmail = () => {return USER_EMAIL;}
 
 // Must be used after generateTestUser has been called!!
 module.exports.generateNextTestUser = async (name, notkcl = false, uniname = "") => {

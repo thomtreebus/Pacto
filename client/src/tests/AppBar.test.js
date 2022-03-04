@@ -45,6 +45,9 @@ describe("App Bar Tests", () => {
         <Route exact path="/feed">
           <h1>Redirected to feed</h1>
         </Route>
+        <Route exact path="/create-pact">
+          <h1>Redirected to Create New Pact</h1>
+        </Route>
       </MockComponent>
       );
     await waitForElementToBeRemoved(() => screen.getByText("Loading"));

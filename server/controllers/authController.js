@@ -132,7 +132,7 @@ module.exports.loginPost = async (req, res) => {
 		// Generate cookie to log in user
 		const token = createToken(user._id);
 		res.cookie("jwt", token, { httpOnly: true, maxAge: COOKIE_MAX_AGE * 1000 });
-		res.status(200).json(jsonResponse({ id: user._id }, []));
+		res.status(200).json(jsonResponse({ user }, []));
 	} 
   catch (err) {
 		res.status(400).json(jsonResponse(null, [jsonError(null, err.message)]));
