@@ -14,7 +14,7 @@ import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
 
 export default function LoginPage() {
-	const { setIsAuthenticated } = useAuth();
+	const { setIsAuthenticated, setUser } = useAuth();
 	const [snackbarOpen, setSnackbarOpen] = React.useState(false);
 	const [snackbarMessage, setSnackbarMessage] = React.useState(null);
 	const [isButtonDisabled, setIsButtonDisabled] = React.useState(false);
@@ -52,6 +52,7 @@ export default function LoginPage() {
 			}
 
 			setIsAuthenticated(true);
+			setUser(json.message);
 			history.push("/feed");
 		} catch (err) {
 			setSnackbarMessage(err.message);
