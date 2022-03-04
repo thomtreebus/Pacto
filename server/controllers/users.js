@@ -83,18 +83,26 @@ module.exports.acceptFriendRequest = async (req, res) => {
 
 module.exports.rejectFriendRequest = async (req, res) => {
   try {
-    const user = req.user;
+    const recipient = req.user;
 
-    const { recipientId } = req.params;
-    if (!mongoose.Types.ObjectId.isValid(recipientId)) return res.status(404).send(`No user with id: ${recipientId}`);
-    const recipient = await User.findById(recipientId);
+    const { friendRequestId } = req.params;
+    if (!mongoose.Types.ObjectId.isValid(friendRequestId)) return res.status(404).send(`No friend request with id: ${friendRequestId}`);
+    const friendRequest = await FriendRequest.findById(friendRequestId);
 
-    const friendRequest = await FriendRequest.create({ requestor: user, recipient: recipient });
+    if(friendRequest.recipient === recipient._id) {
+      const requestor = User.findById(friendRequest.requestor);
 
-    await User.findByIdAndUpdate(user._id, { $push: { sentRequests: friendRequest } });
-    await User.findByIdAndUpdate(recipientId, { $push: { receivedRequests: friendRequest } });
+      // Remove request from users
+      await User.findByIdAndUpdate(recipient._id, { $pull: { receivedRequests: friendRequestId } });
+      await User.findByIdAndUpdate(requestor._id, { $pull: { sentRequests: friendRequestId } });
 
-		res.status(201).json(jsonResponse(null, []));
+      // Delete the friend request
+      await FriendRequest.findByIdAndDelete(friendRequestId);
+
+      res.status(201).json(jsonResponse(null, []));
+    } else {
+      res.status(400).json(jsonResponse(null, [jsonError(null, FRIEND_REQUEST_MESSAGES.NOT_AUTHORISED.REJECT)]));
+    }
 	} 
   catch (err) {
 		res.status(400).json(jsonResponse(null, [jsonError(null, err.message)]));
