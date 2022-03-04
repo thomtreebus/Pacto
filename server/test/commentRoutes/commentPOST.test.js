@@ -1,5 +1,7 @@
 const Pact = require("../../models/Pact");
+const Post = require("../../models/Pact");
 const User = require("../../models/User");
+const Comment = require("../../models/Comment");
 const University = require("../../models/University");
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
@@ -10,6 +12,10 @@ const { generateTestPact, getTestPactId } = require("../fixtures/generateTestPac
 const { generateTestPost, getTestPostId } = require("../fixtures/generateTestPost");
 const { createToken } = require("../../controllers/authController");
 const { PACT_MESSAGES, MESSAGES } = require("../../helpers/messages");
+
+dotenv.config();
+
+const COMMENT_TEXT = "This is my 1st comment.";
 
 describe("POST /pact/:pactId/post/:postId/comment", () =>{
   beforeAll(async () => {
@@ -34,20 +40,26 @@ describe("POST /pact/:pactId/post/:postId/comment", () =>{
     await Pact.deleteMany({});
 		await University.deleteMany({});
     await Post.deleteMany({});
+    await Comment.deleteMany({});
 	});
 
-  const sendRequest = async (user, postText, expStatus) => {
+  const sendRequest = async (user, text, expStatus) => {
     const token = createToken(user._id);
     const response = await supertest(app)
       .post(`/pact/${getTestPactId()}/post/${getTestPostId()}/comment`)
       .set("Cookie", [`jwt=${token}`])
-      .send({text: postText})
+      .send({text})
       .expect(expStatus);
 
     return response;
   }
 
-  it("successfully creates a valid post", async () =>{
-    const user
+  it("successfully creates a valid comment", async () =>{
+    const sentText = COMMENT_TEXT;
+    const user = await User.findOne({uniEmail: getTestUserEmail()});
+    const response = await sendRequest(user, sentText, 201);
+
+    expect(response.body.errors.length).toBe(0);
+    expect(response.body.message.text).toBe(sentText);
   });
 });
