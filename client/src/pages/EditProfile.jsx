@@ -47,21 +47,19 @@ export default function EditProfile() {
   const [apiInstagramError, setApiInstagramError] = React.useState('');
   const [apiPhoneError, setApiPhoneError] = React.useState('');
 
-  const uploadImage = (newImage) => {
-    console.log(image);
+  const uploadImage = async (newImage) => {
     const data = new FormData();
 
     data.append("api_key", process.env.REACT_APP_CLOUDINARY_KEY);
     data.append("file", newImage);
     data.append("upload_preset", "n2obmbt1");
 
-    Axios.post(`https://api.cloudinary.com/v1_1/${process.env.REACT_APP_CLOUDINARY_CLOUD_NAME}/image/upload`, data)
-      .then((res) => {
-        setImage(res.data.url);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    try {
+      const res = await Axios.post(`https://api.cloudinary.com/v1_1/${process.env.REACT_APP_CLOUDINARY_CLOUD_NAME}/image/upload`, data)
+      setImage(res.data.url);
+    } catch (err) {
+      console.log(err);
+    }
   }
 
   const handleSubmit = async (event) => {
@@ -81,7 +79,6 @@ export default function EditProfile() {
 
     //redirects user when form is correct
     if (res.status === 500){
-      console.log("Data ", JSON.stringify(data));
       return history.push('/profile');
     }
 
@@ -111,6 +108,7 @@ export default function EditProfile() {
         setApiBioError(message);
       }
     })
+
     setEditProfileIsDisabled(false);
   }
 
