@@ -29,6 +29,9 @@ app.use("/", uniRoute);
 const authRoute = require("./routes/auth");
 app.use("/", authRoute);
 
+const userRoute = require("./routes/users");
+app.use("/", userRoute);
+
 app.get("/ping", (req, res) => {
 	res.json({ ping: "pong" });
 });

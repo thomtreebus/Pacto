@@ -1,8 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const catchAsync = require('../utils/catchAsync');
-const User = require('../models/user');
+const User = require('../models/User');
 const users = require('../controllers/users');
+const { checkAuthenticated } = require("../middleware/authMiddleware");
 
 router.put('/:userId', checkAuthenticated, users.updateProfile);
 router.delete('/:userId', checkAuthenticated, users.deleteUser);
@@ -16,3 +16,5 @@ router.put('/friends/:friendRequestId/reject', checkAuthenticated, users.rejectF
 
 // removal:
 router.put('/friends/remove/:friendToRemoveId', checkAuthenticated, users.removeFriend);
+
+module.exports = router;

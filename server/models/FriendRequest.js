@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
 
 const FriendRequestSchema = mongoose.Schema({
   requestor: {
@@ -13,5 +14,5 @@ const FriendRequestSchema = mongoose.Schema({
   },
 });
 
-const FriendRequestSchema = mongoose.model('FriendRequests', EmailVerificationCodeSchema);
-module.exports = FriendRequestSchema;
+const FriendRequest = mongoose.model('FriendRequests', FriendRequestSchema);
+module.exports = FriendRequest;

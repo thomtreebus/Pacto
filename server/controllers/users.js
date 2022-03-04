@@ -1,14 +1,13 @@
 const User = require('../models/User');
 const FriendRequest = require('../models/FriendRequest');
 const { FRIEND_MESSAGES, FRIEND_REQUEST_MESSAGES } = require('../helpers/messages');
+const { jsonResponse, jsonError } = require("../helpers/responseHandlers");
 
 
 module.exports.updateProfile = async(req, res) => {
   const id = req.params.userId; 
   console.log(req.body);
   const { firstName, lastName, personalEmail, course } = req.body;
-
-  if (!mongoose.Types.ObjectId.isValid(id)) return res.status(404).send(`No user with id: ${id}`);
 
   const user = await User.findByIdAndUpdate(id, { firstName, lastName, personalEmail, course });
 
@@ -27,7 +26,6 @@ module.exports.sendFriendRequest = async (req, res) => {
     const user = req.user;
 
     const { recipientId } = req.params;
-    if (!mongoose.Types.ObjectId.isValid(recipientId)) return res.status(404).send(`No user with id: ${ recipientId }`);
     const recipient = await User.findById(recipientId);
 
     if(user.sentRequests.filter(r => r.recipient === recipientId).length !== 0) {
@@ -54,7 +52,6 @@ module.exports.acceptFriendRequest = async (req, res) => {
     const recipient = req.user;
 
     const { friendRequestId } = req.params;
-    if (!mongoose.Types.ObjectId.isValid(friendRequestId)) return res.status(404).send(`No friend request with id: ${friendRequestId}`);
     const friendRequest = await FriendRequest.findById(friendRequestId);
 
     if(friendRequest.recipient === recipient._id) {
@@ -86,7 +83,6 @@ module.exports.rejectFriendRequest = async (req, res) => {
     const recipient = req.user;
 
     const { friendRequestId } = req.params;
-    if (!mongoose.Types.ObjectId.isValid(friendRequestId)) return res.status(404).send(`No friend request with id: ${friendRequestId}`);
     const friendRequest = await FriendRequest.findById(friendRequestId);
 
     if(friendRequest.recipient === recipient._id) {
@@ -114,7 +110,6 @@ module.exports.removeFriend = async (req, res) => {
     const user = req.user;
 
     const { friendToRemoveId } = req.params;
-    if (!mongoose.Types.ObjectId.isValid(friendToRemoveId)) return res.status(404).send(`No user with id: ${ friendToRemoveId }`);
     const friendToRemove = await User.findById(friendToRemoveId);
 
     if(user.friends.includes(friendToRemoveId)) {
