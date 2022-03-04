@@ -10,5 +10,6 @@ router.route('/:userId')
   .delete(catchAsync(users.deleteUser));
 
 
+// route for friend requests
 router.route('/:recipientId')
   .post(catchAsync(users.sendFriendRequest));
