@@ -49,7 +49,7 @@ describe("Generic downvote", () => {
     expect(obj.downvoters.length).toBe(oldDownvoterLen+1);
     expect(obj.upvoters.length).toBe(oldUpvoterLen);
   });
-
+  
   it("handles double downvote: keeping score the same", async () => {
     const user = await User.findOne({ uniEmail: getTestUserEmail() });
     const oldVotes = obj.votes;
@@ -75,5 +75,4 @@ describe("Generic downvote", () => {
     expect(obj.downvoters.length).toBe(oldDownvoterLen+1);
     expect(obj.upvoters.length).toBe(oldUpvoterLen);
   });
-  
 });
