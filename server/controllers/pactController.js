@@ -78,7 +78,7 @@ module.exports.pactPut = async(req, res) => {
 			throw Error("You don't have permission to update this pact.");
 		}
 
-		const updatedPact = await Pact.findByIdAndUpdate(pact.id, { ...req.body });
+		const updatedPact = await Pact.findByIdAndUpdate(pact.id, { ...req.body }, { runValidators: true });
 		status = 200
 
 	} catch (err) {
