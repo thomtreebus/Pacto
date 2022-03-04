@@ -70,3 +70,28 @@ module.exports.pactGet = async (req, res) => {
 	}
 };
 
+module.exports.joinPact = async (req, res) => {
+
+	try {
+		const potentialPacts = req.user.university.pacts.filter(pact => pact._id.toString() === req.params.id);
+
+		if(!potentialPacts.length){
+			throw Error(PACT_MESSAGES.NOT_FOUND);
+		}  
+
+		const targetUser = await User.findById(req.user._id);
+		const targetPact = await Pact.findById(req.params.id);
+
+		targetUser.pacts.push(targetPact);
+		targetPact.members.push(targetUser);
+		
+		await targetPact.save();
+		await targetUser.save();
+
+		res.json(jsonResponse(PACT_MESSAGES.SUCCESSFUL_JOIN, []));
+	}
+	catch (err) {
+		res.status(404).json(jsonResponse(null, [jsonError(null, PACT_MESSAGES.NOT_FOUND)]));
+	}
+
+};
