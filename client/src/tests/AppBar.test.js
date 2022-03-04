@@ -45,8 +45,8 @@ describe("App Bar Tests", () => {
         <Route exact path="/feed">
           <h1>Redirected to feed</h1>
         </Route>
-        <Route exact path="/profile">
-          <h1>Redirected to profile</h1>
+        <Route exact path="/edit-profile">
+          <h1>Redirected to edit-profile</h1>
         </Route>
       </MockComponent>
       );
@@ -164,12 +164,12 @@ describe("App Bar Tests", () => {
       await waitFor(() => expect(menuElement).not.toBeVisible());
     });
 
-    it("should redirect to profile view when profile button is pressed", async () => {
+    it("should redirect to edit-profile view when profile button is pressed", async () => {
       const buttonElement = screen.getByTestId("profile-item");
       fireEvent.click(buttonElement);
-      const redirectMessage = await screen.findByText(/Redirected to profile/i);
+      const redirectMessage = await screen.findByText(/Redirected to edit-profile/i);
       expect(redirectMessage).toBeInTheDocument();
-      expect(window.location.pathname).toBe("/profile");
+      expect(window.location.pathname).toBe("/edit-profile");
     });
   });
 });
