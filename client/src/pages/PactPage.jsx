@@ -184,7 +184,6 @@ export default function PactPage() {
       setIsLoading(false);
       setError(null);
     }).catch((err) => {
-      console.log(err);
       setPact(null);
       setIsLoading(false);
       setError(err);
