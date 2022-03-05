@@ -82,11 +82,13 @@ module.exports.joinPact = async (req, res) => {
 		const targetUser = await User.findById(req.user._id);
 		const targetPact = await Pact.findById(req.params.id);
 
-		targetUser.pacts.push(targetPact);
-		targetPact.members.push(targetUser);
-		
-		await targetPact.save();
-		await targetUser.save();
+		if (!targetUser.pacts.includes(targetPact._id) && !targetPact.members.includes(targetUser.Id)) {
+			targetUser.pacts.push(targetPact);
+			targetPact.members.push(targetUser);
+			
+			await targetPact.save();
+			await targetUser.save();
+		}
 
 		res.json(jsonResponse(PACT_MESSAGES.SUCCESSFUL_JOIN, []));
 	}
