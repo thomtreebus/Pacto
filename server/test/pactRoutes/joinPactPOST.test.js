@@ -45,10 +45,12 @@ describe("POST /pact/:pactid/join", () => {
     .post(`/pact/${pact._id}/join`)
     .expect(401);
 
-    expect(response.body.message).toBe(null);
-    expect(response.body.errors[0].field).toBe(null);
-    expect(response.body.errors[0].message).toBe(MESSAGES.AUTH.IS_NOT_LOGGED_IN);
-    expect(response.body.errors.length).toBe(1);
+    const {message, errors} = response.body;
+
+    expect(message).toBe(null);
+    expect(errors[0].field).toBe(null);
+    expect(errors[0].message).toBe(MESSAGES.AUTH.IS_NOT_LOGGED_IN);
+    expect(errors.length).toBe(1);
   });
 
   it("user cannot join the pact of another university", async () => {
@@ -70,10 +72,12 @@ describe("POST /pact/:pactid/join", () => {
     .set("Cookie", [`jwt=${ token }`])
     .expect(404);
 
-    expect(response.body.message).toBe(null);
-    expect(response.body.errors[0].field).toBe(null);
-    expect(response.body.errors[0].message).toBe(PACT_MESSAGES.NOT_FOUND);
-    expect(response.body.errors.length).toBe(1);
+    const {message, errors} = response.body;
+
+    expect(message).toBe(null);
+    expect(errors[0].field).toBe(null);
+    expect(errors[0].message).toBe(PACT_MESSAGES.NOT_FOUND);
+    expect(errors.length).toBe(1);
     
     const updatedUser = await User.findOne({_id : user._id});
     const updatedPact = await Pact.findOne({ id: getTestPactId() });
@@ -97,12 +101,12 @@ describe("POST /pact/:pactid/join", () => {
     .post(`/pact/${pact._id}/join`)
     .set("Cookie", [`jwt=${ token }`])
     .expect(200);
-    expect(response.body.message).toBeDefined();
-    expect(response.body.errors.length).toBe(0);
 
-    const responsePost = response.body;
-    expect(response.body.errors.length).toBe(0);
-    expect(response.body.message).toBe(PACT_MESSAGES.SUCCESSFUL_JOIN);
+    const {message, errors} = response.body;
+
+    expect(message).toBeDefined();
+    expect(errors.length).toBe(0);
+    expect(message).toBe(PACT_MESSAGES.SUCCESSFUL_JOIN);
 
     const updatedUser = await User.findOne({ _id : user._id})
     const updatedPact = await Pact.findOne({ _id: getTestPactId() });
@@ -121,14 +125,14 @@ describe("POST /pact/:pactid/join", () => {
     .post(`/pact/${pact._id + 1}/join`)
     .set("Cookie", [`jwt=${ token }`])
     .expect(404);
-    expect(response.body.message).toBeDefined();
-    expect(response.body.errors.length).toBe(1);
 
-    const responsePost = response.body;
-    expect(response.body.message).toBe(null);
-    expect(response.body.errors[0].field).toBe(null);
-    expect(response.body.errors[0].message).toBe(PACT_MESSAGES.NOT_FOUND);
-    expect(response.body.errors.length).toBe(1);
+    const {message, errors} = response.body;
+
+    expect(message).toBeDefined();
+    expect(message).toBe(null);
+    expect(errors[0].field).toBe(null);
+    expect(errors[0].message).toBe(PACT_MESSAGES.NOT_FOUND);
+    expect(errors.length).toBe(1);
   });
 
   it("allows the user to successfully join a pact", async () => {
@@ -147,12 +151,12 @@ describe("POST /pact/:pactid/join", () => {
     .post(`/pact/${pact._id}/join`)
     .set("Cookie", [`jwt=${ token }`])
     .expect(200);
-    expect(response.body.message).toBeDefined();
-    expect(response.body.errors.length).toBe(0);
 
-    const responsePost = response.body;
-    expect(response.body.errors.length).toBe(0);
-    expect(response.body.message).toBe(PACT_MESSAGES.SUCCESSFUL_JOIN);
+    const {message, errors} = response.body;
+
+    expect(message).toBeDefined();
+    expect(errors.length).toBe(0);
+    expect(message).toBe(PACT_MESSAGES.SUCCESSFUL_JOIN);
 
     const updatedUser = await User.findOne({ _id : user._id})
     const updatedPact = await Pact.findOne({ _id: getTestPactId() });
@@ -183,12 +187,12 @@ describe("POST /pact/:pactid/join", () => {
     .post(`/pact/${pact._id}/join`)
     .set("Cookie", [`jwt=${ token }`])
     .expect(200);
-    expect(response.body.message).toBeDefined();
-    expect(response.body.errors.length).toBe(0);
 
-    const responsePost = response.body;
-    expect(response.body.errors.length).toBe(0);
-    expect(response.body.message).toBe(PACT_MESSAGES.SUCCESSFUL_JOIN);
+    let {message, errors} = response.body;
+
+    expect(message).toBeDefined();
+    expect(errors.length).toBe(0);
+    expect(message).toBe(PACT_MESSAGES.SUCCESSFUL_JOIN);
 
     let updatedUser = await User.findOne({ _id : user._id})
     let updatedPact = await Pact.findOne({ _id: pact._id });
@@ -206,8 +210,12 @@ describe("POST /pact/:pactid/join", () => {
     .post(`/pact/${secondPact._id}/join`)
     .set("Cookie", [`jwt=${ token }`])
     .expect(200);
-    expect(response.body.message).toBeDefined();
-    expect(response.body.errors.length).toBe(0);
+
+    message = secondResponse.body.message;
+    errors = secondResponse.body.errors;
+
+    expect(message).toBeDefined();
+    expect(errors.length).toBe(0);
 
     updatedUser = await User.findOne({ _id : user._id})
     updatedPact = await Pact.findOne({ _id: pact._id });
