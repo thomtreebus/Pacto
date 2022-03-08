@@ -4,7 +4,7 @@ const supertest = require("supertest");
 const bcrypt = require("bcrypt");
 const app = require("../../app");
 const { createToken } = require("../../controllers/authController");
-const { generateTestUser, getTestUserEmail, generateNextTestUser } = require("../fixtures/generateTestUser");
+const { generateTestUser, getTestUserEmail, generateCustomUniEmailTestUser} = require("../fixtures/generateTestUser");
 const { generateTestPact, getTestPactId } = require("../fixtures/generateTestPact");
 const { generateTestPost, getTestPostId } = require("../fixtures/generateTestPost");
 const { jsonResponse } = require("../../helpers/responseHandlers");
@@ -93,7 +93,7 @@ describe("DELETE /pact/:pactId/post/:postId", () => {
     const post = await Post.findOne({ id: getTestPostId() });
 
     // Creating 2nd user: a moderator
-    const user2 = await generateNextTestUser("Mod");
+    const user2 = await generateTestUser("Mod");
     user2.active = true;
     await user2.pacts.push(pact);
     await user2.save();
@@ -122,7 +122,7 @@ describe("DELETE /pact/:pactId/post/:postId", () => {
     const post = await Post.findOne({ id: getTestPostId() });
 
     // Creating 2nd member (not mod) of pact
-    const user2 = await generateNextTestUser("Member");
+    const user2 = await generateTestUser("Member");
     user2.active = true;
     await user2.pacts.push(pact);
     await user2.save();
@@ -149,7 +149,7 @@ describe("DELETE /pact/:pactId/post/:postId", () => {
 
   // Check uses pactMiddleware
   it("user who is not in the correct uni cannot delete", async () => {
-    const user = await generateNextTestUser("User", notkcl = true, uniname = "ucl");
+    const user = await generateCustomUniEmailTestUser("User", "ucl");
     user.active = true;
     await user.save();
     const post = await Post.findOne({ id: getTestPostId() });
@@ -174,7 +174,7 @@ describe("DELETE /pact/:pactId/post/:postId", () => {
 
   // Check uses pactMiddleware
   it("user who is in the correct uni but not in the pact cannot delete", async () => {
-    const user = await generateNextTestUser("User");
+    const user = await generateTestUser("User");
     user.active = true;
     await user.save();
     const post = await Post.findOne({ id: getTestPostId() });

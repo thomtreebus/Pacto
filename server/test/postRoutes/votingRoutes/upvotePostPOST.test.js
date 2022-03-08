@@ -4,7 +4,7 @@ const supertest = require("supertest");
 const bcrypt = require("bcrypt");
 const app = require("../../../app");
 const { createToken } = require("../../../controllers/authController");
-const { generateTestUser, getTestUserEmail, generateNextTestUser } = require("../../fixtures/generateTestUser");
+const { generateTestUser, getTestUserEmail, generateCustomUniEmailTestUser} = require("../../fixtures/generateTestUser");
 const { generateTestPact, getTestPactId } = require("../../fixtures/generateTestPact");
 const { generateTestPost, getTestPostId } = require("../../fixtures/generateTestPost");
 const { jsonResponse } = require("../../../helpers/responseHandlers");
@@ -99,7 +99,7 @@ describe("POST /post/upvote/:pactid/:id", () => {
     const token1 = createToken(user1._id);
 
     // Creating 2nd user
-    const user2 = await generateNextTestUser("SecondUser");
+    const user2 = await generateTestUser("SecondUser");
     user2.active = true;
     await user2.pacts.push(pact);
     await user2.save();
@@ -148,7 +148,7 @@ describe("POST /post/upvote/:pactid/:id", () => {
     const post = await Post.findOne({ id: getTestPostId() });
 
     // Creating the user who is not in the pact, but who is in the correct uni
-    const user = await generateNextTestUser("User");
+    const user = await generateTestUser("User");
     user.active = true;
     await user.save();
     const token = createToken(user._id);
@@ -169,7 +169,7 @@ describe("POST /post/upvote/:pactid/:id", () => {
     const post = await Post.findOne({ id: getTestPostId() });
 
     // Creating the user who is not in the correct uni
-    const user = await generateNextTestUser("User", notkcl=true, "ucl");
+    const user = await generateCustomUniEmailTestUser("User", "ucl");
     user.active = true;
     await user.save();
     const token = createToken(user._id);
@@ -264,7 +264,7 @@ describe("POST /post/upvote/:pactid/:id", () => {
     const token1 = createToken(user1._id);
 
     // Creating 2nd user
-    const user2 = await generateNextTestUser("SecondUser");
+    const user2 = await generateTestUser("SecondUser");
     user2.active = true;
     await user2.pacts.push(pact);
     await user2.save();

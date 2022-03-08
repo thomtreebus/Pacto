@@ -8,7 +8,7 @@ const { checkAuthenticated } = require("../../middleware/authMiddleware");
 const { createToken } = require("../../controllers/authController");
 const {jsonResponse} = require("../../helpers/responseHandlers");
 const { MESSAGES, PACT_MESSAGES } = require("../../helpers/messages");
-const { generateTestUser, getTestUserEmail, generateNextTestUser } = require("../fixtures/generateTestUser");
+const { generateTestUser, getTestUserEmail } = require("../fixtures/generateTestUser");
 const { generateTestPact, getTestPactId } = require("../fixtures/generateTestPact");
 const User = require("../../models/User");
 const Pact = require("../../models/Pact");
@@ -36,7 +36,7 @@ describe("CheckIsMemberOfPact Middleware", () => {
     user.active = true;
     await user.save();
 
-    const foundingUser = await generateNextTestUser("Dave");
+    const foundingUser = await generateTestUser("Dave");
     foundingUser.active = true;
     await foundingUser.save();
 
