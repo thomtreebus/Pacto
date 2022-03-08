@@ -4,6 +4,7 @@ import Profile from "./pages/Profile";
 import BaseLayout from "./layouts/BaseLayout";
 import Landing from "./pages/LandingPage";
 import Feed from "./pages/Feed";
+import CreatePact from "./pages/CreatePact";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { CssBaseline } from "@mui/material";
 import EditProfile from "./pages/EditProfile";
@@ -43,6 +44,9 @@ function App() {
 							</PrivateRoute>
 							<PrivateRoute exact path="/hub">
 								<UniversityHubPage />
+							</PrivateRoute>
+							<PrivateRoute exact path="/create-pact">
+								<CreatePact />
 							</PrivateRoute>
 							<PrivateRoute exact path="/pact/:pactID">
 								<PactPage />
