@@ -32,7 +32,12 @@ const generateCustomUniTestUser = async (name, uniName = "kcl") => {
 		lastName: defaultUser.lastName,
 		uniEmail: customEmail,
 		password: hashedPassword,
-		university: uni
+		university: uni,
+		course: defaultUser.course,
+		bio: defaultUser.bio,
+		image: defaultUser.image,
+		hobbies: defaultUser.hobbies,
+		location: defaultUser.location,
 	});
 
 	await uni.users.push(user);
