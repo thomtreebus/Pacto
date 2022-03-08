@@ -125,14 +125,6 @@ describe("Edit Profile Page Tests", () => {
       expect(updateProfileButton).toBeInTheDocument();
     });
 
-    /* Not implemented
-    it("should render the user's university", async () => {
-      const universityText = await screen.findByText("King's College London");
-      expect(universityText).toBeInTheDocument();
-      expect(universityText.value).toBe("King's College London");
-    });
-     */
-
     it("should render the user's profile picture", async () => {
       const profilePicture = await screen.findByAltText("Profile Picture");
       expect(profilePicture).toBeInTheDocument();
