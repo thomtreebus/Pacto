@@ -5,16 +5,16 @@ const {getDefaultTestUser} = require("../helpers/defaultTestUser");
 
 const SALT_ROUNDS = 10;
 
-module.exports.getTestUserEmail = () => {
+module.exports.getDefaultTestUserEmail = () => {
 	const defaultUser = getDefaultTestUser();
 	return defaultUser.uniEmail;
 }
 
 module.exports.generateTestUser = async (name = "pac") => {
-	return generateCustomUniEmailTestUser(name, "kcl");
+	return generateCustomUniTestUser(name, "kcl");
 };
 
-const generateCustomUniEmailTestUser = async (name, uniName = "kcl") => {
+const generateCustomUniTestUser = async (name, uniName = "kcl") => {
 	// Dummy uni
 	let uni = await University.findOne( { name: uniName, domains: [`${ uniName }.ac.uk`] });
 	if (uni === null) {
@@ -40,4 +40,4 @@ const generateCustomUniEmailTestUser = async (name, uniName = "kcl") => {
 	return user;
 };
 
-module.exports.generateCustomUniEmailTestUser = generateCustomUniEmailTestUser;
+module.exports.generateCustomUniTestUser = generateCustomUniTestUser;

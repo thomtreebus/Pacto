@@ -4,7 +4,7 @@ const supertest = require("supertest");
 const bcrypt = require("bcrypt");
 const app = require("../../app");
 const { createToken } = require("../../controllers/authController");
-const { generateTestUser, getTestUserEmail} = require("../fixtures/generateTestUser");
+const { generateTestUser, getDefaultTestUserEmail} = require("../fixtures/generateTestUser");
 const { generateTestPact, getTestPactId } = require("../fixtures/generateTestPact");
 const { generateTestPost, getTestPostId } = require("../fixtures/generateTestPost");
 const { jsonResponse } = require("../../helpers/responseHandlers");
@@ -45,7 +45,7 @@ describe("GET /pact/:pactId/post/:postId", () => {
   });
 
   it("author can get its post", async () => {
-    const user = await User.findOne({ uniEmail: getTestUserEmail() });
+    const user = await User.findOne({ uniEmail: getDefaultTestUserEmail() });
     const pact = await Pact.findOne({ id: getTestPactId() });
     const post = await Post.findOne({ id: getTestPostId() });
     const token = createToken(user._id);
@@ -67,7 +67,7 @@ describe("GET /pact/:pactId/post/:postId", () => {
   });
 
   it("other member of the pact can get the post", async () => {
-    const user = await User.findOne({ uniEmail: getTestUserEmail() });
+    const user = await User.findOne({ uniEmail: getDefaultTestUserEmail() });
     const pact = await Pact.findOne({ id: getTestPactId() });
     const post = await Post.findOne({ id: getTestPostId() });
 
@@ -97,7 +97,7 @@ describe("GET /pact/:pactId/post/:postId", () => {
   });
 
   it("cannot get a non-existing post", async () => {
-    const user = await User.findOne({ uniEmail: getTestUserEmail() });
+    const user = await User.findOne({ uniEmail: getDefaultTestUserEmail() });
     const pact = await Pact.findOne({ id: getTestPactId() });
     const invalidPostId = 3;
     const token = createToken(user._id);

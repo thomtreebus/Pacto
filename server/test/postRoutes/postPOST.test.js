@@ -4,7 +4,7 @@ const supertest = require("supertest");
 const bcrypt = require("bcrypt");
 const app = require("../../app");
 const { createToken } = require("../../controllers/authController");
-const { generateTestUser, getTestUserEmail, generateCustomUniEmailTestUser} = require("../fixtures/generateTestUser");
+const { generateTestUser, getDefaultTestUserEmail, generateCustomUniTestUser} = require("../fixtures/generateTestUser");
 const { generateTestPact, getTestPactId } = require("../fixtures/generateTestPact");
 const { MESSAGES, PACT_MESSAGES } = require("../../helpers/messages");
 const { jsonResponse } = require("../../helpers/responseHandlers");
@@ -41,7 +41,7 @@ describe("POST /pact/:pactId/post", () => {
   });
 
   it("can create post with valid pact id and user part of pact", async () => {
-    const user = await User.findOne({ uniEmail: getTestUserEmail() });
+    const user = await User.findOne({ uniEmail: getDefaultTestUserEmail() });
     const pact = await Pact.findOne({ id: getTestPactId() });
     const token = createToken(user._id);
     const response = await supertest(app)
@@ -68,7 +68,7 @@ describe("POST /pact/:pactId/post", () => {
   });
 
   it("can post twice the same content in same pact", async () => {
-    const user = await User.findOne({ uniEmail: getTestUserEmail() });
+    const user = await User.findOne({ uniEmail: getDefaultTestUserEmail() });
     const pact = await Pact.findOne({ id: getTestPactId() });
     const token = createToken(user._id);
 
@@ -107,7 +107,7 @@ describe("POST /pact/:pactId/post", () => {
 
   // Check uses pactMiddleware
   it("user who is not in the correct uni cannot post", async () => {
-    const user = await generateCustomUniEmailTestUser("User", "ucl");
+    const user = await generateCustomUniTestUser("User", "ucl");
     user.active = true;
     await user.save();
     const token = createToken(user._id);
@@ -158,7 +158,7 @@ describe("POST /pact/:pactId/post", () => {
   });
 
   it("check uses authMiddleware", async () => {
-    const user = await User.findOne({ uniEmail: getTestUserEmail() });
+    const user = await User.findOne({ uniEmail: getDefaultTestUserEmail() });
     const pact = await Pact.findOne({ id: getTestPactId() });
 
     const response = await supertest(app)

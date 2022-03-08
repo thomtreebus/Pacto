@@ -4,7 +4,7 @@ const supertest = require("supertest");
 const bcrypt = require("bcrypt");
 const app = require("../../app");
 const { createToken } = require("../../controllers/authController");
-const { generateTestUser, getTestUserEmail, generateCustomUniEmailTestUser} = require("../fixtures/generateTestUser");
+const { generateTestUser, getDefaultTestUserEmail, generateCustomUniTestUser} = require("../fixtures/generateTestUser");
 const { generateTestPact, getTestPactId } = require("../fixtures/generateTestPact");
 const { generateTestPost, getTestPostId } = require("../fixtures/generateTestPost");
 const { jsonResponse } = require("../../helpers/responseHandlers");
@@ -46,7 +46,7 @@ describe("DELETE /pact/:pactId/post/:postId", () => {
 
   it("member can delete a post they made", async () => {
     // The user is a member of the pact, not a mod
-    const user = await User.findOne({ uniEmail: getTestUserEmail() });
+    const user = await User.findOne({ uniEmail: getDefaultTestUserEmail() });
     let pact = await Pact.findOne({ id: getTestPactId() });
     expect(pact.moderators.includes(user._id)).toBe(true);
     await pact.moderators.pull({ _id: user._id });
@@ -70,7 +70,7 @@ describe("DELETE /pact/:pactId/post/:postId", () => {
   });
 
   it("cannot delete a non-existing post", async () => {
-    const user = await User.findOne({ uniEmail: getTestUserEmail() });
+    const user = await User.findOne({ uniEmail: getDefaultTestUserEmail() });
     const pact = await Pact.findOne({ id: getTestPactId() });
     const invalidPostId = 123;
     const token = createToken(user._id);
@@ -88,7 +88,7 @@ describe("DELETE /pact/:pactId/post/:postId", () => {
   });
 
   it("moderator of a pact can delete any post in the pact", async () => {
-    const user = await User.findOne({ uniEmail: getTestUserEmail() });
+    const user = await User.findOne({ uniEmail: getDefaultTestUserEmail() });
     let pact = await Pact.findOne({ id: getTestPactId() });
     const post = await Post.findOne({ id: getTestPostId() });
 
@@ -117,7 +117,7 @@ describe("DELETE /pact/:pactId/post/:postId", () => {
   });
 
   it("member of a pact cannot delete any other post than their own", async () => {
-    const user = await User.findOne({ uniEmail: getTestUserEmail() });
+    const user = await User.findOne({ uniEmail: getDefaultTestUserEmail() });
     let pact = await Pact.findOne({ id: getTestPactId() });
     const post = await Post.findOne({ id: getTestPostId() });
 
@@ -149,7 +149,7 @@ describe("DELETE /pact/:pactId/post/:postId", () => {
 
   // Check uses pactMiddleware
   it("user who is not in the correct uni cannot delete", async () => {
-    const user = await generateCustomUniEmailTestUser("User", "ucl");
+    const user = await generateCustomUniTestUser("User", "ucl");
     user.active = true;
     await user.save();
     const post = await Post.findOne({ id: getTestPostId() });
