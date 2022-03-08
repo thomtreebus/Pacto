@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const {jsonResponse, jsonError} = require("../helpers/responseHandlers");
 const errorHandler = require("../helpers/errorHandler");
 const University = require("../models/University");
+const {USER_MESSAGES} = require("../helpers/messages");
 
 
 module.exports.updateProfile = async(req, res) => {
@@ -17,11 +18,11 @@ module.exports.updateProfile = async(req, res) => {
     // if (!mongoose.Types.ObjectId.isValid(id)) return res.status(404).send(`No user with id: ${id}`);
     if (!mongoose.Types.ObjectId.isValid(id)) {
       status = 404;
-      throw Error("User does not exist");
+      throw Error(USER_MESSAGES.DOES_NOT_EXIST);
     }
     if (req.user._id.toString() !== id.toString()) {
       status = 401;
-      throw Error("Can not update someone else's profile")
+      throw Error(USER_MESSAGES.UPDATE_OTHER_PROFILE_UNAUTHORISED)
     }
     const updatedUser = await User.findByIdAndUpdate(id, { ...req.body });
     status = 200
@@ -53,12 +54,12 @@ module.exports.viewProfile = async(req, res) => {
     const { id } = req.params; 
 
     if (!university){
-			throw Error("User not authenticated");
+			throw Error(USER_MESSAGES.UNIVERSITY_NOT_SET);
     }
     
     if (!mongoose.Types.ObjectId.isValid(id)) {
       status = 404;
-      throw Error("User does not exist");
+      throw Error(USER_MESSAGES.DOES_NOT_EXIST);
     }
 
     const user = await User.findOne({ university, _id:req.params.id }).populate(
@@ -67,7 +68,7 @@ module.exports.viewProfile = async(req, res) => {
 
 		if (!user){
 			status = 404;
-			throw Error("User not found");
+			throw Error(USER_MESSAGES.DOES_NOT_EXIST);
     }
 
     // await user.populate({ path: 'user', model: User })
@@ -82,5 +83,5 @@ module.exports.viewProfile = async(req, res) => {
 module.exports.deleteUser = async (req, res) => {
   const { id } = req.params;
   await User.findByIdAndDelete(id);
-  req.flash('success', 'Successfully deleted account!');
+  req.flash('success', USER_MESSAGES.SUCCESSFUL_DELETE);
 }
