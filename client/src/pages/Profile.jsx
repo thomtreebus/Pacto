@@ -65,9 +65,9 @@ function a11yProps(index) {
 export default function Profile() {
 
   const { user: loggedInUser } = useAuth();
-  console.log("currentUser: ", loggedInUser);
 
   const [user, setUser] = useState(null);
+  const [sentRequest, setSentRequest] = useState(loggedInUser.sentRequests.includes(user));
   const { id } = useParams();
   const history = useHistory();
   const [value, setValue] = useState(0);
@@ -90,6 +90,21 @@ export default function Profile() {
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
+
+  const sendFriendRequest = async () => {
+    
+    const res = await fetch(`${process.env.REACT_APP_URL}/friends/${user._id}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include"
+    });
+    setSentRequest(true);
+    console.log("Friend request sent!");
+    console.log(user);
+    console.log(loggedInUser);
+  }
 
   if (isLoading) {
     return <Loading />;
@@ -155,8 +170,8 @@ export default function Profile() {
               <Chip label={`${user.friends.length} Friends`} icon={<GroupIcon />} variant="outlined" />
               <Chip label={`${user.pacts.length} Pacts`} icon={<ForumIcon />} variant="outlined" />
             </Stack>
-            {loggedInUser.friends.includes(user) || <Button variant="outlined" fullWidth startIcon={<PersonAddIcon />} sx={{ marginTop: "4px" }}>Send Friend Request</Button>}
-            {loggedInUser.sentRequests.includes(user) && <Button variant="outlined" fullWidth disabled startIcon={<PersonAddIcon />} sx={{marginTop: "4px"}}>Request Sent</Button>}
+            {loggedInUser.friends.includes(user) || sentRequest || <Button variant="outlined" fullWidth startIcon={<PersonAddIcon />} onClick={sendFriendRequest} sx={{ marginTop: "4px" }}>Send Friend Request</Button>}
+            {sentRequest && <Button variant="outlined" fullWidth disabled startIcon={<PersonAddIcon />} sx={{marginTop: "4px"}}>Request Sent</Button>}
             {user == loggedInUser && <Button variant="contained" fullWidth color="error" onClick={() => history.push("/edit-profile")} startIcon={<EditIcon />} sx={{ marginTop: "2px" }}>
               Edit Profile </Button> }
           </CardContent>
