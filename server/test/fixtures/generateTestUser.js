@@ -38,6 +38,9 @@ const generateCustomUniTestUser = async (name, uniName = "kcl") => {
 		image: defaultUser.image,
 		hobbies: defaultUser.hobbies,
 		location: defaultUser.location,
+		instagram: defaultUser.instagram,
+		linkedin: defaultUser.linkedin,
+		phone: defaultUser.phone,
 	});
 
 	await uni.users.push(user);

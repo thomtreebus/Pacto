@@ -15,6 +15,9 @@ module.exports.getDefaultTestUser = () => {
       "Drawing"
     ],
     location: "London",
+    instagram: "pactoInsta",
+    linkedin: "pactoLinkedIn",
+    phone: "+000000000000",
   }
 
   return user;
