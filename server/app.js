@@ -26,8 +26,11 @@ app.use("/", postRoute);
 const uniRoute = require("./routes/university");
 app.use("/", uniRoute);
 
-const authRoute = require("./routes/auth");
-app.use("/", authRoute);
+const authRoutes = require("./routes/auth");
+const userRoutes = require("./routes/users");
+
+app.use("/", authRoutes);
+app.use("/users", userRoutes)
 
 const userRoute = require("./routes/users");
 app.use("/", userRoute);

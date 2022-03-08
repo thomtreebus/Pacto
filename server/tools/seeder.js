@@ -63,7 +63,8 @@ async function createUser(firstName, lastName, university) {
 		location: CITIES[Math.floor(Math.random() * CITIES.length)],
 		image: IMAGES[Math.floor(Math.random() * IMAGES.length)],
 		bio: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi bibendum varius orci, nec scelerisque magna tempor ut. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Cras a felis in nunc tincidunt rhoncus. Sed ut ante blandit lorem accumsan accumsan at eget ex. Phasellus aliquet eros massa, non malesuada orci feugiat quis. Duis at pulvinar dui. Pellentesque vestibulum erat arcu. Nunc ac sem sodales arcu ullamcorper commodo.",
-		hobbies : ["Studying", "Video Games", "Football"]
+		hobbies: ["Studying", "Video Games", "Football"],
+		friends: [],
 	});
 
 	university.users.push(user);

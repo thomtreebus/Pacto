@@ -4,7 +4,7 @@ const supertest = require("supertest");
 const bcrypt = require("bcrypt");
 const app = require("../../../app");
 const { createToken } = require("../../../controllers/authController");
-const { generateTestUser, getTestUserEmail, generateNextTestUser } = require("../../fixtures/generateTestUser");
+const { generateTestUser, getDefaultTestUserEmail, generateCustomUniTestUser} = require("../../fixtures/generateTestUser");
 const { generateTestPact, getTestPactId } = require("../../fixtures/generateTestPact");
 const { generateTestPost, getTestPostId } = require("../../fixtures/generateTestPost");
 const { jsonResponse } = require("../../../helpers/responseHandlers");
@@ -45,7 +45,7 @@ describe("POST /post/downvote/:pactid/:id", () => {
   });
 
   it("downvote post with valid pact id and user part of pact", async () => {
-    const user = await User.findOne({ uniEmail: getTestUserEmail() });
+    const user = await User.findOne({ uniEmail: getDefaultTestUserEmail() });
     const pact = await Pact.findOne({ id: getTestPactId() });
     const post = await Post.findOne({ id: getTestPostId() });
     const token = createToken(user._id);
@@ -67,7 +67,7 @@ describe("POST /post/downvote/:pactid/:id", () => {
   });
 
   it("down twice does not change the votes count", async () => {
-    const user = await User.findOne({ uniEmail: getTestUserEmail() });
+    const user = await User.findOne({ uniEmail: getDefaultTestUserEmail() });
     const pact = await Pact.findOne({ id: getTestPactId() });
     const post = await Post.findOne({ id: getTestPostId() });
     const token = createToken(user._id);
@@ -93,13 +93,13 @@ describe("POST /post/downvote/:pactid/:id", () => {
   });
 
   it("two different users downvotes is cummulative", async () => {
-    const user1 = await User.findOne({ uniEmail: getTestUserEmail() });
+    const user1 = await User.findOne({ uniEmail: getDefaultTestUserEmail() });
     const pact = await Pact.findOne({ id: getTestPactId() });
     const post = await Post.findOne({ id: getTestPostId() });
     const token1 = createToken(user1._id);
 
     // Creating 2nd user
-    const user2 = await generateNextTestUser("SecondUser");
+    const user2 = await generateTestUser("SecondUser");
     user2.active = true;
     await user2.pacts.push(pact);
     await user2.save();
@@ -148,7 +148,7 @@ describe("POST /post/downvote/:pactid/:id", () => {
     const post = await Post.findOne({ id: getTestPostId() });
 
     // Creating the user who is not in the pact, but who is in the correct uni
-    const user = await generateNextTestUser("User");
+    const user = await generateTestUser("User");
     user.active = true;
     await user.save();
     const token = createToken(user._id);
@@ -169,7 +169,7 @@ describe("POST /post/downvote/:pactid/:id", () => {
     const post = await Post.findOne({ id: getTestPostId() });
 
     // Creating the user who is not in the correct uni
-    const user = await generateNextTestUser("User", notkcl=true, "ucl");
+    const user = await generateCustomUniTestUser("User", "ucl");
     user.active = true;
     await user.save();
     const token = createToken(user._id);
@@ -186,7 +186,7 @@ describe("POST /post/downvote/:pactid/:id", () => {
   });
 
   it("user can downvote two different posts", async () => {
-    const user = await User.findOne({ uniEmail: getTestUserEmail() });
+    const user = await User.findOne({ uniEmail: getDefaultTestUserEmail() });
     const pact = await Pact.findOne({ id: getTestPactId() });
     let post1 = await Post.findOne({ id: getTestPostId() });
     let post2 = await generateTestPost(user, pact, "Second post");
@@ -227,7 +227,7 @@ describe("POST /post/downvote/:pactid/:id", () => {
   });
 
   it("downvote of upvoted post by same user", async () => {
-    const user1 = await User.findOne({ uniEmail: getTestUserEmail() });
+    const user1 = await User.findOne({ uniEmail: getDefaultTestUserEmail() });
     const pact = await Pact.findOne({ id: getTestPactId() });
     const post = await Post.findOne({ id: getTestPostId() });
     const token = createToken(user1._id);
@@ -258,13 +258,13 @@ describe("POST /post/downvote/:pactid/:id", () => {
   });
 
   it("downvote of upvoted post by different users", async () => {
-    const user1 = await User.findOne({ uniEmail: getTestUserEmail() });
+    const user1 = await User.findOne({ uniEmail: getDefaultTestUserEmail() });
     const pact = await Pact.findOne({ id: getTestPactId() });
     const post = await Post.findOne({ id: getTestPostId() });
     const token1 = createToken(user1._id);
 
     // Creating 2nd user
-    const user2 = await generateNextTestUser("SecondUser");
+    const user2 = await generateTestUser("SecondUser");
     user2.active = true;
     await user2.pacts.push(pact);
     await user2.save();
