@@ -82,7 +82,7 @@ module.exports.joinPact = async (req, res) => {
 		const targetUser = await User.findById(req.user._id);
 		const targetPact = await Pact.findById(req.params.id);
 
-		if (!targetUser.pacts.includes(targetPact._id) && !targetPact.members.includes(targetUser.Id)) {
+		if (!targetUser.pacts.includes(targetPact._id) && !targetPact.members.includes(targetUser._id)) {
 			targetUser.pacts.push(targetPact);
 			targetPact.members.push(targetUser);
 			
