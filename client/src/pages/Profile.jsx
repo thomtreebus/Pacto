@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useState } from "react";
 import { Image } from 'cloudinary-react';
@@ -6,6 +5,7 @@ import { useHistory } from "react-router-dom";
 import Grid from '@mui/material/Grid';
 import {useParams } from "react-router-dom";
 import { useQuery } from "react-query";
+import { useAuth } from '../providers/AuthProvider';
 import Loading from "./Loading";
 import { useEffect } from "react";
 import Typography from "@mui/material/Typography";
@@ -64,8 +64,9 @@ function a11yProps(index) {
 
 export default function Profile() {
 
-  // const { loggedInUser } = useAuth();
-  // console.log("currentUser: ", loggedInUser);
+  const { user: loggedInUser } = useAuth();
+  console.log("currentUser: ", loggedInUser);
+
   const [user, setUser] = useState(null);
   const { id } = useParams();
   const history = useHistory();
@@ -86,17 +87,14 @@ export default function Profile() {
     }
   }, [data, history]);
 
-  
-
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
 
-
-  
   if (isLoading) {
     return <Loading />;
   }
+    // loggedInUser.friends.push(user);
 
   return (
      user && (<Grid
@@ -157,10 +155,10 @@ export default function Profile() {
               <Chip label={`${user.friends.length} Friends`} icon={<GroupIcon />} variant="outlined" />
               <Chip label={`${user.pacts.length} Pacts`} icon={<ForumIcon />} variant="outlined" />
             </Stack>
-            <Button variant="outlined" fullWidth startIcon={<PersonAddIcon />} sx={{marginTop: "4px"}}>Send Friend Request</Button>
-            {<Button variant="contained" fullWidth color="error" onClick={() => history.push("/edit-profile")} startIcon={<EditIcon />} sx={{ marginTop: "2px" }}>
-              Edit Profile </Button>
-              }
+            {loggedInUser.friends.includes(user) || <Button variant="outlined" fullWidth startIcon={<PersonAddIcon />} sx={{ marginTop: "4px" }}>Send Friend Request</Button>}
+            {loggedInUser.sentRequests.includes(user) && <Button variant="outlined" fullWidth disabled startIcon={<PersonAddIcon />} sx={{marginTop: "4px"}}>Request Sent</Button>}
+            {user == loggedInUser && <Button variant="contained" fullWidth color="error" onClick={() => history.push("/edit-profile")} startIcon={<EditIcon />} sx={{ marginTop: "2px" }}>
+              Edit Profile </Button> }
           </CardContent>
           <CardActions>
           </CardActions>
