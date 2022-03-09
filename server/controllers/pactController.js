@@ -110,9 +110,15 @@ module.exports.banMember = async (req, res) => {
 			throw Error(PACT_MESSAGES.CANT_BAN_MODERATOR);
 		}
 
+		// Can't ban someone who is already banned from a pact 
+		if (pact.bannedUsers.includes(user._id)) {
+			throw Error(PACT_MESSAGES.ALREADY_BANNED);
+		}
+
 		await User.findByIdAndUpdate(user._id, { $pull: { pacts: pact._id } });
 		await Pact.findByIdAndUpdate(pact._id, { $pull: { members: user._id } });
-
+		await Pact.findByIdAndUpdate(pact._id, { $push: { bannedUsers: user._id } });
+		
 		res.json(jsonResponse(PACT_MESSAGES.SUCCESSFUL_BAN, []));
 	}
 	catch (err) {

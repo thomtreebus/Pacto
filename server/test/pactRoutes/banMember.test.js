@@ -52,6 +52,7 @@ describe("POST /post/upvote/:pactid/:id", () => {
     const token = createToken(user._id);
     const oldMemberCount = pact.members.length;
     const oldPactCount = banUser.pacts.length;
+    const oldBannedUserCount = pact.bannedUsers.length;
 
     const response = await supertest(app)
     .put(`/pact/${ pact._id }/${ banUser._id }/ban/`)
@@ -62,7 +63,9 @@ describe("POST /post/upvote/:pactid/:id", () => {
 
     const responsePact = await Pact.findOne({ id: getTestPactId() });
     const newMemberCount = responsePact.members.length;
+    const newBannedUserCount = responsePact.bannedUsers.length;
     expect(newMemberCount).toBe(oldMemberCount - 1);
+    expect(newBannedUserCount).toBe(oldBannedUserCount + 1);
 
     const bannedUser = await User.findOne({ uniEmail: "bob.to@kcl.ac.uk" });
     const newPactCount = bannedUser.pacts.length;
@@ -102,6 +105,24 @@ describe("POST /post/upvote/:pactid/:id", () => {
     expect(response.body.errors.length).toBe(1);
     expect(response.body.errors[0].field).toBe(null);
     expect(response.body.errors[0].message).toBe(PACT_MESSAGES.CANT_BAN_NON_MEMBER);
+  });
+
+    it("can not ban someone who is already banned", async () => {
+    const user = await User.findOne({ uniEmail: getTestUserEmail() });
+    const pact = await Pact.findOne({ id: getTestPactId() });
+    const bannedUser = await User.findOne({ uniEmail: "bob.to@kcl.ac.uk" });
+    pact.bannedUsers.push(bannedUser._id);
+    pact.save();
+    const token = createToken(user._id);
+    
+    const response = await supertest(app)
+    .put(`/pact/${ pact._id }/${ bannedUser._id }/ban/`)
+    .set("Cookie", [`jwt=${token}`])
+    .expect(404);
+    expect(response.body.message).toBe(null);
+    expect(response.body.errors.length).toBe(1);
+    expect(response.body.errors[0].field).toBe(null);
+    expect(response.body.errors[0].message).toBe(PACT_MESSAGES.ALREADY_BANNED);
   });
 
   it("member can not ban other member", async () => {
