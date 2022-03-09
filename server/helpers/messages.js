@@ -68,6 +68,7 @@ module.exports.PACT_MESSAGES = {
 	NOT_FOUND: "Pact not found",
 	SUCCESSFUL_JOIN: "Successfully Joined the pact",
 	NOT_AUTHORISED: "User is not a member of this pact",
+	NOT_MODERATOR: "User is not a moderator of this pact"
 };
 
 module.exports.POST_MESSAGES = {
