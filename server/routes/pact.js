@@ -7,6 +7,6 @@ const { checkIsMemberOfPact, checkIsModeratorOfPact } = require("../middleware/p
 router.post("/pact", checkAuthenticated, pactController.pactPost);
 router.post("/pact/:id/join", checkAuthenticated, pactController.joinPact);
 router.get("/pact/:pactId", checkAuthenticated, checkIsMemberOfPact, pactController.pactGet);
-// router.put("/pact/:id/ban", checkAuthenticated, checkIsMemberOfPact, checkIsModeratorOfPact, pactController.banMember);
+router.put("/pact/:pactId/:userId/ban", checkAuthenticated, checkIsMemberOfPact, checkIsModeratorOfPact, pactController.banMember);
 
 module.exports = router;

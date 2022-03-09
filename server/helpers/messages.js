@@ -68,7 +68,10 @@ module.exports.PACT_MESSAGES = {
 	NOT_FOUND: "Pact not found",
 	SUCCESSFUL_JOIN: "Successfully Joined the pact",
 	NOT_AUTHORISED: "User is not a member of this pact",
-	NOT_MODERATOR: "User is not a moderator of this pact"
+	NOT_MODERATOR: "User is not a moderator of this pact",
+	SUCCESSFUL_BAN: "User has been banned from pact",
+	CANT_BAN: "Can't ban that user from the pact",
+	CANT_BAN_MODERATOR: "Can't ban a moderator from the pact"
 };
 
 module.exports.POST_MESSAGES = {

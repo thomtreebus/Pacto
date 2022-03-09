@@ -93,5 +93,42 @@ module.exports.joinPact = async (req, res) => {
 	catch (err) {
 		res.status(404).json(jsonResponse(null, [jsonError(null, PACT_MESSAGES.NOT_FOUND)]));
 	}
-
 };
+
+module.exports.banMember = async (req, res) => {
+	try {
+		const user = await User.findById(req.params.userId);
+		const pact = await Pact.findById(req.params.pactId);
+
+		// Can't ban a user from a pact if they aren't a member
+		if (!pact.members.includes(user._id)) {
+			throw Error(PACT_MESSAGES.NOT_AUTHORISED);
+		}
+
+		// Can't ban other moderators from a pact
+		if (pact.moderators.includes(user._id)) {
+			throw Error(PACT_MESSAGES.CANT_BAN_MODERATOR);
+		}
+
+		await User.findByIdAndUpdate(user._id, { $pull: { pacts: pact._id } });
+		await Pact.findByIdAndUpdate(user._id, { $pull: { members: user._id } });
+
+		// const index = user.pacts.indexOf(pactId);
+		// if (index > -1) {
+		// 	user.pacts.splice(index, 1);
+		// }
+
+		// const index2 = pact.members.indexOf(userId);
+		// if (index2 > -1) {
+		// 	pact.members.splice(index2, 1);
+		// }
+		
+		// await pact.save();
+		// await user.save();
+
+		res.json(jsonResponse(PACT_MESSAGES.SUCCESSFUL_BAN, []));
+	}
+	catch (err) {
+		res.status(404).json(jsonResponse(null, [jsonError(null, PACT_MESSAGES.CANT_BAN)]));
+	}
+}
