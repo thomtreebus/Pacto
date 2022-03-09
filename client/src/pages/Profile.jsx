@@ -153,12 +153,12 @@ export default function Profile() {
       <Grid container item direction="column" xs={4}>
         <Card sx={{ minWidth: 275 }}>
           <CardContent>
-            <Stack direction="row" alignItems="center" spacing={2} fullWidth justifyContent="center">
+            <Stack direction="row" alignItems="center" spacing={2} fullwidth="true" justifyContent="center">
               <Chip label={`${user.friends.length} Friends`} icon={<GroupIcon />} variant="outlined" />
               <Chip label={`${user.pacts.length} Pacts`} icon={<ForumIcon />} variant="outlined" />
             </Stack>
-            <Button variant="outlined" fullWidth startIcon={<PersonAddIcon />} sx={{marginTop: "4px"}}>Send Friend Request</Button>
-            {<Button variant="contained" fullWidth color="error" onClick={() => history.push("/edit-profile")} startIcon={<EditIcon />} sx={{ marginTop: "2px" }}>
+            <Button variant="outlined" fullwidth="true" startIcon={<PersonAddIcon />} sx={{marginTop: "4px"}}>Send Friend Request</Button>
+            {<Button variant="contained" fullwidth="true" color="error" onClick={() => history.push("/edit-profile")} startIcon={<EditIcon />} sx={{ marginTop: "2px" }}>
               Edit Profile </Button>
               }
           </CardContent>
