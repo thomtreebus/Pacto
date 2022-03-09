@@ -102,7 +102,7 @@ module.exports.banMember = async (req, res) => {
 
 		// Can't ban a user from a pact if they aren't a member
 		if (!pact.members.includes(user._id)) {
-			throw Error(PACT_MESSAGES.NOT_AUTHORISED);
+			throw Error(PACT_MESSAGES.CANT_BAN_NON_MEMBER);
 		}
 
 		// Can't ban other moderators from a pact
@@ -111,7 +111,7 @@ module.exports.banMember = async (req, res) => {
 		}
 
 		await User.findByIdAndUpdate(user._id, { $pull: { pacts: pact._id } });
-		await Pact.findByIdAndUpdate(user._id, { $pull: { members: user._id } });
+		await Pact.findByIdAndUpdate(pact._id, { $pull: { members: user._id } });
 
 		// const index = user.pacts.indexOf(pactId);
 		// if (index > -1) {
@@ -129,6 +129,6 @@ module.exports.banMember = async (req, res) => {
 		res.json(jsonResponse(PACT_MESSAGES.SUCCESSFUL_BAN, []));
 	}
 	catch (err) {
-		res.status(404).json(jsonResponse(null, [jsonError(null, PACT_MESSAGES.CANT_BAN)]));
+		res.status(404).json(jsonResponse(null, [jsonError(null, err.message)]));
 	}
 }

@@ -45,8 +45,95 @@ describe("POST /post/upvote/:pactid/:id", () => {
     await University.deleteMany({});
   });
 
-  it("Truye is true", () => {
-    expect(true).toBe(true);
-  })
+  it("moderator can ban member of pact", async () => {
+    const user = await User.findOne({ uniEmail: getTestUserEmail() });
+    const pact = await Pact.findOne({ id: getTestPactId() });
+    const banUser = await User.findOne({ uniEmail: "bob.to@kcl.ac.uk" });
+    const token = createToken(user._id);
+    const oldMemberCount = pact.members.length;
+    const oldPactCount = banUser.pacts.length;
+
+    const response = await supertest(app)
+    .put(`/pact/${ pact._id }/${ banUser._id }/ban/`)
+    .set("Cookie", [`jwt=${token}`])
+    .expect(200);
+    expect(response.body.message).toBeDefined();
+    expect(response.body.errors.length).toBe(0);
+
+    const responsePact = await Pact.findOne({ id: getTestPactId() });
+    const newMemberCount = responsePact.members.length;
+    expect(newMemberCount).toBe(oldMemberCount - 1);
+
+    const bannedUser = await User.findOne({ uniEmail: "bob.to@kcl.ac.uk" });
+    const newPactCount = bannedUser.pacts.length;
+    expect(newPactCount).toBe(oldPactCount - 1);
+  });
+
+  it("moderator can not ban other moderator", async () => {
+    const user = await User.findOne({ uniEmail: getTestUserEmail() });
+    const pact = await Pact.findOne({ id: getTestPactId() });
+    const moderator = await User.findOne({ uniEmail: "bob.to@kcl.ac.uk" });
+    pact.moderators.push(moderator._id);
+    await pact.save();
+    const token = createToken(user._id);
+
+    const response = await supertest(app)
+    .put(`/pact/${ pact._id }/${ moderator._id }/ban/`)
+    .set("Cookie", [`jwt=${token}`])
+    .expect(404);
+    expect(response.body.message).toBe(null);
+    expect(response.body.errors.length).toBe(1);
+    expect(response.body.errors[0].field).toBe(null);
+    expect(response.body.errors[0].message).toBe(PACT_MESSAGES.CANT_BAN_MODERATOR);
+  });
+
+  it("can not ban someone who is not a member", async () => {
+    const user = await User.findOne({ uniEmail: getTestUserEmail() });
+    const otherUser = await generateNextTestUser("joe");
+    otherUser.save();
+    const pact = await Pact.findOne({ id: getTestPactId() });
+    const token = createToken(user._id);
+
+    const response = await supertest(app)
+    .put(`/pact/${ pact._id }/${ otherUser._id }/ban/`)
+    .set("Cookie", [`jwt=${token}`])
+    .expect(404);
+    expect(response.body.message).toBe(null);
+    expect(response.body.errors.length).toBe(1);
+    expect(response.body.errors[0].field).toBe(null);
+    expect(response.body.errors[0].message).toBe(PACT_MESSAGES.CANT_BAN_NON_MEMBER);
+  });
+
+  it("member can not ban other member", async () => {
+    const user = await User.findOne({ uniEmail: "bob.to@kcl.ac.uk" });
+    const otherUser = await generateNextTestUser("joe");
+    otherUser.save();
+    const pact = await Pact.findOne({ id: getTestPactId() });
+    pact.members.push(otherUser._id);
+    pact.save();
+    const token = createToken(user._id);
+
+    const response = await supertest(app)
+    .put(`/pact/${ pact._id }/${ otherUser._id }/ban/`)
+    .set("Cookie", [`jwt=${token}`])
+    .expect(401);
+    expect(response.body.message).toBe(null);
+    expect(response.body.errors.length).toBe(1);
+    expect(response.body.errors[0].field).toBe(null);
+    expect(response.body.errors[0].message).toBe(PACT_MESSAGES.NOT_MODERATOR);
+  });
+
+  it("check uses authMiddleware", async () => {
+    const user = await User.findOne({ uniEmail: "bob.to@kcl.ac.uk" });
+    const pact = await Pact.findOne({ id: getTestPactId() });
+
+    const response = await supertest(app)
+    .put(`/pact/${ pact._id }/${ user._id }/ban/`)
+    .expect(401);
+    expect(response.body.message).toBe(null);
+    expect(response.body.errors[0].field).toBe(null);
+    expect(response.body.errors[0].message).toBe(MESSAGES.AUTH.IS_NOT_LOGGED_IN);
+    expect(response.body.errors.length).toBe(1);
+  });
 
 });
