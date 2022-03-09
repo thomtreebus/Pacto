@@ -23,7 +23,7 @@ module.exports.updateProfile = async(req, res) => {
       status = 401;
       throw Error(USER_MESSAGES.UPDATE_OTHER_PROFILE_UNAUTHORISED)
     }
-    const updatedUser = await User.findByIdAndUpdate(id, { ...req.body });
+    const updatedUser = await User.findByIdAndUpdate(id, { ...req.body }, {runValidators: true});
     status = 200
 
   } catch (err) {
