@@ -113,22 +113,35 @@ module.exports.banMember = async (req, res) => {
 		await User.findByIdAndUpdate(user._id, { $pull: { pacts: pact._id } });
 		await Pact.findByIdAndUpdate(pact._id, { $pull: { members: user._id } });
 
-		// const index = user.pacts.indexOf(pactId);
-		// if (index > -1) {
-		// 	user.pacts.splice(index, 1);
-		// }
-
-		// const index2 = pact.members.indexOf(userId);
-		// if (index2 > -1) {
-		// 	pact.members.splice(index2, 1);
-		// }
-		
-		// await pact.save();
-		// await user.save();
-
 		res.json(jsonResponse(PACT_MESSAGES.SUCCESSFUL_BAN, []));
 	}
 	catch (err) {
 		res.status(404).json(jsonResponse(null, [jsonError(null, err.message)]));
 	}
 }
+
+module.exports.promoteMember = async (req, res) => {
+	try {
+		const user = await User.findById(req.params.userId);
+		const pact = await Pact.findById(req.params.pactId);
+
+		// Can't promote a user if they aren't a member of the pact
+		if (!pact.members.includes(user._id)) {
+			throw Error(PACT_MESSAGES.CANT_PROMOTE_NON_MEMBER);
+		}
+
+		// Can't promote someone who is already moderator
+		if (pact.moderators.includes(user._id)) {
+			throw Error(PACT_MESSAGES.CANT_PROMOTE_MODERATOR);
+		}
+
+		await Pact.findByIdAndUpdate(pact._id, { $push: { moderators: user._id } });
+
+		res.json(jsonResponse(PACT_MESSAGES.SUCCESSFUL_PROMOTION, []));
+	}
+	catch (err) {
+		res.status(404).json(jsonResponse(null, [jsonError(null, err.message)]));
+	}
+}
+
+

@@ -72,7 +72,10 @@ module.exports.PACT_MESSAGES = {
 	SUCCESSFUL_BAN: "User has been banned from pact",
 	CANT_BAN: "Can't ban that user from the pact",
 	CANT_BAN_MODERATOR: "Can't ban a moderator from the pact",
-	CANT_BAN_NON_MEMBER: "Can't ban someone who is not a member of the pact"
+	CANT_BAN_NON_MEMBER: "Can't ban someone who is not a member of the pact",
+	CANT_PROMOTE_NON_MEMBER: "Can't promote a user that isn't a member of the pact",
+	CANT_PROMOTE_MODERATOR: "User is already a moderator of the pact",
+	SUCCESSFUL_PROMOTION: "Member has been promoted to moderator",
 };
 
 module.exports.POST_MESSAGES = {
