@@ -15,7 +15,7 @@ const Pact = require('../../models/Pact');
 
 dotenv.config();
 
-describe("POST /post/upvote/:pactid/:id", () => {
+describe("promoteMember /pact/:pactId/:userId/promote", () => {
   beforeAll(async () => {
     await mongoose.connect(process.env.TEST_DB_CONNECTION_URL);
   });

@@ -70,6 +70,7 @@ module.exports.PACT_MESSAGES = {
 	NOT_AUTHORISED: "User is not a member of this pact",
 	NOT_MODERATOR: "User is not a moderator of this pact",
 	SUCCESSFUL_BAN: "User has been banned from pact",
+	SUCCESSFUL_REVOKE_BAN: "User no longer banned from pact",
 	CANT_BAN: "Can't ban that user from the pact",
 	NOT_BANNED: "User is not banned from the pact",
 	ALREADY_BANNED: "User is already banned from the pact",

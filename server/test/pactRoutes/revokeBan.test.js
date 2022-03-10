@@ -15,7 +15,7 @@ const Pact = require('../../models/Pact');
 
 dotenv.config();
 
-describe("banMember /pact/:pactId/:userId/ban", () => {
+describe("POST /post/upvote/:pactid/:id", () => {
   beforeAll(async () => {
     await mongoose.connect(process.env.TEST_DB_CONNECTION_URL);
   });
@@ -33,8 +33,7 @@ describe("banMember /pact/:pactId/:userId/ban", () => {
     //Make other user a member of pact
     const secondUser = await generateNextTestUser("bob");
     secondUser.active = true;
-    secondUser.pacts.push(pact._id);
-    pact.members.push(secondUser._id);
+    pact.bannedUsers.push(secondUser._id);
     await secondUser.save();
     await pact.save();
   });
@@ -45,52 +44,52 @@ describe("banMember /pact/:pactId/:userId/ban", () => {
     await University.deleteMany({});
   });
 
-  it("moderator can ban member of pact", async () => {
+  it("moderator can revoke ban of banned user", async () => {
     const user = await User.findOne({ uniEmail: getTestUserEmail() });
     const pact = await Pact.findOne({ id: getTestPactId() });
-    const banUser = await User.findOne({ uniEmail: "bob.to@kcl.ac.uk" });
+    const revokeBanUser = await User.findOne({ uniEmail: "bob.to@kcl.ac.uk" });
     const token = createToken(user._id);
-    const oldMemberCount = pact.members.length;
-    const oldPactCount = banUser.pacts.length;
-    const oldBannedUserCount = pact.bannedUsers.length;
+    const oldBanCount = pact.bannedUsers.length;
+    const oldPactCount = revokeBanUser.pacts.length;
 
     const response = await supertest(app)
-    .put(`/pact/${ pact._id }/${ banUser._id }/ban/`)
+    .put(`/pact/${ pact._id }/${ revokeBanUser._id }/revokeban/`)
     .set("Cookie", [`jwt=${token}`])
     .expect(200);
+    console.log(response.body)
     expect(response.body.message).toBeDefined();
     expect(response.body.errors.length).toBe(0);
 
     const responsePact = await Pact.findOne({ id: getTestPactId() });
-    const newMemberCount = responsePact.members.length;
-    const newBannedUserCount = responsePact.bannedUsers.length;
-    expect(newMemberCount).toBe(oldMemberCount - 1);
-    expect(newBannedUserCount).toBe(oldBannedUserCount + 1);
+    const newBanCount = responsePact.bannedUsers.length;
+    expect(newBanCount).toBe(oldBanCount - 1);
 
-    const bannedUser = await User.findOne({ uniEmail: "bob.to@kcl.ac.uk" });
-    const newPactCount = bannedUser.pacts.length;
-    expect(newPactCount).toBe(oldPactCount - 1);
+    const responseUser = await User.findOne({ uniEmail: "bob.to@kcl.ac.uk" });
+    const newPactCount = responseUser.pacts.length;
+    expect(newPactCount).toBe(oldPactCount + 1);
   });
 
-  it("moderator can not ban other moderator", async () => {
+  it("moderator can not revoke ban of user that is not banned", async () => {
     const user = await User.findOne({ uniEmail: getTestUserEmail() });
     const pact = await Pact.findOne({ id: getTestPactId() });
-    const moderator = await User.findOne({ uniEmail: "bob.to@kcl.ac.uk" });
-    pact.moderators.push(moderator._id);
-    await pact.save();
-    const token = createToken(user._id);
+    const notBannedUser = await generateNextTestUser("joe");
+    pact.members.push(notBannedUser._id);
+    pact.save();
+    notBannedUser.pacts.push(pact._id);
+    notBannedUser.save();
 
+    const token = createToken(user._id);
     const response = await supertest(app)
-    .put(`/pact/${ pact._id }/${ moderator._id }/ban/`)
+    .put(`/pact/${ pact._id }/${ notBannedUser._id }/revokeban/`)
     .set("Cookie", [`jwt=${token}`])
     .expect(404);
     expect(response.body.message).toBe(null);
     expect(response.body.errors.length).toBe(1);
     expect(response.body.errors[0].field).toBe(null);
-    expect(response.body.errors[0].message).toBe(PACT_MESSAGES.CANT_BAN_MODERATOR);
+    expect(response.body.errors[0].message).toBe(PACT_MESSAGES.NOT_BANNED);
   });
 
-  it("can not ban someone who is not a member", async () => {
+  it("can not revoke ban of someone who is not a member", async () => {
     const user = await User.findOne({ uniEmail: getTestUserEmail() });
     const otherUser = await generateNextTestUser("joe");
     otherUser.save();
@@ -98,44 +97,27 @@ describe("banMember /pact/:pactId/:userId/ban", () => {
     const token = createToken(user._id);
 
     const response = await supertest(app)
-    .put(`/pact/${ pact._id }/${ otherUser._id }/ban/`)
+    .put(`/pact/${ pact._id }/${ otherUser._id }/revokeban/`)
     .set("Cookie", [`jwt=${token}`])
     .expect(404);
     expect(response.body.message).toBe(null);
     expect(response.body.errors.length).toBe(1);
     expect(response.body.errors[0].field).toBe(null);
-    expect(response.body.errors[0].message).toBe(PACT_MESSAGES.CANT_BAN_NON_MEMBER);
+    expect(response.body.errors[0].message).toBe(PACT_MESSAGES.NOT_BANNED);
   });
 
-    it("can not ban someone who is already banned", async () => {
-    const user = await User.findOne({ uniEmail: getTestUserEmail() });
-    const pact = await Pact.findOne({ id: getTestPactId() });
-    const bannedUser = await User.findOne({ uniEmail: "bob.to@kcl.ac.uk" });
-    pact.bannedUsers.push(bannedUser._id);
-    pact.save();
-    const token = createToken(user._id);
-    
-    const response = await supertest(app)
-    .put(`/pact/${ pact._id }/${ bannedUser._id }/ban/`)
-    .set("Cookie", [`jwt=${token}`])
-    .expect(404);
-    expect(response.body.message).toBe(null);
-    expect(response.body.errors.length).toBe(1);
-    expect(response.body.errors[0].field).toBe(null);
-    expect(response.body.errors[0].message).toBe(PACT_MESSAGES.ALREADY_BANNED);
-  });
-
-  it("member can not ban other member", async () => {
+  it("member can not revoke a ban", async () => {
     const user = await User.findOne({ uniEmail: "bob.to@kcl.ac.uk" });
     const otherUser = await generateNextTestUser("joe");
     otherUser.save();
     const pact = await Pact.findOne({ id: getTestPactId() });
     pact.members.push(otherUser._id);
+    pact.members.push(user._id);
     pact.save();
     const token = createToken(user._id);
 
     const response = await supertest(app)
-    .put(`/pact/${ pact._id }/${ otherUser._id }/ban/`)
+    .put(`/pact/${ pact._id }/${ otherUser._id }/revokeban/`)
     .set("Cookie", [`jwt=${token}`])
     .expect(401);
     expect(response.body.message).toBe(null);
@@ -149,7 +131,7 @@ describe("banMember /pact/:pactId/:userId/ban", () => {
     const pact = await Pact.findOne({ id: getTestPactId() });
 
     const response = await supertest(app)
-    .put(`/pact/${ pact._id }/${ user._id }/ban/`)
+    .put(`/pact/${ pact._id }/${ user._id }/revokeban/`)
     .expect(401);
     expect(response.body.message).toBe(null);
     expect(response.body.errors[0].field).toBe(null);
