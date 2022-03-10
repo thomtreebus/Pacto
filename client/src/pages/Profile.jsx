@@ -123,9 +123,9 @@ export default function Profile() {
         </Stack>
         <Divider sx={{ marginTop: "10px", marginBottom: "10px" }}></Divider>
         <Stack direction="row" alignItems="center" spacing={2} sx={{ marginTop: "2px" }}>
-          <Chip label={`${user.instagram}`} icon={<InstagramIcon />} variant="outlined" data-testid="instagram-icon" component="a" target="_blank" clickable href={`https://www.instagram.com/`} />
-          <Chip label={`${user.linkedin}`} icon={<LinkedInIcon />} data-testid="linkedin-icon" variant="outlined" component="a" target="_blank" clickable href={`https://www.linkedin.com/`} />
-          <Chip label={`${user.phone}`} icon={<WhatsAppIcon />} data-testid="phone-icon" variant="outlined" />
+          <Chip label={`${user.instagram||""}`} icon={<InstagramIcon />} variant="outlined" data-testid="instagram-icon" component="a" target="_blank" clickable href={`https://www.instagram.com/`} />
+          <Chip label={`${user.linkedin||""}`} icon={<LinkedInIcon />} data-testid="linkedin-icon" variant="outlined" component="a" target="_blank" clickable href={`https://www.linkedin.com/`} />
+          <Chip label={`${user.phone||""}`} icon={<WhatsAppIcon />} data-testid="phone-icon" variant="outlined" />
         </Stack>
         <Divider sx={{ marginTop: "10px", marginBottom: "10px" }}></Divider>
         <Typography variant="body1" sx={{}}> {user.bio} </Typography>
