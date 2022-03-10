@@ -150,4 +150,25 @@ module.exports.promoteMember = async (req, res) => {
 	}
 }
 
+module.exports.revokeBan = async (req, res) => {
+	try {
+		const user = await User.findById(req.params.userId);
+		const pact = await Pact.findById(req.params.pactId);
+
+		// Can't revoke a ban if user is not banned from pact
+		if (!pact.bannedUsers.includes(user._id)) {
+			throw Error(PACT_MESSAGES.NOT_BANNED);
+		}
+
+		await Pact.findByIdAndUpdate(pact._id, { $push: { members: user._id } });
+		await Pact.findByIdAndUpdate(pact._id, { $pull: { bannedUsers: user._id } });
+		await User.findByIdAndUpdate(user._id, { $push: { pacts: pact._id } });
+
+		res.json(jsonResponse(PACT_MESSAGES.SUCCESSFUL_REVOKE_BAN, []));
+	}
+	catch (err) {
+		res.status(404).json(jsonResponse(null, [jsonError(null, err.message)]));
+	}
+}
+
 
