@@ -268,7 +268,7 @@ describe("Edit Profile Page Tests", () => {
       await act( async () => {
         await userEvent.click(updateProfileButton);
         await new Promise(resolve => setTimeout(resolve, 1000));
-        expect(window.location.pathname).toBe("/profile");
+        expect(window.location.pathname).toBe("/user/1");
       });
 
     });
