@@ -3,7 +3,7 @@ const dotenv = require("dotenv");
 const supertest = require("supertest");
 const app = require("../../app");
 const { createToken } = require("../../controllers/authController");
-const { generateTestUser, getDefaultTestUserEmail} = require("../fixtures/generateTestUser");
+const { generateTestUser, getDefaultTestUserEmail, generateCustomUniTestUser} = require("../fixtures/generateTestUser");
 const { generateTestPact, getTestPactId } = require("../fixtures/generateTestPact");
 const { MESSAGES, PACT_MESSAGES } = require("../../helpers/messages");
 const User = require("../../models/User");
@@ -57,7 +57,7 @@ describe("POST /pact/:pactid/join", () => {
     const pact = await Pact.findOne({ _id: getTestPactId() });
 
     // Creating the user who is not in the correct uni
-    const user = await generateTestUser("User", "ucl");
+    const user = await generateCustomUniTestUser("User", "ucl");
     user.active = true;
     await user.save();
     const token = createToken(user._id);
