@@ -1,5 +1,5 @@
 import { render, screen, fireEvent } from "@testing-library/react";
-import { waitForElementToBeRemoved } from "@testing-library/react";
+import { waitForElementToBeRemoved, waitFor } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import MockComponent from "./utils/MockComponent";
 import { rest } from "msw";
@@ -210,10 +210,12 @@ describe("Edit Profile Page Tests", () => {
         "image-upload-icon"
       );
       await act(async () => {
-        await userEvent.upload(buttonElement, image);
-        await new Promise(resolve => setTimeout(resolve, 5));
-        expect(buttonElement.files[0]).toBe(image);
-        expect(buttonElement.files).toHaveLength(1);
+        await waitFor(() => userEvent.upload(buttonElement, image));
+        await waitFor(() => {
+          expect(buttonElement.files[0]).toBe(image);
+          expect(buttonElement.files[0]).toBe(image);
+          expect(buttonElement.files).toHaveLength(1);
+        }); 
       });
     });
 
@@ -240,13 +242,12 @@ describe("Edit Profile Page Tests", () => {
 
 
       await act( async () => {
-        await userEvent.upload(buttonElement, image);
-        // wait 1 second due to some react delays
-        await new Promise(resolve => setTimeout(resolve, 5));
-
-        const updatedImage = (await screen.findByAltText("Profile Picture")).getAttribute('src');
-        expect(updatedImage).toBe("http://res.cloudinary.com/djlwzi9br/image/upload/v1644796162/qrbhfhmml4hwa5y0dvu9.png");
-        expect(previousImage===updatedImage).toBe(false);
+        await waitFor(() => userEvent.upload(buttonElement, image));
+        await waitFor(() => {
+          const updatedImage = (screen.getByAltText("Profile Picture")).getAttribute('src');
+          expect(updatedImage).toBe("http://res.cloudinary.com/djlwzi9br/image/upload/v1644796162/qrbhfhmml4hwa5y0dvu9.png");
+          expect(previousImage===updatedImage).toBe(false);
+        }); 
       });
     });
 
@@ -265,12 +266,11 @@ describe("Edit Profile Page Tests", () => {
       const updateProfileButton = await screen.findByRole("button", {
         name: "Update Profile"
       });
-      await act( async () => {
-        await userEvent.click(updateProfileButton);
-        await new Promise(resolve => setTimeout(resolve, 5));
-        expect(window.location.pathname).toBe("/user/1");
-      });
 
+      await waitFor(() => userEvent.click(updateProfileButton));
+      await waitFor(() => {
+        expect(window.location.pathname).toBe("/user/1");
+      }); 
     });
   });
 
@@ -297,10 +297,11 @@ describe("Edit Profile Page Tests", () => {
         name: "Update Profile"
       });
       await act( async () => {
-        await userEvent.click(updateProfileButton);
-        await new Promise(resolve => setTimeout(resolve, 5));
-        const screenErrorMessage = await screen.findByText(errMsg);
-        expect(screenErrorMessage).toBeInTheDocument();
+        await waitFor(() => userEvent.click(updateProfileButton));
+        await waitFor(() => {
+          const screenErrorMessage = screen.getByText(errMsg);
+          expect(screenErrorMessage).toBeInTheDocument();
+        }); 
       });
 
     });
@@ -327,10 +328,11 @@ describe("Edit Profile Page Tests", () => {
         name: "Update Profile"
       });
       await act( async () => {
-        await userEvent.click(updateProfileButton);
-        await new Promise(resolve => setTimeout(resolve, 5));
-        const screenErrorMessage = await screen.findByText(errMsg);
-        expect(screenErrorMessage).toBeInTheDocument();
+        await waitFor(() => userEvent.click(updateProfileButton));
+        await waitFor(() => {
+          const screenErrorMessage = screen.getByText(errMsg);
+          expect(screenErrorMessage).toBeInTheDocument();
+        }); 
       });
     });
 
@@ -356,10 +358,11 @@ describe("Edit Profile Page Tests", () => {
         name: "Update Profile"
       });
       await act( async () => {
-        await userEvent.click(updateProfileButton);
-        await new Promise(resolve => setTimeout(resolve, 5));
-        const screenErrorMessage = await screen.findByText(errMsg);
-        expect(screenErrorMessage).toBeInTheDocument();
+        await waitFor(() => userEvent.click(updateProfileButton));
+        await waitFor(() => {
+          const screenErrorMessage = screen.getByText(errMsg);
+          expect(screenErrorMessage).toBeInTheDocument();
+        }); 
       });
     });
 
@@ -385,10 +388,11 @@ describe("Edit Profile Page Tests", () => {
         name: "Update Profile"
       });
       await act( async () => {
-        await userEvent.click(updateProfileButton);
-        await new Promise(resolve => setTimeout(resolve, 5));
-        const screenErrorMessage = await screen.findByText(errMsg);
-        expect(screenErrorMessage).toBeInTheDocument();
+        await waitFor(() => userEvent.click(updateProfileButton));
+        await waitFor(() => {
+          const screenErrorMessage = screen.getByText(errMsg);
+          expect(screenErrorMessage).toBeInTheDocument();
+        }); 
       });
     });
 
@@ -414,10 +418,11 @@ describe("Edit Profile Page Tests", () => {
         name: "Update Profile"
       });
       await act( async () => {
-        await userEvent.click(updateProfileButton);
-        await new Promise(resolve => setTimeout(resolve, 5));
-        const screenErrorMessage = await screen.findByText(errMsg);
-        expect(screenErrorMessage).toBeInTheDocument();
+        await waitFor(() => userEvent.click(updateProfileButton));
+        await waitFor(() => {
+          const screenErrorMessage = screen.getByText(errMsg);
+          expect(screenErrorMessage).toBeInTheDocument();
+        }); 
       });
     });
 
@@ -443,10 +448,11 @@ describe("Edit Profile Page Tests", () => {
         name: "Update Profile"
       });
       await act( async () => {
-        await userEvent.click(updateProfileButton);
-        await new Promise(resolve => setTimeout(resolve, 5));
-        const screenErrorMessage = await screen.findByText(errMsg);
-        expect(screenErrorMessage).toBeInTheDocument();
+        await waitFor(() => userEvent.click(updateProfileButton));
+        await waitFor(() => {
+          const screenErrorMessage = screen.getByText(errMsg);
+          expect(screenErrorMessage).toBeInTheDocument();
+        }); 
       });
     });
   });
