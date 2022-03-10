@@ -245,7 +245,7 @@ describe("Edit Profile Page Tests", () => {
         await waitFor(() => userEvent.upload(buttonElement, image));
         await waitFor(() => {
           const updatedImage = (screen.getByAltText("Profile Picture")).getAttribute('src');
-          expect(updatedImage).toBe("http://res.cloudinary.com/djlwzi9br/image/upload/v1644796162/qrbhfhmml4hwa5y0dvu9.png");
+          expect(updatedImage).toBe(imageUrl);
           expect(previousImage===updatedImage).toBe(false);
         }); 
       });
