@@ -46,7 +46,22 @@ const checkIsModeratorOfPact = async (req, res, next) => {
   let status = 400;
   try {
     const user = req.user;
-    const pact = await Pact.findOne({ university: user.university, _id:req.params.pactId });
+    if (!user){
+      status = 401;
+      throw Error(MESSAGES.AUTH.IS_NOT_LOGGED_IN);
+    }
+
+    let pact = null;
+		try {
+			pact = await Pact.findOne({ university: user.university, _id:req.params.pactId });
+		}
+		catch (err) {
+			pact = null;
+		}
+    if (!pact) {
+      status = 404;
+      throw Error(PACT_MESSAGES.NOT_FOUND);
+    }
 
     const id = user._id.toString();
 
