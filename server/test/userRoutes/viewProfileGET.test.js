@@ -91,6 +91,26 @@ describe("GET /users/:id", () => {
     expect(response.body.message).toBe(null);
   });
 
-  // it("inactive user does not return user profile data", async () => {});
+  it("inactive user does not return user profile data", async () => {
+    const loggedInUser = await generateTestUser();
+    loggedInUser.active = true;
+    await loggedInUser.save();
+    const token = createToken(loggedInUser._id);
+
+    const otherUserFirstName = "jimmy"
+    const otherUser = await generateTestUser(otherUserFirstName);
+    const testValues = getDefaultTestUser();
+    testValues.firstName = otherUserFirstName;
+    otherUser.active = false;
+    await otherUser.save();
+
+    let response = await supertest(app)
+      .get("/users/"+otherUser._id)
+      .set("Cookie", [`jwt=${token}`]);
+    expect(response.body.errors).toHaveLength(1);
+    expect(response.body.errors[0].message).toBe(USER_MESSAGES.NOT_ACTIVE);
+    expect(response.body.message).toBe(null);
+    expect(response.status).toBe(423);
+  });
 
 });

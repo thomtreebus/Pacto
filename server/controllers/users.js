@@ -50,7 +50,7 @@ module.exports.viewProfile = async(req, res) => {
   let status = 400;
   try {
     const university = req.user.university;
-    const { id } = req.params; 
+    const { id } = req.params;
 
     if (!university){
 			throw Error(USER_MESSAGES.UNIVERSITY_NOT_SET);
@@ -68,6 +68,11 @@ module.exports.viewProfile = async(req, res) => {
 		if (!user){
 			status = 404;
 			throw Error(USER_MESSAGES.DOES_NOT_EXIST);
+    }
+
+    if (user.active === false){
+      status = 423
+      throw Error(USER_MESSAGES.NOT_ACTIVE)
     }
 
     // await user.populate({ path: 'user', model: User })

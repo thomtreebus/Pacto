@@ -94,6 +94,6 @@ module.exports.USER_MESSAGES = {
 	DOES_NOT_EXIST: "User does not exist",
 	UNIVERSITY_NOT_SET: "User has no university",
 	UPDATE_OTHER_PROFILE_UNAUTHORISED: "Can not update someone else's profile",
-	SUCCESSFUL_DELETE: "Successfully deleted account!"
-
+	SUCCESSFUL_DELETE: "Successfully deleted account!",
+	NOT_ACTIVE: "This user is not active"
 };
