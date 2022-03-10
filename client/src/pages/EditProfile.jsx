@@ -94,7 +94,7 @@ export default function EditProfile() {
 
     //redirects user when form is correct
     if (res.status === 200){
-      return history.push('/user/', user._id);
+      return history.push('/user/'+ user._id);
     }
 
     const resJson = await res.json();
