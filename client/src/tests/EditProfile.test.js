@@ -211,7 +211,7 @@ describe("Edit Profile Page Tests", () => {
       );
       await act(async () => {
         await userEvent.upload(buttonElement, image);
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        await new Promise(resolve => setTimeout(resolve, 5));
         expect(buttonElement.files[0]).toBe(image);
         expect(buttonElement.files).toHaveLength(1);
       });
@@ -242,7 +242,7 @@ describe("Edit Profile Page Tests", () => {
       await act( async () => {
         await userEvent.upload(buttonElement, image);
         // wait 1 second due to some react delays
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        await new Promise(resolve => setTimeout(resolve, 5));
 
         const updatedImage = (await screen.findByAltText("Profile Picture")).getAttribute('src');
         expect(updatedImage).toBe("http://res.cloudinary.com/djlwzi9br/image/upload/v1644796162/qrbhfhmml4hwa5y0dvu9.png");
@@ -267,7 +267,7 @@ describe("Edit Profile Page Tests", () => {
       });
       await act( async () => {
         await userEvent.click(updateProfileButton);
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        await new Promise(resolve => setTimeout(resolve, 5));
         expect(window.location.pathname).toBe("/user/1");
       });
 
@@ -298,7 +298,7 @@ describe("Edit Profile Page Tests", () => {
       });
       await act( async () => {
         await userEvent.click(updateProfileButton);
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        await new Promise(resolve => setTimeout(resolve, 5));
         const screenErrorMessage = await screen.findByText(errMsg);
         expect(screenErrorMessage).toBeInTheDocument();
       });
@@ -328,7 +328,7 @@ describe("Edit Profile Page Tests", () => {
       });
       await act( async () => {
         await userEvent.click(updateProfileButton);
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        await new Promise(resolve => setTimeout(resolve, 5));
         const screenErrorMessage = await screen.findByText(errMsg);
         expect(screenErrorMessage).toBeInTheDocument();
       });
@@ -357,7 +357,7 @@ describe("Edit Profile Page Tests", () => {
       });
       await act( async () => {
         await userEvent.click(updateProfileButton);
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        await new Promise(resolve => setTimeout(resolve, 5));
         const screenErrorMessage = await screen.findByText(errMsg);
         expect(screenErrorMessage).toBeInTheDocument();
       });
@@ -386,7 +386,7 @@ describe("Edit Profile Page Tests", () => {
       });
       await act( async () => {
         await userEvent.click(updateProfileButton);
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        await new Promise(resolve => setTimeout(resolve, 5));
         const screenErrorMessage = await screen.findByText(errMsg);
         expect(screenErrorMessage).toBeInTheDocument();
       });
@@ -415,7 +415,7 @@ describe("Edit Profile Page Tests", () => {
       });
       await act( async () => {
         await userEvent.click(updateProfileButton);
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        await new Promise(resolve => setTimeout(resolve, 5));
         const screenErrorMessage = await screen.findByText(errMsg);
         expect(screenErrorMessage).toBeInTheDocument();
       });
@@ -444,7 +444,7 @@ describe("Edit Profile Page Tests", () => {
       });
       await act( async () => {
         await userEvent.click(updateProfileButton);
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        await new Promise(resolve => setTimeout(resolve, 5));
         const screenErrorMessage = await screen.findByText(errMsg);
         expect(screenErrorMessage).toBeInTheDocument();
       });
