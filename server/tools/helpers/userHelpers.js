@@ -3,7 +3,7 @@ const bcrypt = require("bcrypt");
 const userConstants = require("./userConstants");
 const User = require("../../models/User");
 
-const chance = new Chance();
+const chance = new Chance(1234);
 const SALT_ROUNDS = 10;
 
 async function seedUsers(university, USER_COUNT) {
