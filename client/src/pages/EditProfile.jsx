@@ -32,6 +32,7 @@ export default function EditProfile() {
   const history = useHistory();
 
   const [editProfileIsDisabled, setEditProfileIsDisabled] = React.useState(false);
+  const [uploadImageIsDisabled, setUploadImageIsDisabled] = React.useState(false);
 
   const [isLoading, setIsLoading] = React.useState(true);
 
@@ -51,6 +52,7 @@ export default function EditProfile() {
   const [apiPhoneError, setApiPhoneError] = React.useState('');
 
   const uploadImage = async (newImage) => {
+    setUploadImageIsDisabled(true);
     const data = new FormData();
 
     data.append("api_key", process.env.REACT_APP_CLOUDINARY_KEY);
@@ -63,6 +65,7 @@ export default function EditProfile() {
     } catch (err) {
       console.log(err);
     }
+    setUploadImageIsDisabled(false);
   }
 
   useEffect(() => {
@@ -164,11 +167,12 @@ export default function EditProfile() {
                 accept="image/*"
                 id="contained-button-file"
                 data-testid="image-upload-icon"
+                disabled={uploadImageIsDisabled}
                 type="file"
                 onChange={(e) => {
                   uploadImage(e.target.files[0])
                 }}/>
-              <IconButton color="primary" component="span">
+              <IconButton color="primary" component="span" disabled={uploadImageIsDisabled}>
                 <PhotoIcon/>
               </IconButton>
             </label>
