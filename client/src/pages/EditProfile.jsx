@@ -17,8 +17,8 @@ import InstagramIcon from '@mui/icons-material/Instagram';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import WhatsAppIcon from '@mui/icons-material/WhatsApp';
 import { Divider } from '@mui/material';
-import {useQuery} from "react-query";
 import Loading from "./Loading";
+import {useAuth} from "../providers/AuthProvider";
 
 
 const Input = styled('input')({
@@ -27,17 +27,12 @@ const Input = styled('input')({
 
 export default function EditProfile() {
 
-  const { data } = useQuery("userData", () =>
-    fetch(`${process.env.REACT_APP_URL}/me`, {
-      credentials: "include",
-    }).then((res) => res.json())
-  );
+  const {user} = useAuth();
 
   const history = useHistory();
 
   const [editProfileIsDisabled, setEditProfileIsDisabled] = React.useState(false);
 
-  const [user, setUser] = React.useState(undefined);
   const [isLoading, setIsLoading] = React.useState(true);
 
   const [bio, setBio] = React.useState("");
@@ -69,13 +64,6 @@ export default function EditProfile() {
       console.log(err);
     }
   }
-
-  useEffect(() => {
-
-    if (data !== undefined) {
-      setUser(data.message);
-    }
-  }, [data]);
 
   useEffect(() => {
     if(user !== undefined){
