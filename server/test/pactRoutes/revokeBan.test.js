@@ -56,7 +56,6 @@ describe("POST /post/upvote/:pactid/:id", () => {
     .put(`/pact/${ pact._id }/${ revokeBanUser._id }/revokeban/`)
     .set("Cookie", [`jwt=${token}`])
     .expect(200);
-    console.log(response.body)
     expect(response.body.message).toBeDefined();
     expect(response.body.errors.length).toBe(0);
 
