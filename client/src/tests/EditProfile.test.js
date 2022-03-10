@@ -254,7 +254,7 @@ describe("Edit Profile Page Tests", () => {
       server.use(
         rest.put(`${process.env.REACT_APP_URL}/users/1`, (req, res, ctx) => {
           return res(
-            ctx.status(201),
+            ctx.status(200),
             ctx.json({
               message: 'Success',
               errors: [],
@@ -267,8 +267,8 @@ describe("Edit Profile Page Tests", () => {
       });
       await act( async () => {
         await userEvent.click(updateProfileButton);
-        // expect(window.location.pathname).toBe("/profile");
         await new Promise(resolve => setTimeout(resolve, 1000));
+        expect(window.location.pathname).toBe("/profile");
       });
 
     });

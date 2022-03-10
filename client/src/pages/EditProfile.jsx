@@ -93,7 +93,7 @@ export default function EditProfile() {
     });
 
     //redirects user when form is correct
-    if (res.status === 500){
+    if (res.status === 200){
       return history.push('/profile');
     }
 
