@@ -5,6 +5,7 @@ import Loading from "./Loading";
 import PostList from "../components/PostList";
 import PactGrid from "../components/PactGrid";
 import { Typography } from '@mui/material';
+import { useHistory } from "react-router-dom";
 import Box from '@mui/material/Box';
 import PropTypes from 'prop-types';
 import Tabs from '@mui/material/Tabs';
@@ -51,6 +52,7 @@ export default function SearchResults() {
   const [results, setResults] = useState(null);
   const [type, setType] = useState(0);
   const [data, setData] = useState([]);
+  const history = useHistory();
   
   useEffect(() => {
     fetch(`${process.env.REACT_APP_URL}/search/${query}`, {
@@ -70,7 +72,7 @@ export default function SearchResults() {
       setIsLoading(false);
       setError(err);
     })
-  }, [])
+  }, [query])
 
   useEffect(() => {
     if (results) {
@@ -90,7 +92,9 @@ export default function SearchResults() {
     <>
     { isLoading && <Loading /> }
     {error && <ErrorPage />}
-      <Typography>Showing results for: {query}</Typography>
+      <Typography variant="subtitle2" sx={{ fontSize: "1.5rem" }}>
+        Showing { results.pacts.length + results.posts.length + results.users.length } search results for: "{ query }"
+			</Typography>
       <Box sx={{ width: '100%'}}>
         <Box sx={{ borderBottom: 1, borderColor: 'divider', bgcolor: 'background.paper' }}>
           <Tabs value={type} onChange={handleTabChange} centered>
@@ -106,7 +110,7 @@ export default function SearchResults() {
           {results && <PostList posts={results.posts}/>}
         </TabPanel>
         <TabPanel value={type} index={2}>
-          Item Three
+          Users
         </TabPanel>
       </Box>
       
