@@ -70,13 +70,14 @@ export default function Profile() {
   const { id } = useParams();
   const history = useHistory();
   const [value, setValue] = useState(0);
+  const [isNotSelf, setIsNotSelf] = useState(true);
 
   const { isLoading, data } = useQuery("userData", () =>
     fetch(`${process.env.REACT_APP_URL}/users/${id}`, {
       credentials: "include",
     }).then((res) => res.json())
   );
-  
+
   useEffect(() => {
     if (data) {
       if (data.errors.length) {
@@ -91,8 +92,6 @@ export default function Profile() {
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
-
-
   
   if (isLoading) {
     return <Loading />;
@@ -157,7 +156,7 @@ export default function Profile() {
               <Chip label={`${user.friends.length} Friends`} icon={<GroupIcon />} variant="outlined" />
               <Chip label={`${user.pacts.length} Pacts`} icon={<ForumIcon />} variant="outlined" />
             </Stack>
-            <Button variant="outlined" fullwidth="true" startIcon={<PersonAddIcon />} sx={{marginTop: "4px"}}>Send Friend Request</Button>
+            <Button variant="outlined" fullwidth="true" disabled={id === user._id} startIcon={<PersonAddIcon />} sx={{marginTop: "4px"}}>Send Friend Request</Button>
             {<Button variant="contained" fullwidth="true" color="error" onClick={() => history.push("/edit-profile")} startIcon={<EditIcon />} sx={{ marginTop: "2px" }}>
               Edit Profile </Button>
               }
