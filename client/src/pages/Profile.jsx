@@ -157,7 +157,7 @@ export default function Profile() {
               <Chip label={`${user.pacts.length} Pacts`} icon={<ForumIcon />} variant="outlined" />
             </Stack>
             <Button variant="outlined" fullwidth="true" disabled={id === user._id} startIcon={<PersonAddIcon />} sx={{marginTop: "4px"}}>Send Friend Request</Button>
-            {<Button variant="contained" fullwidth="true" color="error" onClick={() => history.push("/edit-profile")} startIcon={<EditIcon />} sx={{ marginTop: "2px" }}>
+            {<Button variant="contained" data-testid="edit-profile-button" fullwidth="true" color="error" onClick={() => history.push("/edit-profile")} startIcon={<EditIcon />} sx={{ marginTop: "2px" }}>
               Edit Profile </Button>
               }
           </CardContent>

@@ -96,11 +96,15 @@ describe("Profile Page Tests", () => {
         <MemoryRouter initialEntries={[`/user/${user._id}`]}>
           <Route exact path="/user/:id">
             <Profile />
-            <Route exact path="/edit-profile">
-              <h1>Redirected to edit-profile</h1>
-            </Route>
+          </Route>
+          <Route exact path="/edit-profile">
+            <h1>Redirected to edit-profile</h1>
+          </Route>
+          <Route exact path="/not-found">
+            <h1>Redirected to not-found</h1>
           </Route>
         </MemoryRouter>
+
       </MockComponent>
     );
     await waitForElementToBeRemoved(() => screen.getByText("Loading"));
@@ -172,5 +176,36 @@ describe("Profile Page Tests", () => {
       expect(pactsButton).toBeInTheDocument();
     });
 
+    it("should render the editProfile button", async () => {
+      const editProfileButton = await screen.findByText("Edit Profile");
+      expect(editProfileButton).toBeInTheDocument();
+    });
+
+    it("should render the friends text", async () => {
+      const friendsInfo = await screen.findByText("2 Friends");
+      expect(friendsInfo).toBeInTheDocument();
+    });
+
+    it("should render the pacts text", async () => {
+      const pactsInfo = await screen.findByText("0 Pacts");
+      expect(pactsInfo).toBeInTheDocument();
+    });
+
+    it("should render the send friend request button", async () => {
+      const sendFriendRequestButton = await screen.findByText("Send Friend Request");
+      expect(sendFriendRequestButton).toBeInTheDocument();
+    });
+
   });
+
+  describe("Check interaction with elements", () => {
+    it("Edit profile button takes you to edit ", async () => {
+      const editProfileButton = await screen.findByTestId("edit-profile-button")
+      await waitFor(() => {
+        userEvent.click(editProfileButton)
+      });
+      await waitFor(() => screen.findByText("Redirected to edit-profile"));
+    });
+  });
+
 });
