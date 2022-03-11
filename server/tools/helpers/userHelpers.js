@@ -48,16 +48,16 @@ function getRandomImage(firstName, lastName) {
 }
 
 function getRandomCourse() {
-	return userConstants.COURSES[chance.integer({ min: 0, max: userConstants.COURSES.length })];
+	return userConstants.COURSES[chance.integer({ min: 0, max: userConstants.COURSES.length-1 })];
 }
 
 function getRandomLocation() {
-	return userConstants.CITIES[chance.integer({ min: 0, max: userConstants.CITIES.length })]
+	return userConstants.CITIES[chance.integer({ min: 0, max: userConstants.CITIES.length-1 })]
 }
 
 function getRandomHobbies() {
 	const hobbies = []; 
-	randomHobby = () => chance.integer({ min: 0, max: userConstants.HOBBIES.length })
+	randomHobby = () => chance.integer({ min: 0, max: userConstants.HOBBIES.length-1 })
 	chance.unique(randomHobby, 2).forEach(hobby => hobbies.push(userConstants.HOBBIES[hobby]));
 	return hobbies;
 }
