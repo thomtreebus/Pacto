@@ -34,6 +34,9 @@ async function createUser(firstName, lastName, university) {
 		bio: chance.paragraph(),
 		hobbies: getRandomHobbies(),
 		friends: [],
+		instagram: `${firstName}.${lastName}`,
+		linkedin: `${firstName}.${lastName}`,
+		phone: chance.phone({ country: 'uk', mobile: true })
 	});
 
 	university.users.push(user);
