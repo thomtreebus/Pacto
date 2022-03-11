@@ -41,11 +41,14 @@ module.exports.search = async (req, res) => {
     });
 
     // Find all posts matching the query string
-    const uniPacts = Pact.find({ university: university._id });
-    let posts = [];
-    for (let pact in uniPacts) {
-      posts.concat(await Post.find({ pact: pact._id, title: { $regex: searchQuery } }));
-    }
+    const uniPacts = await Pact.find({ university: university._id });
+    const posts = await Post.find({
+      pact: { $in: uniPacts },
+      title: { $regex: searchQuery }
+    });
+    // for (let pact in uniPacts) {
+    //   posts.concat(await Post.find({ pact: pact._id, title: { $regex: searchQuery } }));
+    // }
 
     const results = {
       pacts: pacts,
