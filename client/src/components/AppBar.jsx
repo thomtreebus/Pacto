@@ -65,6 +65,7 @@ export default function PrimarySearchAppBar() {
 
 	const [anchorEl, setAnchorEl] = React.useState(null);
 	const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
+	const [search, setSearch] = React.useState("");
 
 	const isMenuOpen = Boolean(anchorEl);
 	const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
@@ -97,6 +98,33 @@ export default function PrimarySearchAppBar() {
 	const handleProfileClick = () => {
 		history.push("/edit-profile");
 		handleMenuClose();
+	}
+
+	const handleSearch = () => {
+		// fetch(`${process.env.REACT_APP_URL}/search`, {
+    //   method: "GET",
+    //   credentials: "include"
+    // }).then((res) => {
+    //   if (!res.ok) {
+    //     throw Error("Could not fetch pact");
+    //   }
+    //   return res.json();
+    // }).then((data) => {
+    //   setPact(data.message);
+    //   setIsLoading(false);
+    //   setError(null);
+    // }).catch((err) => {
+    //   setPact(null);
+    //   setIsLoading(false);
+    //   setError(err);
+    // })
+		history.push(`/search/${search}`);
+	}
+
+	const keyPress = (e) => {
+		if (e.keyCode == 13) {
+			handleSearch();
+		}
 	}
 
 	const menuId = "primary-search-account-menu";
@@ -190,7 +218,10 @@ export default function PrimarySearchAppBar() {
 						</SearchIconWrapper>
 						<StyledInputBase
 							placeholder="Search…"
+							value={search}
+							onChange={(e) => setSearch(e.target.value)}
 							inputProps={{ "aria-label": "search" }}
+							onKeyDown={keyPress}
 						/>
 					</Search>
 					<Box sx={{ flexGrow: 1 }} />
