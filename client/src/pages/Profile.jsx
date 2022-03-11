@@ -70,7 +70,6 @@ export default function Profile() {
   const { id } = useParams();
   const history = useHistory();
   const [value, setValue] = useState(0);
-  const [isNotSelf, setIsNotSelf] = useState(true);
 
   const { isLoading, data } = useQuery("userData", () =>
     fetch(`${process.env.REACT_APP_URL}/users/${id}`, {
