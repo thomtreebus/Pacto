@@ -99,7 +99,9 @@ export default function Profile() {
     if(displayedUser) {
       if (loggedInUser._id === displayedUser._id) {
         setCanEditProfile(true);
+        setCanFriend(false);
       } else {
+        setCanEditProfile(false);
         setCanFriend(true);
       }
       setIsLoading(false);
