@@ -251,6 +251,36 @@ describe("Edit Profile Page Tests", () => {
       });
     });
 
+
+    it("error during image upload doesn't update profile image shown", async () => {
+      server.use(
+        rest.post(`https://api.cloudinary.com/v1_1/${process.env.REACT_APP_CLOUDINARY_CLOUD_NAME}/image/upload`, (req, res, ctx) => {
+          return res(
+            ctx.status(404),
+            ctx.json({
+            }),
+          );
+        })
+      );
+
+      const image = new File(['testImage'], 'testImage.png', {type: 'image/png'});
+      const previousImage = (await screen.findByAltText("Profile Picture")).getAttribute('src');
+
+      const buttonElement = await screen.findByTestId(
+        "image-upload-icon"
+      );
+
+
+      await act( async () => {
+        await waitFor(() => userEvent.upload(buttonElement, image));
+        await waitFor(() => {
+          const updatedImage = (screen.getByAltText("Profile Picture")).getAttribute('src');
+          expect(previousImage===updatedImage).toBe(true);
+        });
+      });
+    });
+
+
     it("update profile button sends post request", async () => {
       server.use(
         rest.put(`${process.env.REACT_APP_URL}/users/1`, (req, res, ctx) => {
