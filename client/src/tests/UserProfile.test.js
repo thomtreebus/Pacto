@@ -7,8 +7,7 @@ import { setupServer } from "msw/node";
 import {MemoryRouter, Route} from "react-router-dom";
 import Profile from "../pages/Profile";
 import userEvent from "@testing-library/user-event";
-import {act} from "react-dom/test-utils";
-
+import {queryClient} from './utils/MockComponent'
 
 const user = {
     pacts: [],
@@ -31,16 +30,17 @@ const user = {
       ],
     },
     _id: "UserID1",
-    instagram: "pactoInsta",
-    linkedin: "pactoLinkedIn",
-    phone: "07999999999",
     hobbies: [
       "Studying",
       "Video Games",
       "Football"
     ],
+    instagram: "pactoInsta",
+    linkedin: "pactlinked",
+    phone: "pactphone",
   }
 
+  const queryCache = queryClient.getQueryCache()
 
 describe("Profile Page Tests", () => {
   const server = setupServer(
@@ -53,7 +53,7 @@ describe("Profile Page Tests", () => {
       );
     }),
 
-    rest.get(`${process.env.REACT_APP_URL}/users/${user._id}`, (req, res, ctx) => {
+    rest.get(`${process.env.REACT_APP_URL}/users/:id`, (req, res, ctx) => {
       return res(
         ctx.json({
           message: user,
@@ -68,14 +68,6 @@ describe("Profile Page Tests", () => {
         ctx.json({}),
       );
     }),
-    /*
-    rest.post(`${process.env.REACT_APP_URL}/users/add-friend`, (req, res, ctx) => {
-      return res(
-        ctx.status(201),
-        ctx.json({}),
-      );
-    })
-    */
   );
 
   beforeAll(() => {
@@ -90,7 +82,11 @@ describe("Profile Page Tests", () => {
     server.resetHandlers();
   });
 
-  beforeEach(async () => {
+  afterEach( () => {
+    queryCache.clear();
+  })
+
+  const renderWithMock = async () => {
     render(
       <MockComponent>
         <MemoryRouter initialEntries={[`/user/${user._id}`]}>
@@ -108,104 +104,146 @@ describe("Profile Page Tests", () => {
       </MockComponent>
     );
     await waitForElementToBeRemoved(() => screen.getByText("Loading"));
-  });
+  }
 
-
-
-  describe("Check elements are rendered", () => {
-
-    it("should render the user's profile picture", async () => {
-      const profilePicture = await screen.findByAltText("Profile Picture");
-      expect(profilePicture).toBeInTheDocument();
-      expect(profilePicture.getAttribute('src')).toBe(user.image);
+  describe("Tests with user who had socials", () => {
+    
+    beforeEach(async () => {
+      await renderWithMock(); 
     });
+  
+    describe("Check elements are rendered", () => {
 
-    it("should render the user's name", async () => {
-      const name = await screen.findByText(user.firstName + " " + user.lastName);
-      expect(name).toBeInTheDocument();
-    });
-
-    it("should render the user's course and Uni", async () => {
-      const subText = await screen.findByText(`${user.course} student at ${user.university.name}`);
-      expect(subText).toBeInTheDocument();
-    });
-
-    it("should render the user's location", async () => {
-      const location = await screen.findByText(user.location);
-      expect(location).toBeInTheDocument();
-    });
-
-    it("should render the instagram details", async () => {
-      const instagramIcon = await screen.findByTestId("instagram-icon");
-      expect(instagramIcon).toBeInTheDocument();
-      const instagramText = await screen.findByText(user.instagram);
-      expect(instagramText).toBeInTheDocument();
-    });
-
-    it("should render the linkedin details", async () => {
-      const linkedInIcon = await screen.findByTestId("linkedin-icon");
-      expect(linkedInIcon).toBeInTheDocument();
-      const userNameText = await screen.findByText(user.linkedin);
-      expect(userNameText).toBeInTheDocument();
-    });
-
-    it("should render the phone details", async () => {
-      const phoneIcon = await screen.findByTestId("phone-icon");
-      expect(phoneIcon).toBeInTheDocument();
-      const phoneText = await screen.findByText(user.phone);
-      expect(phoneText).toBeInTheDocument();
-    });
-
-    it("should render the bio", async () => {
-      const phoneText = await screen.findByText(user.bio);
-      expect(phoneText).toBeInTheDocument();
-    });
-
-    it("should render the posts button", async () => {
-      const postsButton = await screen.findByLabelText("Posts");
-      expect(postsButton).toBeInTheDocument();
-    });
-
-    it("should render the comments button", async () => {
-      const commentsButton = await screen.findByLabelText("Comments");
-      expect(commentsButton).toBeInTheDocument();
-    });
-
-    it("should render the pacts button", async () => {
-      const pactsButton = await screen.findByLabelText("Pacts");
-      expect(pactsButton).toBeInTheDocument();
-    });
-
-    it("should render the editProfile button", async () => {
-      const editProfileButton = await screen.findByText("Edit Profile");
-      expect(editProfileButton).toBeInTheDocument();
-    });
-
-    it("should render the friends text", async () => {
-      const friendsInfo = await screen.findByText("2 Friends");
-      expect(friendsInfo).toBeInTheDocument();
-    });
-
-    it("should render the pacts text", async () => {
-      const pactsInfo = await screen.findByText("0 Pacts");
-      expect(pactsInfo).toBeInTheDocument();
-    });
-
-    it("should render the send friend request button", async () => {
-      const sendFriendRequestButton = await screen.findByText("Send Friend Request");
-      expect(sendFriendRequestButton).toBeInTheDocument();
-    });
-
-  });
-
-  describe("Check interaction with elements", () => {
-    it("Edit profile button takes you to edit ", async () => {
-      const editProfileButton = await screen.findByTestId("edit-profile-button")
-      await waitFor(() => {
-        userEvent.click(editProfileButton)
+      it("should render the user's profile picture", async () => {
+        const profilePicture = await screen.findByAltText("Profile Picture");
+        expect(profilePicture).toBeInTheDocument();
+        expect(profilePicture.getAttribute('src')).toBe(user.image);
       });
-      await waitFor(() => screen.findByText("Redirected to edit-profile"));
+  
+      it("should render the user's name", async () => {
+        const name = await screen.findByText(user.firstName + " " + user.lastName);
+        expect(name).toBeInTheDocument();
+      });
+  
+      it("should render the user's course and Uni", async () => {
+        const subText = await screen.findByText(`${user.course} student at ${user.university.name}`);
+        expect(subText).toBeInTheDocument();
+      });
+  
+      it("should render the user's location", async () => {
+        const location = await screen.findByText(user.location);
+        expect(location).toBeInTheDocument();
+      });
+  
+      it("should render the instagram details", async () => {
+        const instagramIcon = await screen.findByTestId("instagram-icon");
+        expect(instagramIcon).toBeInTheDocument();
+        const instagramText = await screen.findByText(user.instagram);
+        expect(instagramText).toBeInTheDocument();
+      });
+  
+      it("should render the linkedin details", async () => {
+        const linkedInIcon = await screen.findByTestId("linkedin-icon");
+        expect(linkedInIcon).toBeInTheDocument();
+        const userNameText = await screen.findByText(user.linkedin);
+        expect(userNameText).toBeInTheDocument();
+      });
+  
+      it("should render the phone details", async () => {
+        const phoneIcon = await screen.findByTestId("phone-icon");
+        expect(phoneIcon).toBeInTheDocument();
+        const phoneText = await screen.findByText(user.phone);
+        expect(phoneText).toBeInTheDocument();
+      });
+  
+      it("should render the bio", async () => {
+        const phoneText = await screen.findByText(user.bio);
+        expect(phoneText).toBeInTheDocument();
+      });
+  
+      it("should render the posts button", async () => {
+        const postsButton = await screen.findByLabelText("Posts");
+        expect(postsButton).toBeInTheDocument();
+      });
+  
+      it("should render the comments button", async () => {
+        const commentsButton = await screen.findByLabelText("Comments");
+        expect(commentsButton).toBeInTheDocument();
+      });
+  
+      it("should render the pacts button", async () => {
+        const pactsButton = await screen.findByLabelText("Pacts");
+        expect(pactsButton).toBeInTheDocument();
+      });
+  
+      it("should render the editProfile button", async () => {
+        const editProfileButton = await screen.findByText("Edit Profile");
+        expect(editProfileButton).toBeInTheDocument();
+      });
+  
+      it("should render the friends text", async () => {
+        const friendsInfo = await screen.findByText("2 Friends");
+        expect(friendsInfo).toBeInTheDocument();
+      });
+  
+      it("should render the pacts text", async () => {
+        const pactsInfo = await screen.findByText("0 Pacts");
+        expect(pactsInfo).toBeInTheDocument();
+      });
+  
+      it("should render the send friend request button", async () => {
+        const sendFriendRequestButton = await screen.findByText("Send Friend Request");
+        expect(sendFriendRequestButton).toBeInTheDocument();
+      });
+  
+    });
+  
+    describe("Check interaction with elements", () => {
+      it("Edit profile button takes you to edit ", async () => {
+        const editProfileButton = await screen.findByTestId("edit-profile-button")
+        await waitFor(() => {
+          userEvent.click(editProfileButton)
+        });
+        await waitFor(() => screen.findByText("Redirected to edit-profile"));
+      });
+    });
+
+  })
+
+  describe("Tests with user who doesn't have socials", () => {
+    it("Undefined instagram, linkedin and phone ", async () => {
+      let user2 = user;
+      user2.instagram = undefined;
+      user2.linkedin = undefined;
+      user2.phone = undefined;
+  
+      server.use(
+        rest.get(`${process.env.REACT_APP_URL}/me`, (req, res, ctx) => {
+          return res(
+            ctx.json({
+              message: user2,
+              errors: []
+            })
+          );
+        }),
+        rest.get(`${process.env.REACT_APP_URL}/users/:id`, (req, res, ctx) => {
+          return res(
+            ctx.json({
+              message: user2,
+              errors: []
+            })
+          );
+        })
+      );
+  
+      await renderWithMock();
+  
+      const instagramText = screen.queryByText("pactoInsta");
+      expect(instagramText).not.toBeInTheDocument();
+      const userNameText = screen.queryByText("pactlinked");
+      expect(userNameText).not.toBeInTheDocument();
+      const phoneText = screen.queryByText("pactphone");
+      expect(phoneText).not.toBeInTheDocument();
     });
   });
-
 });
