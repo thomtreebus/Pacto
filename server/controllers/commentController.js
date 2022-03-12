@@ -13,7 +13,7 @@ const makeComment = async(req, res, parentComment=undefined) => {
 
     const newComment = {
       text,
-      author: req.user,
+      author: req.user._id,
       parentComment
     }
 
@@ -30,23 +30,24 @@ const makeComment = async(req, res, parentComment=undefined) => {
 
     await comment.populate({path: "author", model: User});
 
-    res.status(201).json(jsonResponse(comment, []));
+    return res.status(201).json(jsonResponse(comment, []));
   }
   catch(err) {
+    console.log(6969, err)
     let jsonErrors = [];
     const allErrors = handleFieldErrors(err);
-    if(allErrors){
+    if(allErrors.length !== 0){
 			allErrors.forEach((myErr) => jsonErrors.push(myErr));
 		} 
 		else {
 			jsonErrors.push(jsonError(null, err.message));
 		}
-    res.status(400).json(jsonResponse(null, jsonErrors));
+    return res.status(400).json(jsonResponse(null, jsonErrors));
   }
 }
 
 module.exports.commentPost = async (req, res) => {
-  makeComment(req,res);
+  await makeComment(req,res);
 }
 
 module.exports.commentReplyPost = async (req, res) => {

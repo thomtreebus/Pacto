@@ -18,6 +18,9 @@ dotenv.config();
 const COMMENT_TEXT = "This is my 1st comment.";
 
 describe("POST /pact/:pactId/post/:postId/comment", () =>{
+  let user = undefined;
+  let pact = undefined;
+
   beforeAll(async () => {
 		await mongoose.connect(process.env.TEST_DB_CONNECTION_URL);
 	});
@@ -27,11 +30,11 @@ describe("POST /pact/:pactId/post/:postId/comment", () =>{
 	});
 
   beforeEach(async () => {
-    const user = await generateTestUser();
+    user = await generateTestUser();
     user.active = true;
     await user.save();
 
-    const pact = await generateTestPact(user);
+    pact = await generateTestPact(user);
     await generateTestPost(user, pact);
   });
 
@@ -56,7 +59,6 @@ describe("POST /pact/:pactId/post/:postId/comment", () =>{
 
   it("successfully creates a valid comment", async () =>{
     const sentText = COMMENT_TEXT;
-    const user = await User.findOne({uniEmail: getTestUserEmail()});
     const response = await sendRequest(user, sentText, 201);
 
     expect(response.body.errors.length).toBe(0);
