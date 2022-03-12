@@ -17,7 +17,6 @@ async function populatePacts(pacts) {
 		await generateRandomPosts(pacts[i], 20);
 	}
 }
-// 
 
 async function generateRandomPosts(pact, numberOfPosts) {
 
@@ -25,23 +24,27 @@ async function generateRandomPosts(pact, numberOfPosts) {
 
 	for (let i = 0; i < numberOfPosts; i++) {
 		const randomGenerator = generators[chance.integer({ min: 0, max: generators.length-1 })];
-		await randomGenerator(pact);
+		const post =  await randomGenerator(pact);
+		await populateVotes(post, pact);
 	}
 }
 
 async function generateRandomTextPost(pact) {
 	const title = chance.sentence({ words: 2 });
-	await createPost(pact, getRandomAuthor(pact), title, {text : chance.sentence({ words: 30 })});
+	const post  = await createPost(pact, getRandomAuthor(pact), title, {text : chance.sentence({ words: 30 })});
+	return post;
 }
 
 async function generateRandomImagePost(pact) {
 	const title = chance.sentence({ words: 2 });
-	await createPost(pact, getRandomAuthor(pact), title, {  type: "image", image : getImageLink(title)});
+	const post = await createPost(pact, getRandomAuthor(pact), title, {  type: "image", image : getImageLink(title)});
+	return post;
 }
 
 async function generateRandomLinkPost(pact) {
 	const title = chance.sentence({ words: 2 });
-	await createPost(pact, getRandomAuthor(pact), title, {  type: "link", link : chance.url()});
+	const post = await createPost(pact, getRandomAuthor(pact), title, {  type: "link", link : chance.url()});
+	return post;
 }
 
 async function createPost(pact, author, title, options={type:"text", image:"", text:"", link:""}) {
@@ -62,6 +65,30 @@ async function createPost(pact, author, title, options={type:"text", image:"", t
 
 function getRandomAuthor(pact) {
 	return pact.members[chance.integer({ min: 0, max: pact.members.length-1 })];
+}
+
+async function populateVotes(post, pact) {
+	const { members } = pact;
+	
+	const voteOptions = [populateUpvote, populateDownvote]
+	
+	for (let i = 0; i < members.length; i++) {
+		const member = members[i];
+		const voteFunction = voteOptions[chance.integer({ min: 0, max: voteOptions.length-1 })];
+		await voteFunction(post, member);
+	}
+}
+
+async function populateUpvote(post, member) {
+	post.upvoters.push(member);
+	post.votes = post.votes + 1;
+	await post.save();
+}
+
+async function populateDownvote(post, member) {
+	post.downvoters.push(member);
+	post.votes = post.votes - 1;
+	await post.save();
 }
 
 function getImageLink(title) {
