@@ -40,7 +40,7 @@ const user = {
     phone: "pactphone",
   }
 
-const queryCache = queryClient.getQueryCache()
+  const queryCache = queryClient.getQueryCache()
 
 describe("Profile Page Tests", () => {
   const server = setupServer(
@@ -106,7 +106,7 @@ describe("Profile Page Tests", () => {
     await waitForElementToBeRemoved(() => screen.getByText("Loading"));
   }
 
-  describe("Tests with user containing socials", () => {
+  describe("Tests with user who had socials", () => {
     
     beforeEach(async () => {
       await renderWithMock(); 
@@ -210,7 +210,7 @@ describe("Profile Page Tests", () => {
 
   })
 
-  describe("Tests with user not conatining socials", () => {
+  describe("Tests with user who doesn't have socials", () => {
     it("Undefined instagram, linkedin and phone ", async () => {
       let user2 = user;
       user2.instagram = undefined;
@@ -226,7 +226,6 @@ describe("Profile Page Tests", () => {
             })
           );
         }),
-
         rest.get(`${process.env.REACT_APP_URL}/users/:id`, (req, res, ctx) => {
           return res(
             ctx.json({
@@ -247,5 +246,4 @@ describe("Profile Page Tests", () => {
       expect(phoneText).not.toBeInTheDocument();
     });
   });
-
 });
