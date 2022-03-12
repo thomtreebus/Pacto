@@ -179,6 +179,7 @@ describe("Profile Page Tests", () => {
       it("should render the editProfile button", async () => {
         const editProfileButton = await screen.findByText("Edit Profile");
         expect(editProfileButton).toBeInTheDocument();
+        expect(editProfileButton.disabled).toBe(false)
       });
 
       it("should render the friends text", async () => {
@@ -194,6 +195,7 @@ describe("Profile Page Tests", () => {
       it("should render the send friend request button", async () => {
         const sendFriendRequestButton = await screen.findByText("Send Friend Request");
         expect(sendFriendRequestButton).toBeInTheDocument();
+        expect(sendFriendRequestButton.disabled).toBe(true)
       });
 
     });
@@ -206,31 +208,37 @@ describe("Profile Page Tests", () => {
         });
         await waitFor(() => screen.findByText("Redirected to edit-profile"));
       });
+
+      it("Clicking on Comments tab tab highlights it", async () => {
+        const commentsButton = await screen.getByRole('tab', { name: 'Comments' });
+        await waitFor(() => {
+          userEvent.click(commentsButton);
+        });
+        expect(screen.getByRole('tab', { selected: true })).toHaveTextContent('Comments');
+      });
+
+      it("Clicking on Pacts tab tab highlights it", async () => {
+        const pactsButton = await screen.getByRole('tab', { name: 'Pacts' });
+        await waitFor(() => {
+          userEvent.click(pactsButton);
+        });
+        expect(screen.getByRole('tab', { selected: true })).toHaveTextContent('Pacts');
+      });
+
+      it("Clicking on Posts tab highlights it", async () => {
+        const postsButton = await screen.getByRole('tab', { name: 'Posts' });
+        await waitFor(() => {
+          userEvent.click(postsButton);
+        });
+        expect(screen.getByRole('tab', { selected: true })).toHaveTextContent('Posts');
+      });
+
+
+
+
     });
 
-    it("Clicking on Comments tab tab highlights it", async () => {
-      const commentsButton = await screen.getByRole('tab', { name: 'Comments' });
-      await waitFor(() => {
-        userEvent.click(commentsButton);
-      });
-      expect(screen.getByRole('tab', { selected: true })).toHaveTextContent('Comments');
-    });
 
-    it("Clicking on Pacts tab tab highlights it", async () => {
-      const pactsButton = await screen.getByRole('tab', { name: 'Pacts' });
-      await waitFor(() => {
-        userEvent.click(pactsButton);
-      });
-      expect(screen.getByRole('tab', { selected: true })).toHaveTextContent('Pacts');
-    });
-
-    it("Clicking on Posts tab highlights it", async () => {
-      const postsButton = await screen.getByRole('tab', { name: 'Posts' });
-      await waitFor(() => {
-        userEvent.click(postsButton);
-      });
-      expect(screen.getByRole('tab', { selected: true })).toHaveTextContent('Posts');
-    });
 
 
   });
@@ -299,5 +307,6 @@ describe("Profile Page Tests", () => {
 
     });
   });
+
 
 });
