@@ -7,8 +7,7 @@ import { setupServer } from "msw/node";
 import {MemoryRouter, Route} from "react-router-dom";
 import Profile from "../pages/Profile";
 import userEvent from "@testing-library/user-event";
-import {act} from "react-dom/test-utils";
-
+import { QueryCache } from 'react-query'
 
 const user = {
     pacts: [],
@@ -31,9 +30,6 @@ const user = {
       ],
     },
     _id: "UserID1",
-    instagram: "pactoInsta",
-    linkedin: "pactoLinkedIn",
-    phone: "07999999999",
     hobbies: [
       "Studying",
       "Video Games",
@@ -43,6 +39,9 @@ const user = {
 
 
 describe("Profile Page Tests", () => {
+
+  const queryCache = new QueryCache()
+
   const server = setupServer(
     rest.get(`${process.env.REACT_APP_URL}/me`, (req, res, ctx) => {
       return res(
@@ -53,7 +52,7 @@ describe("Profile Page Tests", () => {
       );
     }),
 
-    rest.get(`${process.env.REACT_APP_URL}/users/${user._id}`, (req, res, ctx) => {
+    rest.get(`${process.env.REACT_APP_URL}/users/:id`, (req, res, ctx) => {
       return res(
         ctx.json({
           message: user,
@@ -89,6 +88,10 @@ describe("Profile Page Tests", () => {
   beforeEach(async () => {
     server.resetHandlers();
   });
+
+  afterEach( () => {
+    queryCache.clear();
+  })
 
   beforeEach(async () => {
     render(
@@ -207,5 +210,44 @@ describe("Profile Page Tests", () => {
       await waitFor(() => screen.findByText("Redirected to edit-profile"));
     });
   });
+
+
+
+
+  it("Undefined instagram, linkedin and phone ", async () => {
+    let user2 = user;
+    user2.instagram = "pactoInsta";
+    user2.linkedin = "pactlinked";
+    user2.phone = "pactphone";
+    user2._id = "juju";
+    server.use(
+      rest.get(`${process.env.REACT_APP_URL}/me`, (req, res, ctx) => {
+        return res(
+          ctx.json({
+            message: user2,
+            errors: []
+          })
+        );
+      }),
+      rest.get(`${process.env.REACT_APP_URL}/users/:id`, (req, res, ctx) => {
+        return res(
+          ctx.json({
+            message: user2,
+            errors: []
+          })
+        );
+      })
+    );
+    const instagramText = await screen.findByText("pactoInsta");
+    expect(instagramText).toBeNull();
+    //const userNameText = await screen.findByText(user.linkedin);
+    //expect(userNameText).toBeNull();
+    //const phoneText = await screen.findByText(user.phone);
+    //expect(phoneText).toBeNull();
+
+  });
+
+
+
 
 });
