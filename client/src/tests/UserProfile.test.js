@@ -107,11 +107,11 @@ describe("Profile Page Tests", () => {
   }
 
   describe("Tests with user who had socials", () => {
-    
+
     beforeEach(async () => {
-      await renderWithMock(); 
+      await renderWithMock();
     });
-  
+
     describe("Check elements are rendered", () => {
 
       it("should render the user's profile picture", async () => {
@@ -119,85 +119,85 @@ describe("Profile Page Tests", () => {
         expect(profilePicture).toBeInTheDocument();
         expect(profilePicture.getAttribute('src')).toBe(user.image);
       });
-  
+
       it("should render the user's name", async () => {
         const name = await screen.findByText(user.firstName + " " + user.lastName);
         expect(name).toBeInTheDocument();
       });
-  
+
       it("should render the user's course and Uni", async () => {
         const subText = await screen.findByText(`${user.course} student at ${user.university.name}`);
         expect(subText).toBeInTheDocument();
       });
-  
+
       it("should render the user's location", async () => {
         const location = await screen.findByText(user.location);
         expect(location).toBeInTheDocument();
       });
-  
+
       it("should render the instagram details", async () => {
         const instagramIcon = await screen.findByTestId("instagram-icon");
         expect(instagramIcon).toBeInTheDocument();
         const instagramText = await screen.findByText(user.instagram);
         expect(instagramText).toBeInTheDocument();
       });
-  
+
       it("should render the linkedin details", async () => {
         const linkedInIcon = await screen.findByTestId("linkedin-icon");
         expect(linkedInIcon).toBeInTheDocument();
         const userNameText = await screen.findByText(user.linkedin);
         expect(userNameText).toBeInTheDocument();
       });
-  
+
       it("should render the phone details", async () => {
         const phoneIcon = await screen.findByTestId("phone-icon");
         expect(phoneIcon).toBeInTheDocument();
         const phoneText = await screen.findByText(user.phone);
         expect(phoneText).toBeInTheDocument();
       });
-  
+
       it("should render the bio", async () => {
         const phoneText = await screen.findByText(user.bio);
         expect(phoneText).toBeInTheDocument();
       });
-  
+
       it("should render the posts button", async () => {
         const postsButton = await screen.findByLabelText("Posts");
         expect(postsButton).toBeInTheDocument();
       });
-  
+
       it("should render the comments button", async () => {
         const commentsButton = await screen.findByLabelText("Comments");
         expect(commentsButton).toBeInTheDocument();
       });
-  
+
       it("should render the pacts button", async () => {
         const pactsButton = await screen.findByLabelText("Pacts");
         expect(pactsButton).toBeInTheDocument();
       });
-  
+
       it("should render the editProfile button", async () => {
         const editProfileButton = await screen.findByText("Edit Profile");
         expect(editProfileButton).toBeInTheDocument();
       });
-  
+
       it("should render the friends text", async () => {
         const friendsInfo = await screen.findByText("2 Friends");
         expect(friendsInfo).toBeInTheDocument();
       });
-  
+
       it("should render the pacts text", async () => {
         const pactsInfo = await screen.findByText("0 Pacts");
         expect(pactsInfo).toBeInTheDocument();
       });
-  
+
       it("should render the send friend request button", async () => {
         const sendFriendRequestButton = await screen.findByText("Send Friend Request");
         expect(sendFriendRequestButton).toBeInTheDocument();
       });
-  
+
     });
-  
+
     describe("Check interaction with elements", () => {
       it("Edit profile button takes you to edit ", async () => {
         const editProfileButton = await screen.findByTestId("edit-profile-button")
@@ -208,7 +208,32 @@ describe("Profile Page Tests", () => {
       });
     });
 
-  })
+    it("Clicking on Comments tab tab highlights it", async () => {
+      const commentsButton = await screen.getByRole('tab', { name: 'Comments' });
+      await waitFor(() => {
+        userEvent.click(commentsButton);
+      });
+      expect(screen.getByRole('tab', { selected: true })).toHaveTextContent('Comments');
+    });
+
+    it("Clicking on Pacts tab tab highlights it", async () => {
+      const pactsButton = await screen.getByRole('tab', { name: 'Pacts' });
+      await waitFor(() => {
+        userEvent.click(pactsButton);
+      });
+      expect(screen.getByRole('tab', { selected: true })).toHaveTextContent('Pacts');
+    });
+
+    it("Clicking on Posts tab highlights it", async () => {
+      const postsButton = await screen.getByRole('tab', { name: 'Posts' });
+      await waitFor(() => {
+        userEvent.click(postsButton);
+      });
+      expect(screen.getByRole('tab', { selected: true })).toHaveTextContent('Posts');
+    });
+
+
+  });
 
   describe("Tests with user who doesn't have socials", () => {
     it("Undefined instagram, linkedin and phone ", async () => {
@@ -216,7 +241,7 @@ describe("Profile Page Tests", () => {
       user2.instagram = undefined;
       user2.linkedin = undefined;
       user2.phone = undefined;
-  
+
       server.use(
         rest.get(`${process.env.REACT_APP_URL}/me`, (req, res, ctx) => {
           return res(
@@ -235,9 +260,9 @@ describe("Profile Page Tests", () => {
           );
         })
       );
-  
+
       await renderWithMock();
-  
+
       const instagramText = screen.queryByText("pactoInsta");
       expect(instagramText).not.toBeInTheDocument();
       const userNameText = screen.queryByText("pactlinked");
@@ -246,4 +271,33 @@ describe("Profile Page Tests", () => {
       expect(phoneText).not.toBeInTheDocument();
     });
   });
+
+
+  describe("Redirects to not found if error received", () => {
+    it("Redirects to not found if error received", async () => {
+      server.use(
+        rest.get(`${process.env.REACT_APP_URL}/me`, (req, res, ctx) => {
+          return res(
+            ctx.json({
+              message: user,
+              errors: [1]
+            })
+          );
+        }),
+        rest.get(`${process.env.REACT_APP_URL}/users/:id`, (req, res, ctx) => {
+          return res(
+            ctx.json({
+              message: user,
+              errors: [1]
+            })
+          );
+        })
+      );
+
+      await renderWithMock();
+      await waitFor(() => screen.findByText("Redirected to not-found"));
+
+    });
+  });
+
 });
