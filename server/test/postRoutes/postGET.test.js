@@ -17,6 +17,10 @@ const Post = require('../../models/Post');
 dotenv.config();
 
 describe("GET /pact/:pactId/post/:postId", () => {
+  let user = undefined;
+  let pact = undefined;
+  let post = undefined;
+
   beforeAll(async () => {
     await mongoose.connect(process.env.TEST_DB_CONNECTION_URL);
   });
@@ -26,15 +30,15 @@ describe("GET /pact/:pactId/post/:postId", () => {
   });
 
   beforeEach(async () => {
-    const user = await generateTestUser();
+    user = await generateTestUser();
     user.active = true;
     await user.save();
     // Makes user a member and mod of pact
-    const pact = await generateTestPact(user);
-    await pact.save();
+    pact = await generateTestPact(user);
+    pact.save();
     // User posts a post in the pact
-    const post = await generateTestPost(user, pact);
-    await post.save();
+    post = await generateTestPost(user, pact);
+    post.save();
   });
 
   afterEach(async () => {
@@ -45,9 +49,6 @@ describe("GET /pact/:pactId/post/:postId", () => {
   });
 
   it("author can get its post", async () => {
-    const user = await User.findOne({ uniEmail: getTestUserEmail() });
-    const pact = await Pact.findOne({ id: getTestPactId() });
-    const post = await Post.findOne({ id: getTestPostId() });
     const token = createToken(user._id);
 
     const response = await supertest(app)
@@ -67,10 +68,6 @@ describe("GET /pact/:pactId/post/:postId", () => {
   });
 
   it("other member of the pact can get the post", async () => {
-    const user = await User.findOne({ uniEmail: getTestUserEmail() });
-    const pact = await Pact.findOne({ id: getTestPactId() });
-    const post = await Post.findOne({ id: getTestPostId() });
-
     // Creating 2nd user
     const user2 = await generateNextTestUser("SecondUser");
     user2.active = true;
@@ -97,8 +94,6 @@ describe("GET /pact/:pactId/post/:postId", () => {
   });
 
   it("cannot get a non-existing post", async () => {
-    const user = await User.findOne({ uniEmail: getTestUserEmail() });
-    const pact = await Pact.findOne({ id: getTestPactId() });
     const invalidPostId = 3;
     const token = createToken(user._id);
 
@@ -115,13 +110,11 @@ describe("GET /pact/:pactId/post/:postId", () => {
   // Check uses pactMiddleware
   it("user in correct uni but not in the pact cannot get the post", async () => {
     // Creating the user who is in the correct uni but not in the pact
-    const user = await generateNextTestUser("User");
-    user.active = true;
-    await user.save();
-    const token = createToken(user._id);
+    const user2 = await generateNextTestUser("User");
+    user2.active = true;
+    await user2.save();
+    const token = createToken(user2._id);
 
-    const pact = await Pact.findOne({ id: getTestPactId() });
-    const post = await Post.findOne({ id: getTestPostId() });
 
     const response = await supertest(app)
     .get(`/pact/${ pact._id }/post/${ post._id }`)
@@ -134,9 +127,6 @@ describe("GET /pact/:pactId/post/:postId", () => {
   });
 
   it("check uses authMiddleware", async () => {
-    const pact = await Pact.findOne({ id: getTestPactId() });
-    const post = await Post.findOne({ id: getTestPostId() });
-
     const response = await supertest(app)
     .get(`/pact/${ pact._id }/post/${ post._id }`)
     .expect(401);
