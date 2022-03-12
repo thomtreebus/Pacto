@@ -28,7 +28,7 @@ module.exports.generateTestPost = async (postingUser, userPact, title="Dummy tit
   return post;
 }
 
-module.exports.getTestPostId = async () => {
+module.exports.getTestPostId = () => {
   if (myPost) {
     return myPost._id;
   } else {
