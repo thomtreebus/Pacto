@@ -5,7 +5,6 @@ import { Image } from 'cloudinary-react';
 import { useHistory } from "react-router-dom";
 import Grid from '@mui/material/Grid';
 import {useParams } from "react-router-dom";
-import { useQuery } from "react-query";
 import Loading from "./Loading";
 import { useEffect } from "react";
 import Typography from "@mui/material/Typography";
@@ -66,19 +65,22 @@ function a11yProps(index) {
 export default function Profile() {
 
   const { user: loggedInUser } = useAuth();
-  // console.log("currentUser: ", loggedInUser);
   const [displayedUser, setDisplayedUser] = useState(null);
   const { id } = useParams();
   const history = useHistory();
   const [value, setValue] = useState(0);
   const [canFriend, setCanFriend] = useState(false);
   const [canEditProfile, setCanEditProfile] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [data, setData] = useState(null)
 
-  const { isLoading, data } = useQuery("userData", () =>
-    fetch(`${process.env.REACT_APP_URL}/users/${id}`, {
-      credentials: "include",
-    }).then((res) => res.json())
-  );
+  useEffect(  async () => {
+    if(id){
+      setData(await fetch(`${process.env.REACT_APP_URL}/users/${id}`, {
+        credentials: "include",
+      }).then((res) => res.json()))
+    }
+  },[id])
 
   useEffect(() => {
     if (data) {
@@ -97,6 +99,7 @@ export default function Profile() {
       } else {
         setCanFriend(true);
       }
+      setIsLoading(false);
     }
   }, [displayedUser, loggedInUser]);
 
