@@ -74,11 +74,14 @@ export default function Profile() {
   const [isLoading, setIsLoading] = useState(true);
   const [data, setData] = useState(null)
 
-  useEffect(  async () => {
+  useEffect( () => {
     if(id){
-      setData(await fetch(`${process.env.REACT_APP_URL}/users/${id}`, {
-        credentials: "include",
-      }).then((res) => res.json()))
+      async function fetchData(){
+        return fetch(`${process.env.REACT_APP_URL}/users/${id}`, {
+          credentials: "include",
+        }).then((res) => res.json())
+      }
+      fetchData().then((data) => setData(data))
     }
   },[id])
 
