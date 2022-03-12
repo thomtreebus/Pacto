@@ -98,7 +98,7 @@ export default function Profile() {
         setCanFriend(true);
       }
     }
-  }, [displayedUser]);
+  }, [displayedUser, loggedInUser]);
 
 
   
