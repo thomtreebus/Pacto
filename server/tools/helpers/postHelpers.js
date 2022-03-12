@@ -21,7 +21,7 @@ async function populatePacts(pacts) {
 
 async function generateRandomPosts(pact, numberOfPosts) {
 
-	const generators = [generateRandomTextPost, generateRandomImagePost]
+	const generators = [generateRandomTextPost, generateRandomImagePost, generateRandomLinkPost];
 
 	for (let i = 0; i < numberOfPosts; i++) {
 		const randomGenerator = generators[chance.integer({ min: 0, max: generators.length-1 })];
@@ -30,7 +30,8 @@ async function generateRandomPosts(pact, numberOfPosts) {
 }
 
 async function generateRandomTextPost(pact) {
-	await createPost(pact, getRandomAuthor(pact), chance.sentence({ words: 2 }), {text : chance.sentence({ words: 30 })});
+	const title = chance.sentence({ words: 2 });
+	await createPost(pact, getRandomAuthor(pact), title, {text : chance.sentence({ words: 30 })});
 }
 
 async function generateRandomImagePost(pact) {
@@ -39,7 +40,8 @@ async function generateRandomImagePost(pact) {
 }
 
 async function generateRandomLinkPost(pact) {
-	// not implemented
+	const title = chance.sentence({ words: 2 });
+	await createPost(pact, getRandomAuthor(pact), title, {  type: "link", link : chance.url()});
 }
 
 async function createPost(pact, author, title, options={type:"text", image:"", text:"", link:""}) {
