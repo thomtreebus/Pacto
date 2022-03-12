@@ -35,10 +35,10 @@ describe("GET /pact/:pactId/post/:postId", () => {
     await user.save();
     // Makes user a member and mod of pact
     pact = await generateTestPact(user);
-    pact.save();
+    await pact.save();
     // User posts a post in the pact
     post = await generateTestPost(user, pact);
-    post.save();
+    await post.save();
   });
 
   afterEach(async () => {

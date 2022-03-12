@@ -51,7 +51,7 @@ module.exports.commentPost = async (req, res) => {
 }
 
 module.exports.commentReplyPost = async (req, res) => {
-  makeComment(req,res,req.comment);
+  await makeComment(req,res,req.comment);
 }
 
 module.exports.commentDelete = async (req, res) => {
@@ -82,7 +82,7 @@ module.exports.commentGet = async (req, res) => {
 module.exports.commentUpvotePut = async (req, res) => {
   try {
     const comment = req.comment;
-    upvote(comment, req.user);
+    await upvote(comment, req.user);
     await comment.populate({path: "author", model: User});
 
     res.status(200).json(jsonResponse(comment, []));
@@ -94,7 +94,7 @@ module.exports.commentUpvotePut = async (req, res) => {
 module.exports.commentDownvotePut = async (req, res) => {
   try {
     const comment = req.comment;
-    downvote(comment, req.user);
+    await ownvote(comment, req.user);
     await comment.populate({path: "author", model: User});
 
     res.status(200).json(jsonResponse(comment, []));

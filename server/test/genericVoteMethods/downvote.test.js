@@ -44,7 +44,7 @@ describe("Generic downvote", () => {
     const oldUpvoterLen = obj.upvoters.length;
     const oldDownvoterLen = obj.downvoters.length;
 
-    downvote(obj, user);
+    await downvote(obj, user);
     expect(obj.votes).toBe(oldVotes-1);
     expect(obj.downvoters.length).toBe(oldDownvoterLen+1);
     expect(obj.upvoters.length).toBe(oldUpvoterLen);
@@ -56,8 +56,8 @@ describe("Generic downvote", () => {
     const oldUpvoterLen = obj.upvoters.length;
     const oldDownvoterLen = obj.downvoters.length;
 
-    downvote(obj, user);
-    downvote(obj, user);
+    await downvote(obj, user);
+    await downvote(obj, user);
     expect(obj.votes).toBe(oldVotes);
     expect(obj.downvoters.length).toBe(oldDownvoterLen);
     expect(obj.upvoters.length).toBe(oldUpvoterLen);
@@ -69,8 +69,8 @@ describe("Generic downvote", () => {
     const oldUpvoterLen = obj.upvoters.length;
     const oldDownvoterLen = obj.downvoters.length;
 
-    upvote(obj, user);
-    downvote(obj, user);
+    await upvote(obj, user);
+    await downvote(obj, user);
     expect(obj.votes).toBe(oldVotes-1);
     expect(obj.downvoters.length).toBe(oldDownvoterLen+1);
     expect(obj.upvoters.length).toBe(oldUpvoterLen);

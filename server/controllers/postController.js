@@ -55,7 +55,7 @@ module.exports.upvotePostPost = async (req, res) => {
 			res.status(404).json(jsonResponse(null, [jsonError(null, POST_MESSAGES.NOT_FOUND)]));
 		} 
 		else {
-			upvote(post, req.user);
+			await upvote(post, req.user);
 
 			// Populating before returning the post
 			await post.populate({ path: 'upvoters', model: User });
@@ -80,7 +80,7 @@ module.exports.downvotePostPost = async (req, res) => {
 			res.status(404).json(jsonResponse(null, [jsonError(null, POST_MESSAGES.NOT_FOUND)]));
 		} 
 		else {
-			downvote(post, req.user);
+			await downvote(post, req.user);
 
 			// Populating before returning the post
 			await post.populate({ path: 'upvoters', model: User });
