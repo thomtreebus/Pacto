@@ -17,11 +17,11 @@ async function populatePacts(pacts) {
 		await generateRandomPosts(pacts[i], 20);
 	}
 }
-// https://source.unsplash.com/random/${pact.title}
+// 
 
 async function generateRandomPosts(pact, numberOfPosts) {
 
-	const generators = [generateRandomTextPost]
+	const generators = [generateRandomTextPost, generateRandomImagePost]
 
 	for (let i = 0; i < numberOfPosts; i++) {
 		const randomGenerator = generators[chance.integer({ min: 0, max: generators.length-1 })];
@@ -30,11 +30,12 @@ async function generateRandomPosts(pact, numberOfPosts) {
 }
 
 async function generateRandomTextPost(pact) {
-	await createPost(pact, getRandomAuthor(pact), chance.sentence({ words: 2 }), {text : chance.sentence({ words: 30 })})
+	await createPost(pact, getRandomAuthor(pact), chance.sentence({ words: 2 }), {text : chance.sentence({ words: 30 })});
 }
 
 async function generateRandomImagePost(pact) {
-	// not implemented
+	const title = chance.sentence({ words: 2 });
+	await createPost(pact, getRandomAuthor(pact), title, {  type: "image", image : getImageLink(title)});
 }
 
 async function generateRandomLinkPost(pact) {
@@ -59,6 +60,10 @@ async function createPost(pact, author, title, options={type:"text", image:"", t
 
 function getRandomAuthor(pact) {
 	return pact.members[chance.integer({ min: 0, max: pact.members.length-1 })];
+}
+
+function getImageLink(title) {
+	return `https://source.unsplash.com/random/${title}`;
 }
 
 module.exports.seedPosts = seedPosts;
