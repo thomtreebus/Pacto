@@ -73,7 +73,7 @@ export default function BasePostCard({ children, post }) {
 
           <Box sx={{ overflow: "hidden" }}>
             <Typography variant="caption" data-testid="author-date-line">
-              Posted by <span onClick={() => history.push(`/user/${post.author._id}`)} className="link" data-testid="author">{post.author.firstName + " " + post.author.lastName}</span> on {post.date}
+              Posted by <span onClick={() => history.push(`/user/${post.author._id}`)} className="link" data-testid="author">{post.author.firstName + " " + post.author.lastName}</span> on {post.createdAt}
             </Typography>
 
             <Typography variant="h6" data-testid="title">

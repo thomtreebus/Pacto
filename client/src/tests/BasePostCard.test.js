@@ -15,7 +15,7 @@ const post = {
     lastName: "Wali",
     _id: 1
   },
-  date: "5/5/5",
+  createdAt: "5/5/5",
   title: "ipsumLorem ipsumLorem ipsumLorem ipsumLorem",
   text: "amet officia molestias esse!",
   type: "text",
