@@ -11,11 +11,11 @@ const { generateTestUser, getTestUserEmail, generateNextTestUser } = require("..
 const { generateTestPact, getTestPactId } = require("../fixtures/generateTestPact");
 const { generateTestPost, getTestPostId } = require("../fixtures/generateTestPost");
 const { createToken } = require("../../controllers/authController");
-const { PACT_MESSAGES, MESSAGES, COMMENT_MESSAGES, POST_MESSAGES } = require("../../helpers/messages");
+const { PACT_MESSAGES, MESSAGES, COMMENT_MESSAGES } = require("../../helpers/messages");
 
 dotenv.config();
 
-const COMMENT_TEXT = "Some random text."
+const COMMENT_TEXT = "This is my 1st comment.";
 
 describe("POST /pact/:pactId/post/:postId/comment", () =>{
   let commentId = null;
@@ -54,28 +54,66 @@ describe("POST /pact/:pactId/post/:postId/comment", () =>{
     await Comment.deleteMany({});
 	});
 
-  const sendRequest = async (token, expStatus) => {
+  const sendRequest = async (token, text, expStatus) => {
     const response = await supertest(app)
-      .get(`/pact/${getTestPactId()}/post/${getTestPostId()}/comment/${commentId}`)
+      .post(`/pact/${getTestPactId()}/post/${getTestPostId()}/comment/${commentId}/reply`)
       .set("Cookie", [`jwt=${token}`])
+      .send({text})
       .expect(expStatus);
 
     return response;
   }
 
-  it("successfully fetches valid comment", async () =>{
+  it("successfully creates a valid comment as reply", async () =>{
     const user = await User.findOne({uniEmail: getTestUserEmail()});
     const token = createToken(user._id);
 
-    const response = await sendRequest(token, 200);
+    const sentText = COMMENT_TEXT;
+    const response = await sendRequest(token, sentText, 201);
+
+    const parent = await Comment.findById(commentId);
 
     expect(response.body.errors.length).toBe(0);
-    expect(response.body.message.text).toBe(COMMENT_TEXT);
+    expect(response.body.message.text).toBe(sentText);
+
+    expect(response.body.message.parentComment._id).toBe(parent._id);
+    expect(parent.childComments[0]).toBe(response.body.message._id);
+  });
+
+  it("rejects blank comment", async () =>{
+    const user = await User.findOne({uniEmail: getTestUserEmail()});
+    const token = createToken(user._id);
+
+    const sentText = "";
+    const response = await sendRequest(token, sentText, 400);
+
+    expect(response.body.errors.length).toBe(1);
+    expect(response.body.errors[0].message).toBe(COMMENT_MESSAGES.BLANK);
+  });
+
+  it("accepts 512 char comment", async () =>{
+    const user = await User.findOne({uniEmail: getTestUserEmail()});
+    const token = createToken(user._id);
+
+    const sentText = "x".repeat(512);
+    const response = await sendRequest(token, sentText, 201);
+  });
+
+  it("rejects 513 char comment", async () =>{
+    const user = await User.findOne({uniEmail: getTestUserEmail()});
+    const token = createToken(user._id);
+
+    const sentText = "x".repeat(513);
+    const response = await sendRequest(token, sentText, 400);
+
+    expect(response.body.errors.length).toBe(1);
+    expect(response.body.errors[0].message).toBe(COMMENT_MESSAGES.MAX_LENGTH_EXCEEDED);
   });
 
   it("uses checkAuthenticated middleware", async () => {
     const token = "some gibberish";
-    const response = await sendRequest(token, 401);
+    const sentText = COMMENT_TEXT;
+    const response = await sendRequest(token, sentText, 401);
 
     expect(response.body.message).toBe(null);
     expect(response.body.errors[0].message).toBe(MESSAGES.AUTH.IS_NOT_LOGGED_IN);
@@ -88,32 +126,9 @@ describe("POST /pact/:pactId/post/:postId/comment", () =>{
 
     const token = createToken(user._id);
     const sentText = COMMENT_TEXT;
-    const response = await sendRequest(token, 401);
+    const response = await sendRequest(token, sentText, 401);
 
     expect(response.body.message).toBe(null);
     expect(response.body.errors[0].message).toBe(PACT_MESSAGES.NOT_AUTHORISED);
-  });
-
-  it("uses checkValidPost middleware", async () => {
-    const user = await User.findOne({ uniEmail: getTestUserEmail() });
-
-    const token = createToken(user._id);
-    const response = await supertest(app)
-    .get(`/pact/${getTestPactId()}/post/${"some gibberish"}/comment/${commentId}`)
-    .set("Cookie", [`jwt=${token}`])
-    .expect(404);
-
-    expect(response.body.message).toBe(null);
-    expect(response.body.errors[0].message).toBe(POST_MESSAGES.NOT_FOUND);
-  });
-
-  it("uses checkValidPostComment middleware", async () => {
-    const user = await User.findOne({ uniEmail: getTestUserEmail() });
-
-    const token = createToken(user._id);
-    commentId = "some gibberish";
-    const response = await sendRequest(token, 404);
-    expect(response.body.message).toBe(null);
-    expect(response.body.errors[0].message).toBe(COMMENT_MESSAGES.NOT_FOUND);
   });
 });
