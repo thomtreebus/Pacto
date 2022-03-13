@@ -9,6 +9,4 @@ router.put("/:id", checkAuthenticated, users.updateProfile);
 
 router.get("/:id", checkAuthenticated, users.viewProfile);
 
-router.get("/notifications", checkAuthenticated, users.getNotifications);
-
 module.exports = router;

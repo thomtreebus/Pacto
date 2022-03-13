@@ -1,10 +1,10 @@
-const Notification = require("../../models/Pact");
+const Notification = require("../../models/Notification");
 const User = require("../../models/User");
 
 let myNotification = null;
 
 module.exports.generateTestNotification = async (user, text="test notification") => {
-  if(!postingUser.active){
+  if(!user.active){
     throw Error("The notified user provided is not active")
   }
 

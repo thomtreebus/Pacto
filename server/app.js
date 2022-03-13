@@ -28,6 +28,8 @@ app.use("/", uniRoute);
 
 const authRoutes = require("./routes/auth");
 const userRoutes = require("./routes/users");
+const notificationRoute = require("./routes/notifications");
+app.use("/", notificationRoute);
 
 app.use("/", authRoutes);
 app.use("/users", userRoutes)
