@@ -7,9 +7,12 @@ import ThumbUpRoundedIcon from "@mui/icons-material/ThumbUpRounded";
 import ThumbDownRoundedIcon from "@mui/icons-material/ThumbDownRounded";
 import CommentIcon from '@mui/icons-material/Comment';
 
+import { useAuth } from "../../providers/AuthProvider";
+
 export default function BasePostCard({ children, post }) {
-  const [thumbUp, setThumbUp] = useState(post.upvoted);
-  const [thumbDown, setThumbDown] = useState(post.downvoted);
+  const { user } = useAuth();
+  const [thumbUp, setThumbUp] = useState(post.upvoters.includes(user._id));
+  const [thumbDown, setThumbDown] = useState(post.downvoters.includes(user._id));
   const [likes, setLikes] = useState(post.votes);
 
   const history = useHistory();
