@@ -55,6 +55,9 @@ module.exports.commentReplyPost = async (req, res) => {
 }
 
 module.exports.commentDelete = async (req, res) => {
+  if(!(req.pact.moderators.includes(req.user) || req.comment.author===req.user)){
+    res.status(401).json(jsonResponse(null, [jsonError(null, COMMENT_MESSAGES.NOT_AUTHORISED)]));
+  }
   try {
     // Checks already done in middleware. This is safe.
     req.comment.deleted = true;
@@ -65,7 +68,7 @@ module.exports.commentDelete = async (req, res) => {
 
     await req.comment.save();
 
-    res.status(200).json(jsonResponse(null, []));
+    res.status(204).json(jsonResponse(null, []));
   } catch(err){
     res.status(400).json(jsonResponse(null, [jsonError(null, err.message)]));
   }

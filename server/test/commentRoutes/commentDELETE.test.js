@@ -17,7 +17,7 @@ dotenv.config();
 
 const COMMENT_TEXT = "Some random text."
 
-describe("GET /pact/:pactId/post/:postId/comment/:commentId", () =>{
+describe("DELETE /pact/:pactId/post/:postId/comment/:commentId", () =>{
   let commentId = null;
   beforeAll(async () => {
 		await mongoose.connect(process.env.TEST_DB_CONNECTION_URL);
@@ -56,21 +56,45 @@ describe("GET /pact/:pactId/post/:postId/comment/:commentId", () =>{
 
   const sendRequest = async (token, expStatus) => {
     const response = await supertest(app)
-      .get(`/pact/${getTestPactId()}/post/${getTestPostId()}/comment/${commentId}`)
+      .delete(`/pact/${getTestPactId()}/post/${getTestPostId()}/comment/${commentId}`)
       .set("Cookie", [`jwt=${token}`])
       .expect(expStatus);
 
     return response;
   }
 
-  it("successfully fetches valid comment", async () =>{
+  it("successfully deletes comment posted by user", async () =>{
     const user = await User.findOne({uniEmail: getTestUserEmail()});
     const token = createToken(user._id);
 
-    const response = await sendRequest(token, 200);
+    const response = await sendRequest(token, 204);
+  });
 
-    expect(response.body.errors.length).toBe(0);
-    expect(response.body.message.text).toBe(COMMENT_TEXT);
+  it("moderator successfully deletes comment posted by another user", async () =>{
+    const user = await generateNextTestUser("David");
+    user.active = true;
+    await user.save();
+
+    const pact = await Pact.findById(getTestPactId());
+    pact.moderators.push(user);
+    await pact.save();
+
+    const token = createToken(user._id);
+
+    const response = await sendRequest(token, 204);
+  });
+
+  // This reason this is tested separately is that it is not done in a middleware.
+  it("rejections deletion when user is neither author or moderator", async () =>{
+    const user = await generateNextTestUser("David");
+    user.active = true;
+    await user.save();
+    
+    const token = createToken(user._id);
+
+    const response = await sendRequest(token, 401);
+    expect(response.body.message).toBe(null);
+    expect(response.body.errors[0].message).toBe(COMMENT_MESSAGES.NOT_AUTHORISED);
   });
 
   it("uses checkAuthenticated middleware", async () => {
