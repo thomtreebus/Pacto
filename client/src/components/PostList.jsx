@@ -22,6 +22,7 @@ export default function PostList({ posts }) {
       <Grid container sx={{ paddingLeft: "16px", paddingRight: "16px" }}>
         <Grid item>
           <Card
+            data-testid="search-box"
             sx={{
               p: "2px 4px",
               marginBlock: "10px",

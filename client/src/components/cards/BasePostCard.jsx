@@ -19,22 +19,17 @@ export default function BasePostCard({ children, post }) {
       switch(eventCode) {
         case 0: return `pact/${post.pact._id}/post/upvote/${post._id}`;
         case 1: return `pact/${post.pact._id}/post/downvote/${post._id}`;
-        default: return;
+        // no default
       }
     })()
-    try {
-			fetch(`${process.env.REACT_APP_URL}/${url}`, {
-				method: "POST",
-				credentials: "include",
-			});
-		} catch (err) {
-			console.log(err)
-			return;
-		}
+    fetch(`${process.env.REACT_APP_URL}/${url}`, {
+      method: "POST",
+      credentials: "include",
+    });
 	};
 
   return (
-    <Card sx={{ width: "100%" }}>
+    <Card sx={{ width: "100%" }} data-testid="card">
       <CardContent>
         <Box sx={{ overflow: "hidden" }}>
           <Box sx={{ float: "left", paddingRight: "16px", textAlign: "center" }}>
@@ -53,7 +48,7 @@ export default function BasePostCard({ children, post }) {
               <ThumbUpRoundedIcon color={thumbUp ? "primary" : "inherit"}/>
             </IconButton>
 
-            <Typography>
+            <Typography data-testid="likes">
               {likes}
             </Typography>
 
@@ -74,17 +69,17 @@ export default function BasePostCard({ children, post }) {
           </Box>
 
           <Box sx={{ overflow: "hidden" }}>
-            <Typography variant="caption">
-              Posted by <span onClick={() => history.push(`/${post.author._id}`)} className="link">{post.author.firstName + " " + post.author.lastName}</span> on {post.date}
+            <Typography variant="caption" data-testid="author-date-line">
+              Posted by <span onClick={() => history.push(`/user/${post.author._id}`)} className="link" data-testid="author">{post.author.firstName + " " + post.author.lastName}</span> on {post.date}
             </Typography>
 
-            <Typography variant="h6">
+            <Typography variant="h6" data-testid="title">
               {post.title}
             </Typography>
 
             {children}
 
-            <Typography variant="subtitle2" className="link">
+            <Typography variant="subtitle2" className="link" data-testid="comments">
               <CommentIcon sx={{ verticalAlign: "middle", marginRight: "5px" }} />
               {post.comments.length} {post.comments.length === 1 ? "Comment" : "Comments"}
             </Typography>
