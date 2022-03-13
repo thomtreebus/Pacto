@@ -41,7 +41,7 @@ describe("Update Profile PUT", () => {
       .set("Cookie", [`jwt=${token}`])
       .send(jsonBody);
 
-    expect(response.body.message).toBe(null);
+    expect(response.body.message).not.toBeNull()
     expect(response.body.errors.length).toBe(0);
     // return response if you want to do additional checks
     return response;

@@ -26,6 +26,10 @@ module.exports.updateProfile = async(req, res) => {
     const updatedUser = await User.findByIdAndUpdate(id, { ...req.body }, {runValidators: true});
     status = 200
 
+    const university = req.user.university;
+    resMessage = await User.findOne({university, _id: req.params.id}).populate(
+      {path: 'university', model: University}
+    );
   } catch (err) {
     // When status code is not defined use status 500
     if(!status){
