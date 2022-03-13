@@ -27,7 +27,7 @@ const Input = styled('input')({
 
 export default function EditProfile() {
 
-  const {user} = useAuth();
+  const {user, setUser} = useAuth();
 
   const history = useHistory();
 
@@ -95,12 +95,14 @@ export default function EditProfile() {
       body: JSON.stringify(payload)
     });
 
+    const resJson = await res.json();
+
     //redirects user when form is correct
     if (res.status === 200){
+      setUser(resJson.message);
       return history.push('/user/'+ user._id);
     }
 
-    const resJson = await res.json();
 
     // Displays errors retrieved from response
     Object.values(resJson['errors']).forEach(err =>{
