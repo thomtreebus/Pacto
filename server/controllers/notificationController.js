@@ -26,3 +26,29 @@ module.exports.getNotifications = async (req, res) => {
 		res.status(404).json(jsonResponse(null, [jsonError(null, NOTIFICATION_MESSAGES.NOT_FOUND)]));
 	}
 }
+
+module.exports.markAsRead = async (req, res) => {
+  try {
+    notification = await Notification.findOne({ id: req.params.id });
+    const notification = await Notification.findOne({ _id:req.params.id });
+		if (!notification) {
+			res.status(404).json(jsonResponse(null, [jsonError(null, NOTIFICATION_MESSAGES.NOT_FOUND)]));
+    } else {
+			// Checking if notification is already read
+			if (notification.read === true) {
+        throw Error(NOTIFICATION_MESSAGES.ALREADY_READ);
+      } else {
+        notification.read = true;
+      }
+      
+			notification.save();
+
+			// Populating before returning the notification
+			await notification.populate({ path: 'user', model: User });
+			res.status(200).json(jsonResponse(notification, []));
+		}
+	} 
+	catch (err) {
+		res.status(400).json(jsonResponse(null, [jsonError(null, err.message)]));
+	}
+}

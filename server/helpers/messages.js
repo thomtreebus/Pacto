@@ -90,5 +90,6 @@ module.exports.POST_MESSAGES = {
 };
 
 module.exports.NOTIFICATION_MESSAGES = {
-	NOT_FOUND: "No notifications found"
+	NOT_FOUND: "No notifications found",
+	ALREADY_READ: "Notification has already been marked as read"
 }
