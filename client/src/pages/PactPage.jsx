@@ -30,7 +30,7 @@ export default function PactPage() {
     }).catch(() => {
       history.push("/not-found");
     })
-  }, [pactID])
+  }, [pactID, history])
 
   return (
     <>
