@@ -62,16 +62,16 @@ describe("DELETE /pact/:pactId/post/:postId", () => {
 
     expect(response.body.toString()).toBe({}.toString());
 
-    const deletedPost = await Post.findOne({ id: post._id });
+    const deletedPost = await Post.findOne({ _id: post._id });
     expect(deletedPost).toBe(null);
 
-    pact = await Pact.findOne({ id: getTestPactId() });
+    pact = await Pact.findOne({ _id: getTestPactId() });
     expect(pact.posts.includes(post._id)).toBe(false);
   });
 
   it("cannot delete a non-existing post", async () => {
     const user = await User.findOne({ uniEmail: getTestUserEmail() });
-    const pact = await Pact.findOne({ id: getTestPactId() });
+    const pact = await Pact.findOne({ _id: getTestPactId() });
     const invalidPostId = 123;
     const token = createToken(user._id);
 
@@ -89,8 +89,8 @@ describe("DELETE /pact/:pactId/post/:postId", () => {
 
   it("moderator of a pact can delete any post in the pact", async () => {
     const user = await User.findOne({ uniEmail: getTestUserEmail() });
-    let pact = await Pact.findOne({ id: getTestPactId() });
-    const post = await Post.findOne({ id: getTestPostId() });
+    let pact = await Pact.findOne({ _id: getTestPactId() });
+    const post = await Post.findOne({ _id: getTestPostId() });
 
     // Creating 2nd user: a moderator
     const user2 = await generateNextTestUser("Mod");
@@ -109,17 +109,17 @@ describe("DELETE /pact/:pactId/post/:postId", () => {
     .expect(204);
     expect(response.body.toString()).toBe({}.toString());
 
-    const deletedPost = await Post.findOne({ id: post._id });
+    const deletedPost = await Post.findOne({ _id: post._id });
     expect(deletedPost).toBe(null);
 
-    pact = await Pact.findOne({ id: getTestPactId() });
+    pact = await Pact.findOne({ _id: getTestPactId() });
     expect(pact.posts.includes(post._id)).toBe(false);
   });
 
   it("member of a pact cannot delete any other post than their own", async () => {
     const user = await User.findOne({ uniEmail: getTestUserEmail() });
-    let pact = await Pact.findOne({ id: getTestPactId() });
-    const post = await Post.findOne({ id: getTestPostId() });
+    let pact = await Pact.findOne({ _id: getTestPactId() });
+    const post = await Post.findOne({ _id: getTestPostId() });
 
     // Creating 2nd member (not mod) of pact
     const user2 = await generateNextTestUser("Member");
