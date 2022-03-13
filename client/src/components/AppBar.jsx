@@ -94,6 +94,11 @@ export default function PrimarySearchAppBar() {
 		setMobileMoreAnchorEl(event.currentTarget);
 	};
 
+	const handleProfileClick = () => {
+		history.push("/edit-profile");
+		handleMenuClose();
+	}
+
 	const menuId = "primary-search-account-menu";
 	const renderMenu = (
 		<Menu
@@ -112,7 +117,7 @@ export default function PrimarySearchAppBar() {
 			open={isMenuOpen}
 			onClose={handleMenuClose}
 		>
-			<MenuItem data-testid="profile-item" onClick={handleMenuClose}>Profile</MenuItem>
+			<MenuItem data-testid="profile-item" onClick={handleProfileClick}>Profile</MenuItem>
 			<Divider />
 			<MenuItem data-testid="logout-item" onClick={handleLogout}>Log Out</MenuItem>
 		</Menu>
@@ -188,7 +193,6 @@ export default function PrimarySearchAppBar() {
 							inputProps={{ "aria-label": "search" }}
 						/>
 					</Search>
-
 					<Box sx={{ flexGrow: 1 }} />
 					<Box sx={{ display: { xs: "none", md: "flex" } }}>
 						<IconButton
