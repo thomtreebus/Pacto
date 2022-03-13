@@ -99,5 +99,24 @@ describe("PUT /pact/:pactId/post/:postId/comment/:commentId/upvote", () => {
     expect(response.body.message).toBe(null);
     expect(response.body.errors[0].message).toBe(PACT_MESSAGES.NOT_AUTHORISED);
   });
+
+  it("uses checkValidPost middleware", async () => {
+    const user = await User.findOne({ uniEmail: getTestUserEmail() });
+
+    const token = createToken(user._id);
+    const response = await sendRequest(token, 404, getTestPactId(), "some gibberish");
+    expect(response.body.message).toBe(null);
+    expect(response.body.errors[0].message).toBe(POST_MESSAGES.NOT_FOUND);
+  });
+
+  it("uses checkValidPostComment middleware", async () => {
+    const user = await User.findOne({ uniEmail: getTestUserEmail() });
+
+    const token = createToken(user._id);
+    commentId = "some gibberish";
+    const response = await sendRequest(token, 404);
+    expect(response.body.message).toBe(null);
+    expect(response.body.errors[0].message).toBe(COMMENT_MESSAGES.NOT_FOUND);
+  });
   
 });
