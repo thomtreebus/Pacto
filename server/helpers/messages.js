@@ -88,3 +88,7 @@ module.exports.POST_MESSAGES = {
 		NOT_AUTHOR: "User is not the author of the post",
 	},
 };
+
+module.exports.NOTIFICATION_MESSAGES = {
+	NOT_FOUND: "No notifications found"
+}

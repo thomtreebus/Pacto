@@ -84,3 +84,5 @@ module.exports.deleteUser = async (req, res) => {
   await User.findByIdAndDelete(id);
   req.flash('success', 'Successfully deleted account!');
 }
+
+module.exports.getNotifications
