@@ -26,8 +26,8 @@ const response = {
         text: "Lorem ipsum dolor inventore ad! Porro soluta eum amet officia molestias esse!Lorem ipsum dolor inventore ad! Porro soluta eum amet officia molestias esse!Lorem ipsum dolor inventore ad! Porro soluta eum amet officia molestias esse!",
         type: "text",
         votes: 6,
-        upvoted: false,
-        downvoted: false,
+        upvoters: [],
+        downvoters: [],
         comments: [0,0,0,0],
         _id: 1
       }
@@ -39,7 +39,7 @@ describe("PactPage Tests", () => {
   const server = setupServer(
 		rest.get(`${process.env.REACT_APP_URL}/me`, (req, res, ctx) => {
 			return res(
-				ctx.json({ message: { firstName: "pac", lastName: "to" }, errors: [] })
+				ctx.json({ message: { firstName: "pac", lastName: "to", _id: "5" }, errors: [] })
 			);
 		}),
 		rest.get(`${process.env.REACT_APP_URL}/pact/1`, (req, res, ctx) => {

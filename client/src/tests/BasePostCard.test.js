@@ -20,8 +20,8 @@ const post = {
   text: "amet officia molestias esse!",
   type: "text",
   votes: 6,
-  upvoted: false,
-  downvoted: false,
+  upvoters: [],
+  downvoters: [],
   comments: [0,0,0,0],
   _id: 1
 }
@@ -30,7 +30,7 @@ describe("BasePostCard Tests", () => {
   const server = setupServer(
 		rest.get(`${process.env.REACT_APP_URL}/me`, (req, res, ctx) => {
 			return res(
-				ctx.json({ message: { firstName: "pac", lastName: "to" }, errors: [] })
+				ctx.json({ message: { firstName: "pac", lastName: "to", _id: "5" }, errors: [] })
 			);
 		}),
     rest.post(`${process.env.REACT_APP_URL}/pact/5/post/upvote/1`, (req, res, ctx) => {
@@ -56,56 +56,61 @@ describe("BasePostCard Tests", () => {
   beforeEach(async () => {
 		render(
       <MockComponent>
-        <BasePostCard post={post} />;
-      </MockComponent>);
-      await waitForElementToBeRemoved(() => screen.getByText("Loading"));
+        <BasePostCard post={post} />
+      </MockComponent>
+    );
+    await waitForElementToBeRemoved(() => screen.getByText("Loading"));
 	});
 
   describe("Check elements are rendered", () => {
-    it("should render upvote button", () => {
-      screen.getByTestId("ThumbUpRoundedIcon");
+    it("should render upvote button", async () => {
+      await screen.findByTestId("ThumbUpRoundedIcon");
     });
 
-    it("should render downvote button", () => {
-      screen.getByTestId("ThumbDownRoundedIcon");
+    it("should render downvote button", async () => {
+      await screen.findByTestId("ThumbDownRoundedIcon");
     });
 
-    it("should render vote number", () => {
-      const likes = screen.getByTestId("likes");
+    it("should render vote number", async () => {
+      const likes = await screen.findByTestId("likes");
       expect(likes.innerHTML).toBe("6");
     });
 
-    it("should render post title", () => {
-      const title = screen.getByTestId("title");
+    it("should render post title", async () => {
+      const title = await screen.findByTestId("title");
       expect(title.innerHTML).toBe("ipsumLorem ipsumLorem ipsumLorem ipsumLorem");
     });
 
-    it("should render author text", () => {
-      const author = screen.getByTestId("author");
+    it("should render author text", async () => {
+      const author = await screen.findByTestId("author");
       expect(author.innerHTML).toBe("Krishi Wali");
     });
 
-    it("should render date text", () => {
-      const date = screen.getByTestId("author-date-line");
+    it("should render date text", async () => {
+      const date = await screen.findByTestId("author-date-line");
       expect(date.innerHTML).toContain("5/5/5");
     });
 
-    it("should render comments number with plural for greater than 1", () => {
-      const comments = screen.getByTestId("comments");
+    it("should render comments number with plural for greater than 1", async () => {
+      const comments = await screen.findByTestId("comments");
       expect(comments.innerHTML).toContain("4 Comments");
     });
 
-    it("should render comments number with singular for 1", () => {
+    it("should render comments number with singular for 1", async () => {
       document.body.innerHTML = "";
       const postCopy = {...post};
       postCopy.comments = [0];
-      render(< BasePostCard post={postCopy} />)
-      const comments = screen.getByTestId("comments");
+      render(
+        <MockComponent>
+          <BasePostCard post={postCopy} />
+        </MockComponent>
+      );
+      const comments = await screen.findByTestId("comments");
       expect(comments.innerHTML).toContain("1 Comment");
     });
 
-    it("should render comment icon", () => {
-      screen.getByTestId("CommentIcon");
+    it("should render comment icon", async () => {
+      await screen.findByTestId("CommentIcon");
     });
   });
 
@@ -122,42 +127,42 @@ describe("BasePostCard Tests", () => {
       expect(likes.innerHTML).toBe("5");
     });
 
-    it("should keep votes the same when upvote button pressed twice", () => {
-      const upvote = screen.getByTestId("ThumbUpRoundedIcon");
+    it("should keep votes the same when upvote button pressed twice", async () => {
+      const upvote = await screen.findByTestId("ThumbUpRoundedIcon");
       fireEvent.click(upvote);
       fireEvent.click(upvote);
       const likes = screen.getByTestId("likes");
       expect(likes.innerHTML).toBe("6");
     });
 
-    it("should keep votes the same when downvote button pressed twice", () => {
-      const downvote = screen.getByTestId("ThumbDownRoundedIcon");
+    it("should keep votes the same when downvote button pressed twice", async () => {
+      const downvote = await screen.findByTestId("ThumbDownRoundedIcon");
       fireEvent.click(downvote);
       fireEvent.click(downvote);
       const likes = screen.getByTestId("likes");
       expect(likes.innerHTML).toBe("6");
     });
 
-    it("should decrement votes when upvote button is pressed followed by downvote button", () => {
-      const upvote = screen.getByTestId("ThumbUpRoundedIcon");
-      const downvote = screen.getByTestId("ThumbDownRoundedIcon");
+    it("should decrement votes when upvote button is pressed followed by downvote button", async () => {
+      const upvote = await screen.findByTestId("ThumbUpRoundedIcon");
+      const downvote = await screen.findByTestId("ThumbDownRoundedIcon");
       fireEvent.click(upvote);
       fireEvent.click(downvote);
       const likes = screen.getByTestId("likes");
       expect(likes.innerHTML).toBe("5");
     })
 
-    it("should increment votes when downvote button is pressed followed by upvote button", () => {
-      const upvote = screen.getByTestId("ThumbUpRoundedIcon");
-      const downvote = screen.getByTestId("ThumbDownRoundedIcon");
+    it("should increment votes when downvote button is pressed followed by upvote button", async () => {
+      const upvote = await screen.findByTestId("ThumbUpRoundedIcon");
+      const downvote = await screen.findByTestId("ThumbDownRoundedIcon");
       fireEvent.click(downvote);
       fireEvent.click(upvote);
       const likes = screen.getByTestId("likes");
       expect(likes.innerHTML).toBe("7");
     })
 
-    it("should redirect to profile page when author text is clicked", () => {
-      const author = screen.getByTestId("author");
+    it("should redirect to profile page when author text is clicked", async () => {
+      const author = await screen.findByTestId("author");
       fireEvent.click(author);
       expect(window.location.pathname).toBe("/user/1");
     });
