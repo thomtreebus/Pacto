@@ -26,7 +26,7 @@ export default function BasePostCard({ children, post }) {
       }
     })()
     fetch(`${process.env.REACT_APP_URL}/${url}`, {
-      method: "POST",
+      method: "PUT",
       credentials: "include",
     });
 	};
