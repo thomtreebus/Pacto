@@ -46,9 +46,6 @@ describe("EditPact Tests", () => {
 		render(
 			<MockComponent>
 				<EditPact />
-                <Route exact path="/pact/:pactId/edit-pact">
-                    <h1>Redirected to EditPact</h1>
-                </Route>
 			</MockComponent>
 		);
 		await waitForElementToBeRemoved(() => screen.getByText("Loading"));
