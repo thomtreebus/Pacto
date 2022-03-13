@@ -24,11 +24,12 @@ const makeComment = async(req, res, parentComment=undefined) => {
     await req.post.save();
 
     if(parentComment){
-      parentComment.childcomments.push(comment);
+      parentComment.childComments.push(comment);
       parentComment.save();
     }
 
     await comment.populate({path: "author", model: User});
+    await comment.populate({path: "parentComment", model: Comment});
 
     return res.status(201).json(jsonResponse(comment, []));
   }

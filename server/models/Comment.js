@@ -32,7 +32,7 @@ const CommentSchema = mongoose.Schema({
     required: true
   }],
 
-  childcomments: [{
+  childComments: [{
     type: Schema.Types.ObjectId,
     ref: 'Comment',
     required: true

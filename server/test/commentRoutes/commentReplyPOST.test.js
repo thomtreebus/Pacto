@@ -76,8 +76,8 @@ describe("POST /pact/:pactId/post/:postId/comment", () =>{
     expect(response.body.errors.length).toBe(0);
     expect(response.body.message.text).toBe(sentText);
 
-    expect(response.body.message.parentComment._id).toBe(parent._id);
-    expect(parent.childComments[0]).toBe(response.body.message._id);
+    expect(response.body.message.parentComment._id.toString()).toEqual(parent._id.toString());
+    expect(parent.childComments[0].toString()).toEqual(response.body.message._id.toString());
   });
 
   it("rejects blank comment", async () =>{
