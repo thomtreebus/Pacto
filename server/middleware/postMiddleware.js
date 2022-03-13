@@ -30,7 +30,7 @@ module.exports.checkValidPostComment = async (req,res, next) => {
     comment = null;
   }
 
-  if(!req.post.comments.includes(comment._id)){
+  if(comment && !req.post.comments.includes(comment._id)){
     comment = null;
   }
 
