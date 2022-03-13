@@ -53,4 +53,44 @@ describe("EditPact Tests", () => {
 		);
 		await waitForElementToBeRemoved(() => screen.getByText("Loading"));
 	});
+
+    describe("Check elements are rendered", () => {
+        it("should render the Pacto icon element", async () => {
+                const avatarElement = await screen.findByAltText("Pacto Icon");
+                expect(avatarElement).toBeInTheDocument();
+            });
+    
+        it("should render the 'Edit Pact' header element", async () => {
+                const typographyElement = await screen.findByRole("heading", {
+                    name: "Edit Pact",
+                });
+                expect(typographyElement).toBeInTheDocument();
+            });
+    
+        it("should render the category select element", async () => {
+                const selectElement = await screen.findByTestId("category-select");
+                expect(selectElement).toBeInTheDocument();
+            });
+    
+        it("should render the Pact Name input element", async () => {
+                const inputElement = await screen.findByRole("textbox", {
+                    name: "Pact Name",
+                });
+                expect(inputElement).toBeInTheDocument();
+            });
+    
+        it("should render the Description input element", async () => {
+                const inputElement = await screen.findByRole("textbox", {
+                    name: "Description",
+                });
+                expect(inputElement).toBeInTheDocument();
+            });
+    
+            it("should render the Edit Pact button", async () => {
+                const buttonElement = await screen.findByRole("button", {
+                    name: "Edit Pact",
+                });
+                expect(buttonElement).toBeInTheDocument();
+            });
+        });
 });
