@@ -31,10 +31,10 @@ describe("BasePostCard Tests", () => {
 				ctx.json({ message: { firstName: "pac", lastName: "to", _id: "5" }, errors: [] })
 			);
 		}),
-    rest.post(`${process.env.REACT_APP_URL}/pact/5/post/upvote/1`, (req, res, ctx) => {
+    rest.put(`${process.env.REACT_APP_URL}/pact/5/post/upvote/1`, (req, res, ctx) => {
 			return res();
 		}),
-    rest.post(`${process.env.REACT_APP_URL}/pact/5/post/downvote/1`, (req, res, ctx) => {
+    rest.put(`${process.env.REACT_APP_URL}/pact/5/post/downvote/1`, (req, res, ctx) => {
 			return res();
 		}),
 	);
