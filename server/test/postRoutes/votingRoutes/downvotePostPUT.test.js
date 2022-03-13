@@ -16,7 +16,7 @@ const University = require('../../../models/University');
 
 dotenv.config();
 
-describe("POST /post/downvote/:pactid/:id", () => {
+describe("PUT /post/downvote/:pactid/:id", () => {
   beforeAll(async () => {
     await mongoose.connect(process.env.TEST_DB_CONNECTION_URL);
   });
@@ -53,7 +53,7 @@ describe("POST /post/downvote/:pactid/:id", () => {
     const oldVotes = post.votes;
 
     const response = await supertest(app)
-    .post(`/pact/${ pact._id }/post/downvote/${ post._id }`)
+    .put(`/pact/${ pact._id }/post/downvote/${ post._id }`)
     .set("Cookie", [`jwt=${ token }`])
     .expect(200);
     expect(response.body.message).toBeDefined();
@@ -78,7 +78,7 @@ describe("POST /post/downvote/:pactid/:id", () => {
     // downvote twice in a row
     for(let i = 0; i < 2; i++) {
       response = await supertest(app)
-      .post(`/pact/${ pact._id }/post/downvote/${ post._id }`)
+      .put(`/pact/${ pact._id }/post/downvote/${ post._id }`)
       .set("Cookie", [`jwt=${ token }`])
       .expect(200);
       expect(response.body.message).toBeDefined();
@@ -111,13 +111,13 @@ describe("POST /post/downvote/:pactid/:id", () => {
 
     // 1st user downvote
     await supertest(app)
-    .post(`/pact/${ pact._id }/post/downvote/${ post._id }`)
+    .put(`/pact/${ pact._id }/post/downvote/${ post._id }`)
     .set("Cookie", [`jwt=${token1}`])
     .expect(200);
 
     // 2nd user downvote
     const response = await supertest(app)
-    .post(`/pact/${ pact._id }/post/downvote/${ post._id }`)
+    .put(`/pact/${ pact._id }/post/downvote/${ post._id }`)
     .set("Cookie", [`jwt=${token2}`])
     .expect(200);
 
@@ -134,7 +134,7 @@ describe("POST /post/downvote/:pactid/:id", () => {
     const post = await Post.findOne({ id: getTestPostId() });
 
     const response = await supertest(app)
-    .post(`/pact/${ pact._id }/post/downvote/${ post._id }`)
+    .put(`/pact/${ pact._id }/post/downvote/${ post._id }`)
     .expect(401);
 
     expect(response.body.message).toBe(null);
@@ -154,7 +154,7 @@ describe("POST /post/downvote/:pactid/:id", () => {
     const token = createToken(user._id);
 
     const response = await supertest(app)
-    .post(`/pact/${ pact._id }/post/downvote/${ post._id }`)
+    .put(`/pact/${ pact._id }/post/downvote/${ post._id }`)
     .set("Cookie", [`jwt=${ token }`])
     .expect(401);
 
@@ -175,7 +175,7 @@ describe("POST /post/downvote/:pactid/:id", () => {
     const token = createToken(user._id);
 
     const response = await supertest(app)
-    .post(`/pact/${ pact._id }/post/downvote/${ post._id }`)
+    .put(`/pact/${ pact._id }/post/downvote/${ post._id }`)
     .set("Cookie", [`jwt=${ token }`])
     .expect(404);
 
@@ -193,7 +193,7 @@ describe("POST /post/downvote/:pactid/:id", () => {
     const token = createToken(user._id);
 
     const response1 = await supertest(app)
-    .post(`/pact/${ pact._id }/post/downvote/${ post1._id }`)
+    .put(`/pact/${ pact._id }/post/downvote/${ post1._id }`)
     .set("Cookie", [`jwt=${ token }`])
     .expect(200);
     const responsePost1 = response1.body.message;
@@ -204,7 +204,7 @@ describe("POST /post/downvote/:pactid/:id", () => {
     expect(responsePost1.downvoters[0]._id).toBe(user._id.toString());
 
     const response2 = await supertest(app)
-    .post(`/pact/${ pact._id }/post/downvote/${ post2._id }`)
+    .put(`/pact/${ pact._id }/post/downvote/${ post2._id }`)
     .set("Cookie", [`jwt=${ token }`])
     .expect(200);
     const responsePost2 = response2.body.message;
@@ -234,7 +234,7 @@ describe("POST /post/downvote/:pactid/:id", () => {
 
     // 1st upvote
     const response1 = await supertest(app)
-    .post(`/pact/${ pact._id }/post/upvote/${ post._id }`)
+    .put(`/pact/${ pact._id }/post/upvote/${ post._id }`)
     .set("Cookie", [`jwt=${ token }`])
     .expect(200);
     const responsePost1 = response1.body.message;
@@ -246,7 +246,7 @@ describe("POST /post/downvote/:pactid/:id", () => {
 
     // 2nd downvote
     const response2 = await supertest(app)
-    .post(`/pact/${ pact._id }/post/downvote/${ post._id }`)
+    .put(`/pact/${ pact._id }/post/downvote/${ post._id }`)
     .set("Cookie", [`jwt=${ token }`])
     .expect(200);
     const responsePost2 = response2.body.message;
@@ -274,7 +274,7 @@ describe("POST /post/downvote/:pactid/:id", () => {
 
     // 1st user upvote
     const response1 = await supertest(app)
-    .post(`/pact/${ pact._id }/post/upvote/${ post._id }`)
+    .put(`/pact/${ pact._id }/post/upvote/${ post._id }`)
     .set("Cookie", [`jwt=${ token1 }`])
     .expect(200);
     const responsePost1 = response1.body.message;
@@ -286,7 +286,7 @@ describe("POST /post/downvote/:pactid/:id", () => {
 
     // 2nd user downvote
     const response2 = await supertest(app)
-    .post(`/pact/${ pact._id }/post/downvote/${ post._id }`)
+    .put(`/pact/${ pact._id }/post/downvote/${ post._id }`)
     .set("Cookie", [`jwt=${ token2 }`])
     .expect(200);
     const responsePost2 = response2.body.message;
