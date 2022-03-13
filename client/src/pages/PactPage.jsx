@@ -5,6 +5,7 @@ import { useParams } from "react-router-dom";
 import AboutPact from "../components/AboutPact";
 import PostList from "../components/PostList";
 import Loading from "./Loading";
+import { useHistory } from "react-router-dom";
 
 import AddIcon from '@mui/icons-material/Add';
 
@@ -12,6 +13,7 @@ export default function PactPage() {
   const { pactID } = useParams();
   const [pact, setPact] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const history = useHistory();
 
   useEffect(() => {
     fetch(`${process.env.REACT_APP_URL}/pact/${pactID}`, {
@@ -25,9 +27,8 @@ export default function PactPage() {
     }).then((data) => {
       setPact(data.message);
       setIsLoading(false);
-    }).catch((err) => {
-      setPact(null);
-      setIsLoading(true);
+    }).catch(() => {
+      history.push("/not-found");
     })
   }, [pactID])
 

@@ -1,10 +1,11 @@
-import { render, screen, fireEvent, waitForElementToBeRemoved } from "@testing-library/react";
+import { render, screen, waitForElementToBeRemoved } from "@testing-library/react";
 import PactPage from "../pages/PactPage";
 import "@testing-library/jest-dom";
 import { rest } from "msw";
 import { setupServer } from "msw/node";
 import MockComponent from "./utils/MockComponent";
-import { MemoryRouter, Route } from "react-router-dom";
+import { Router, Route } from "react-router-dom";
+import { createMemoryHistory } from 'history';
 
 const response = {
   message: {
@@ -61,53 +62,61 @@ describe("PactPage Tests", () => {
 		server.resetHandlers();
 	});
 
+  let history;
+
+  const renderWithMock = async () => {
+    history = createMemoryHistory({ initialEntries: [`/pact/1`] });
+
+    render(
+      <MockComponent>
+        <Router history={history}>
+          <Route exact path="/pact/:pactID">
+            <PactPage />
+          </Route>
+          <Route exact path="/not-found">
+            Not Found
+          </Route>
+        </Router>
+      </MockComponent>
+    );
+
+    await waitForElementToBeRemoved(() => screen.getByText("Loading"));
+  }
+
   describe("Check elements are rendered", () => {
-    beforeEach(async () => {
-      render(
-        <MockComponent>
-          <MemoryRouter initialEntries={[`/pact/1`]}>
-            <Route exact path="/pact/:pactID">
-              <PactPage />
-            </Route>
-          </MemoryRouter>
-        </MockComponent>
-      )
-      await waitForElementToBeRemoved(() => screen.getByText("Loading"));
+    describe("Normal behaviour", () => {
+
+      beforeEach(async () => {
+        await renderWithMock();
+      });
+
+      it("Check AboutPact card is rendered", async () => {
+        await screen.findByTestId("about-pact");
+      });
+  
+      it("Check PostList is rendered", async () => {
+        await screen.findByTestId("search-box");
+      });
+  
+      it("Check Add Post is rendered", async () => {
+        await screen.findByTestId("AddIcon");
+      });
     })
-
-    it("Check AboutPact card is rendered", async () => {
-      await screen.findByTestId("about-pact");
-    });
-
-    it("Check PostList is rendered", async () => {
-      await screen.findByTestId("search-box");
-    });
-
-    it("Check Add Post is rendered", async () => {
-      await screen.findByTestId("AddIcon");
-    });
   })
 
   describe("Check miscellaneous behaviour", () => {
-    it("should show loading page indefinitely if fetch fails", async () => {
+    it("redirects to page not found if the pact doesnt exist", async () => {
       server.use(
 				rest.get(`${process.env.REACT_APP_URL}/pact/1`, (req, res, ctx) => {
 					return res(
-						ctx.status(400)
+						ctx.status(404)
           );
 				})
 			);
 
-      render(
-        <MockComponent>
-          <MemoryRouter initialEntries={[`/pact/1`]}>
-            <Route exact path="/pact/:pactID">
-              <PactPage />
-            </Route>
-          </MemoryRouter>
-        </MockComponent>
-      )
-      screen.getByText("Loading")
+      await renderWithMock();
+      await screen.findAllByText(/Not found/i);
+      expect(history.location.pathname).toBe("/not-found");
     })
   })
 })
