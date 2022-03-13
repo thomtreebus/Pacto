@@ -36,7 +36,11 @@ module.exports.checkValidPostComment = async (req,res, next) => {
 
   if(!comment){
     res.status(404).json(jsonResponse(null, [jsonError(null, COMMENT_MESSAGES.NOT_FOUND)]));
-  } else {
+  } 
+  else if(comment.deleted){
+    res.status(410).json(jsonResponse(null, [jsonError(null, COMMENT_MESSAGES.REMOVED)]));
+  } 
+  else {
     req.comment = comment;
     next();
   }

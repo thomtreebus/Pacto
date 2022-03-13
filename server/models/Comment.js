@@ -42,6 +42,12 @@ const CommentSchema = mongoose.Schema({
     type: Schema.Types.ObjectId,
     ref: 'Comment',
     required: false
+  },
+
+  deleted: {
+    type: Boolean,
+    required: true,
+    default: false
   }
 
 });

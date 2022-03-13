@@ -57,13 +57,15 @@ module.exports.commentReplyPost = async (req, res) => {
 module.exports.commentDelete = async (req, res) => {
   try {
     // Checks already done in middleware. This is safe.
-    await Comment.deleteOne({ _id: req.comment._id });
+    req.comment.deleted = true;
+    req.comment.text = "[DATA EXPUNGED]";
+    // req.comment.votes = 0;
+    // req.comment.upvoters = [];
+    // req.comment.downvoters = [];
 
-    if(req.post){
-      req.post.comments.pull(req.comment);
-      await req.post.save();
-    }
-    res.status(204).json(jsonResponse(null, []));
+    await req.comment.save();
+
+    res.status(200).json(jsonResponse(null, []));
   } catch(err){
     res.status(400).json(jsonResponse(null, [jsonError(null, err.message)]));
   }

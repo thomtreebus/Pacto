@@ -47,18 +47,21 @@ describe("DELETE /pact/:pactId/post/:postId", () => {
   it("member can delete a post they made", async () => {
     // The user is a member of the pact, not a mod
     const user = await User.findOne({ uniEmail: getTestUserEmail() });
-    let pact = await Pact.findOne({ id: getTestPactId() });
+    const pact = await Pact.findOne({ _id: getTestPactId() });
+
     expect(pact.moderators.includes(user._id)).toBe(true);
     await pact.moderators.pull({ _id: user._id });
     await pact.save();
     expect(pact.moderators.includes(user._id)).toBe(false);
-    const post = await Post.findOne({ id: getTestPostId() });
+
+    const post = await Post.findOne({ _id: getTestPostId() });
     const token = createToken(user._id);
     
     const response = await supertest(app)
     .delete(`/pact/${ pact._id }/post/${ post._id }`)
     .set("Cookie", [`jwt=${token}`])
     .expect(204);
+
     expect(response.body.toString()).toBe({}.toString());
 
     const deletedPost = await Post.findOne({ id: post._id });
