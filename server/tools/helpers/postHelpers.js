@@ -3,18 +3,22 @@ const userConstants = require("./userConstants");
 const Pact = require("../../models/Pact");
 const User = require("../../models/User");
 const Post = require("../../models/Post");
+const Comment = require("../../models/Comment");
+
 
 const chance = new Chance(1234);
 
 async function seedPosts(university) {
 	const pacts = await Pact.find({university : university})
 	await populatePacts(pacts);
-	console.log(`Finished seeding posts`);
+	console.log(`Finished seeding posts and comments`);
 }
 
 async function populatePacts(pacts) {
 	for (let i = 0; i < pacts.length; i++) {
 		await generateRandomPosts(pacts[i], 20);
+		const posts = await Post.find({ pact: pacts[i] });
+		await populatePosts(pacts[i], posts);
 	}
 }
 
@@ -63,32 +67,62 @@ async function createPost(pact, author, title, options={type:"text", image:"", t
 	return post;
 }
 
+async function populatePosts(pact, posts) {
+	for (let i = 0; i < posts.length; i++) {
+		await generateRandomComments(pact, posts[i], chance.integer({ min: 0, max: 3 }));
+	}
+}
+
+async function generateRandomComments(pact, post, numberOfComments) {
+	for (let i = 0; i < numberOfComments; i++) {
+		const comment = await createRandomComment(pact, post);
+		await populateVotes(comment, pact);
+	}
+}
+
+async function createRandomComment(pact, post) {
+	const comment = await createComment(post, getRandomAuthor(pact), chance.sentence({ words: 15 }));
+	return comment;
+}
+
+async function createComment(post, author, text, options={parentComment: undefined}) {
+	const {parentComment} = options;
+	const comment = await Comment.create({
+		author: author,
+		text: text,
+		parentComment: parentComment,
+	});
+	post.comments.push(comment);
+	await post.save();
+	return comment;
+}
+
 function getRandomAuthor(pact) {
 	return pact.members[chance.integer({ min: 0, max: pact.members.length-1 })];
 }
 
-async function populateVotes(post, pact) {
+async function populateVotes(obj, pact) {
 	const { members } = pact;
 	
-	const voteOptions = [populateUpvote, populateDownvote]
+	const voteOptions = [populateUpvote, populateDownvote, async (obj, member) => {}]
 	
 	for (let i = 0; i < members.length; i++) {
 		const member = members[i];
 		const voteFunction = voteOptions[chance.integer({ min: 0, max: voteOptions.length-1 })];
-		await voteFunction(post, member);
+		await voteFunction(obj, member);
 	}
 }
 
-async function populateUpvote(post, member) {
-	post.upvoters.push(member);
-	post.votes = post.votes + 1;
-	await post.save();
+async function populateUpvote(obj, member) {
+	obj.upvoters.push(member);
+	obj.votes = obj.votes + 1;
+	await obj.save();
 }
 
-async function populateDownvote(post, member) {
-	post.downvoters.push(member);
-	post.votes = post.votes - 1;
-	await post.save();
+async function populateDownvote(obj, member) {
+	obj.downvoters.push(member);
+	obj.votes = obj.votes - 1;
+	await obj.save();
 }
 
 function getImageLink(title) {
