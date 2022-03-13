@@ -15,7 +15,7 @@ const { PACT_MESSAGES, MESSAGES, COMMENT_MESSAGES, POST_MESSAGES } = require("..
 
 dotenv.config();
 
-const COMMENT_TEXT = "Some random text."
+const COMMENT_TEXT = "Some random text.";
 
 describe("DELETE /pact/:pactId/post/:postId/comment/:commentId", () =>{
   let commentId = null;
@@ -67,7 +67,11 @@ describe("DELETE /pact/:pactId/post/:postId/comment/:commentId", () =>{
     const user = await User.findOne({uniEmail: getTestUserEmail()});
     const token = createToken(user._id);
 
-    const response = await sendRequest(token, 204);
+    const response = await sendRequest(token, 200);
+    const comment = response.body.message;
+    expect(comment.text).toBe(COMMENT_MESSAGES.DELETED_COMMENT_TEXT);
+    expect(comment.deleted).toBe(true);
+    expect(comment.author).toBe(user); // not changed by deletion
   });
 
   it("moderator successfully deletes comment posted by another user", async () =>{
@@ -85,7 +89,11 @@ describe("DELETE /pact/:pactId/post/:postId/comment/:commentId", () =>{
 
     const token = createToken(user._id);
 
-    const response = await sendRequest(token, 204);
+    const response = await sendRequest(token, 200);
+
+    const comment = response.body.message;
+    expect(comment.text).toBe(COMMENT_MESSAGES.DELETED_COMMENT_TEXT);
+    expect(comment.deleted).toBe(true);
   });
 
   // This reason this is tested separately is that it is not done in a middleware.

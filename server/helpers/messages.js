@@ -84,5 +84,6 @@ module.exports.COMMENT_MESSAGES = {
   },
   BLANK: "Comment text is required",
   MAX_LENGTH_EXCEEDED: "Comment text cannot exceed 512 characters",
-  REMOVED: "This comment has been removed and locked"
+  REMOVED: "This comment has been removed and locked",
+  DELETED_COMMENT_TEXT: "[DATA EXPUNGED]"
 }
