@@ -73,15 +73,23 @@ async function populatePosts(pact, posts) {
 	}
 }
 
-async function generateRandomComments(pact, post, numberOfComments) {
+async function populateComment(pact, post, comment) {
+	const childComment = await generateRandomComments(pact, post, chance.integer({ min: 0, max: 3 }), {parentComment: comment});
+	return childComment;
+}
+
+async function generateRandomComments(pact, post, numberOfComments, options={parentComment: undefined}) {
 	for (let i = 0; i < numberOfComments; i++) {
-		const comment = await createRandomComment(pact, post);
+		const comment = await createRandomComment(pact, post, options);
 		await populateVotes(comment, pact);
+		if (!options.parentComment) {
+			await populateComment(pact, post, comment);
+		}
 	}
 }
 
-async function createRandomComment(pact, post) {
-	const comment = await createComment(post, getRandomAuthor(pact), chance.sentence({ words: 15 }));
+async function createRandomComment(pact, post, options={parentComment: undefined}) {
+	const comment = await createComment(post, getRandomAuthor(pact), chance.sentence({ words: 15 }), options);
 	return comment;
 }
 
@@ -92,8 +100,15 @@ async function createComment(post, author, text, options={parentComment: undefin
 		text: text,
 		parentComment: parentComment,
 	});
+
 	post.comments.push(comment);
 	await post.save();
+
+	if(parentComment) {
+		parentComment.childComments.push(comment);
+		await parentComment.save();
+	}
+
 	return comment;
 }
 
