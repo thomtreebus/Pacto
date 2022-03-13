@@ -14,9 +14,7 @@ const response = {
     members: [0,0,0],
     posts: [
       {
-        pact: {
-          _id: 5
-        },
+        pact: 5,
         author: {
           firstName: "Krishi",
           lastName: "Wali",

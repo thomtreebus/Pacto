@@ -1,8 +1,6 @@
 const testdata = [
   {
-    pact: {
-      _id: 5
-    },
+    pact: 5,
     author: {
       firstName: "Krishi",
       lastName: "Wali",
@@ -20,9 +18,7 @@ const testdata = [
     _id: 1
   },
   {
-    pact: {
-      _id: 5
-    },
+    pact: 5,
     author: {
       firstName: "Krishi",
       lastName: "Wali",
@@ -40,9 +36,7 @@ const testdata = [
     _id: 2
   },
   {
-    pact: {
-      _id: 5
-    },
+    pact: 5,
     author: {
       firstName: "Krishi",
       lastName: "Wali",
@@ -60,9 +54,7 @@ const testdata = [
     _id: 3
   },
   {
-    pact: {
-      _id: 5
-    },
+    pact: 5,
     author: {
       firstName: "John",
       lastName: "Doe",
@@ -80,9 +72,7 @@ const testdata = [
     _id: 4
   },
   {
-    pact: {
-      _id: 5
-    },
+    pact: 5,
     author: {
       firstName: "Jane",
       lastName: "Doe",
@@ -100,9 +90,7 @@ const testdata = [
     _id: 5
   },
   {
-    pact: {
-      _id: 5
-    },
+    pact: 5,
     author: {
       firstName: "Krishi",
       lastName: "Wali",
@@ -120,9 +108,7 @@ const testdata = [
     _id: 6
   },
   {
-    pact: {
-      _id: 5
-    },
+    pact: 5,
     author: {
       firstName: "John",
       lastName: "Doe",
@@ -140,9 +126,7 @@ const testdata = [
     _id: 7
   },
   {
-    pact: {
-      _id: 5
-    },
+    pact: 5,
     author: {
       firstName: "Jane",
       lastName: "Doe",

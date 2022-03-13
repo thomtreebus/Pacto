@@ -6,9 +6,7 @@ import { setupServer } from "msw/node";
 import { rest } from "msw";
 
 const textPost = {
-  pact: {
-    _id: 5
-  },
+  pact: 5,
   author: {
     firstName: "Krishi",
     lastName: "Wali",
@@ -26,9 +24,7 @@ const textPost = {
 }
 
 const imagePost = {
-  pact: {
-    _id: 5
-  },
+  pact: 5,
   author: {
     firstName: "Krishi",
     lastName: "Wali",
@@ -46,9 +42,7 @@ const imagePost = {
 }
 
 const linkPost = {
-  pact: {
-    _id: 5
-  },
+  pact: 5,
   author: {
     firstName: "Krishi",
     lastName: "Wali",

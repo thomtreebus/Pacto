@@ -7,9 +7,7 @@ import { setupServer } from "msw/node";
 import { rest } from "msw";
 
 const post = {
-  pact: {
-    _id: 5
-  },
+  pact: 5,
   author: {
     firstName: "Krishi",
     lastName: "Wali",
