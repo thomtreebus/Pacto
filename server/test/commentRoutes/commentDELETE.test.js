@@ -71,7 +71,7 @@ describe("DELETE /pact/:pactId/post/:postId/comment/:commentId", () =>{
     const comment = response.body.message;
     expect(comment.text).toBe(COMMENT_MESSAGES.DELETED_COMMENT_TEXT);
     expect(comment.deleted).toBe(true);
-    expect(comment.author).toBe(user); // not changed by deletion
+    expect(comment.author._id.toString()).toBe(user._id.toString()); // not changed by deletion
   });
 
   it("moderator successfully deletes comment posted by another user", async () =>{
