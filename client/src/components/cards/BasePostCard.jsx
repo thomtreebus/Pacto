@@ -20,8 +20,8 @@ export default function BasePostCard({ children, post }) {
   const handleLikeEvent = async (eventCode) => {
     const url = (() => {
       switch(eventCode) {
-        case 0: return `pact/${post.pact._id}/post/upvote/${post._id}`;
-        case 1: return `pact/${post.pact._id}/post/downvote/${post._id}`;
+        case 0: return `pact/${post.pact}/post/upvote/${post._id}`;
+        case 1: return `pact/${post.pact}/post/downvote/${post._id}`;
         // no default
       }
     })()
