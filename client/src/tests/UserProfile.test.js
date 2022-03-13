@@ -176,12 +176,6 @@ describe("Profile Page Tests", () => {
         expect(pactsButton).toBeInTheDocument();
       });
 
-      it("should render the editProfile button", async () => {
-        const editProfileButton = await screen.findByText("Edit Profile");
-        expect(editProfileButton).toBeInTheDocument();
-        expect(editProfileButton.disabled).toBe(false)
-      });
-
       it("should render the friends text", async () => {
         const friendsInfo = await screen.findByText("2 Friends");
         expect(friendsInfo).toBeInTheDocument();
@@ -192,7 +186,13 @@ describe("Profile Page Tests", () => {
         expect(pactsInfo).toBeInTheDocument();
       });
 
-      it("should render the send friend request button", async () => {
+      it("should render the editProfile button as not disabled if on their profile", async () => {
+        const editProfileButton = await screen.findByText("Edit Profile");
+        expect(editProfileButton).toBeInTheDocument();
+        expect(editProfileButton.disabled).toBe(false)
+      });
+
+      it("should render the send friend request button as disabled if on their profile", async () => {
         const sendFriendRequestButton = await screen.findByText("Send Friend Request");
         expect(sendFriendRequestButton).toBeInTheDocument();
         expect(sendFriendRequestButton.disabled).toBe(true)
@@ -281,7 +281,7 @@ describe("Profile Page Tests", () => {
   });
 
 
-  describe("Redirects to not found if error received", () => {
+  describe("Redirects to not-found if error received", () => {
     it("Redirects to not found if error received", async () => {
       server.use(
         rest.get(`${process.env.REACT_APP_URL}/me`, (req, res, ctx) => {
@@ -307,6 +307,44 @@ describe("Profile Page Tests", () => {
 
     });
   });
+
+  describe("Tests on other profiles", () => {
+    let user2 = undefined;
+    beforeEach( async () => {
+      user2 = JSON.parse(JSON.stringify(user)); // copy without reference
+      user2._id = "user2";
+      server.use(
+        rest.get(`${process.env.REACT_APP_URL}/me`, (req, res, ctx) => {
+          return res(
+            ctx.json({
+              message: user2,
+              errors: []
+            })
+          );
+        }),
+        rest.get(`${process.env.REACT_APP_URL}/users/:id`, (req, res, ctx) => {
+          return res(
+            ctx.json({
+              message: user,
+              errors: []
+            })
+          );
+        }))
+      await renderWithMock();
+    });
+
+    it("should render the editProfile button as  disabled if on other profile", async () => {
+      const editProfileButton = await screen.findByText("Edit Profile");
+      expect(editProfileButton).toBeInTheDocument();
+      expect(editProfileButton.disabled).toBe(true);
+    });
+
+    it("should render the send friend request button as not disabled if on other profile", async () => {
+      const sendFriendRequestButton = await screen.findByText("Send Friend Request");
+      expect(sendFriendRequestButton).toBeInTheDocument();
+      expect(sendFriendRequestButton.disabled).toBe(false);
+    });
+  })
 
 
 });
