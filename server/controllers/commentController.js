@@ -69,7 +69,11 @@ module.exports.commentDelete = async (req, res) => {
 
     await req.comment.save();
 
-    res.status(204).json(jsonResponse(null, []));
+    await comment.populate({ path: 'upvoters', model: User });
+		await comment.populate({ path: 'downvoters', model: User });
+    await comment.populate({path: "author", model: User});
+
+    res.status(200).json(jsonResponse(comment, []));
   } catch(err){
     res.status(400).json(jsonResponse(null, [jsonError(null, err.message)]));
   }
