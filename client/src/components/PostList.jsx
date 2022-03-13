@@ -16,7 +16,7 @@ export default function PostList({ posts }) {
       ).sort((a, b) => {
         if (a.createdAt > b.createdAt) return -1;
         else if (a.createdAt < b.createdAt) return 1;
-        else 0
+        else return 0;
       })
     );
 	}, [search, posts]);
