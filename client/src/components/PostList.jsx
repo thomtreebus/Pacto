@@ -13,7 +13,11 @@ export default function PostList({ posts }) {
     setPosts(
       posts.filter(
         (post) => post.title.toLowerCase().includes(search)
-      )
+      ).sort((a, b) => {
+        if (a.createdAt > b.createdAt) return -1;
+        else if (a.createdAt < b.createdAt) return 1;
+        else 0
+      })
     );
 	}, [search, posts]);
 
