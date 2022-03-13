@@ -9,26 +9,29 @@ import EditProfile from "../pages/EditProfile";
 import userEvent from "@testing-library/user-event";
 import {act} from "react-dom/test-utils";
 
+
+const testUser = {
+  firstName: "pac",
+  lastName: "to",
+  friends: [],
+  bio: "hello world",
+  course: 'Digital arts',
+  location: 'London',
+  image: "https://res.cloudinary.com/djlwzi9br/image/upload/v1644581875/man1_qexxnb.jpg",
+  university: { // data structure subject to change
+    name: "King's College London",
+  },
+  _id: 1,
+  instagram: "pactoInsta",
+  linkedin: "pactoLinkedIn",
+  phone: "07999999999",
+}
+
 describe("Edit Profile Page Tests", () => {
   const server = setupServer(
     rest.get(`${process.env.REACT_APP_URL}/me`, (req, res, ctx) => {
       return res(
-        ctx.json({ message: {
-            firstName: "pac",
-            lastName: "to",
-            friends: [],
-            bio: "hello world",
-            course: 'Digital arts',
-            location: 'London',
-            image: "https://res.cloudinary.com/djlwzi9br/image/upload/v1644581875/man1_qexxnb.jpg",
-            university: { // data structure subject to change
-              name: "King's College London",
-            },
-            _id: 1,
-            instagram: "pactoInsta",
-            linkedin: "pactoLinkedIn",
-            phone: "07999999999",
-          }, errors: [] })
+        ctx.json({ message: testUser, errors: [] })
       );
     }),
     rest.post(`https://api.cloudinary.com/v1_1/${process.env.REACT_APP_CLOUDINARY_CLOUD_NAME}/image/upload`, (req, res, ctx) => {
@@ -287,7 +290,7 @@ describe("Edit Profile Page Tests", () => {
           return res(
             ctx.status(200),
             ctx.json({
-              message: 'Success',
+              message: testUser,
               errors: [],
             })
           );

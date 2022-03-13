@@ -97,10 +97,13 @@ export default function EditProfile() {
 
     const resJson = await res.json();
 
+    const updatedUser = resJson.message;
+
     //redirects user when form is correct
     if (res.status === 200){
-      setUser(resJson.message);
-      return history.push('/user/'+ user._id);
+      setIsLoading(true);
+      setUser(updatedUser);
+      return history.push('/user/'+ updatedUser._id);
     }
 
 
