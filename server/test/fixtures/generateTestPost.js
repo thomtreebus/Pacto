@@ -28,6 +28,7 @@ module.exports.generateTestPost = async (postingUser, userPact, title="Dummy tit
   return post;
 }
 
+// Return ID of most recent post to be generated
 module.exports.getTestPostId = () => {
   if (myPost) {
     return myPost._id;

@@ -17,7 +17,7 @@ dotenv.config();
 
 const COMMENT_TEXT = "Some random text."
 
-describe("POST /pact/:pactId/post/:postId/comment", () =>{
+describe("GET /pact/:pactId/post/:postId/comment/:commentId", () =>{
   let commentId = null;
   beforeAll(async () => {
 		await mongoose.connect(process.env.TEST_DB_CONNECTION_URL);

@@ -47,7 +47,7 @@ describe("DELETE /pact/:pactId/post/:postId", () => {
   it("member can delete a post they made", async () => {
     // The user is a member of the pact, not a mod
     const user = await User.findOne({ uniEmail: getTestUserEmail() });
-    const pact = await Pact.findOne({ _id: getTestPactId() });
+    let pact = await Pact.findOne({ _id: getTestPactId() });
 
     expect(pact.moderators.includes(user._id)).toBe(true);
     await pact.moderators.pull({ _id: user._id });

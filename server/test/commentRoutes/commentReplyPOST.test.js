@@ -17,7 +17,7 @@ dotenv.config();
 
 const COMMENT_TEXT = "This is my 1st comment.";
 
-describe("POST /pact/:pactId/post/:postId/comment", () =>{
+describe("POST /pact/:pactId/post/:postId/comment/:commentId/reply", () =>{
   let commentId = null;
   beforeAll(async () => {
 		await mongoose.connect(process.env.TEST_DB_CONNECTION_URL);
