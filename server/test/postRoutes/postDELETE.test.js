@@ -31,10 +31,8 @@ describe("DELETE /pact/:pactId/post/:postId", () => {
     await user.save();
     // Makes user a member and mod of pact
     const pact = await generateTestPact(user);
-    await pact.save();
     // User posts a post in the pact
     const post = await generateTestPost(user, pact);
-    await post.save();
   });
 
   afterEach(async () => {
