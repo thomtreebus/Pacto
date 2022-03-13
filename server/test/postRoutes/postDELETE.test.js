@@ -55,7 +55,6 @@ describe("DELETE /pact/:pactId/post/:postId", () => {
     const post = await Post.findOne({ id: getTestPostId() });
     const token = createToken(user._id);
     
-    expect(pact.posts.includes(post._id)).toBe(true);
     const response = await supertest(app)
     .delete(`/pact/${ pact._id }/post/${ post._id }`)
     .set("Cookie", [`jwt=${token}`])

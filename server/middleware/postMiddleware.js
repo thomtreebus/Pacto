@@ -14,7 +14,7 @@ module.exports.checkValidPost = async (req,res, next) => {
   }
 
   if(!post){
-    res.status(404).json(jsonResponse(null, jsonError(null, POST_MESSAGES.NOT_FOUND)));
+    res.status(404).json(jsonResponse(null, [jsonError(null, POST_MESSAGES.NOT_FOUND)]));
   } else {
     req.post = post;
     next();
@@ -30,12 +30,12 @@ module.exports.checkValidPostComment = async (req,res, next) => {
     comment = null;
   }
 
-  if(!req.post.comments.includes(comment)){
+  if(!req.post.comments.includes(comment._id)){
     comment = null;
   }
 
   if(!comment){
-    res.status(404).json(jsonResponse(null, jsonError(null, POST_MESSAGES.NOT_FOUND)));
+    res.status(404).json(jsonResponse(null, [jsonError(null, COMMENT_MESSAGES.NOT_FOUND)]));
   } else {
     req.comment = comment;
     next();

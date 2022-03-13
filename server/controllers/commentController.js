@@ -33,7 +33,6 @@ const makeComment = async(req, res, parentComment=undefined) => {
     return res.status(201).json(jsonResponse(comment, []));
   }
   catch(err) {
-    console.log(6969, err)
     let jsonErrors = [];
     const allErrors = handleFieldErrors(err);
     if(allErrors.length !== 0){
@@ -94,7 +93,7 @@ module.exports.commentUpvotePut = async (req, res) => {
 module.exports.commentDownvotePut = async (req, res) => {
   try {
     const comment = req.comment;
-    await ownvote(comment, req.user);
+    await downvote(comment, req.user);
     await comment.populate({path: "author", model: User});
 
     res.status(200).json(jsonResponse(comment, []));

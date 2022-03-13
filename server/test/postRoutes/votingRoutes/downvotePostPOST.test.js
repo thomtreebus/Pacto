@@ -16,7 +16,7 @@ const University = require('../../../models/University');
 
 dotenv.config();
 
-describe("POST /post/downvote/:pactid/:id", () => {
+describe("POST /pact/:pactId/post/downvote/:postId", () => {
   beforeAll(async () => {
     await mongoose.connect(process.env.TEST_DB_CONNECTION_URL);
   });

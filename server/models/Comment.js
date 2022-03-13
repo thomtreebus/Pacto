@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const {COMMENT_MESSAGES} = require('../helpers/messages');
 const Schema = mongoose.Schema;
 
 const CommentSchema = mongoose.Schema({
@@ -9,7 +10,8 @@ const CommentSchema = mongoose.Schema({
 
   text: {
     type: String,
-    required: true
+    required: [true, COMMENT_MESSAGES.BLANK],
+    maxLength: [512, COMMENT_MESSAGES.MAX_LENGTH_EXCEEDED]
   },
 
   votes: {

@@ -81,5 +81,7 @@ module.exports.COMMENT_MESSAGES = {
   NOT_AUTHORISED: {
     VIEWING: "You are not authorised to view this comment",
     MODIFY: "You are not authorised to modify this comment"
-  }
+  },
+  BLANK: "Comment text is required",
+  MAX_LENGTH_EXCEEDED: "Comment text cannot exceed 512 characters"
 }
