@@ -77,7 +77,11 @@ describe("DELETE /pact/:pactId/post/:postId/comment/:commentId", () =>{
 
     const pact = await Pact.findById(getTestPactId());
     pact.moderators.push(user);
+    pact.members.push(user);
     await pact.save();
+
+    user.pacts.push(pact);
+    await user.save();
 
     const token = createToken(user._id);
 
@@ -89,12 +93,19 @@ describe("DELETE /pact/:pactId/post/:postId/comment/:commentId", () =>{
     const user = await generateNextTestUser("David");
     user.active = true;
     await user.save();
+
+    const pact = await Pact.findById(getTestPactId());
+    pact.members.push(user);
+    await pact.save();
+    
+    user.pacts.push(pact);
+    await user.save();
     
     const token = createToken(user._id);
 
     const response = await sendRequest(token, 401);
     expect(response.body.message).toBe(null);
-    expect(response.body.errors[0].message).toBe(COMMENT_MESSAGES.NOT_AUTHORISED);
+    expect(response.body.errors[0].message).toBe(COMMENT_MESSAGES.NOT_AUTHORISED.MODIFY);
   });
 
   it("uses checkAuthenticated middleware", async () => {
