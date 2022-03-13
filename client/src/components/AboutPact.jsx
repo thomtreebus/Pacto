@@ -1,4 +1,4 @@
-import { Card, CardHeader, CardContent, Typography } from "@mui/material";
+import { Card, CardHeader, CardContent, Typography, Divider } from "@mui/material";
 
 export default function AboutPact({ pact }) {
   return (
@@ -8,6 +8,7 @@ export default function AboutPact({ pact }) {
         <Typography>
           {pact.description}
         </Typography>
+        <Divider sx={{ margin: "20px" }} />
         <Typography >
           {pact.members.length + " members"}
         </Typography>
