@@ -56,7 +56,6 @@ export default function EditPact() {
 		setApiPactNameError('');
 		setApiPactCategoryError('');
 		setApiPactDescriptionError('');
-		console.log("submited")
 
 		const response = await fetch(`${process.env.REACT_APP_URL}/pact/${pactId}`, {
 			method: "PUT",
@@ -72,7 +71,6 @@ export default function EditPact() {
 		});
 
 		const json = await response.json();
-		console.log(json);
 
 		Object.values(json['errors']).forEach(err => {
 			const field = err["field"];
@@ -91,14 +89,11 @@ export default function EditPact() {
 			setIsButtonDisabled(false);
 		});
 
-		if (response.status !== 201) {
-			return;
+
+		if (response.status === 201){
+			return history.push(`/pact/${json.message._id}`);
 		}
 
-        if (response.status === 500) {
-            console.log(json)
-            return history.push(`/editPact/${json.message._id}`);
-        }
 	};
 
 	return (
@@ -137,6 +132,7 @@ export default function EditPact() {
 							required
 							fullWidth
 							label="Pact Name"
+							data-testid="pact-name"
 							id="name"
 							name="name"
 							error={apiPactNameError.length !== 0}
