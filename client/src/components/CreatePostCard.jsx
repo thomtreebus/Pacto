@@ -6,18 +6,17 @@ import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import TextField from '@mui/material/TextField';
-import { styled } from '@mui/material/styles';
+// import { styled } from '@mui/material/styles'; 
 import Button from '@mui/material/Button';
-import { useDropzone } from 'react-dropzone';
 import Dropzone from 'react-dropzone'
 import PhotoIcon from '@mui/icons-material/Photo';
 import TextIcon from '@mui/icons-material/TextSnippet';
 import LinkIcon from '@mui/icons-material/Link';
 
 
-const Input = styled('input')({
-  display: 'none',
-});
+// const Input = styled('input')({
+//   display: 'none',
+// });
 
 
 function TabPanel(props) {
@@ -61,7 +60,7 @@ export default function CreatePostCard() {
   };
 
   return (
-    <Card sx={{ width: '40%', padding: '100', marginTop: '18px'}}>
+    <Card sx={{ width: '100%', padding: '100', marginTop: '18px'}}>
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
         <Tabs value={value} onChange={handleChange} aria-label="basic tabs example" centered>
           <Tab icon={<TextIcon />} label="Post" {...a11yProps(0)} />
@@ -87,7 +86,7 @@ export default function CreatePostCard() {
           <Input accept="image/*" id="contained-button-file" multiple type="file" />
           <Button fullWidth variant="contained" component="span" sx={{marginTop: '8px'}}>Upload Photo</Button>
         </label> */}
-        <Dropzone onDrop={acceptedFiles => console.log(acceptedFiles)}>
+      <Dropzone onDrop={acceptedFiles => console.log(acceptedFiles)}>
         {({getRootProps, getInputProps}) => (
           <section>
             <div {...getRootProps()}>
