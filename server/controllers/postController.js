@@ -3,6 +3,7 @@ const Pact = require("../models/Pact");
 const University = require("../models/University");
 const Comment = require("../models/Comment");
 const User = require("../models/User");
+const Notification = require("../models/Notification");
 const { jsonResponse, jsonError } = require("../helpers/responseHandlers");
 const { POST_MESSAGES, MESSAGES } = require("../helpers/messages");
 
@@ -74,6 +75,9 @@ module.exports.upvotePostPost = async (req, res) => {
 				post.votes = post.votes + 1;
 			}
 			post.save();
+
+			// Notify poster that their post has been upvoted
+			await Notification.create({ user: post.author, text: `${req.user.firstName} ${req.user.lastName} upvoted your post in ${req.pact.name}` });
 
 			// Populating before returning the post
 			await post.populate({ path: 'upvoters', model: User });

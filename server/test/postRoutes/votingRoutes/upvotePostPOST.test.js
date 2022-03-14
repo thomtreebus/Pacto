@@ -13,6 +13,7 @@ const University = require('../../../models/University');
 const User = require("../../../models/User");
 const Pact = require('../../../models/Pact');
 const Post = require('../../../models/Post');
+const Notification = require("../../../models/Notification");
 
 dotenv.config();
 
@@ -42,6 +43,7 @@ describe("POST /post/upvote/:pactid/:id", () => {
     await Post.deleteMany({});
     await Pact.deleteMany({});
     await University.deleteMany({});
+    await Notification.deleteMany({});
   });
 
   it("upvote post with valid pact id and user part of pact", async () => {
@@ -64,6 +66,32 @@ describe("POST /post/upvote/:pactid/:id", () => {
     expect(responsePost.votes).toBe(oldVotes + 1);
     expect(responsePost.upvoters[0]._id).toBe(user._id.toString());
     expect(responsePost.downvoters).toStrictEqual([]);
+  });
+
+  it("upvote post notifies poster that their post was upvoted", async () => {
+    const user = await User.findOne({ uniEmail: getTestUserEmail() });
+    const pact = await Pact.findOne({ id: getTestPactId() });
+    const post = await Post.findOne({ id: getTestPostId() });
+    const token = createToken(user._id);
+
+    const oldVotes = post.votes;
+
+    const response = await supertest(app)
+    .post(`/pact/${ pact._id }/post/upvote/${ post._id }`)
+    .set("Cookie", [`jwt=${token}`])
+    .expect(200);
+    expect(response.body.message).toBeDefined();
+    expect(response.body.errors.length).toBe(0);
+
+    const responsePost = response.body.message;
+    expect(responsePost.author._id.toString()).toBe(user._id.toString());
+    expect(responsePost.votes).toBe(oldVotes + 1);
+    expect(responsePost.upvoters[0]._id).toBe(user._id.toString());
+    expect(responsePost.downvoters).toStrictEqual([]);
+
+    const notification = await Notification.findOne({ user: user._id });
+    expect(notification).toBeDefined();
+    expect(notification.text).toBe(`${user.firstName} ${user.lastName} upvoted your post in ${pact.name}`)
   });
 
   it("upvote twice does not change the votes count", async () => {
@@ -319,6 +347,8 @@ describe("POST /post/upvote/:pactid/:id", () => {
     expect(responsePost.upvoters[0]._id).toBe(user._id.toString());
     expect(responsePost.downvoters).toStrictEqual([]);
   });
+
+  
 
   
 });
