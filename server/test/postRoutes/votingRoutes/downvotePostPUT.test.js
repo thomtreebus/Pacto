@@ -16,7 +16,7 @@ const University = require('../../../models/University');
 
 dotenv.config();
 
-describe("POST /pact/:pactId/post/downvote/:postId", () => {
+describe("PUT /pact/:pactId/post/downvote/:postId", () => {
   beforeAll(async () => {
     await mongoose.connect(process.env.TEST_DB_CONNECTION_URL);
   });
@@ -46,7 +46,7 @@ describe("POST /pact/:pactId/post/downvote/:postId", () => {
 
   const sendRequest = async (token, expStatus=200, pactId=getTestPactId(), postId=getTestPostId()) => {
     const response = await supertest(app)
-    .post(`/pact/${ pactId }/post/downvote/${ postId }`)
+    .put(`/pact/${ pactId }/post/downvote/${ postId }`)
     .set("Cookie", [`jwt=${ token }`])
     .expect(expStatus);
 
