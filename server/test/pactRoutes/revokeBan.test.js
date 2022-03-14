@@ -12,6 +12,7 @@ const { MESSAGES, PACT_MESSAGES } = require("../../helpers/messages");
 const University = require('../../models/University');
 const User = require("../../models/User");
 const Pact = require('../../models/Pact');
+const Notification = require('../../models/Notification');
 
 dotenv.config();
 
@@ -42,6 +43,7 @@ describe("POST /post/upvote/:pactid/:id", () => {
     await User.deleteMany({});
     await Pact.deleteMany({});
     await University.deleteMany({});
+    await Notification.deleteMany({});
   });
 
   it("moderator can revoke ban of banned user", async () => {
@@ -66,6 +68,35 @@ describe("POST /post/upvote/:pactid/:id", () => {
     const responseUser = await User.findOne({ uniEmail: "bob.to@kcl.ac.uk" });
     const newPactCount = responseUser.pacts.length;
     expect(newPactCount).toBe(oldPactCount + 1);
+  });
+
+  it("user gets notification that they are no longer banned", async () => {
+    const user = await User.findOne({ uniEmail: getTestUserEmail() });
+    const pact = await Pact.findOne({ id: getTestPactId() });
+    const revokeBanUser = await User.findOne({ uniEmail: "bob.to@kcl.ac.uk" });
+    const token = createToken(user._id);
+    const oldBanCount = pact.bannedUsers.length;
+    const oldPactCount = revokeBanUser.pacts.length;
+
+    const response = await supertest(app)
+    .put(`/pact/${ pact._id }/${ revokeBanUser._id }/revokeban/`)
+    .set("Cookie", [`jwt=${token}`])
+    .expect(200);
+    expect(response.body.message).toBeDefined();
+    expect(response.body.errors.length).toBe(0);
+
+    const responsePact = await Pact.findOne({ id: getTestPactId() });
+    const newBanCount = responsePact.bannedUsers.length;
+    expect(newBanCount).toBe(oldBanCount - 1);
+
+    const responseUser = await User.findOne({ uniEmail: "bob.to@kcl.ac.uk" });
+    const newPactCount = responseUser.pacts.length;
+    expect(newPactCount).toBe(oldPactCount + 1);
+
+    const notification = await Notification.findOne({ user: revokeBanUser._id });
+    expect(notification).toBeDefined();
+    expect(notification.user._id.toString()).toBe(revokeBanUser._id.toString());
+    expect(notification.text).toBe(`You are no longer banned from ${pact.name}`);
   });
 
   it("moderator can not revoke ban of user that is not banned", async () => {

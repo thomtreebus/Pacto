@@ -171,6 +171,8 @@ module.exports.revokeBan = async (req, res) => {
 		await Pact.findByIdAndUpdate(pact._id, { $pull: { bannedUsers: user._id } });
 		await User.findByIdAndUpdate(user._id, { $push: { pacts: pact._id } });
 
+		await Notification.create({ user: user, text: `You are no longer banned from ${pact.name}` });
+
 		res.json(jsonResponse(PACT_MESSAGES.SUCCESSFUL_REVOKE_BAN, []));
 	}
 	catch (err) {
