@@ -44,6 +44,7 @@ describe("promoteMember /pact/:pactId/:userId/promote", () => {
     await User.deleteMany({});
     await Pact.deleteMany({});
     await University.deleteMany({});
+    await Notification.deleteMany({});
   });
 
   it("moderator can promote member of pact", async () => {
@@ -85,6 +86,7 @@ describe("promoteMember /pact/:pactId/:userId/promote", () => {
 
     const notification = await Notification.findOne({ user: promoteUser._id });
     expect(notification).toBeDefined();
+    expect(notification.user._id.toString()).toBe(promoteUser._id.toString());
     expect(notification.text).toBe(`You have been promoted to moderator in ${pact.name}`);
   });
 

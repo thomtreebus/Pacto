@@ -12,6 +12,7 @@ const { MESSAGES, PACT_MESSAGES } = require("../../helpers/messages");
 const University = require('../../models/University');
 const User = require("../../models/User");
 const Pact = require('../../models/Pact');
+const Notification = require("../../models/Notification");
 
 dotenv.config();
 
@@ -43,6 +44,7 @@ describe("banMember /pact/:pactId/:userId/ban", () => {
     await User.deleteMany({});
     await Pact.deleteMany({});
     await University.deleteMany({});
+    await Notification.deleteMany({});
   });
 
   it("moderator can ban member of pact", async () => {
@@ -70,6 +72,38 @@ describe("banMember /pact/:pactId/:userId/ban", () => {
     const bannedUser = await User.findOne({ uniEmail: "bob.to@kcl.ac.uk" });
     const newPactCount = bannedUser.pacts.length;
     expect(newPactCount).toBe(oldPactCount - 1);
+  });
+
+  it("banned user gets notification when they get banned", async () => {
+    const user = await User.findOne({ uniEmail: getTestUserEmail() });
+    const pact = await Pact.findOne({ id: getTestPactId() });
+    const banUser = await User.findOne({ uniEmail: "bob.to@kcl.ac.uk" });
+    const token = createToken(user._id);
+    const oldMemberCount = pact.members.length;
+    const oldPactCount = banUser.pacts.length;
+    const oldBannedUserCount = pact.bannedUsers.length;
+
+    const response = await supertest(app)
+    .put(`/pact/${ pact._id }/${ banUser._id }/ban/`)
+    .set("Cookie", [`jwt=${token}`])
+    .expect(200);
+    expect(response.body.message).toBeDefined();
+    expect(response.body.errors.length).toBe(0);
+
+    const responsePact = await Pact.findOne({ id: getTestPactId() });
+    const newMemberCount = responsePact.members.length;
+    const newBannedUserCount = responsePact.bannedUsers.length;
+    expect(newMemberCount).toBe(oldMemberCount - 1);
+    expect(newBannedUserCount).toBe(oldBannedUserCount + 1);
+
+    const bannedUser = await User.findOne({ uniEmail: "bob.to@kcl.ac.uk" });
+    const newPactCount = bannedUser.pacts.length;
+    expect(newPactCount).toBe(oldPactCount - 1);
+
+    const notification = await Notification.findOne({ user: banUser._id });
+    expect(notification).toBeDefined();
+    expect(notification.user._id.toString()).toBe(banUser._id.toString());
+    expect(notification.text).toBe(`You have been banned from ${pact.name}`);
   });
 
   it("moderator can not ban other moderator", async () => {
