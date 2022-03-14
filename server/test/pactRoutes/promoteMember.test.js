@@ -12,6 +12,7 @@ const { MESSAGES, PACT_MESSAGES } = require("../../helpers/messages");
 const University = require('../../models/University');
 const User = require("../../models/User");
 const Pact = require('../../models/Pact');
+const Notification = require("../../models/Notification");
 
 dotenv.config();
 
@@ -62,6 +63,29 @@ describe("promoteMember /pact/:pactId/:userId/promote", () => {
     const responsePact = await Pact.findOne({ id: getTestPactId() });
     const newModeratorCount = responsePact.members.length;
     expect(newModeratorCount).toBe(oldModeratorCount + 1);
+  });
+
+  it("promoted member gets notification", async () => {
+    const user = await User.findOne({ uniEmail: getTestUserEmail() });
+    const pact = await Pact.findOne({ id: getTestPactId() });
+    const promoteUser = await User.findOne({ uniEmail: "bob.to@kcl.ac.uk" });
+    const token = createToken(user._id);
+    const oldModeratorCount = pact.moderators.length;
+
+    const response = await supertest(app)
+    .put(`/pact/${ pact._id }/${ promoteUser._id }/promote/`)
+    .set("Cookie", [`jwt=${token}`])
+    .expect(200);
+    expect(response.body.message).toBeDefined();
+    expect(response.body.errors.length).toBe(0);
+
+    const responsePact = await Pact.findOne({ id: getTestPactId() });
+    const newModeratorCount = responsePact.members.length;
+    expect(newModeratorCount).toBe(oldModeratorCount + 1);
+
+    const notification = await Notification.findOne({ user: promoteUser._id });
+    expect(notification).toBeDefined();
+    expect(notification.text).toBe(`You have been promoted to moderator in ${pact.name}`);
   });
 
   it("moderator can not promote existing moderator", async () => {

@@ -4,7 +4,8 @@ const User = require("../models/User");
 const Post = require("../models/Post");
 const {jsonResponse, jsonError} = require("../helpers/responseHandlers");
 const handleFieldErrors = require('../helpers/errorHandler');
-const { MESSAGES, PACT_MESSAGES } = require("../helpers/messages")
+const { MESSAGES, PACT_MESSAGES } = require("../helpers/messages");
+const Notification = require("../models/Notification");
 
 // POST pact
 module.exports.pactPost = async (req, res) => {
@@ -144,6 +145,8 @@ module.exports.promoteMember = async (req, res) => {
 		}
 
 		await Pact.findByIdAndUpdate(pact._id, { $push: { moderators: user._id } });
+
+		await Notification.create({ user: user, text: `You have been promoted to moderator in ${pact.name}` });
 
 		res.json(jsonResponse(PACT_MESSAGES.SUCCESSFUL_PROMOTION, []));
 	}
