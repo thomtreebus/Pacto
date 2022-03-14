@@ -91,5 +91,6 @@ module.exports.POST_MESSAGES = {
 
 module.exports.NOTIFICATION_MESSAGES = {
 	NOT_FOUND: "No notifications found",
-	ALREADY_READ: "Notification has already been marked as read"
+	ALREADY_READ: "Notification has already been marked as read",
+	OTHER_USER: "Can not mark a notification as read for another user"
 }

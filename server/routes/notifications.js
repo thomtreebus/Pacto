@@ -5,6 +5,6 @@ const { checkAuthenticated } = require("../middleware/authMiddleware");
 
 router.get("/notifications", checkAuthenticated, getNotifications);
 
-router.put("/notifications/:id/markAsRead", checkAuthenticated, markAsRead);
+router.put("/notifications/:id/update", checkAuthenticated, markAsRead);
 
 module.exports = router;
