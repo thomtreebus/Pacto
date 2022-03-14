@@ -141,7 +141,7 @@ async function populateDownvote(obj, member) {
 }
 
 function getImageLink(title) {
-	return `https://source.unsplash.com/random/${title}`;
+	return `https://source.unsplash.com/random/${title.slice(0, -1)}`;
 }
 
 module.exports.seedPosts = seedPosts;

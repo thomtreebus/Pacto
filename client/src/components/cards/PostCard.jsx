@@ -9,15 +9,13 @@ export default function PostCard({ post }) {
       case "text": return TextPostCard;
       case "image": return ImagePostCard;
       case "link": return LinkPostCard;
-      default: return;
+      // no default
     }
   })()
 
   return (
-    // <div style={{ minWidth: "100%" }}>
-      <BasePostCard post={post}>
-        <ConcretePostCard post={post}/>
-      </BasePostCard>
-    // </div>
+    <BasePostCard post={post}>
+      <ConcretePostCard post={post}/>
+    </BasePostCard>
   )
 }
