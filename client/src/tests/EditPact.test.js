@@ -221,6 +221,34 @@ describe("EditPact Tests", () => {
       expect(firstNameElement).toBeInTheDocument();
     });
 
+    it("should return multiple errors when multiple fields are entered when the Edit pact button is pressed with invalid credentials", async () => {
+        server.use(
+            rest.put(`${process.env.REACT_APP_URL}/pact/1`, (req, res, ctx) => {					
+                return res(
+                    ctx.json({ 
+                        message: null, 
+                        errors : [
+                            {field: "name", message: "Provide the  name"}, 
+                            {field: "description", message: "Provide the description"}
+                        ], 
+                    }) 
+                );					
+            })
+        );
+        const nonExistingNameElement = screen.queryByText("Provide the name");
+        const nonExistingDescriptionElement = screen.queryByText("Provide the description");
+        expect(nonExistingNameElement).not.toBeInTheDocument();
+        expect(nonExistingDescriptionElement).not.toBeInTheDocument();
+        const buttonElement = await screen.findByRole("button", {
+            name: "Edit Pact",
+        });
+        fireEvent.click(buttonElement);
+        const nameElement = await screen.findByText("Provide the name");
+        const descriptionElement = await screen.findByText("Provide the description");
+        expect(nameElement).toBeInTheDocument();
+        expect(descriptionElement).toBeInTheDocument();
+    });
+
     it("should call handleCategorySelect() when clicking on a different category", async () => {
       const inputElementDiv = await screen.findByTestId("category-select");
       const inputElement = inputElementDiv.querySelector("input");
