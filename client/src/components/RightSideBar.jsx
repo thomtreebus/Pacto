@@ -4,7 +4,7 @@ import Drawer from "@mui/material/Drawer";
 
 const drawerWidth = 240;
 
-export default function LeftSideBar() {
+export default function RightSideBar() {
 	return (
 		<Box sx={{ display: { xs: "none", md: "flex" } }}>
 			<Drawer
