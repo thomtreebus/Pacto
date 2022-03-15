@@ -76,13 +76,10 @@ export default function Profile() {
 
   useEffect( () => {
     if(id){
-      async function fetchData(){
-        return fetch(`${process.env.REACT_APP_URL}/users/${id}`, {
+      fetch(`${process.env.REACT_APP_URL}/users/${id}`, {
           credentials: "include",
-        }).then((res) => res.json())
+        }).then((res) => res.json()).then((data) => setData(data))
       }
-      fetchData().then((data) => setData(data))
-    }
   },[id])
 
   useEffect(() => {
