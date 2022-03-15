@@ -15,11 +15,11 @@ import PactList from "./PactList";
 import Loading from "../pages/Loading";
 
 export default function LeftSideBarContent() {
-	// const { isLoading, data } = useQuery("mypacts", () =>
-	// 	fetch(`${process.env.REACT_APP_URL}/university`, {
-	// 		credentials: "include",
-	// 	}).then((res) => res.json())
-	// );
+	const { isLoading, data } = useQuery("mypacts", () =>
+		fetch(`${process.env.REACT_APP_URL}/university`, {
+			credentials: "include",
+		}).then((res) => res.json())
+	);
 
 	const { user } = useAuth();
 	// const [pacts, setPacts] = useState([]);
@@ -61,8 +61,13 @@ export default function LeftSideBarContent() {
 				>
 					My Pacts
 				</Typography>
+				{JSON.stringify()}
 				<List>
-					<PactList pacts={pacts} />
+					<PactList
+						pacts={data.message.pacts.filter((pact) =>
+							user.pacts.includes(pact._id)
+						)}
+					/>
 				</List>
 			</Box>
 		</div>
