@@ -7,8 +7,10 @@ import PeopleAltRoundedIcon from "@mui/icons-material/PeopleAltRounded";
 import PactChip from "./PactChip";
 import { useHistory } from "react-router-dom";
 import ErrorMessage from "./ErrorMessage";
+import { useAuth } from "../providers/AuthProvider";
 
 export default function PactCard({ pact, joined }) {
+	const { user, setUser } = useAuth();
 	const history = useHistory();
 	const DESCRIPTION_LENGTH = 42;
 	const [isJoinButtonDisabled, setIsJoinButtonDisabled] = React.useState(false);
@@ -39,6 +41,8 @@ export default function PactCard({ pact, joined }) {
 			return;
 		}
 
+		user.pacts.push(pact._id);
+		setUser(user);
 		history.push(`/pact/${pact._id}`);
 	}
 

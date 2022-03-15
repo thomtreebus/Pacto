@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
 import Divider from "@mui/material/Divider";
 import List from "@mui/material/List";
@@ -7,24 +7,30 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import Toolbar from "@mui/material/Toolbar";
 import Avatar from "@mui/material/Avatar";
-import FeedIcon from "@mui/icons-material/Feed";
-import UniversityIcon from "@mui/icons-material/School";
-import FriendsIcon from "@mui/icons-material/People";
-import PactIcon from "@mui/icons-material/Forum";
 import { Typography } from "@mui/material";
-import { deepPurple } from "@mui/material/colors";
-import { useHistory } from "react-router-dom";
 import { useAuth } from "../providers/AuthProvider";
+import { useQuery } from "react-query";
+import PageList from "./PageList";
+import PactList from "./PactList";
+import Loading from "../pages/Loading";
 
 export default function LeftSideBarContent() {
-	const history = useHistory();
-	const [selectedIndex, setSelectedIndex] = useState(0);
-	const { user } = useAuth();
+	// const { isLoading, data } = useQuery("mypacts", () =>
+	// 	fetch(`${process.env.REACT_APP_URL}/university`, {
+	// 		credentials: "include",
+	// 	}).then((res) => res.json())
+	// );
 
-	const handleListItemClick = (event, index, path) => {
-		setSelectedIndex(index);
-		history.push(path);
-	};
+	const { user } = useAuth();
+	// const [pacts, setPacts] = useState([]);
+
+	useEffect(() => {
+		console.log("Runs side bar");
+	});
+
+	if (isLoading) {
+		return <Loading />;
+	}
 
 	return (
 		<div>
@@ -45,74 +51,18 @@ export default function LeftSideBarContent() {
 						/>
 					</ListItem>
 					<Divider />
-					<ListItem
-						button
-						data-testid="sidebar-feed"
-						key="Feed"
-						selected={selectedIndex === 0}
-						onClick={(event) => handleListItemClick(event, 0, "/feed")}
-					>
-						<ListItemIcon>
-							<FeedIcon data-testid="sidebar-feed-icon" />
-						</ListItemIcon>
-						<ListItemText primary="Feed" />
-					</ListItem>
-					<ListItem
-						button
-						data-testid="sidebar-hub"
-						key="University Hub"
-						selected={selectedIndex === 1}
-						onClick={(event) => handleListItemClick(event, 1, "/hub")}
-					>
-						<ListItemIcon>
-							<UniversityIcon data-testid="sidebar-hub-icon" />
-						</ListItemIcon>
-						<ListItemText primary="University Hub" />
-					</ListItem>
-					<ListItem
-						button
-						key="Pacts"
-						data-testid="sidebar-pacts"
-						selected={selectedIndex === 2}
-						onClick={(event) => handleListItemClick(event, 2, "/pacts")}
-					>
-						<ListItemIcon>
-							<PactIcon data-testid="sidebar-pacts-icon" />
-						</ListItemIcon>
-						<ListItemText primary="Pacts" />
-					</ListItem>
-					<ListItem
-						button
-						data-testid="sidebar-friends"
-						key="Friends"
-						selected={selectedIndex === 3}
-						onClick={(event) => handleListItemClick(event, 3, "/friends")}
-					>
-						<ListItemIcon>
-							<FriendsIcon data-testid="sidebar-friends-icon" />
-						</ListItemIcon>
-						<ListItemText primary="Friends" />
-					</ListItem>
+					<PageList />
 				</List>
-				<Divider />
+				<Divider sx={{ marginBlock: 1, marginBlockEnd: 2 }} />
 				<Typography
 					data-testid="sidebar-mypacts-text"
 					variant="p"
-					sx={{ marginLeft: 10, marginTop: 1 }}
+					sx={{ marginLeft: 10 }}
 				>
 					My Pacts
 				</Typography>
 				<List>
-					{["Pact1", "Pact2", "Pact3"].map((text, index) => (
-						<ListItem button key={text}>
-							<ListItemIcon>
-								<Avatar sx={{ bgcolor: deepPurple[500] }}>
-									{text.substring(0, 2).toUpperCase()}
-								</Avatar>
-							</ListItemIcon>
-							<ListItemText primary={text} />
-						</ListItem>
-					))}
+					<PactList pacts={pacts} />
 				</List>
 			</Box>
 		</div>
