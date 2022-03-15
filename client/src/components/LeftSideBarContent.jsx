@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import Box from "@mui/material/Box";
 import Divider from "@mui/material/Divider";
 import List from "@mui/material/List";
@@ -22,11 +22,6 @@ export default function LeftSideBarContent() {
 	);
 
 	const { user } = useAuth();
-	// const [pacts, setPacts] = useState([]);
-
-	useEffect(() => {
-		console.log("Runs side bar");
-	});
 
 	if (isLoading) {
 		return <Loading />;
@@ -61,7 +56,6 @@ export default function LeftSideBarContent() {
 				>
 					My Pacts
 				</Typography>
-				{JSON.stringify()}
 				<List>
 					<PactList
 						pacts={data.message.pacts.filter((pact) =>

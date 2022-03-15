@@ -41,8 +41,9 @@ export default function PactCard({ pact, joined }) {
 			return;
 		}
 
-		user.pacts.push(pact._id);
-		setUser(user);
+		let newUser = Object.assign({}, user);
+		newUser.pacts.push(pact._id);
+		setUser(newUser);
 		history.push(`/pact/${pact._id}`);
 	}
 
