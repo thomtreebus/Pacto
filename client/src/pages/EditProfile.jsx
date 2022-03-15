@@ -297,7 +297,7 @@ export default function EditProfile() {
         </Grid>
         <Grid item container direction="column" xs={8}>
           <Typography variant="h4">{user.firstName} {user.lastName}</Typography>
-          <Typography variant="subtitle1" sx={{color: "#1976d2"}}> King's College London </Typography>
+          <Typography variant="subtitle1" sx={{color: "#1976d2"}}> {user.university.name} </Typography>
           <TextField
             name="bio"
             label="Bio"
