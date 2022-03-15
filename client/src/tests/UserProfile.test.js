@@ -1,13 +1,14 @@
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { render, screen , waitFor } from "@testing-library/react";
 import { waitForElementToBeRemoved } from "@testing-library/react";
 import MockComponent from "./utils/MockComponent";
 import "@testing-library/jest-dom";
 import { rest } from "msw";
 import { setupServer } from "msw/node";
-import {MemoryRouter, Route} from "react-router-dom";
+import {Route, Router} from "react-router-dom";
 import Profile from "../pages/Profile";
 import userEvent from "@testing-library/user-event";
 import {queryClient} from './utils/MockComponent'
+import { createMemoryHistory } from 'history';
 
 const user = {
     pacts: [],
@@ -43,6 +44,8 @@ const user = {
   const queryCache = queryClient.getQueryCache()
 
 describe("Profile Page Tests", () => {
+  let history = undefined;
+
   const server = setupServer(
     rest.get(`${process.env.REACT_APP_URL}/me`, (req, res, ctx) => {
       return res(
@@ -87,9 +90,11 @@ describe("Profile Page Tests", () => {
   })
 
   const renderWithMock = async () => {
+    history = createMemoryHistory({initialEntries:[`/user/${user._id}`]})
+
     render(
       <MockComponent>
-        <MemoryRouter initialEntries={[`/user/${user._id}`]}>
+        <Router history={history}>
           <Route exact path="/user/:id">
             <Profile />
           </Route>
@@ -99,7 +104,7 @@ describe("Profile Page Tests", () => {
           <Route exact path="/not-found">
             <h1>Redirected to not-found</h1>
           </Route>
-        </MemoryRouter>
+        </Router>
 
       </MockComponent>
     );
@@ -207,6 +212,7 @@ describe("Profile Page Tests", () => {
           userEvent.click(editProfileButton)
         });
         await waitFor(() => screen.findByText("Redirected to edit-profile"));
+        expect(history.location.pathname).toBe("/edit-profile");
       });
 
       it("Clicking on Comments tab tab highlights it", async () => {
@@ -232,15 +238,7 @@ describe("Profile Page Tests", () => {
         });
         expect(screen.getByRole('tab', { selected: true })).toHaveTextContent('Posts');
       });
-
-
-
-
     });
-
-
-
-
   });
 
   describe("Tests with user who doesn't have socials", () => {
@@ -304,7 +302,7 @@ describe("Profile Page Tests", () => {
 
       await renderWithMock();
       await waitFor(() => screen.findByText("Redirected to not-found"));
-
+      expect(history.location.pathname).toBe("/not-found");
     });
   });
 
