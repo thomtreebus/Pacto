@@ -1,6 +1,6 @@
 import { Box, Card, CardContent, IconButton } from "@mui/material";
 import { useState } from "react";
-import { Typography } from "@mui/material";
+import { Typography, Accordion } from "@mui/material";
 import { useHistory } from "react-router-dom";
 
 import ThumbUpRoundedIcon from "@mui/icons-material/ThumbUpRounded";
@@ -82,6 +82,22 @@ export default function CommentCard({ comment, post }) {
               {comment.text}
             </Typography>
           </Box>
+
+          {!(comment.childComments.length > 0) && <Box sx = {{ overflow: "hidden"}}>
+            <Accordion>
+              <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls="panel1a-content"
+                id="panel1a-header">
+                <Typography>Show replies...</Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                <ul>
+                {comment.childComments.map((c) => (<li>{CommentCard(c, post)}</li>))}
+                </ul>
+              </AccordionDetails>
+            </Accordion>
+          </Box>}
         </Box>
       </CardContent>
     </Card>
