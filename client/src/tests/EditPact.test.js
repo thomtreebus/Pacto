@@ -146,8 +146,6 @@ describe("EditPact Tests", () => {
         name: "Edit Pact",
       });
       fireEvent.click(buttonElement);
-      // await waitFor(() => expect(window.location.pathname).toBe("/pact/1"));
-
       await waitFor(() => screen.findByText("Redirected to pact"));
     });
 
