@@ -7,7 +7,6 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import Toolbar from "@mui/material/Toolbar";
 import Avatar from "@mui/material/Avatar";
-import PactoIcon from "../assets/thom.jpeg";
 import FeedIcon from "@mui/icons-material/Feed";
 import UniversityIcon from "@mui/icons-material/School";
 import FriendsIcon from "@mui/icons-material/People";
@@ -15,10 +14,12 @@ import PactIcon from "@mui/icons-material/Forum";
 import { Typography } from "@mui/material";
 import { deepPurple } from "@mui/material/colors";
 import { useHistory } from "react-router-dom";
+import { useAuth } from "../providers/AuthProvider";
 
 export default function LeftSideBarContent() {
 	const history = useHistory();
 	const [selectedIndex, setSelectedIndex] = useState(0);
+	const { user } = useAuth();
 
 	const handleListItemClick = (event, index, path) => {
 		setSelectedIndex(index);
@@ -35,12 +36,12 @@ export default function LeftSideBarContent() {
 							<Avatar
 								data-testid="sidebar-avatar"
 								alt="Placeholder"
-								src={PactoIcon}
+								src={user.image}
 							/>
 						</ListItemIcon>
 						<ListItemText
 							data-testid="sidebar-user-name"
-							primary="Thom Treebus"
+							primary={`${user.firstName} ${user.lastName}`}
 						/>
 					</ListItem>
 					<Divider />
