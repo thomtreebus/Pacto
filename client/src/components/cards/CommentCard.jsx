@@ -1,7 +1,10 @@
-import { Box, Card, CardContent, IconButton } from "@mui/material";
+import { Box, Card, CardContent, IconButton, Grid } from "@mui/material";
 import { useState } from "react";
-import { Typography, Accordion } from "@mui/material";
-import { useHistory } from "react-router-dom";
+import Accordion from '@mui/material/Accordion';
+import AccordionSummary from '@mui/material/AccordionSummary';
+import AccordionDetails from '@mui/material/AccordionDetails';
+import Typography from '@mui/material/Typography';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';import { useHistory } from "react-router-dom";
 
 import ThumbUpRoundedIcon from "@mui/icons-material/ThumbUpRounded";
 import ThumbDownRoundedIcon from "@mui/icons-material/ThumbDownRounded";
@@ -15,7 +18,6 @@ export default function CommentCard({ comment, post }) {
   const [likes, setLikes] = useState(post.votes);
 
   const history = useHistory();
-  const author = comment.author;
 
   const handleLikeEvent = async (eventCode) => {
     const url = (() => {
@@ -24,7 +26,7 @@ export default function CommentCard({ comment, post }) {
         case 0: action = "upvote";
         case 1: action = "downvote";
         
-        return `pact/${post.pact}/post/${post._id}/comment/${comment._id}/${action}`;
+        return `pact/${post.pact._id}/post/${post._id}/comment/${comment._id}/${action}`;
       }
     })()
     fetch(`${process.env.REACT_APP_URL}/${url}`, {
@@ -33,7 +35,7 @@ export default function CommentCard({ comment, post }) {
     });
 	};
 
-  return (
+  return (comment &&
     <Card sx={{ width: "100%" }} data-testid="card">
       <CardContent>
         <Box sx={{ overflow: "hidden" }}>
@@ -75,15 +77,19 @@ export default function CommentCard({ comment, post }) {
 
           <Box sx={{ overflow: "hidden" }}>
             <Typography variant="caption" data-testid="author-date-line">
-              Posted by <span onClick={() => history.push(`/user/${author._id}`)} className="link" data-testid="author">{author.firstName + " " + author.lastName}</span> on {comment.createdAt}
+              Posted by <span onClick={() => history.push(`/user/${comment.author._id}`)} className="link" data-testid="author">{comment.author.firstName + " " + comment.author.lastName}</span> on {comment.createdAt}
             </Typography>
 
-            <Typography variant="body1" data-testid="title">
+            <Typography variant="body1">
               {comment.text}
+            </Typography>
+
+            <Typography variant="caption">
+              Reply
             </Typography>
           </Box>
 
-          {!(comment.childComments.length > 0) && <Box sx = {{ overflow: "hidden"}}>
+          {(comment.childComments.length > 0) && <Box sx = {{ overflow: "hidden"}}>
             <Accordion>
               <AccordionSummary
                 expandIcon={<ExpandMoreIcon />}
@@ -92,9 +98,9 @@ export default function CommentCard({ comment, post }) {
                 <Typography>Show replies...</Typography>
               </AccordionSummary>
               <AccordionDetails>
-                <ul>
-                {comment.childComments.map((c) => (<li>{CommentCard(c, post)}</li>))}
-                </ul>
+                <Grid item xs={12} lg={12}>
+                {comment.childComments.map((c) => (<li><CommentCard post={post} comment={c}></CommentCard></li>))}
+                </Grid>
               </AccordionDetails>
             </Accordion>
           </Box>}

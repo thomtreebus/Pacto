@@ -76,13 +76,15 @@ export default function BasePostCard({ children, post }) {
               Posted by <span onClick={() => history.push(`/user/${post.author._id}`)} className="link" data-testid="author">{post.author.firstName + " " + post.author.lastName}</span> on {post.createdAt}
             </Typography>
 
-            <Typography variant="h6" data-testid="title">
+            <Typography variant="h6" data-testid="title" onClick={() => 
+                history.push(`/pact/${post.pact}/post/${post._id}`)}>
               {post.title}
             </Typography>
 
             {children}
 
-            <Typography variant="subtitle2" className="link" data-testid="comments">
+            <Typography variant="subtitle2" className="link" data-testid="comments" onClick={() => 
+                history.push(`/pact/${post.pact}/post/${post._id}`)}>
               <CommentIcon sx={{ verticalAlign: "middle", marginRight: "5px" }} />
               {post.comments.length} {post.comments.length === 1 ? "Comment" : "Comments"}
             </Typography>
