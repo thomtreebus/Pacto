@@ -8,12 +8,18 @@ import Card from '@mui/material/Card';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import PhotoIcon from '@mui/icons-material/Photo';
+import PhotoCameraIcon from '@mui/icons-material/PhotoCamera';
 import TextIcon from '@mui/icons-material/TextSnippet';
 import LinkIcon from '@mui/icons-material/Link';
 import { useHistory } from "react-router-dom";
 import Input from "@mui/material/Input";
 import { Image } from 'cloudinary-react';
 import Axios from 'axios';
+import IconButton from '@mui/material/IconButton';
+
+function TitleTextField({apiPostTitleError}){
+  return <TextField fullWidth name="title" label="Title" error={apiPostTitleError.length !== 0} helperText={apiPostTitleError}/> 
+}
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -147,7 +153,7 @@ export default function CreatePostCard({pactID}) {
         onSubmit={handleSubmit}
       >
         <TabPanel value={value} index={0}>
-          <TextField fullWidth name="title" label="Title" error={apiPostTitleError.length !== 0} helperText={apiPostTitleError}/> 
+          <TitleTextField apiPostTitleError={apiPostTitleError}/>
           <TextField sx={{marginTop: '8px'}}
             id="outlined-multiline-static"
             fullWidth
@@ -159,24 +165,28 @@ export default function CreatePostCard({pactID}) {
           />
         </TabPanel>
         <TabPanel value={value} index={1}>
-          <TextField fullWidth name="title" label="Title" error={apiPostTitleError.length !== 0} helperText={apiPostTitleError}/> 
-          {image && <Image
+          <TitleTextField apiPostTitleError={apiPostTitleError}/> 
+          <label htmlFor="contained-button-file">
+            <Input
+              accept="image/*"
+              id="contained-button-file"
+              data-testid="image-upload-icon"
+              type="file"
+              sx={{display: "none"}}
+              onChange={(e) => { uploadImage(e.target.files[0])}} />
+            <IconButton color="primary" component="span">
+              <PhotoCameraIcon />
+            </IconButton>
+            {image && <Image
 								style={{width: "100%", minWidth: "50%", minHeight: "25%", borderRadius: "10px", overflow: "hidden", position: "relative", }}
 								alt="Profile Picture"
 								cloudName={`${process.env.REACT_APP_CLOUDINARY_CLOUD_NAME}`}
 								publicID={image}
 							> </Image>}
-						<label htmlFor="contained-button-file">
-							<Input
-								accept="image/*"
-								id="contained-button-file"
-								data-testid="image-upload-button"
-								type="file"
-								onChange={(e) => { uploadImage(e.target.files[0])}} />
-            </label>
+          </label>
         </TabPanel>
         <TabPanel value={value} index={2}>
-          <TextField fullWidth name="title" label="Title" error={apiPostTitleError.length !== 0} helperText={apiPostTitleError}/> 
+          <TitleTextField apiPostTitleError={apiPostTitleError}/> 
           <TextField sx={{marginTop: '8px'}}
             id="outlined-multiline-static"
             fullWidth
