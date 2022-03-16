@@ -46,6 +46,7 @@ export default function EditProfile() {
 
   const [apiBioError, setApiBioError] = React.useState('');
   const [apiLocationError, setApiLocationError] = React.useState('');
+  const [uploadImageError , setUploadImageError] = React.useState('')
   const [apiCourseError, setApiCourseError] = React.useState('');
   const [apiLinkedInError, setApiLinkedInError] = React.useState('');
   const [apiInstagramError, setApiInstagramError] = React.useState('');
@@ -63,7 +64,7 @@ export default function EditProfile() {
       const res = await Axios.post(`https://api.cloudinary.com/v1_1/${process.env.REACT_APP_CLOUDINARY_CLOUD_NAME}/image/upload`, data)
       setImage(res.data.url);
     } catch (err) {
-      console.log(err);
+      setUploadImageError(err)
     }
     setUploadImageIsDisabled(false);
   }
