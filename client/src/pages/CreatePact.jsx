@@ -46,6 +46,7 @@ export default function CreatePactPage() {
 		});
 
 		const json = await response.json();
+		console.log(json)
 
 		Object.values(json['errors']).forEach(err => {
 			const field = err["field"];

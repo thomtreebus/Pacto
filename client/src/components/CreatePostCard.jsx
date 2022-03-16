@@ -52,6 +52,8 @@ export default function CreatePostCard({pactID}) {
   const [value, setValue] = React.useState(0);
   const history = useHistory();
 
+  const [apiPostTitleError, setApiPostTitleError] = React.useState('');
+
   const [image, setImage] = React.useState(null);
 
   const uploadImage = async (newImage) => {
@@ -81,9 +83,12 @@ export default function CreatePostCard({pactID}) {
         return"undefined";
     }
   }
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
+
+    setApiPostTitleError('');
 
     const response = await fetch(`${process.env.REACT_APP_URL}/pact/${pactID}/post`, {
       method: "POST",
@@ -102,6 +107,19 @@ export default function CreatePostCard({pactID}) {
 
     const json = await response.json();
     console.log(json)
+    
+    Object.values(json['errors']).forEach(err => {
+      const field = err["field"];
+      const message = err["message"];
+
+      switch (field) {
+        case "title":
+          setApiPostTitleError(message);
+          break;
+        default:
+          break;
+      }
+    })
 
     if (response.status !== 201) {
       return;
@@ -129,7 +147,7 @@ export default function CreatePostCard({pactID}) {
         onSubmit={handleSubmit}
       >
         <TabPanel value={value} index={0}>
-          <TextField fullWidth name="title" label="Title" /> 
+          <TextField fullWidth name="title" label="Title" error={apiPostTitleError.length !== 0} helperText={apiPostTitleError}/> 
           <TextField sx={{marginTop: '8px'}}
             id="outlined-multiline-static"
             fullWidth
@@ -141,7 +159,7 @@ export default function CreatePostCard({pactID}) {
           />
         </TabPanel>
         <TabPanel value={value} index={1}>
-          <TextField fullWidth name="title" label="Title" />
+          <TextField fullWidth name="title" label="Title" error={apiPostTitleError.length !== 0} helperText={apiPostTitleError}/> 
           {image && <Image
 								style={{width: "100%", minWidth: "50%", minHeight: "25%", borderRadius: "10px", overflow: "hidden", position: "relative", }}
 								alt="Profile Picture"
@@ -155,19 +173,10 @@ export default function CreatePostCard({pactID}) {
 								data-testid="image-upload-button"
 								type="file"
 								onChange={(e) => { uploadImage(e.target.files[0])}} />
-              <Button
-							  fullWidth
-							  label="Upload Image"
-							  variant="contained"
-							  component="span"
-							  sx={{
-								  marginTop: 1
-                }}>
-              </Button>
             </label>
         </TabPanel>
         <TabPanel value={value} index={2}>
-          <TextField fullWidth name="title" label="Title" />
+          <TextField fullWidth name="title" label="Title" error={apiPostTitleError.length !== 0} helperText={apiPostTitleError}/> 
           <TextField sx={{marginTop: '8px'}}
             id="outlined-multiline-static"
             fullWidth
