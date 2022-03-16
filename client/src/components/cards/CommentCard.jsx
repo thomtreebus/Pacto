@@ -36,6 +36,7 @@ export default function CommentCard({ comment, post }) {
     });
 	};
 
+  console.log(comment)
   return (comment &&
     <Card sx={{ width: "100%" }} data-testid="card">
       <CardContent>

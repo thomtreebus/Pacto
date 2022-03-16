@@ -31,13 +31,11 @@ export default function PostPage() {
     }).then((data) => {
       setPost(data.message);
       setIsLoading(false);
-      console.log(data.message);
     }).catch((err) => {
       setIsLoading(false);
-      //history.push("/not-found");
-      console.log(err.message)
-      
-    })
+      history.push("/not-found");
+      //console.log(err.message)
+    });
   }, [pactID, postID, history])
 
 
