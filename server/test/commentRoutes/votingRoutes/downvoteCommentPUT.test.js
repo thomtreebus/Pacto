@@ -3,7 +3,7 @@ const dotenv = require("dotenv");
 const supertest = require("supertest");
 const app = require("../../../app");
 const { createToken } = require("../../../controllers/authController");
-const { generateTestUser, getTestUserEmail, generateNextTestUser } = require("../../fixtures/generateTestUser");
+const { generateTestUser, getDefaultTestUserEmail} = require("../../fixtures/generateTestUser");
 const { generateTestPact, getTestPactId } = require("../../fixtures/generateTestPact");
 const { generateTestPost, getTestPostId } = require("../../fixtures/generateTestPost");
 const { MESSAGES, PACT_MESSAGES, POST_MESSAGES, COMMENT_MESSAGES } = require("../../../helpers/messages");
@@ -66,7 +66,7 @@ describe("PUT /pact/:pactId/post/:postId/comment/:commentId/downvote", () => {
   }
 
   it("uses generic vote method", async () => {
-    const user = await User.findOne({ uniEmail: getTestUserEmail() });
+    const user = await User.findOne({ uniEmail: getDefaultTestUserEmail() });
     const comment = await Comment.findById(commentId);
     const oldVotes = comment.votes;
 
@@ -90,7 +90,7 @@ describe("PUT /pact/:pactId/post/:postId/comment/:commentId/downvote", () => {
   });
 
   it("uses checkIsMemberOfPact middleware", async () => {
-    const user = await generateNextTestUser("David");
+    const user = await generateTestUser("David");
     user.active = true;
     await user.save();
 
@@ -101,7 +101,7 @@ describe("PUT /pact/:pactId/post/:postId/comment/:commentId/downvote", () => {
   });
 
   it("uses checkValidPost middleware", async () => {
-    const user = await User.findOne({ uniEmail: getTestUserEmail() });
+    const user = await User.findOne({ uniEmail: getDefaultTestUserEmail() });
 
     const token = createToken(user._id);
     const response = await sendRequest(token, 404, getTestPactId(), "some gibberish");
@@ -110,7 +110,7 @@ describe("PUT /pact/:pactId/post/:postId/comment/:commentId/downvote", () => {
   });
 
   it("uses checkValidPostComment middleware", async () => {
-    const user = await User.findOne({ uniEmail: getTestUserEmail() });
+    const user = await User.findOne({ uniEmail: getDefaultTestUserEmail() });
 
     const token = createToken(user._id);
     commentId = "some gibberish";

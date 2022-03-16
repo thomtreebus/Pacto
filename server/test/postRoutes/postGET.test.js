@@ -4,7 +4,7 @@ const supertest = require("supertest");
 const bcrypt = require("bcrypt");
 const app = require("../../app");
 const { createToken } = require("../../controllers/authController");
-const { generateTestUser, getTestUserEmail, generateNextTestUser } = require("../fixtures/generateTestUser");
+const { generateTestUser, getDefaultTestUserEmail} = require("../fixtures/generateTestUser");
 const { generateTestPact, getTestPactId } = require("../fixtures/generateTestPact");
 const { generateTestPost, getTestPostId } = require("../fixtures/generateTestPost");
 const { jsonResponse } = require("../../helpers/responseHandlers");
@@ -69,7 +69,7 @@ describe("GET /pact/:pactId/post/:postId", () => {
 
   it("other member of the pact can get the post", async () => {
     // Creating 2nd user
-    const user2 = await generateNextTestUser("SecondUser");
+    const user2 = await generateTestUser("SecondUser");
     user2.active = true;
     await user2.pacts.push(pact);
     await user2.save();
@@ -110,7 +110,7 @@ describe("GET /pact/:pactId/post/:postId", () => {
   // Check uses pactMiddleware
   it("user in correct uni but not in the pact cannot get the post", async () => {
     // Creating the user who is in the correct uni but not in the pact
-    const user2 = await generateNextTestUser("User");
+    const user2 = await generateTestUser("User");
     user2.active = true;
     await user2.save();
     const token = createToken(user2._id);

@@ -1,53 +1,54 @@
 const University = require("../../models/University");
 const User = require("../../models/User");
 const bcrypt = require("bcrypt");
+const {getDefaultTestUser} = require("../helpers/defaultTestUser");
 
 const SALT_ROUNDS = 10;
-const USER_EMAIL = "pac.to@kcl.ac.uk";
-module.exports.generateTestUser = async () => {
-  // Dummy uni
-	const uni = await University.create( { name: "kcl", domains: ["kcl.ac.uk"] });
 
-	const salt = await bcrypt.genSalt(SALT_ROUNDS);
-	const hashedPassword = await bcrypt.hash("Password123", salt);
+// Returns the default test user email of when generateTestUser is called without parameters.
+module.exports.getDefaultTestUserEmail = () => {
+	const defaultUser = getDefaultTestUser();
+	return defaultUser.uniEmail;
+}
 
-	const user = await User.create({
-		firstName: "pac",
-		lastName: "to",
-		uniEmail: USER_EMAIL,
-		password: hashedPassword,
-		university: uni
-	});
-
-	await uni.users.push(user);
-	await uni.save();
-	return user;
+// Generates a test user. If not parameters are specified it uses default values.
+module.exports.generateTestUser = async (name = "pac") => {
+	return generateCustomUniTestUser(name, "kcl");
 };
 
-module.exports.getTestUserEmail = () => {return USER_EMAIL;}
-
-// Must be used after generateTestUser has been called!!
-module.exports.generateNextTestUser = async (name, notkcl = false, uniname = "") => {
-  // Dummy uni
-	let uni = await University.findOne( { name: "kcl", domains: ["kcl.ac.uk"] });
-	if(notkcl) {
-		uni = await University.create( { name: uniname, domains: [`${ uniname }.ac.uk`] });
+// Generate test user with a specified uni as a uniName String
+const generateCustomUniTestUser = async (name, uniName = "kcl") => {
+	// Dummy uni
+	let uni = await University.findOne( { name: uniName, domains: [`${ uniName }.ac.uk`] });
+	if (uni === null) {
+		uni = await University.create({name: uniName, domains: [`${uniName}.ac.uk`]});
 	}
+	const defaultUser = getDefaultTestUser();
 
 	const salt = await bcrypt.genSalt(SALT_ROUNDS);
-	const hashedPassword = await bcrypt.hash("Password123", salt);
+	const hashedPassword = await bcrypt.hash(defaultUser.password, salt);
 
-	const customEmail = name.toLowerCase() + ".to@kcl.ac.uk";
+	const customEmail = name.toLowerCase() + `.to@${uniName}.ac.uk`;
 
 	const user = await User.create({
 		firstName: name,
-		lastName: "to",
+		lastName: defaultUser.lastName,
 		uniEmail: customEmail,
 		password: hashedPassword,
-		university: uni
+		university: uni,
+		course: defaultUser.course,
+		bio: defaultUser.bio,
+		image: defaultUser.image,
+		hobbies: defaultUser.hobbies,
+		location: defaultUser.location,
+		instagram: defaultUser.instagram,
+		linkedin: defaultUser.linkedin,
+		phone: defaultUser.phone,
 	});
 
 	await uni.users.push(user);
 	await uni.save();
 	return user;
 };
+
+module.exports.generateCustomUniTestUser = generateCustomUniTestUser;
