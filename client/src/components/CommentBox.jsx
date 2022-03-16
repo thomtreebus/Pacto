@@ -9,6 +9,7 @@ export default function CommentBox({post, repliedToComment=null}){
   const [isButtonDisabled, setIsButtonDisabled] = React.useState(false);
 
   const handleSubmit = async (event) => {
+    console.log("here")
     event.preventDefault();
 		setIsButtonDisabled(true);
     const data = new FormData(event.currentTarget);
