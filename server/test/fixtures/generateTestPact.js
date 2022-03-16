@@ -3,13 +3,13 @@ const University = require("../../models/University");
 
 let myPact = null;
 
-module.exports.generateTestPact = async (foundingUser) => {
+module.exports.generateTestPact = async (foundingUser, name="My pact") => {
   if(!foundingUser.active){
     throw Error("The founding user provided is not active")
   }
 
   const pact = await Pact.create({
-    name: "My pact",
+    name: name,
     description: "This is my pact.",
     category: "other",
     university: foundingUser.university,
@@ -29,6 +29,7 @@ module.exports.generateTestPact = async (foundingUser) => {
   return pact;
 }
 
+// Returns ID of most recent pact to be generated
 module.exports.getTestPactId = () => {
   if (myPact) {
     return myPact._id;

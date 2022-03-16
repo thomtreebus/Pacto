@@ -13,22 +13,26 @@ export default function PostList({ posts }) {
     setPosts(
       posts.filter(
         (post) => post.title.toLowerCase().includes(search)
-      )
+      ).sort((a, b) => {
+        if (a.createdAt > b.createdAt) return -1;
+        else if (a.createdAt < b.createdAt) return 1;
+        else return 0;
+      })
     );
 	}, [search, posts]);
 
   return (
-    <Grid container sx={{ paddingRight: "16px" }}>
+    <Grid container sx={{ paddingRight: "16px", paddingTop: "8px" }}>
       <Grid container sx={{ paddingLeft: "16px", paddingRight: "16px" }}>
-        <Grid item>
+        <Grid item sx={{ minWidth: "100%" }}>
           <Card
+            data-testid="search-box"
             sx={{
               p: "2px 4px",
               marginBlock: "10px",
               display: "flex",
               alignItems: "center",
-              maxWidth: 400,
-              width: "70%",
+              width: "100%",
             }}
           >
             <InputBase

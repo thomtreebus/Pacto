@@ -47,7 +47,7 @@ export default function LoginPage() {
 			}
 
 			setIsAuthenticated(true);
-			setUser(json.message);
+			setUser(json.message.user);
 			history.push("/feed");
 		} catch (err) {
 			setSnackbarMessage(err.message);

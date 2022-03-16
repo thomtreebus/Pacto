@@ -45,6 +45,12 @@ let PactSchema = mongoose.Schema({
     required: true
   }],
 
+  bannedUsers: [{
+    type: Schema.Types.ObjectId,
+    ref: 'User',
+    required: true
+  }],
+
   image: {
     type: String,
     default: "https://avatars.dicebear.com/api/identicon/temp.svg"

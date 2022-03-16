@@ -9,11 +9,6 @@ const containsNoNumbers = (str) => {
   return regex.test(str);
 };
 
-const ImageSchema = new Schema({
-  url: String,
-  filename: String
-});
-
 const UserSchema = Schema({
   firstName: {
     type: String,
@@ -64,6 +59,7 @@ const UserSchema = Schema({
   }],
   image: {
     type: String,
+    default: "https://res.cloudinary.com/djlwzi9br/image/upload/v1644582632/pacto-logo_zzeh98.png"
   },
   bio: {
     type: String,
@@ -82,15 +78,24 @@ const UserSchema = Schema({
   friends: [
     {
       type: Schema.Types.ObjectId,
-      ref: 'User'
-    }
+      ref: 'User',
+      default: []
+    },
   ],
-  pacts: [
-    {
-      type: Schema.Types.ObjectId,
-      ref: 'Pact'
-    }
-  ],
+  instagram: {
+    type: String,
+    required: false
+  },
+  linkedin: {
+    type: String,
+    required: false
+  },
+  phone: {
+    type: String,
+    required: false
+  }
+
+
 });
 
 const User = mongoose.model('Users', UserSchema);

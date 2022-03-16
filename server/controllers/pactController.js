@@ -62,7 +62,7 @@ module.exports.pactGet = async (req, res) => {
 		await pact.populate({ path: 'university', model: University });
 		await pact.populate({ path: "members", model: User });
 		await pact.populate({ path: "moderators", model: User });
-		await pact.populate({ path: "posts", model: Post });
+		await pact.populate({ path: "posts", model: Post, populate: {path: "author", model: User}  });
 		res.status(200).json(jsonResponse(pact, []));
 	} 
   catch (err) {
@@ -120,16 +120,95 @@ module.exports.joinPact = async (req, res) => {
 		const targetUser = await User.findById(req.user._id);
 		const targetPact = await Pact.findById(req.params.id);
 
-		targetUser.pacts.push(targetPact);
-		targetPact.members.push(targetUser);
-		
-		await targetPact.save();
-		await targetUser.save();
+		if (!targetUser.pacts.includes(targetPact._id) && !targetPact.members.includes(targetUser._id)) {
+			targetUser.pacts.push(targetPact);
+			targetPact.members.push(targetUser);
+			
+			await targetPact.save();
+			await targetUser.save();
+		}
 
 		res.json(jsonResponse(PACT_MESSAGES.SUCCESSFUL_JOIN, []));
 	}
 	catch (err) {
 		res.status(404).json(jsonResponse(null, [jsonError(null, PACT_MESSAGES.NOT_FOUND)]));
 	}
-
 };
+
+module.exports.banMember = async (req, res) => {
+	try {
+		const user = await User.findById(req.params.userId);
+		const pact = await Pact.findById(req.params.pactId);
+
+		// Can't ban a user from a pact if they aren't a member
+		if (!pact.members.includes(user._id)) {
+			throw Error(PACT_MESSAGES.CANT_BAN_NON_MEMBER);
+		}
+
+		// Can't ban other moderators from a pact
+		if (pact.moderators.includes(user._id)) {
+			throw Error(PACT_MESSAGES.CANT_BAN_MODERATOR);
+		}
+
+		// Can't ban someone who is already banned from a pact 
+		if (pact.bannedUsers.includes(user._id)) {
+			throw Error(PACT_MESSAGES.ALREADY_BANNED);
+		}
+
+		await User.findByIdAndUpdate(user._id, { $pull: { pacts: pact._id } });
+		await Pact.findByIdAndUpdate(pact._id, { $pull: { members: user._id } });
+		await Pact.findByIdAndUpdate(pact._id, { $push: { bannedUsers: user._id } });
+		
+		res.json(jsonResponse(PACT_MESSAGES.SUCCESSFUL_BAN, []));
+	}
+	catch (err) {
+		res.status(404).json(jsonResponse(null, [jsonError(null, err.message)]));
+	}
+}
+
+module.exports.promoteMember = async (req, res) => {
+	try {
+		const user = await User.findById(req.params.userId);
+		const pact = await Pact.findById(req.params.pactId);
+
+		// Can't promote a user if they aren't a member of the pact
+		if (!pact.members.includes(user._id)) {
+			throw Error(PACT_MESSAGES.CANT_PROMOTE_NON_MEMBER);
+		}
+
+		// Can't promote someone who is already moderator
+		if (pact.moderators.includes(user._id)) {
+			throw Error(PACT_MESSAGES.CANT_PROMOTE_MODERATOR);
+		}
+
+		await Pact.findByIdAndUpdate(pact._id, { $push: { moderators: user._id } });
+
+		res.json(jsonResponse(PACT_MESSAGES.SUCCESSFUL_PROMOTION, []));
+	}
+	catch (err) {
+		res.status(404).json(jsonResponse(null, [jsonError(null, err.message)]));
+	}
+}
+
+module.exports.revokeBan = async (req, res) => {
+	try {
+		const user = await User.findById(req.params.userId);
+		const pact = await Pact.findById(req.params.pactId);
+
+		// Can't revoke a ban if user is not banned from pact
+		if (!pact.bannedUsers.includes(user._id)) {
+			throw Error(PACT_MESSAGES.NOT_BANNED);
+		}
+
+		await Pact.findByIdAndUpdate(pact._id, { $push: { members: user._id } });
+		await Pact.findByIdAndUpdate(pact._id, { $pull: { bannedUsers: user._id } });
+		await User.findByIdAndUpdate(user._id, { $push: { pacts: pact._id } });
+
+		res.json(jsonResponse(PACT_MESSAGES.SUCCESSFUL_REVOKE_BAN, []));
+	}
+	catch (err) {
+		res.status(404).json(jsonResponse(null, [jsonError(null, err.message)]));
+	}
+}
+
+
