@@ -5,16 +5,17 @@ import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import Typography from '@mui/material/Typography';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';import { useHistory } from "react-router-dom";
-
 import ThumbUpRoundedIcon from "@mui/icons-material/ThumbUpRounded";
 import ThumbDownRoundedIcon from "@mui/icons-material/ThumbDownRounded";
 
 import { useAuth } from "../../providers/AuthProvider";
+import CommentBox from "../CommentBox";
 
 export default function CommentCard({ comment, post }) {
   const { user } = useAuth();
   const [thumbUp, setThumbUp] = useState(post.upvoters.includes(user._id));
   const [thumbDown, setThumbDown] = useState(post.downvoters.includes(user._id));
+  const [showReplyBox, setShowReplyBox] = useState(false);
   const [likes, setLikes] = useState(post.votes);
 
   const history = useHistory();
@@ -84,10 +85,14 @@ export default function CommentCard({ comment, post }) {
               {comment.text}
             </Typography>
 
-            <Typography variant="caption">
-              Reply
+            <Typography variant="caption" className="link" onClick={() => {setShowReplyBox(!showReplyBox)}}>
+              {showReplyBox ? "Hide" : "Reply"}
             </Typography>
           </Box>
+
+          {showReplyBox && <Box>
+            <CommentBox post={post} repliedToComment={comment}></CommentBox>
+          </Box>}
 
           {(comment.childComments.length > 0) && <Box sx = {{ overflow: "hidden"}}>
             <Accordion>
