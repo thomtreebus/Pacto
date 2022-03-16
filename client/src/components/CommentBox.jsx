@@ -59,12 +59,12 @@ export default function CommentBox({post, repliedToComment=null}){
           error={apiTextError.length !== 0}
           helperText={apiTextError}
           autoFocus
+          variant="filled"
         />
       </Grid>
 
       <Button
         type="submit"
-        fullWidth
         disabled={isButtonDisabled}
         variant="contained"
         sx={{ mt: 3, mb: 2 }}

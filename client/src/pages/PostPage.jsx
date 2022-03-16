@@ -2,20 +2,18 @@ import { Fab, Grid, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import AboutPact from "../components/AboutPact";
-import PostList from "../components/PostList";
 import Loading from "./Loading";
 import { useHistory } from "react-router-dom";
+import CommentBox from "../components/CommentBox";
 
-import AddIcon from '@mui/icons-material/Add';
 import CommentCard from "../components/cards/CommentCard";
 import PostCard from "../components/cards/PostCard";
-
 
 export default function PostPage() {
   const { pactID, postID } = useParams();
   const [post, setPost] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [showReplyBox, setShowReplyBox] = useState(false);
   const history = useHistory();
 
   useEffect(() => {
@@ -46,7 +44,13 @@ export default function PostPage() {
     <>
       <Grid container width={"60vw"}>
         <Grid item xs={16} lg={14} paddingBottom={4}>
-          <PostCard post={post} repliable={true}></PostCard>
+          <PostCard post={post}></PostCard>
+          <Typography variant="caption" className="link" onClick={() => {setShowReplyBox(!showReplyBox)}}>
+            {showReplyBox ? "Hide" : "Add comment"}
+          </Typography>
+          {showReplyBox && <Box>
+            <CommentBox post={post}></CommentBox>
+          </Box>}
         </Grid>
         <Box sx={{width: "95%", marginInline: "auto"}}>
           <Grid item xs={16} lg={14}>
