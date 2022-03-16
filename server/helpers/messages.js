@@ -82,6 +82,19 @@ module.exports.PACT_MESSAGES = {
 };
 
 module.exports.POST_MESSAGES = {
+  NO_AUTHOR: "Author is a required field",
+  NO_PACT: "Post is a required field",
+  TITLE: {
+		BLANK: "Title is a required field",
+		MAX_LENGTH_EXCEEDED: "Title cannot exceed 50 characters",
+	},
+  TYPE: {
+    BLANK: "Type is a required field",
+    INVALID: "Type must be either link, image or text",
+  },
+  NO_VOTES: "Votes is a required field",
+  NO_UPVOTERS: "Upvoters is a required field",
+  NO_DOWNVOTERS: "Downvoters is a required field",
   NOT_FOUND: "Post not found",
   NOT_AUTHORISED: {
     NOT_AUTHOR_NOT_MOD: "User is neither a mod nor the author of the post",
