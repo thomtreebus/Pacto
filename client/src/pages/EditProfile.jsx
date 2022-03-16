@@ -19,6 +19,7 @@ import WhatsAppIcon from '@mui/icons-material/WhatsApp';
 import { Divider } from '@mui/material';
 import Loading from "./Loading";
 import {useAuth} from "../providers/AuthProvider";
+import ErrorMessage from "../components/ErrorMessage";
 
 
 const Input = styled('input')({
@@ -33,6 +34,7 @@ export default function EditProfile() {
 
   const [editProfileIsDisabled, setEditProfileIsDisabled] = React.useState(false);
   const [uploadImageIsDisabled, setUploadImageIsDisabled] = React.useState(false);
+  const [snackbarOpen, setSnackbarOpen] = React.useState(false);
 
   const [isLoading, setIsLoading] = React.useState(true);
 
@@ -63,8 +65,10 @@ export default function EditProfile() {
     try {
       const res = await Axios.post(`https://api.cloudinary.com/v1_1/${process.env.REACT_APP_CLOUDINARY_CLOUD_NAME}/image/upload`, data)
       setImage(res.data.url);
+      setSnackbarOpen(false)
     } catch (err) {
       setUploadImageError(err)
+      setSnackbarOpen(true)
     }
     setUploadImageIsDisabled(false);
   }
@@ -325,6 +329,11 @@ export default function EditProfile() {
             Update Profile
           </Button>
         </Grid>
+        <ErrorMessage
+            isOpen={snackbarOpen}
+            setIsOpen={setSnackbarOpen}
+            message={uploadImageError.message}
+        />
       </Grid>
     );
   }
