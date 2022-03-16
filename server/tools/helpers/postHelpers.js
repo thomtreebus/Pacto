@@ -3,18 +3,23 @@ const userConstants = require("./userConstants");
 const Pact = require("../../models/Pact");
 const User = require("../../models/User");
 const Post = require("../../models/Post");
+const Comment = require("../../models/Comment");
+const { LINKS } = require("./postConstants");
+
 
 const chance = new Chance(1234);
 
 async function seedPosts(university) {
 	const pacts = await Pact.find({university : university})
 	await populatePacts(pacts);
-	console.log(`Finished seeding posts`);
+	console.log(`Finished seeding posts and comments`);
 }
 
 async function populatePacts(pacts) {
 	for (let i = 0; i < pacts.length; i++) {
 		await generateRandomPosts(pacts[i], 20);
+		const posts = await Post.find({ pact: pacts[i] });
+		await populatePosts(pacts[i], posts);
 	}
 }
 
@@ -43,7 +48,7 @@ async function generateRandomImagePost(pact) {
 
 async function generateRandomLinkPost(pact) {
 	const title = chance.sentence({ words: 2 });
-	const post = await createPost(pact, getRandomAuthor(pact), title, {  type: "link", link : chance.url()});
+	const post = await createPost(pact, getRandomAuthor(pact), title, {  type: "link", link : getRandomLink()});
 	return post;
 }
 
@@ -63,32 +68,81 @@ async function createPost(pact, author, title, options={type:"text", image:"", t
 	return post;
 }
 
+async function populatePosts(pact, posts) {
+	for (let i = 0; i < posts.length; i++) {
+		await generateRandomComments(pact, posts[i], chance.integer({ min: 0, max: 3 }));
+	}
+}
+
+async function populateComment(pact, post, comment) {
+	const childComment = await generateRandomComments(pact, post, chance.integer({ min: 0, max: 3 }), {parentComment: comment});
+	return childComment;
+}
+
+async function generateRandomComments(pact, post, numberOfComments, options={parentComment: undefined}) {
+	for (let i = 0; i < numberOfComments; i++) {
+		const comment = await createRandomComment(pact, post, options);
+		await populateVotes(comment, pact);
+		if (!options.parentComment) {
+			await populateComment(pact, post, comment);
+		}
+	}
+}
+
+async function createRandomComment(pact, post, options={parentComment: undefined}) {
+	const comment = await createComment(post, getRandomAuthor(pact), chance.sentence({ words: 15 }), options);
+	return comment;
+}
+
+async function createComment(post, author, text, options={parentComment: undefined}) {
+	const {parentComment} = options;
+	const comment = await Comment.create({
+		author: author,
+		text: text,
+		parentComment: parentComment,
+	});
+
+	post.comments.push(comment);
+	await post.save();
+
+	if(parentComment) {
+		parentComment.childComments.push(comment);
+		await parentComment.save();
+	}
+
+	return comment;
+}
+
 function getRandomAuthor(pact) {
 	return pact.members[chance.integer({ min: 0, max: pact.members.length-1 })];
 }
 
-async function populateVotes(post, pact) {
+async function populateVotes(obj, pact) {
 	const { members } = pact;
 	
-	const voteOptions = [populateUpvote, populateDownvote]
+	const voteOptions = [populateUpvote, populateDownvote, async (obj, member) => {}]
 	
 	for (let i = 0; i < members.length; i++) {
 		const member = members[i];
 		const voteFunction = voteOptions[chance.integer({ min: 0, max: voteOptions.length-1 })];
-		await voteFunction(post, member);
+		await voteFunction(obj, member);
 	}
 }
 
-async function populateUpvote(post, member) {
-	post.upvoters.push(member);
-	post.votes = post.votes + 1;
-	await post.save();
+async function populateUpvote(obj, member) {
+	obj.upvoters.push(member);
+	obj.votes = obj.votes + 1;
+	await obj.save();
 }
 
-async function populateDownvote(post, member) {
-	post.downvoters.push(member);
-	post.votes = post.votes - 1;
-	await post.save();
+async function populateDownvote(obj, member) {
+	obj.downvoters.push(member);
+	obj.votes = obj.votes - 1;
+	await obj.save();
+}
+
+function getRandomLink(title) {
+	return LINKS[chance.integer({ min: 0, max: LINKS.length-1 })];
 }
 
 function getImageLink(title) {

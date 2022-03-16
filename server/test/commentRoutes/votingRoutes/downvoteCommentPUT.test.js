@@ -6,15 +6,18 @@ const { createToken } = require("../../../controllers/authController");
 const { generateTestUser, getDefaultTestUserEmail} = require("../../fixtures/generateTestUser");
 const { generateTestPact, getTestPactId } = require("../../fixtures/generateTestPact");
 const { generateTestPost, getTestPostId } = require("../../fixtures/generateTestPost");
-const { MESSAGES, PACT_MESSAGES } = require("../../../helpers/messages");
-const University = require('../../../models/University');
+const { MESSAGES, PACT_MESSAGES, POST_MESSAGES, COMMENT_MESSAGES } = require("../../../helpers/messages");
 const User = require("../../../models/User");
 const Pact = require('../../../models/Pact');
 const Post = require('../../../models/Post');
+const University = require('../../../models/University');
+const Comment = require('../../../models/Comment');
 
 dotenv.config();
 
-describe("PUT /pact/:pactId/post/upvote/:postId", () => {
+const COMMENT_TEXT = "comment here."
+describe("PUT /pact/:pactId/post/:postId/comment/:commentId/downvote", () => {
+  let commentId = null;
   beforeAll(async () => {
     await mongoose.connect(process.env.TEST_DB_CONNECTION_URL);
   });
@@ -33,6 +36,16 @@ describe("PUT /pact/:pactId/post/upvote/:postId", () => {
     // User posts a post in the pact
     const post = await generateTestPost(user, pact);
     await post.save();
+
+    const comment = await Comment.create({
+      text: COMMENT_TEXT,
+      author: user._id
+    });
+    await comment.save();
+    commentId = comment._id;
+
+    post.comments.push(comment);
+    await post.save();
   });
 
   afterEach(async () => {
@@ -40,11 +53,12 @@ describe("PUT /pact/:pactId/post/upvote/:postId", () => {
     await Post.deleteMany({});
     await Pact.deleteMany({});
     await University.deleteMany({});
+    await Comment.deleteMany({});
   });
 
   const sendRequest = async (token, expStatus=200, pactId=getTestPactId(), postId=getTestPostId()) => {
     const response = await supertest(app)
-    .put(`/pact/${ pactId }/post/upvote/${ postId }`)
+    .put(`/pact/${ pactId }/post/${ postId }/comment/${commentId}/downvote`)
     .set("Cookie", [`jwt=${ token }`])
     .expect(expStatus);
 
@@ -53,17 +67,17 @@ describe("PUT /pact/:pactId/post/upvote/:postId", () => {
 
   it("uses generic vote method", async () => {
     const user = await User.findOne({ uniEmail: getDefaultTestUserEmail() });
-    const post = await Post.findOne({ id: getTestPostId() });
-    const oldVotes = post.votes;
+    const comment = await Comment.findById(commentId);
+    const oldVotes = comment.votes;
 
     const token = createToken(user._id);
     const response = await sendRequest(token);
 
-    const responsePost = response.body.message;
-    expect(responsePost.author._id.toString()).toBe(user._id.toString());
-    expect(responsePost.votes).toBe(oldVotes + 1);
-    expect(responsePost.downvoters).toStrictEqual([]);
-    expect(responsePost.upvoters[0]._id).toBe(user._id.toString());
+    const responseComment = response.body.message;
+    expect(responseComment.author._id.toString()).toBe(user._id.toString());
+    expect(responseComment.votes).toBe(oldVotes - 1);
+    expect(responseComment.upvoters).toStrictEqual([]);
+    expect(responseComment.downvoters[0]._id).toBe(user._id.toString());
   });
 
   it("uses checkAuthenticated middleware", async () => {
@@ -86,5 +100,23 @@ describe("PUT /pact/:pactId/post/upvote/:postId", () => {
     expect(response.body.errors[0].message).toBe(PACT_MESSAGES.NOT_AUTHORISED);
   });
 
+  it("uses checkValidPost middleware", async () => {
+    const user = await User.findOne({ uniEmail: getDefaultTestUserEmail() });
+
+    const token = createToken(user._id);
+    const response = await sendRequest(token, 404, getTestPactId(), "some gibberish");
+    expect(response.body.message).toBe(null);
+    expect(response.body.errors[0].message).toBe(POST_MESSAGES.NOT_FOUND);
+  });
+
+  it("uses checkValidPostComment middleware", async () => {
+    const user = await User.findOne({ uniEmail: getDefaultTestUserEmail() });
+
+    const token = createToken(user._id);
+    commentId = "some gibberish";
+    const response = await sendRequest(token, 404);
+    expect(response.body.message).toBe(null);
+    expect(response.body.errors[0].message).toBe(COMMENT_MESSAGES.NOT_FOUND);
+  });
   
 });

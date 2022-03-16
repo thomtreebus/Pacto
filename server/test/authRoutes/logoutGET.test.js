@@ -6,7 +6,7 @@ const Cookies = require("expect-cookies");
 const { createToken } = require("../../controllers/authController");
 const University = require("../../models/University");
 const User = require("../../models/User");
-const { generateTestUser, getTestUserEmail } = require('../fixtures/generateTestUser');
+const { generateTestUser, getDefaultTestUserEmail } = require('../fixtures/generateTestUser');
 
 dotenv.config();
 
@@ -40,7 +40,7 @@ describe("GET /logout", () => {
   });
 
   it("returns OK and cookie with max-age set when user logged in", async () => {
-    const user = await User.findOne({ uniEmail: getTestUserEmail() });
+    const user = await User.findOne({ uniEmail: getDefaultTestUserEmail() });
     const token = createToken(user._id);
     const response = await supertest(app)
       .get("/logout")
