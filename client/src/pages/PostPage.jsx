@@ -48,11 +48,14 @@ export default function PostPage() {
     <>
       <Grid container width={"60vw"}>
         <Grid item xs={16} lg={14} paddingBottom={4}>
-          <PostCard post={post}></PostCard>
+          <PostCard post={post} repliable={true}></PostCard>
         </Grid>
-        <Grid item xs={16} lg={14}>
-          { <CommentCard post={post} comment={post.comments[0]}></CommentCard> }
-        </Grid>
+        <Box sx={{width: "95%", marginInline: "auto"}}>
+          <Grid item xs={16} lg={14}>
+            { post.comments.filter((c) => c.parentComment == null)
+            .map((c) => <CommentCard post={post} comment={c}></CommentCard>) }
+          </Grid>
+        </Box>
       </Grid>
     </>
   );
