@@ -24,12 +24,6 @@ module.exports.postPost = async (req, res) => {
 	}
 };
 
-const populateComment = async (comment) => {
-	await Comment.populate(comment, { path: 'childComments', model: Comment});
-	await Comment.populate(comment, { path: 'author', model: User });
-	comment.childComments.forEach(async (c) => await populateComment(c));
-}
-
 // GET pact (by id)
 module.exports.postGet = async (req, res) => {
 	let post = null;
@@ -40,9 +34,8 @@ module.exports.postGet = async (req, res) => {
 			await post.populate({ path: 'downvoters', model: User });
 			await post.populate({ path: 'pact', model: Pact});
 			await post.populate({ path: 'author', model: User});
-			await post.populate({ path: 'comments', model: Comment});
-
-			post.comments.forEach(async (c) => await populateComment(c));
+			await post.populate({ path: 'comments', model: Comment, populate : { path: "author", model: User } });
+			await post.populate({ path: 'comments', model: Comment, populate : { path: "childComments", model: Comment } });
 			
 			res.status(200).json(jsonResponse(post, []));
 		} 
@@ -71,7 +64,9 @@ module.exports.upvotePostPost = async (req, res) => {
 			await post.populate({ path: 'downvoters', model: User });
 			await post.populate({ path: 'pact', model: Pact});
 			await post.populate({ path: 'author', model: User});
-			await post.populate({ path: 'comments', model: Comment});
+			await post.populate({ path: 'comments', model: Comment, populate : { path: "author", model: User } });
+			await post.populate({ path: 'comments', model: Comment, populate : { path: "childComments", model: Comment } });
+
 			res.status(200).json(jsonResponse(post, []));
 		}
 	} 
@@ -96,7 +91,9 @@ module.exports.downvotePostPost = async (req, res) => {
 			await post.populate({ path: 'downvoters', model: User });
 			await post.populate({ path: 'pact', model: Pact});
 			await post.populate({ path: 'author', model: User});
-			await post.populate({ path: 'comments', model: Comment});
+			await post.populate({ path: 'comments', model: Comment, populate : { path: "author", model: User } });
+			await post.populate({ path: 'comments', model: Comment, populate : { path: "childComments", model: Comment } });
+
 			res.status(200).json(jsonResponse(post, []));
 		}
 	} 

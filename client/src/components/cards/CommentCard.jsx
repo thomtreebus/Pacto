@@ -105,7 +105,7 @@ export default function CommentCard({ comment, post }) {
               </AccordionSummary>
               <AccordionDetails>
                 <Grid item xs={12} lg={12}>
-                {comment.childComments.map((c) => (<li><CommentCard post={post} comment={c}></CommentCard></li>))}
+                {comment.childComments.map((c) => (<li><CommentCard post={post} comment={post.comments.filter(x=>x._id===c._id)[0]}></CommentCard></li>))}
                 </Grid>
               </AccordionDetails>
             </Accordion>
