@@ -3,7 +3,7 @@ const dotenv = require("dotenv");
 const supertest = require("supertest");
 const app = require("../../../app");
 const { createToken } = require("../../../controllers/authController");
-const { generateTestUser, getTestUserEmail, generateNextTestUser } = require("../../fixtures/generateTestUser");
+const { generateTestUser, getDefaultTestUserEmail} = require("../../fixtures/generateTestUser");
 const { generateTestPact, getTestPactId } = require("../../fixtures/generateTestPact");
 const { generateTestPost, getTestPostId } = require("../../fixtures/generateTestPost");
 const { MESSAGES, PACT_MESSAGES } = require("../../../helpers/messages");
@@ -52,7 +52,7 @@ describe("PUT /pact/:pactId/post/upvote/:postId", () => {
   }
 
   it("uses generic vote method", async () => {
-    const user = await User.findOne({ uniEmail: getTestUserEmail() });
+    const user = await User.findOne({ uniEmail: getDefaultTestUserEmail() });
     const post = await Post.findOne({ id: getTestPostId() });
     const oldVotes = post.votes;
 
@@ -76,7 +76,7 @@ describe("PUT /pact/:pactId/post/upvote/:postId", () => {
   });
 
   it("uses checkIsMemberOfPact middleware", async () => {
-    const user = await generateNextTestUser("David");
+    const user = await generateTestUser("David");
     user.active = true;
     await user.save();
 

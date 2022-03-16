@@ -3,7 +3,7 @@ const dotenv = require("dotenv");
 const supertest = require("supertest");
 const app = require("../../app");
 const {upvote, downvote} = require("../../helpers/genericVoteMethods");
-const { generateTestUser, getTestUserEmail } = require("../fixtures/generateTestUser");
+const { generateTestUser, getDefaultTestUserEmail} = require("../fixtures/generateTestUser");
 const User = require("../../models/User");
 
 dotenv.config();
@@ -39,7 +39,7 @@ describe("Generic upvote", () => {
   });
 
   it("handles standard upvote", async () => {
-    const user = await User.findOne({ uniEmail: getTestUserEmail() });
+    const user = await User.findOne({ uniEmail: getDefaultTestUserEmail() });
     const oldVotes = obj.votes;
     const oldUpvoterLen = obj.upvoters.length;
     const oldDownvoterLen = obj.downvoters.length;
@@ -51,7 +51,7 @@ describe("Generic upvote", () => {
   });
   
   it("handles double upvote: keeping score the same", async () => {
-    const user = await User.findOne({ uniEmail: getTestUserEmail() });
+    const user = await User.findOne({ uniEmail: getDefaultTestUserEmail() });
     const oldVotes = obj.votes;
     const oldUpvoterLen = obj.upvoters.length;
     const oldDownvoterLen = obj.downvoters.length;
@@ -64,7 +64,7 @@ describe("Generic upvote", () => {
   });
 
   it("handles upvote after downvoting", async () => {
-    const user = await User.findOne({ uniEmail: getTestUserEmail() });
+    const user = await User.findOne({ uniEmail: getDefaultTestUserEmail() });
     const oldVotes = obj.votes;
     const oldUpvoterLen = obj.upvoters.length;
     const oldDownvoterLen = obj.downvoters.length;
