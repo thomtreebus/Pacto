@@ -54,11 +54,6 @@ export default function PostPage() {
           </Box>
         </Grid>
       </Grid>
-      <Box position={"fixed"} bottom={50} right={300}>
-        <Fab color="primary" aria-label="add">
-          <AddIcon />
-        </Fab>
-      </Box>
     </>
   );
 }
