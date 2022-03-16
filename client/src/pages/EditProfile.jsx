@@ -332,7 +332,7 @@ export default function EditProfile() {
         <ErrorMessage
             isOpen={snackbarOpen}
             setIsOpen={setSnackbarOpen}
-            message={uploadImageError.message}
+            message={uploadImageError}
         />
       </Grid>
     );
