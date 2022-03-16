@@ -67,7 +67,7 @@ export default function EditProfile() {
       setImage(res.data.url);
       setSnackbarOpen(false)
     } catch (err) {
-      setUploadImageError(err)
+      setUploadImageError("Error uploading image")
       setSnackbarOpen(true)
     }
     setUploadImageIsDisabled(false);
