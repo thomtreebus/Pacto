@@ -76,7 +76,7 @@ export default function PactPage() {
             {"Create Post"}
           </DialogTitle>
           <DialogContent>
-            <CreatePostCard />
+            <CreatePostCard pactID={pactID}/>
           </DialogContent>
         </Dialog>
       </Box>
