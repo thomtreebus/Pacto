@@ -98,19 +98,19 @@ export default function CreatePostCard({pactID}) {
   return (
     <Card sx={{ width: '100%', padding: '100', marginTop: '18px'}}>
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-        <Tabs value={value} onChange={handleChange} aria-label="basic tabs example" centered>
+        <Tabs value={value} onChange={handleChange} aria-label="tabs" centered>
           <Tab icon={<TextIcon />} label="Post" {...a11yProps(0)} />
           <Tab icon={<PhotoIcon />} label="Image" {...a11yProps(1)} />
           <Tab icon={<LinkIcon />} label="Link"{...a11yProps(2)} />
         </Tabs>
       </Box>
-      <TabPanel value={value} index={0}>
-        <Box
-          component="form"
-          noValidate
-          onSubmit={handleSubmit}
-        >
-          <TextField fullWidth name="title" label="Title" />
+      <Box
+        component="form"
+        noValidate
+        onSubmit={handleSubmit}
+      >
+        <TabPanel value={value} index={0}>
+          <TextField fullWidth name="title" label="Title" /> 
           <TextField sx={{marginTop: '8px'}}
             id="outlined-multiline-static"
             fullWidth
@@ -120,39 +120,25 @@ export default function CreatePostCard({pactID}) {
             rows={4}
             variant="outlined"
           />
-          <Button variant="contained" sx={{marginTop: '8px'}} type="submit" fullWidth>Post</Button>
-        </Box>
-      </TabPanel>
-      <TabPanel value={value} index={1}>
-        <Box
-          component="form"
-          noValidate
-          onSubmit={handleSubmit}
-        >
-          <TextField fullWidth name="title" label="Title" />
-          {/* <label htmlFor="contained-button-file">
-            <Input accept="image/*" id="contained-button-file" multiple type="file" />
-            <Button fullWidth variant="contained" component="span" sx={{marginTop: '8px'}}>Upload Photo</Button>
-          </label> */}
-        <Dropzone onDrop={acceptedFiles => console.log(acceptedFiles)}>
-          {({getRootProps, getInputProps}) => (
-            <section>
-              <div {...getRootProps()}>
-                <input {...getInputProps()} />
-                <p>Drag and drop or click to upload image</p>
-              </div>
-            </section>
-          )}
-        </Dropzone>
-        <Button variant="contained" sx={{marginTop: '8px'}} type="submit" fullWidth>Post</Button>
-      </Box>
-      </TabPanel>
-      <TabPanel value={value} index={2}>
-        <Box
-          component="form"
-          noValidate
-          onSubmit={handleSubmit}
-        >
+        </TabPanel>
+        <TabPanel value={value} index={1}>
+        <TextField fullWidth name="title" label="Title" />
+            {/* <label htmlFor="contained-button-file">
+              <Input accept="image/*" id="contained-button-file" multiple type="file" />
+              <Button fullWidth variant="contained" component="span" sx={{marginTop: '8px'}}>Upload Photo</Button>
+            </label> */}
+          <Dropzone onDrop={acceptedFiles => console.log(acceptedFiles)}>
+            {({getRootProps, getInputProps}) => (
+              <section>
+                <div {...getRootProps()}>
+                  <input {...getInputProps()} />
+                  <p>Drag and drop or click to upload image</p>
+                </div>
+              </section>
+            )}
+          </Dropzone>
+        </TabPanel>
+        <TabPanel value={value} index={2}>
           <TextField fullWidth name="title" label="Title" />
           <TextField sx={{marginTop: '8px'}}
             id="outlined-multiline-static"
@@ -161,9 +147,9 @@ export default function CreatePostCard({pactID}) {
             name="link"
             variant="outlined"
           />
-          <Button variant="contained" sx={{marginTop: '8px'}} type="submit" fullWidth>Post</Button>
-        </Box>
-      </TabPanel>
+        </TabPanel>
+        <Button variant="contained" sx={{marginTop: '8px'}} type="submit" fullWidth>Post</Button>
+      </Box>
     </Card>
   );
 }
