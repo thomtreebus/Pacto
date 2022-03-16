@@ -7,11 +7,13 @@ import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
-import Dropzone from 'react-dropzone'
 import PhotoIcon from '@mui/icons-material/Photo';
 import TextIcon from '@mui/icons-material/TextSnippet';
 import LinkIcon from '@mui/icons-material/Link';
-import { useHistory } from "react-router-dom"; 
+import { useHistory } from "react-router-dom";
+import Input from "@mui/material/Input";
+import { Image } from 'cloudinary-react';
+import Axios from 'axios';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -50,6 +52,23 @@ export default function CreatePostCard({pactID}) {
   const [value, setValue] = React.useState(0);
   const history = useHistory();
 
+  const [image, setImage] = React.useState(null);
+
+  const uploadImage = async (newImage) => {
+    const data = new FormData();
+
+    data.append("api_key", process.env.REACT_APP_CLOUDINARY_KEY);
+    data.append("file", newImage);
+    data.append("upload_preset", "n2obmbt1");
+
+    try {
+      const res = await Axios.post(`https://api.cloudinary.com/v1_1/${process.env.REACT_APP_CLOUDINARY_CLOUD_NAME}/image/upload`, data)
+      setImage(res.data.url);
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
   function getPostType() {
     switch(value) {
       case 0:
@@ -75,7 +94,7 @@ export default function CreatePostCard({pactID}) {
       body: JSON.stringify({
         title: data.get("title"),
         text: data.get("text"),
-        image: data.get("image"),
+        image: image,
         link: data.get("link"),
         type: getPostType()
       }),
@@ -122,21 +141,30 @@ export default function CreatePostCard({pactID}) {
           />
         </TabPanel>
         <TabPanel value={value} index={1}>
-        <TextField fullWidth name="title" label="Title" />
-            {/* <label htmlFor="contained-button-file">
-              <Input accept="image/*" id="contained-button-file" multiple type="file" />
-              <Button fullWidth variant="contained" component="span" sx={{marginTop: '8px'}}>Upload Photo</Button>
-            </label> */}
-          <Dropzone onDrop={acceptedFiles => console.log(acceptedFiles)}>
-            {({getRootProps, getInputProps}) => (
-              <section>
-                <div {...getRootProps()}>
-                  <input {...getInputProps()} />
-                  <p>Drag and drop or click to upload image</p>
-                </div>
-              </section>
-            )}
-          </Dropzone>
+          <TextField fullWidth name="title" label="Title" />
+          {image && <Image
+								style={{width: "100%", minWidth: "50%", minHeight: "25%", borderRadius: "10px", overflow: "hidden", position: "relative", }}
+								alt="Profile Picture"
+								cloudName={`${process.env.REACT_APP_CLOUDINARY_CLOUD_NAME}`}
+								publicID={image}
+							> </Image>}
+						<label htmlFor="contained-button-file">
+							<Input
+								accept="image/*"
+								id="contained-button-file"
+								data-testid="image-upload-button"
+								type="file"
+								onChange={(e) => { uploadImage(e.target.files[0])}} />
+              <Button
+							  fullWidth
+							  label="Upload Image"
+							  variant="contained"
+							  component="span"
+							  sx={{
+								  marginTop: 1
+                }}>
+              </Button>
+            </label>
         </TabPanel>
         <TabPanel value={value} index={2}>
           <TextField fullWidth name="title" label="Title" />
