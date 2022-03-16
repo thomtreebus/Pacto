@@ -1,4 +1,4 @@
-import { Fab, Grid } from "@mui/material";
+import { Fab, Grid, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
@@ -9,6 +9,8 @@ import { useHistory } from "react-router-dom";
 
 import AddIcon from '@mui/icons-material/Add';
 import CommentCard from "../components/cards/CommentCard";
+import PostCard from "../components/cards/PostCard";
+
 
 export default function PostPage() {
   const { pactID, postID } = useParams();
@@ -42,16 +44,14 @@ export default function PostPage() {
   if(isLoading){
     return <Loading/>
   }
-  return (
+  return (post&&
     <>
-      <Grid container width={"50vw"}>
-        <Grid item xs={16} lg={14}>
-          { post && <CommentCard post={post} comment={post.comments[0]}></CommentCard> }
+      <Grid container width={"60vw"}>
+        <Grid item xs={16} lg={14} paddingBottom={4}>
+          <PostCard post={post}></PostCard>
         </Grid>
-        <Grid item lg={4}>
-          <Box sx={{ paddingTop: "16px", paddingRight: "16px" }} display={{ xs: "none", lg: "block" }} position={"sticky"} top={65}>
-            {/* { pact && <AboutPact pact={pact} /> } */}
-          </Box>
+        <Grid item xs={16} lg={14}>
+          { <CommentCard post={post} comment={post.comments[0]}></CommentCard> }
         </Grid>
       </Grid>
     </>

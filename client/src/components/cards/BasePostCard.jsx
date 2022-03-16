@@ -76,8 +76,7 @@ export default function BasePostCard({ children, post }) {
               Posted by <span onClick={() => history.push(`/user/${post.author._id}`)} className="link" data-testid="author">{post.author.firstName + " " + post.author.lastName}</span> on {post.createdAt}
             </Typography>
 
-            <Typography variant="h6" data-testid="title" onClick={() => 
-                history.push(`/pact/${post.pact}/post/${post._id}`)}>
+            <Typography variant="h6" data-testid="title">
               {post.title}
             </Typography>
 
