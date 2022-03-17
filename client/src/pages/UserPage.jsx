@@ -64,7 +64,7 @@ export default function UserPage() {
       const resAllUsers = data.message
       setAllUsers(resAllUsers);
       let myFriends = [];
-      for (let x = 0; x< resAllUsers; x++){
+      for (let x = 0; x< resAllUsers.length; x++){
         if(resAllUsers[x].friends.includes(user._id)){
           myFriends.push(resAllUsers[x]);
         }
