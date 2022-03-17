@@ -1,7 +1,7 @@
 const User = require('../models/User');
 const mongoose = require('mongoose');
 const {jsonResponse, jsonError} = require("../helpers/responseHandlers");
-const errorHandler = require("../helpers/errorHandler");
+const handleFieldErrors = require("../helpers/errorHandler");
 const University = require("../models/University");
 
 
@@ -11,8 +11,7 @@ module.exports.updateProfile = async(req, res) => {
   let resMessage = null;
   try {
     const { id } = req.params;
-  console.log(req.body);
-  const { firstName, lastName, personalEmail, course } = req.body;
+    const { firstName, lastName, personalEmail, course } = req.body;
 
     // if (!mongoose.Types.ObjectId.isValid(id)) return res.status(404).send(`No user with id: ${id}`);
     if (!mongoose.Types.ObjectId.isValid(id)) {
@@ -32,13 +31,7 @@ module.exports.updateProfile = async(req, res) => {
       status = 500;
     }
     // converts error array into json array.
-    const fieldErrors = errorHandler(err);
-    if(fieldErrors.length !== 0){
-      fieldErrors.forEach((myErr) => jsonErrors.push(myErr));
-    }
-    else {
-      jsonErrors.push(jsonError(null, err.message));
-    }
+    jsonErrors = handleFieldErrors(err);
   }
   finally {
     res.status(status).json(jsonResponse(resMessage, jsonErrors));

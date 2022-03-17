@@ -3,6 +3,7 @@ const Pact = require("../models/Pact");
 const University = require("../models/University");
 const Comment = require("../models/Comment");
 const User = require("../models/User");
+const handleFieldErrors = require('../helpers/errorHandler');
 const { jsonResponse, jsonError } = require("../helpers/responseHandlers");
 const { POST_MESSAGES, MESSAGES } = require("../helpers/messages");
 const { upvote, downvote } = require("../helpers/genericVoteMethods");
@@ -20,7 +21,7 @@ module.exports.postPost = async (req, res) => {
 		res.status(201).json(jsonResponse(post, []));
 	} 
   catch (err) {
-		res.status(400).json(jsonResponse(null, [jsonError(null, err.message)]));
+		res.status(400).json(jsonResponse(null, [jsonError(null, handleFieldErrors(err))]));
 	}
 };
 
@@ -67,7 +68,7 @@ module.exports.upvotePostPost = async (req, res) => {
 		}
 	} 
 	catch (err) {
-		res.status(400).json(jsonResponse(null, [jsonError(null, err.message)]));
+		res.status(400).json(jsonResponse(null, [jsonError(null, handleFieldErrors(err))]));
 	}
 };
 
@@ -92,8 +93,7 @@ module.exports.downvotePostPost = async (req, res) => {
 		}
 	} 
 	catch (err) {
-		console.log(err.message);
-		res.status(400).json(jsonResponse(null, [jsonError(null, err.message)]));
+		res.status(400).json(jsonResponse(null, [jsonError(null, handleFieldErrors(err))]));
 	}
 };
 
