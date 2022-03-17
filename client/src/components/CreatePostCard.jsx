@@ -166,11 +166,10 @@ export default function CreatePostCard({pactID}) {
         </TabPanel>
         <TabPanel value={value} index={1}>
           <TitleTextField apiPostTitleError={apiPostTitleError}/> 
-          <label htmlFor="contained-button-file">
+          <label data-testid="image-upload-icon" htmlFor="contained-button-file">
             <Input
               accept="image/*"
               id="contained-button-file"
-              data-testid="image-upload-icon"
               type="file"
               sx={{display: "none"}}
               onChange={(e) => { uploadImage(e.target.files[0])}} />
@@ -191,6 +190,7 @@ export default function CreatePostCard({pactID}) {
             id="outlined-multiline-static"
             fullWidth
             label="Link"
+            data-testid="link-input"
             name="link"
             variant="outlined"
           />
