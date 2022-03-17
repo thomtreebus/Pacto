@@ -36,7 +36,10 @@ export default function CommentCard({ comment, post }) {
     });
 	};
 
-  console.log(comment)
+  const replySubmissionHandler = () => {
+    setShowReplyBox(false);
+  }
+
   return (comment &&
     <Card sx={{ width: "100%" }} data-testid="card">
       <CardContent>
@@ -92,7 +95,11 @@ export default function CommentCard({ comment, post }) {
           </Box>
 
           {showReplyBox && <Box>
-            <CommentBox post={post} repliedToComment={comment}></CommentBox>
+            <CommentBox 
+            post={post} 
+            repliedToComment={comment} 
+            successHandler={replySubmissionHandler}>
+            </CommentBox>
           </Box>}
 
           {(comment.childComments.length > 0) && <Box sx = {{ overflow: "hidden"}}>

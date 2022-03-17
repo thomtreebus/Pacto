@@ -36,6 +36,10 @@ export default function PostPage() {
     });
   }, [pactID, postID, history])
 
+  const commentSubmissionHandler = () => {
+    setShowReplyBox(false);
+  }
+
 
   if(isLoading){
     return <Loading/>
@@ -49,7 +53,7 @@ export default function PostPage() {
             {showReplyBox ? "Hide" : "Add comment"}
           </Typography>
           {showReplyBox && <Box>
-            <CommentBox post={post}></CommentBox>
+            <CommentBox post={post} successHandler={commentSubmissionHandler}></CommentBox>
           </Box>}
         </Grid>
         <Box sx={{width: "95%", marginInline: "auto"}}>

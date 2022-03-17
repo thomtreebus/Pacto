@@ -3,13 +3,12 @@ import * as React from "react";
 import { Box, TextField, Button, Grid } from "@mui/material"
 import { useState } from "react";
 
-export default function CommentBox({post, repliedToComment=null}){
+export default function CommentBox({post, successHandler=()=>{}, repliedToComment=null}){
 
   const [apiTextError, setApiTextError] = useState("");
   const [isButtonDisabled, setIsButtonDisabled] = React.useState(false);
 
   const handleSubmit = async (event) => {
-    console.log("here")
     event.preventDefault();
 		setIsButtonDisabled(true);
     const data = new FormData(event.currentTarget);
@@ -47,6 +46,8 @@ export default function CommentBox({post, repliedToComment=null}){
 			setIsButtonDisabled(false);
 			return;
 		}
+
+    successHandler();
   }
 
   return(
