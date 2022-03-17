@@ -20,7 +20,11 @@ export default function PactListItem({ pact }) {
 			data-testid="item"	
 		>
 			<ListItemIcon>
-				<Avatar src={pact.image} data-testid="avatar" />
+				<Avatar
+					src={pact.image}
+					data-testid="avatar"
+					sx={{ width: 32, height: 32 }}
+				/>
 			</ListItemIcon>
 			<ListItemText primary={pact.name}/>
 		</ListItem>
