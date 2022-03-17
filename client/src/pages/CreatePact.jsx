@@ -61,8 +61,7 @@ export default function CreatePactPage() {
 				case "description":
 					setApiPactDescriptionError(message);
 					break;
-				default:
-					break;
+				// no default
 			}
 			setIsButtonDisabled(false);
 		});

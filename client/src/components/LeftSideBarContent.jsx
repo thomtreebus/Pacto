@@ -9,9 +9,7 @@ import Toolbar from "@mui/material/Toolbar";
 import Avatar from "@mui/material/Avatar";
 import { Typography } from "@mui/material";
 import { useAuth } from "../providers/AuthProvider";
-import { useQuery } from "react-query";
 import PageList from "./PageList";
-import Loading from "../pages/Loading";
 import MyPactList from "./MyPactList";
 
 export default function LeftSideBarContent() {
