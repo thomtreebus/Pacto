@@ -5,7 +5,10 @@ import "@testing-library/jest-dom";
 import MockComponent from "./utils/MockComponent";
 import { rest } from "msw";
 import { setupServer } from "msw/node";
-import {MemoryRouter, Route} from "react-router-dom";
+import {Route, Router} from "react-router-dom";
+import {act} from "react-dom/test-utils";
+import userEvent from "@testing-library/user-event";
+import { createMemoryHistory } from 'history';
 
 
 const testUser = {
@@ -22,6 +25,8 @@ const testPact = {
 }
 
 describe("EditPact Tests", () => {
+  let history = undefined;
+
   const server = setupServer(
     rest.get(`${process.env.REACT_APP_URL}/me`, (req, res, ctx) => {
       return res(
@@ -49,9 +54,10 @@ describe("EditPact Tests", () => {
   });
 
   beforeEach(async () => {
+    history = createMemoryHistory({initialEntries:[`/pact/${testPact._id}/edit-pact`]})
     render(
       <MockComponent>
-        <MemoryRouter initialEntries={[`/pact/${testPact._id}/edit-pact`]}>
+        <Router history={history}>
           <Route exact path="/pact/:pactId/edit-pact">
             <EditPact />
           </Route>
@@ -61,8 +67,7 @@ describe("EditPact Tests", () => {
           <Route exact path="/not-found">
             <h1>Redirected to not-found</h1>
           </Route>
-        </MemoryRouter>
-
+        </Router>
       </MockComponent>
     );
     await waitForElementToBeRemoved(() => screen.getByText("Loading"));
@@ -129,7 +134,7 @@ describe("EditPact Tests", () => {
       server.use(
         rest.put(`${process.env.REACT_APP_URL}/pact/1`, (req, res, ctx) => {
           return res(
-            ctx.status(201),
+            ctx.status(200),
             ctx.json({
               message: {
                 _id: 1,
@@ -145,8 +150,12 @@ describe("EditPact Tests", () => {
       const buttonElement = await screen.findByRole("button", {
         name: "Edit Pact",
       });
-      fireEvent.click(buttonElement);
-      await waitFor(() => screen.findByText("Redirected to pact"));
+      await act( async () => {
+        fireEvent.click(buttonElement)
+        await waitFor( () => expect(history.location.pathname).toBe("/pact/1"))
+        await waitFor(() => screen.findByText("Redirected to pact"));
+      });
+
     });
 
     it("should return error when invalid Pact name is entered and Edit Pact button is pressed with invalid input", async () => {
@@ -225,6 +234,7 @@ describe("EditPact Tests", () => {
         server.use(
             rest.put(`${process.env.REACT_APP_URL}/pact/1`, (req, res, ctx) => {					
                 return res(
+                    ctx.status(400),
                     ctx.json({ 
                         message: null, 
                         errors : [
@@ -242,11 +252,14 @@ describe("EditPact Tests", () => {
         const buttonElement = await screen.findByRole("button", {
             name: "Edit Pact",
         });
-        fireEvent.click(buttonElement);
-        const nameElement = await screen.findByText("Provide the name");
-        const descriptionElement = await screen.findByText("Provide the description");
-        expect(nameElement).toBeInTheDocument();
-        expect(descriptionElement).toBeInTheDocument();
+        await act(async () => {
+          fireEvent.click(buttonElement);
+          const nameElement = await screen.findByText("Provide the name");
+          const descriptionElement = await screen.findByText("Provide the description");
+          expect(nameElement).toBeInTheDocument();
+          expect(descriptionElement).toBeInTheDocument();
+        });
+
     });
 
     it("should call handleCategorySelect() when clicking on a different category", async () => {
@@ -254,6 +267,32 @@ describe("EditPact Tests", () => {
       const inputElement = inputElementDiv.querySelector("input");
       fireEvent.change(inputElement, { target: { value: "society" } });
       expect(inputElement.value).toBe("society");
+    });
+
+    it("uploaded image contents should be saved as a state", async () => {
+      server.use(
+        rest.post(`https://api.cloudinary.com/v1_1/${process.env.REACT_APP_CLOUDINARY_CLOUD_NAME}/image/upload`, (req, res, ctx) => {
+          return res(
+            ctx.status(201),
+            ctx.json({
+              url: "imageUrl",
+              secure_url: "imageUrl",
+            }),
+          );
+        })
+      );
+      const image = new File(['testImage'], 'testImage.png', {type: 'image/png'})
+      const buttonElement = await screen.findByTestId(
+        "image-upload-input"
+      );
+      await act(async () => {
+        await waitFor(() => userEvent.upload(buttonElement, image));
+        await waitFor(() => {
+          expect(buttonElement.files[0]).toBe(image);
+          expect(buttonElement.files[0]).toBe(image);
+          expect(buttonElement.files).toHaveLength(1);
+        });
+      });
     });
   });
 });
