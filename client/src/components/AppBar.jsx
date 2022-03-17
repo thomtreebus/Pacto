@@ -62,7 +62,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 export default function PrimarySearchAppBar({ handleDrawerToggle }) {
 	const history = useHistory();
 
-	const { setIsAuthenticated } = useAuth();
+	const { user, setIsAuthenticated } = useAuth();
 
 	const [anchorEl, setAnchorEl] = React.useState(null);
 	const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
@@ -95,8 +95,13 @@ export default function PrimarySearchAppBar({ handleDrawerToggle }) {
 		setMobileMoreAnchorEl(event.currentTarget);
 	};
 
-	const handleProfileClick = () => {
+	const handleEditProfileClick = () => {
 		history.push("/edit-profile");
+		handleMenuClose();
+	};
+
+	const handleProfileClick = () => {
+		history.push("/user/" + user._id);
 		handleMenuClose();
 	};
 
@@ -120,6 +125,12 @@ export default function PrimarySearchAppBar({ handleDrawerToggle }) {
 		>
 			<MenuItem data-testid="profile-item" onClick={handleProfileClick}>
 				Profile
+			</MenuItem>
+			<MenuItem
+				data-testid="edit-profile-item"
+				onClick={handleEditProfileClick}
+			>
+				Edit Profile
 			</MenuItem>
 			<Divider />
 			<MenuItem data-testid="logout-item" onClick={handleLogout}>
@@ -183,6 +194,7 @@ export default function PrimarySearchAppBar({ handleDrawerToggle }) {
 						edge="start"
 						onClick={handleDrawerToggle}
 						sx={{ mr: 2, display: { sm: "none" } }}
+						data-testid="sidebar-menu-button"
 					>
 						<MenuIcon />
 					</IconButton>

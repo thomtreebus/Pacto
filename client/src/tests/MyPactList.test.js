@@ -1,11 +1,11 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import { waitForElementToBeRemoved } from "@testing-library/react";
 import MockComponent from "./utils/MockComponent";
 import "@testing-library/jest-dom";
 import { rest } from "msw";
 import { setupServer } from "msw/node";
 import pacts from "./utils/testPacts";
-import LeftSideBar from "../components/LeftSideBar";
+import MyPactList from "../components/MyPactList";
 
 const user = {
 	pacts: [pacts[0]._id, pacts[1]._id],
@@ -16,7 +16,7 @@ const user = {
 	_id: "1",
 };
 
-describe("Left Sidebar tests", () => {
+describe("My Pact List tests", () => {
 	const server = setupServer(
 		rest.get(`${process.env.REACT_APP_URL}/me`, (req, res, ctx) => {
 			return res(
@@ -52,35 +52,24 @@ describe("Left Sidebar tests", () => {
 	const renderWithMock = async () => {
 		render(
 			<MockComponent>
-				<LeftSideBar />
+				<MyPactList />
 			</MockComponent>
 		);
 		await waitForElementToBeRemoved(() => screen.getByText("Loading"));
 	};
 
-	beforeEach(async () => {
+	it("renders only only those pacts which the user is a part of", async () => {
 		await renderWithMock();
-	});
+		await waitForElementToBeRemoved(() => screen.getByText("Loading Pacts..."));
 
-	describe("Sidebar default state", () => {
-		it("permenant sidebar should be visible", () => {
-			const permanentSidebar = screen.getByTestId("permanent-sidebar");
-			expect(permanentSidebar).toBeVisible();
-		});
+		for (let i = 0; i < 2; i++) {
+			const nameElement = screen.getByText(pacts[i].name);
+			expect(nameElement).toBeInTheDocument();
+		}
 
-		it("temporary sidebar should be not visible", () => {
-			const temporarySidebar = screen.getByTestId("temporary-sidebar");
-			expect(temporarySidebar).not.toBeVisible();
-		});
-	});
-
-	describe("Mobile view state", () => {
-		it("temporary sidebar should be visible when the menu button is clicked", () => {
-			const temporarySidebar = screen.getByTestId("temporary-sidebar");
-			expect(temporarySidebar).not.toBeVisible();
-			const menuButton = screen.getByTestId("sidebar-menu-button");
-			fireEvent.click(menuButton);
-			expect(temporarySidebar).toBeVisible();
-		});
+		for (let i = 2; i < pacts.length; i++) {
+			const nameElement = screen.queryByText(pacts[i].name);
+			expect(nameElement).not.toBeInTheDocument();
+		}
 	});
 });

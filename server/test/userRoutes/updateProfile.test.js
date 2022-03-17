@@ -1,87 +1,186 @@
-// const mongoose = require("mongoose");
-// const dotenv = require("dotenv");
-// const supertest = require("supertest");
-// const app = require("../../app");
-// const EmailVerificationCode = require("../../models/EmailVerificationCode");
-// const User = require("../../models/User");
-// const emailHandler = require('../../helpers/emailHandlers');
-// const { MESSAGES } = require("../../helpers/messages");
-// const { generateTestUser } = require("../fixtures/generateTestUser");
+const mongoose = require("mongoose");
+const dotenv = require("dotenv");
+const supertest = require("supertest");
+const app = require("../../app");
+const User = require("../../models/User");
+const { MESSAGES, USER_MESSAGES} = require("../../helpers/messages");
+const { generateTestUser } = require("../fixtures/generateTestUser");
+const {getDefaultTestUser} = require("../helpers/defaultTestUser");
+const {createToken} = require("../../controllers/authController");
 
-// jest.mock("../../helpers/emailHandlers");
-// dotenv.config();
+jest.mock("../../helpers/emailHandlers");
+dotenv.config();
 
-// const REAL_UNI_EMAIL = "aaron.monte@kcl.ac.uk";
-// const FIRST_NAME = "John";
-// const LAST_NAME = "Doe";
-// const PASSWORD = "Password123";
+describe("Update Profile PUT", () => {
+  beforeAll(async () => {
+    await mongoose.connect(process.env.TEST_DB_CONNECTION_URL);
+  });
+
+  afterAll(async () => {
+    await mongoose.connection.close();
+  });
+
+  afterEach(async () => {
+		await User.deleteMany({});
+  });
+
+  // Generate a user and make it active. Then save it to the test database and return the user.
+  async function generateActiveSavedTestUser(name = "pac"){
+    const user = await generateTestUser();
+    user.active = true;
+    await user.save();
+    return user
+  }
+
+  // Generates tokens and does a standard error check..
+  async function checkValidInputResponse(user, jsonBody){
+    const token = createToken(user._id)
+
+    const response = await supertest(app)
+      .put(`/users/${user._id}`)
+      .set("Cookie", [`jwt=${token}`])
+      .send(jsonBody);
+
+    expect(response.body.message).not.toBeNull()
+    expect(response.body.errors.length).toBe(0);
+    // return response if you want to do additional checks
+    return response;
+  }
 
 
-// const getTestUser = async () => {
-//   const uni = await University.create( { name: "kcl", domains: ["kcl.ac.uk"] });
-//   const uniEmail = "pac.to@kcl.ac.uk";
-//   const password = "Password123";
-//   const salt = await bcrypt.genSalt(10);
-//   const hashedPassword = await bcrypt.hash(password, salt);
+  it("returns an error when not logged in", async () => {
+    const user = await generateActiveSavedTestUser();
+    createToken(user._id);
 
-//   // Create a test user
-//   const user = await User.create({
-//     firstName: "pac",
-//     lastName: "to",
-//     uniEmail: uniEmail,
-//     password: hashedPassword,
-//     university: uni,
-//     active: true
-//   });
+   const response = await supertest(app).put(`/users/${user._id}`);
+   expect(response.body.message).toBe(null);
+   expect(response.body.errors[0].field).toBe(null);
+   expect(response.body.errors[0].message).toBe(MESSAGES.AUTH.IS_NOT_LOGGED_IN);
+   expect(response.body.errors.length).toBe(1);
+  });
 
-//   return user;
-// }
+  it("returns an error when invalid user", async () => {
+    const user = await generateActiveSavedTestUser();
+    const token = createToken(user._id);
 
-// describe("Update Profile PUT", () => { 
-//   beforeAll(async () => {
-//     await mongoose.connect(process.env.TEST_DB_CONNECTION_URL);
-//   });
+    const response = await supertest(app).put(`/users/99999999999999999999999999`).set("Cookie", [`jwt=${token}`]);
+    expect(response.body.message).toBe(null);
+    expect(response.body.errors[0].field).toBe(null);
+    expect(response.body.errors[0].message).toBe(USER_MESSAGES.DOES_NOT_EXIST);
+    expect(response.body.errors.length).toBe(1);
+  });
 
-//   afterAll(async () => {
-//     await mongoose.connection.close();
-//   });
+  it("accepts uni email change", async () => {
+    const user = await generateActiveSavedTestUser();
 
-//   afterEach(async () => {
-// 		await User.deleteMany({});
-//   });
-  
-//   it("returns an error when not logged in", async () => {
-//     const user = await generateTestUser();
-//     user.active = true;
-//     await user.save();
-//     const token = createToken(user._id);
+    const testInput = {
+      uniEmail: "pac.to@ucl.ac.uk"
+    }
 
-//    const response = await supertest(app).put(`/${user._id}/updateProfile`);
-//       expect(response.body.message).toBe(null);
-//       expect(response.body.errors[0].field).toBe(null);
-//       expect(response.body.errors[0].message).toBe("You have to login");
-//       expect(response.body.errors.length).toBe(1);
-//   });
+    const response = await checkValidInputResponse(user, testInput)
+  });
 
-//   it("accepts authorised access", async () => {
-//       const user = await getTestUser();
+  it("accepts valid firstName change", async () => {
+    const user = await generateActiveSavedTestUser();
 
-//       const token = createToken(user._id);
-//       const response = await supertest(app)
-//         .put(`/${user._id}/updateProfile`)
-//         .set("Cookie", [`jwt=${token}`]);
-//       expect(response.body.message).toBeDefined();
-//       expect(response.body.message._id).toBeDefined();
-//       expect(response.body.message.firstName).toBeDefined();
-//       expect(response.body.message.lastName).toBeDefined();
-//       expect(response.body.message.uniEmail).toBeDefined();
-//       expect(response.body.message.password).toBeDefined();
-//       expect(response.body.errors.length).toBe(0);
-//     });
-  
+    const testInput = {
+      firstName: "john"
+    }
 
-// });
+    const response = await checkValidInputResponse(user, testInput)
+  });
 
-it("true is equal to true", () => {
-  expect(true === true)
-})
+  it("accepts valid lastName change", async () => {
+    const user = await generateActiveSavedTestUser();
+
+    const testInput = {
+      lastName: "doe"
+    }
+
+    const response = await checkValidInputResponse(user, testInput)
+  });
+
+  it("accepts valid course change", async () => {
+    const user = await generateActiveSavedTestUser();
+
+    const testInput = {
+      course: "Mathematics"
+    }
+
+    const response = await checkValidInputResponse(user, testInput)
+  });
+
+  it("accepts valid bio change", async () => {
+    const user = await generateActiveSavedTestUser();
+
+    const testInput = {
+      bio: "I don't like art"
+    }
+
+    const response = await checkValidInputResponse(user, testInput)
+  });
+
+  it("accepts valid image change", async () => {
+    const user = await generateActiveSavedTestUser();
+
+    const testInput = {
+      image: "https://example.com/image3.jpg"
+    }
+
+    const response = await checkValidInputResponse(user, testInput)
+  });
+
+  it("accepts valid hobbies change", async () => {
+    const user = await generateActiveSavedTestUser();
+
+    const testInput = {
+      hobbies: [
+        "Hunting",
+        "Eating rocks"
+      ]
+    }
+
+    const response = await checkValidInputResponse(user, testInput)
+  });
+
+  it("accepts valid location change", async () => {
+    const user = await generateActiveSavedTestUser();
+
+    const testInput = {
+      location: "Antarctica"
+    }
+
+    const response = await checkValidInputResponse(user, testInput)
+  });
+
+  it("accepts valid instagram change", async () => {
+    const user = await generateActiveSavedTestUser();
+
+    const testInput = {
+      instagram: "myInsta"
+    }
+
+    const response = await checkValidInputResponse(user, testInput)
+  });
+
+  it("accepts valid linkedIn change", async () => {
+    const user = await generateActiveSavedTestUser();
+
+    const testInput = {
+      linkedin: "myLinkedIn"
+    }
+
+    const response = await checkValidInputResponse(user, testInput)
+  });
+
+  it("accepts valid phone change", async () => {
+    const user = await generateActiveSavedTestUser();
+
+    const testInput = {
+      phone: "+123456789012"
+    }
+
+    const response = await checkValidInputResponse(user, testInput)
+  });
+
+});
