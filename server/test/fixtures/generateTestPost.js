@@ -4,7 +4,7 @@ const User = require("../../models/User");
 
 let myPost = null;
 
-module.exports.generateTestPost = async (postingUser, userPact, title="Dummy title", text="Dummy text", type="text", link="somelink") => {
+module.exports.generateTestPost = async (postingUser, userPact, title="Dummy title", text="Dummy text", type="text", link="https://example.com") => {
   if(!postingUser.active){
     throw Error("The posting user provided is not active")
   }

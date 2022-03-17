@@ -8,6 +8,17 @@ const isValidType = (str) => {
   return regex.test(str);
 };
 
+// function returns true if the given url is a valid url
+const isValidHttpUrl = (str) => {
+  let url;
+  try {
+    url = new URL(str);
+  } catch (_) { 
+    return false;
+  }
+  return url.protocol === "http:" || url.protocol === "https:";
+}
+
 const PostSchema = mongoose.Schema({
   pact: {
     type: Schema.Types.ObjectId,
@@ -39,7 +50,7 @@ const PostSchema = mongoose.Schema({
     type: String,
     required: [
       function() { return this.type === 'image' },
-      POST_MESSAGES.TYPE.IMAGE_NO_IMAGE
+      POST_MESSAGES.TYPE.IMAGE.BLANK
     ]
   },
 
@@ -47,15 +58,16 @@ const PostSchema = mongoose.Schema({
     type: String,
     required: [
       function() { return this.type === 'text' },
-      POST_MESSAGES.TYPE.TEXT_NO_TEXT
+      POST_MESSAGES.TYPE.TEXT.BLANK
     ]
   },
 
   link: {
     type: String,
+    validate: [isValidHttpUrl, POST_MESSAGES.TYPE.LINK.INVALID],
     required: [
       function() { return this.type === 'link' },
-      POST_MESSAGES.TYPE.LINK_NO_LINK
+      POST_MESSAGES.TYPE.LINK.BLANK
     ]
   },
 

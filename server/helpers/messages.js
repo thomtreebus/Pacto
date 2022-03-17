@@ -91,9 +91,16 @@ module.exports.POST_MESSAGES = {
   TYPE: {
     BLANK: "Type is a required field",
     INVALID: "Type must be either link, image or text",
-	IMAGE_NO_IMAGE: "Type is 'image', so Image is a required field",
-	TEXT_NO_TEXT: "Type is 'text', so Text is a required field",
-	LINK_NO_LINK: "Type is 'link', so Link is a required field"
+	IMAGE: {
+		BLANK: "Type is 'image', so Image is a required field"
+	},
+	TEXT: {
+		BLANK: "Type is 'text', so Text is a required field"
+	},
+	LINK: {
+		BLANK: "Type is 'link', so Link is a required field",
+		INVALID: "The provided HTTP URL is invalid"
+	}
   },
   NO_VOTES: "Votes is a required field",
   NO_UPVOTERS: "Upvoters is a required field",

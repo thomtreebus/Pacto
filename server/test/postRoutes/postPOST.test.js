@@ -52,7 +52,7 @@ describe("POST /pact/:pactId/post", () => {
       title: "Dummy title",
       text: "Dummy text",
       type: "text",
-      link: "somelink"
+      link: "https://example.com"
     })
     .expect(201)
     expect(response.body.message).toBeDefined();
@@ -63,7 +63,7 @@ describe("POST /pact/:pactId/post", () => {
     expect(post.title).toBe("Dummy title");
     expect(post.text).toBe("Dummy text");
     expect(post.type).toBe("text");
-    expect(post.link).toBe("somelink");
+    expect(post.link).toBe("https://example.com");
     expect(post.votes).toBe(0);
   });
 
@@ -77,7 +77,7 @@ describe("POST /pact/:pactId/post", () => {
                           title: "Dummy title",
                           text: "Dummy text",
                           type: "text",
-                          link: "somelink"
+                          link: "https://example.com"
                         };
 
     const response1 = await supertest(app)
@@ -101,7 +101,7 @@ describe("POST /pact/:pactId/post", () => {
     expect(post.title).toBe("Dummy title");
     expect(post.text).toBe("Dummy text");
     expect(post.type).toBe("text");
-    expect(post.link).toBe("somelink");
+    expect(post.link).toBe("https://example.com");
     expect(post.votes).toBe(0);
   });
 
@@ -122,7 +122,7 @@ describe("POST /pact/:pactId/post", () => {
       title: "Dummy title",
       text: "Dummy text",
       type: "text",
-      link: "somelink"
+      link: "https://example.com"
     })
     .expect(404);
     expect(response.body.message).toBe(null);
@@ -148,7 +148,7 @@ describe("POST /pact/:pactId/post", () => {
       title: "Dummy title",
       text: "Dummy text",
       type: "text",
-      link: "somelink"
+      link: "https://example.com"
     })
     .expect(401);
     expect(response.body.message).toBe(null);
@@ -168,7 +168,7 @@ describe("POST /pact/:pactId/post", () => {
       title: "Dummy title",
       text: "Dummy text",
       type: "text",
-      link: "somelink"
+      link: "https://example.com"
     })
     expect(response.body.message).toBe(null);
     expect(response.body.errors[0].field).toBe(null);
