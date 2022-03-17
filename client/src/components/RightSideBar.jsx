@@ -28,7 +28,7 @@ export default function RightSideBar() {
 				}}
 			>
 		<Toolbar data-testid="sidebar-toolbar2" />
-		<UserList users={[user, user, user, user]}></UserList>
+				{/*<UserList users={[user, user, user, user]}></UserList>*/}
 
 
 				{/* Insert content for right side bar here */}
