@@ -1,5 +1,5 @@
 import * as React from "react";
-import {ButtonBase, Card, Grid, Input, Typography} from "@mui/material";
+import {ButtonBase, Card, Grid, Typography} from "@mui/material";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
@@ -13,10 +13,17 @@ import {Image} from "cloudinary-react";
 import Axios from "axios";
 import ErrorMessage from "../components/ErrorMessage";
 import {LoadingButton} from "@mui/lab";
+import {styled} from "@mui/material/styles";
+import Loading from "./Loading";
 
 function SaveIcon() {
   return null;
 }
+
+const Input = styled('input')({
+  display: 'none',
+});
+
 
 export default function EditPact() {
   const [isButtonDisabled, setIsButtonDisabled] = React.useState(false);
@@ -29,6 +36,8 @@ export default function EditPact() {
     image: ""
   };
 
+  const [isLoading, setIsLoading] = React.useState(true);
+
   const [name, setName] = useState(defaultData.name)
   const [category, setCategory] = useState(defaultData.category)
   const [description, setDescription] = useState(defaultData.description)
@@ -37,7 +46,7 @@ export default function EditPact() {
   const [apiPactNameError, setApiPactNameError] = React.useState('');
   const [apiPactCategoryError, setApiPactCategoryError] = React.useState('');
   const [apiPactDescriptionError, setApiPactDescriptionError] = React.useState('');
-  const [uploadImageError , setUploadImageError] = React.useState('')
+  const [uploadImageError, setUploadImageError] = React.useState('')
 
   const [uploadImageIsDisabled, setUploadImageIsDisabled] = React.useState(false);
   const [snackbarOpen, setSnackbarOpen] = React.useState(false);
@@ -63,23 +72,26 @@ export default function EditPact() {
 
 
   useEffect(() => {
-    fetch(`${process.env.REACT_APP_URL}/pact/${pactId}`, {
-      method: "GET",
-      credentials: "include"
-    }).then((res) => {
-      if (!res.ok) {
-        throw Error("Could not fetch pacts");
-      }
-      return res.json();
-    }).then((resData) => {
-      const data = resData.message;
-      setName(data.name);
-      setCategory(data.category);
-      setDescription(data.description);
-      setImage(data.image)
-    }).catch((err) => {
-      console.log(err);
-    })
+    if(pactId !== undefined) {
+      fetch(`${process.env.REACT_APP_URL}/pact/${pactId}`, {
+        method: "GET",
+        credentials: "include"
+      }).then((res) => {
+        if (!res.ok) {
+          throw Error("Could not fetch pacts");
+        }
+        return res.json();
+      }).then((resData) => {
+        const data = resData.message;
+        setName(data.name);
+        setCategory(data.category);
+        setDescription(data.description);
+        setImage(data.image)
+        setIsLoading(false);
+      }).catch((err) => {
+        console.log(err);
+      })
+    }
   }, [pactId])
 
 
@@ -107,7 +119,6 @@ export default function EditPact() {
 
 
     const json = await response.json();
-    console.log(response)
 
     Object.values(json['errors']).forEach(err => {
       const field = err["field"];
@@ -133,173 +144,174 @@ export default function EditPact() {
 
   };
 
-  return (
-    <>
-      <Card
-        sx={{
-          padding: "40px",
-          margin: "auto",
-        }}
-      >
-        <Grid container
-              direction="row"
-              justifyContent="center"
-              alignItems="center"
-              spacing={1}>
-          <Grid item xs={3}>
-            <Card sx={{padding: "10px", margin: "auto"}}>
-              <label htmlFor="contained-button-file">
-                <Input
-                  accept="image/*"
-                  id="contained-button-file"
-                  data-testid="image-upload-icon"
-                  disabled={uploadImageIsDisabled}
-                  sx={{display: "none"}}
-                  type="file"
-                  onChange={(e) => {
-                    uploadImage(e.target.files[0])
-                  }}/>
-                <ButtonBase
-                  fullWidth
-                  label="Upload Image"
-                  id="contained-button-file"
-                  variant="contained"
-                  disabled={uploadImageIsDisabled}
-                  component="span"
-                  sx={{
-                    marginTop: 1
-                  }}
-
-                >
-                  <Image
-                    style={{
-                      width: "100%",
-                      minWidth: "20%",
-                      minHeight: "25%",
-                      borderRadius: "10px",
-                      overflow: "hidden",
-                      position: "relative",
+  if (isLoading) {
+    return <Loading/>;
+  } else {
+    return (
+      <>
+        <Card
+          sx={{
+            padding: "40px",
+            margin: "auto",
+          }}
+        >
+          <Grid container
+                direction="row"
+                justifyContent="center"
+                alignItems="center"
+                spacing={1}>
+            <Grid item xs={3}>
+              <Card sx={{padding: "10px", margin: "auto"}}>
+                <label htmlFor="contained-button-file">
+                  <Input
+                    accept="image/*"
+                    id="contained-button-file"
+                    data-testid="image-upload-input"
+                    disabled={uploadImageIsDisabled}
+                    sx={{display: "none"}}
+                    type="file"
+                    onChange={(e) => {
+                      uploadImage(e.target.files[0])
+                    }}/>
+                  <ButtonBase
+                    label="Upload Image"
+                    variant="contained"
+                    disabled={uploadImageIsDisabled}
+                    component="span"
+                    sx={{
+                      marginTop: 1
                     }}
-                    alt="Profile Picture"
-                    cloudName={`${process.env.REACT_APP_CLOUDINARY_CLOUD_NAME}`}
-                    publicID={image}
+
                   >
-                  </Image>
-                </ButtonBase>
-                <LoadingButton
-                  loading={uploadImageIsDisabled}
-                  loadingPosition="start"
-                  startIcon={<SaveIcon />}
-                  fullWidth
-                  label="Upload Image"
-                  id="contained-button-file"
-                  variant="contained"
-                  disabled={uploadImageIsDisabled}
-                  component="span"
-                  sx={{
-                    marginTop: 1
-                  }}
-                >
-                  Upload Image
-                </LoadingButton>
-              </label>
-            </Card>
+                    <Image
+                      style={{
+                        width: "100%",
+                        minWidth: "20%",
+                        minHeight: "25%",
+                        borderRadius: "10px",
+                        overflow: "hidden",
+                        position: "relative",
+                      }}
+                      alt="Profile Picture"
+                      cloudName={`${process.env.REACT_APP_CLOUDINARY_CLOUD_NAME}`}
+                      publicID={image}
+                    >
+                    </Image>
+                  </ButtonBase>
+                  <LoadingButton
+                    loading={uploadImageIsDisabled}
+                    loadingPosition="start"
+                    startIcon={<SaveIcon/>}
+                    fullWidth
+                    label="Upload Image"
+                    variant="contained"
+                    disabled={uploadImageIsDisabled}
+                    component="span"
+                    sx={{
+                      marginTop: 1
+                    }}
+                  >
+                    Upload Image
+                  </LoadingButton>
+                </label>
+              </Card>
 
-          </Grid>
-          <Grid item xs>
-            <Box
-              sx={{
-                // height: "calc(100vh - 68.5px)",
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                // backgroundColor: "white",
-                paddingInline: "50px",
-                // paddingBlock: "10px",
-                // marginTop: "68.5px"
-              }}
-            >
-              <Avatar alt="Pacto Icon" src={Icon}/>
-
-              <Typography component="h1" variant="h5" sx={{fontWeight: "bold"}}>
-                Edit Pact
-              </Typography>
+            </Grid>
+            <Grid item xs>
               <Box
-                component="form"
-                noValidate
-                onSubmit={handleSubmit}
-                sx={{mt: 1}}
+                sx={{
+                  // height: "calc(100vh - 68.5px)",
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  // backgroundColor: "white",
+                  paddingInline: "50px",
+                  // paddingBlock: "10px",
+                  // marginTop: "68.5px"
+                }}
               >
-                <TextField
-                  margin="normal"
-                  required
-                  fullWidth
-                  label="Pact Name"
-                  data-testid="pact-name"
-                  id="name"
-                  name="name"
-                  error={apiPactNameError.length !== 0}
-                  helperText={apiPactNameError}
-                  autoFocus
-                  value={name}
-                  onChange={(e) => {
-                    setName(e.target.value)
-                  }}
-                />
+                <Avatar alt="Pacto Icon" src={Icon}/>
 
-                <TextField
-                  data-testid='category-select'
-                  alignitems='center'
-                  margin="normal"
-                  required
-                  fullWidth
-                  id="category"
-                  name="category"
-                  label="Category"
-                  error={apiPactCategoryError.length !== 0}
-                  helperText={apiPactCategoryError}
-                  value={category}
-                  onChange={(e) => {
-                    setCategory(e.target.value)
-                  }}
-                >
-                </TextField>
-
-                <TextField
-                  name="description"
-                  margin="normal"
-                  id="description"
-                  label="Description"
-                  required
-                  fullWidth
-                  multiline
-                  rows={4}
-                  error={apiPactDescriptionError.length !== 0}
-                  helperText={apiPactDescriptionError}
-                  value={description}
-                  onChange={(e) => {
-                    setDescription(e.target.value)
-                  }}
-                />
-                <Button
-                  type="submit"
-                  fullWidth
-                  variant="contained"
-                  disabled={isButtonDisabled}
-                  sx={{mt: 3, mb: 2}}
-                >
+                <Typography component="h1" variant="h5" sx={{fontWeight: "bold"}}>
                   Edit Pact
-                </Button>
+                </Typography>
+                <Box
+                  component="form"
+                  noValidate
+                  onSubmit={handleSubmit}
+                  sx={{mt: 1}}
+                >
+                  <TextField
+                    margin="normal"
+                    required
+                    fullWidth
+                    label="Pact Name"
+                    data-testid="pact-name"
+                    id="name"
+                    name="name"
+                    error={apiPactNameError.length !== 0}
+                    helperText={apiPactNameError}
+                    autoFocus
+                    value={name}
+                    onChange={(e) => {
+                      setName(e.target.value)
+                    }}
+                  />
+
+                  <TextField
+                    data-testid='category-select'
+                    alignitems='center'
+                    margin="normal"
+                    required
+                    fullWidth
+                    id="category"
+                    name="category"
+                    label="Category"
+                    error={apiPactCategoryError.length !== 0}
+                    helperText={apiPactCategoryError}
+                    value={category}
+                    onChange={(e) => {
+                      setCategory(e.target.value)
+                    }}
+                  >
+                  </TextField>
+
+                  <TextField
+                    name="description"
+                    margin="normal"
+                    id="description"
+                    label="Description"
+                    required
+                    fullWidth
+                    multiline
+                    rows={4}
+                    error={apiPactDescriptionError.length !== 0}
+                    helperText={apiPactDescriptionError}
+                    value={description}
+                    onChange={(e) => {
+                      setDescription(e.target.value)
+                    }}
+                  />
+                  <Button
+                    type="submit"
+                    fullWidth
+                    variant="contained"
+                    disabled={isButtonDisabled}
+                    sx={{mt: 3, mb: 2}}
+                  >
+                    Edit Pact
+                  </Button>
+                </Box>
               </Box>
-            </Box>
+            </Grid>
+            <ErrorMessage
+              isOpen={snackbarOpen}
+              setIsOpen={setSnackbarOpen}
+              message={uploadImageError}
+            />
           </Grid>
-          <ErrorMessage
-            isOpen={snackbarOpen}
-            setIsOpen={setSnackbarOpen}
-            message={uploadImageError}
-          />
-        </Grid>
-      </Card>
-    </>
-  );
+        </Card>
+      </>
+    );
+  }
 }
