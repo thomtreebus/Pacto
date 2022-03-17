@@ -1,71 +1,86 @@
-// import { render, screen, fireEvent } from "@testing-library/react";
-// import LeftSideBar from "../components/LeftSideBar";
-// import { BrowserRouter } from "react-router-dom";
-// import "@testing-library/jest-dom";
+import { fireEvent, render, screen } from "@testing-library/react";
+import { waitForElementToBeRemoved } from "@testing-library/react";
+import MockComponent from "./utils/MockComponent";
+import "@testing-library/jest-dom";
+import { rest } from "msw";
+import { setupServer } from "msw/node";
+import pacts from "./utils/testPacts";
+import LeftSideBar from "../components/LeftSideBar";
 
-// describe("Check elements are rendered", () => {
-// 	beforeEach(() => {
-// 		render(<LeftSideBar />);
-// 	});
+const user = {
+	pacts: [pacts[0]._id, pacts[1]._id],
+	firstName: "pac",
+	lastName: "to",
+	image:
+		"https://res.cloudinary.com/djlwzi9br/image/upload/v1644581875/man1_qexxnb.jpg",
+	_id: "1",
+};
 
-// 	it("should render the drawer element", () => {
-// 		const drawerElement = screen.getByTestId("sidebar-drawer");
-// 		expect(drawerElement).toBeInTheDocument();
-// 	});
+describe("Left Sidebar tests", () => {
+	const server = setupServer(
+		rest.get(`${process.env.REACT_APP_URL}/me`, (req, res, ctx) => {
+			return res(
+				ctx.json({
+					message: user,
+					errors: [],
+				})
+			);
+		}),
 
-// 	it("should render the toolbar element", () => {
-// 		const toolbarElement = screen.getByTestId("sidebar-toolbar");
-// 		expect(toolbarElement).toBeInTheDocument();
-// 	});
+		rest.get(`${process.env.REACT_APP_URL}/university`, (req, res, ctx) => {
+			return res(
+				ctx.json({
+					message: { pacts: pacts },
+					errors: [],
+				})
+			);
+		})
+	);
 
-// 	it("should render the user profile list element", () => {
-// 		const profileElement = screen.getByTestId("sidebar-profile-list");
-// 		expect(profileElement).toBeInTheDocument();
-// 	});
+	beforeAll(() => {
+		server.listen();
+	});
 
-// 	it("should render the user's avatar", () => {
-// 		const avatarElement = screen.getByTestId("sidebar-avatar");
-// 		expect(avatarElement).toBeInTheDocument();
-// 	});
+	afterAll(() => {
+		server.close();
+	});
 
-// 	it("should render the user's name", () => {
-// 		const userNameElement = screen.getByTestId("sidebar-user-name");
-// 		expect(userNameElement).toBeInTheDocument();
-// 	});
+	beforeEach(async () => {
+		server.resetHandlers();
+	});
 
-// 	it("should render the university hub item", () => {
-// 		const hubIconElement = screen.getByTestId("sidebar-hub-icon");
-// 		expect(hubIconElement).toBeInTheDocument();
-// 		const hubTextElement = screen.getByTestId("sidebar-hub");
-// 		expect(hubTextElement).toBeInTheDocument();
-// 	});
+	const renderWithMock = async () => {
+		render(
+			<MockComponent>
+				<LeftSideBar />
+			</MockComponent>
+		);
+		await waitForElementToBeRemoved(() => screen.getByText("Loading"));
+	};
 
-// 	it("should render the feed item", () => {
-// 		const feedIconElement = screen.getByTestId("sidebar-feed-icon");
-// 		expect(feedIconElement).toBeInTheDocument();
-// 		const feedTextElement = screen.getByTestId("sidebar-feed");
-// 		expect(feedTextElement).toBeInTheDocument();
-// 	});
+	beforeEach(async () => {
+		await renderWithMock();
+	});
 
-// 	it("should render the pacts item", () => {
-// 		const pactIconElement = screen.getByTestId("sidebar-pacts-icon");
-// 		expect(pactIconElement).toBeInTheDocument();
-// 		const pactTextElement = screen.getByTestId("sidebar-pacts");
-// 		expect(pactTextElement).toBeInTheDocument();
-// 	});
+	describe("Sidebar default state", () => {
+		it("permenant sidebar should be visible", () => {
+			const permanentSidebar = screen.getByTestId("permanent-sidebar");
+			expect(permanentSidebar).toBeVisible();
+		});
 
-// 	it("should render the friends item", () => {
-// 		const friendIconElement = screen.getByTestId("sidebar-friends-icon");
-// 		expect(friendIconElement).toBeInTheDocument();
-// 		const friendTextElement = screen.getByTestId("sidebar-friends");
-// 		expect(friendTextElement).toBeInTheDocument();
-// 	});
+		it("temporary sidebar should be not visible", () => {
+			const temporarySidebar = screen.getByTestId("temporary-sidebar");
+			expect(temporarySidebar).not.toBeVisible();
+		});
+	});
 
-// 	it("should render the 'Sign In' header element", () => {
-// 		const typographyElement = screen.getByTestId("sidebar-mypacts-text");
-// 		expect(typographyElement).toBeInTheDocument();
-// 	});
-// });
-it("passes the test", () => {
-	expect(true).toBe(true);
+	describe("Mobile view state", () => {
+		it("temporary sidebar should be visible when the menu button is clicked", () => {
+			const temporarySidebar = screen.getByTestId("temporary-sidebar");
+			expect(temporarySidebar).not.toBeVisible();
+			const menuButton = screen.getByTestId("sidebar-menu-button");
+			fireEvent.click(menuButton);
+			expect(temporarySidebar).toBeVisible();
+		});
+	});
 });

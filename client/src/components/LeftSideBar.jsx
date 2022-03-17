@@ -33,6 +33,7 @@ export default function LeftSideBar() {
 							width: drawerWidth,
 						},
 					}}
+					data-testid="temporary-sidebar"
 				>
 					<LeftSideBarContent />
 				</Drawer>
@@ -46,6 +47,7 @@ export default function LeftSideBar() {
 						},
 					}}
 					open
+					data-testid="permanent-sidebar"
 				>
 					<LeftSideBarContent />
 				</Drawer>

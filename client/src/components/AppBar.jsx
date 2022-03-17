@@ -194,6 +194,7 @@ export default function PrimarySearchAppBar({ handleDrawerToggle }) {
 						edge="start"
 						onClick={handleDrawerToggle}
 						sx={{ mr: 2, display: { sm: "none" } }}
+						data-testid="sidebar-menu-button"
 					>
 						<MenuIcon />
 					</IconButton>
