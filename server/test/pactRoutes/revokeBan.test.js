@@ -77,6 +77,7 @@ describe("POST /post/upvote/:pactid/:id", () => {
     const token = createToken(user._id);
     const oldBanCount = pact.bannedUsers.length;
     const oldPactCount = revokeBanUser.pacts.length;
+    const oldNotificationCount = revokeBanUser.notifications.length;
 
     const response = await supertest(app)
     .put(`/pact/${ pact._id }/${ revokeBanUser._id }/revokeban/`)
@@ -92,6 +93,9 @@ describe("POST /post/upvote/:pactid/:id", () => {
     const responseUser = await User.findOne({ uniEmail: "bob.to@kcl.ac.uk" });
     const newPactCount = responseUser.pacts.length;
     expect(newPactCount).toBe(oldPactCount + 1);
+    const newNotificationCount = responseUser.notifications.length;
+    expect(newNotificationCount).toBe(oldNotificationCount + 1);
+
 
     const notification = await Notification.findOne({ user: revokeBanUser._id });
     expect(notification).toBeDefined();
