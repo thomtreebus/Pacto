@@ -6,7 +6,7 @@ export default function UserList({ users }) {
 	if (!users.length) {
 		return (
 			<Typography variant="subtitle1" sx={{ textAlign: "center" }}>
-				There are no users.
+				There are no users in this category users.
 			</Typography>
 		);
 	}
