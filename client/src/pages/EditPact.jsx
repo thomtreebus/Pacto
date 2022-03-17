@@ -85,8 +85,8 @@ export default function EditPact() {
         return res.json();
       }).then((resData) => {
         const data = resData.message;
-        if(!data.moderators.includes(user.id)){
-
+        const moderators = data.moderators.flatMap((user) => user._id)
+        if(!moderators.includes(user._id)){
           return history.push(`/pact/${pactId}`);
         }
         setName(data.name);
