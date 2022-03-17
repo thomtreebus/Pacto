@@ -3,7 +3,6 @@ import List from "@mui/material/List";
 import { useAuth } from "../providers/AuthProvider";
 import { useQuery } from "react-query";
 import PactList from "./PactList";
-import Loading from "../pages/Loading";
 
 export default function MyPactList() {
 	const { isLoading, data } = useQuery("mypacts", () =>
@@ -15,7 +14,7 @@ export default function MyPactList() {
 	const { user } = useAuth();
 
 	if (isLoading) {
-		return <Loading />;
+		return "";
 	}
 
 	return (
