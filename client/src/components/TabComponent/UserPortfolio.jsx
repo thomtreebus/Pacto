@@ -86,11 +86,11 @@ export default function UserPortfolio({user}){
 								<Tab label="All" value="all" />
 								<Tab label="Friends" value="friends" />
 							</TabList>
-					</Box>
-					<TabPanel value="all">All list</TabPanel>
-        			<TabPanel value="friends">Friends list</TabPanel>
-				</TabContext>
-			</Box>
+						</Box>
+						<TabPanel value="all">All list</TabPanel>
+        				<TabPanel value="friends">Friends list</TabPanel>
+					</TabContext>
+				</Box>
 			</div>
 		</Box>
 	);

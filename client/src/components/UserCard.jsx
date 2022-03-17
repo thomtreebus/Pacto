@@ -11,38 +11,53 @@ export default function UserCard({user}){
     }
     
     return (
-        <Box sx={{width: '100%'}}>
-            <Grid item xs={12}>
-                <Card sx={{
+        <Box sx={{
+            width: '100%',
+            padding: "15px",
+            }}
+        >
+            <Grid item xs={4}>
+                <Card onClick={handleViewButtonClick} 
+                        sx={{
                             display:"flex",
+                            padding: "10px",
+                            alignItems: "center",
+                            position: "relative",
+                            "&:hover": {
+                                backgroundColor: '#007FFF',
+                                color: "white"
+                                // opacity:"0.6",
+                            }
                         }}
                 >
                     <CardHeader
-                            avatar={<Avatar src={user.image} alt="user-image" />}
-                            title={user.name}
-                            sx={{ 
-                                paddingBlock: 1,
-                                display: "flex",
-                                width: "75px", 
-                                height: "75px", 
-                                border: "3px solid #616161", 
-                                borderRadius: "180px", 
-                                overflow: "hidden", 
-                                position: "center", 
-                            }}                   
-                    />   
-                    <Button variant="h2" onClick={handleViewButtonClick}>
-                            {user.firstName} {user.lastName} 
-                            <Box
-                                sx={{
-                                    display: "flex",
-                                    alignItems: "flex-start",
-                                    gap: "5px",
-                                }}
-                            >
-                        </Box>
-                    </Button> 
-                                   
+                        avatar={<Avatar src={user.image} alt="user-image" />}
+                        title={user.name}
+                        sx={{ 
+                            paddingBlock: 1,
+                            padding: "8px",
+                            display: "flex",
+                            width: "60px", 
+                            height: "60px", 
+                            border: "3px solid #616161",
+                            borderColor: "inherit", 
+                            borderRadius: "170px", 
+                            overflow: "hidden", 
+                            position: "center", 
+                        }}                   
+                />   
+                    <Typography variant="h4" 
+                        sx={{
+                            alignItems: "center",
+                            gap: "5px",
+                            textAlign: "center",
+                            borderRadius: "10px",
+                            justifyContent: "center",
+                            paddingLeft: "25px",
+                        }}
+                    >
+                        {user.firstName} {user.lastName}
+                    </Typography>                                    
                 </Card>
             </Grid>
         </Box>		
