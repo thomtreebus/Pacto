@@ -30,7 +30,8 @@ const response = {
         comments: [0,0,0,0],
         _id: 1
       }
-    ]
+    ],
+    moderators : [],
   }
 }
 
