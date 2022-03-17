@@ -47,7 +47,7 @@ export default function CommentBox({post, successHandler=()=>{}, repliedToCommen
 			return;
 		}
 
-    successHandler();
+    successHandler(json["message"]);
   }
 
   return(
