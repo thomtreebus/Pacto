@@ -1,5 +1,6 @@
-import {Button, Fab, Grid} from "@mui/material";
+import {Fab, Grid, IconButton} from "@mui/material";
 import { Box } from "@mui/system";
+import EditIcon from '@mui/icons-material/Edit';
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import AboutPact from "../components/AboutPact";
@@ -49,13 +50,13 @@ export default function PactPage() {
         <Grid item lg={4}>
           <Box sx={{ paddingTop: "16px", paddingRight: "16px" }} display={{ xs: "none", lg: "block" }} position={"sticky"} top={65}>
             { pact && <AboutPact pact={pact} /> }
-            {isMod && <Button
-              variant="contained"
+            {isMod && <IconButton
               onClick={() => {
                 history.push(`/pact/${pactID}/edit-pact`)
               }}
-              fullWidth
-            > Edit Pact</Button>}
+            >
+              <EditIcon  color="primary" />
+            </IconButton>}
           </Box>
         </Grid>
       </Grid>
