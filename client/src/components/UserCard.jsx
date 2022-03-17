@@ -37,8 +37,6 @@ export default function UserCard({user}){
                             display: "flex",
                             width: "60px", 
                             height: "60px", 
-                            border: "2px solid #616161",                            
-                            borderRadius: "170px", 
                             overflow: "hidden", 
                             position: "center",
                             borderColor: "inherit",
