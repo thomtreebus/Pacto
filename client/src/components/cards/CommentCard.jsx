@@ -36,6 +36,9 @@ export default function CommentCard({ comment, post }) {
     });
 	};
 
+  // Map each child comment to its populated representation in the post document.
+  const replies = comment.childComments.map(c => post.comments.filter(p=> p._id===c._id)[0]);
+
   const replySubmissionHandler = () => {
     setShowReplyBox(false);
   }
@@ -112,8 +115,7 @@ export default function CommentCard({ comment, post }) {
               </AccordionSummary>
               <AccordionDetails>
                 <Grid item xs={12} lg={12}>
-                {/* Here we identify child comments through the comment document, but get their information from the post document */}
-                {comment.childComments.map((c) => (<CommentCard post={post} comment={post.comments.filter(x=>x._id===c._id)[0]}></CommentCard>))}
+                {replies.map((c) => (<CommentCard post={post} comment={c}></CommentCard>))}
                 </Grid>
               </AccordionDetails>
             </Accordion>

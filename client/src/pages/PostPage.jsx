@@ -36,14 +36,17 @@ export default function PostPage() {
     });
   }, [pactID, postID, history])
 
+  if(isLoading){
+    return <Loading/>
+  }
+
+  // Display comments replying directly to the post.
+  const topLevelComments = post.comments.filter(c => c.parentComment==null);
+  
   const commentSubmissionHandler = () => {
     setShowReplyBox(false);
   }
 
-
-  if(isLoading){
-    return <Loading/>
-  }
   return (post&&
     <>
       <Grid container width={"60vw"}>
@@ -58,8 +61,7 @@ export default function PostPage() {
         </Grid>
         <Box sx={{width: "95%", marginInline: "auto"}}>
           <Grid item xs={16} lg={14}>
-            { post.comments.filter((c) => c.parentComment == null)
-            .map((c) => <CommentCard post={post} comment={c}></CommentCard>) }
+            { topLevelComments.map((c) => <CommentCard post={post} comment={c}></CommentCard>) }
           </Grid>
         </Box>
       </Grid>
