@@ -59,6 +59,7 @@ export default function CreatePostCard({pactID}) {
   const history = useHistory();
 
   const [apiPostTitleError, setApiPostTitleError] = React.useState('');
+  const [apiPostLinkError, setApiPostLinkError] = React.useState('');
 
   const [image, setImage] = React.useState(null);
 
@@ -79,14 +80,12 @@ export default function CreatePostCard({pactID}) {
 
   function getPostType() {
     switch(value) {
-      case 0:
-        return "text"
       case 1:
         return "image";
       case 2:
         return "link";
       default:
-        return"undefined";
+        return "text";
     }
   }
 
@@ -95,6 +94,7 @@ export default function CreatePostCard({pactID}) {
     const data = new FormData(event.currentTarget);
 
     setApiPostTitleError('');
+    setApiPostLinkError('');
 
     const response = await fetch(`${process.env.REACT_APP_URL}/pact/${pactID}/post`, {
       method: "POST",
@@ -122,9 +122,9 @@ export default function CreatePostCard({pactID}) {
           setApiPostTitleError(message);
           break;
         case "link":
+          setApiPostTitleError(message);
           break;
-        default:
-          break;
+        default: // do nothing
       }
     })
 
@@ -144,7 +144,7 @@ export default function CreatePostCard({pactID}) {
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
         <Tabs value={value} onChange={handleChange} aria-label="tabs" centered>
           <Tab icon={<TextIcon />} label="Post" {...a11yProps(0)} />
-          <Tab icon={<PhotoIcon />} label="Image" {...a11yProps(1)} />
+          <Tab icon={<PhotoIcon />} data-testid="image-icon" label="Image" {...a11yProps(1)} />
           <Tab icon={<LinkIcon />} data-testid="link-icon" label="Link"{...a11yProps(2)} />
         </Tabs>
       </Box>
@@ -194,6 +194,8 @@ export default function CreatePostCard({pactID}) {
             data-testid="link-input"
             name="link"
             variant="outlined"
+            error={apiPostLinkError.length !== 0} 
+            helperText={apiPostLinkError}
           />
         </TabPanel>
         <Button variant="contained" sx={{marginTop: '8px'}} type="submit" fullWidth>Post</Button>

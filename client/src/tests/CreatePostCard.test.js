@@ -1,22 +1,41 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { waitForElementToBeRemoved } from "@testing-library/react";
 import CreatePostCard from "../components/CreatePostCard";
-import PactPage from "../pages/PactPage";
 import "@testing-library/jest-dom";
 import MockComponent from "./utils/MockComponent";
 import { rest } from "msw";
 import { setupServer } from "msw/node";
-import { Router, Route } from "react-router-dom";
-import { createMemoryHistory } from 'history';
+import userEvent from "@testing-library/user-event";
+import {act} from "react-dom/test-utils";
 
-// test
 const pactId = 1;
+
+function serverPostRequest(server, type){
+	server.use(
+		rest.post(`${process.env.REACT_APP_URL}/pact/${pactId}/post`, (req, res, ctx) => {
+			return res(
+				ctx.status(201),
+				ctx.json({
+					message: {
+						_id: 1,
+						title: "This is a title",
+						text: "This is a text field.",
+						image: null,
+						link: null,
+						type: type
+					},
+					errors: [],
+				})
+			);
+		}),
+	);
+}
 
 describe("CreatePostCard Tests", () => {
 	const server = setupServer(
 		rest.get(`${process.env.REACT_APP_URL}/me`, (req, res, ctx) => {
 			return res(
-				ctx.json({ message: { firstName: "pac", lastName: "to" }, errors: [] })
+				ctx.json({ message: { firstName: "pac", lastName: "to", _id: "5" }, errors: [] })
 			);
 		})
 	);
@@ -33,14 +52,11 @@ describe("CreatePostCard Tests", () => {
 		server.resetHandlers();
 	});
 
-	let history;
-
 	beforeEach(async () => {
-		history = createMemoryHistory({ initialEntries: [`/pact/1`] });
 
 		render(
 			<MockComponent>
-				<CreatePostCard />
+				<CreatePostCard pactID={pactId} />
 			</MockComponent>
 		);
 		await waitForElementToBeRemoved(() => screen.getByText("Loading"));
@@ -122,29 +138,82 @@ describe("CreatePostCard Tests", () => {
 		});
 
 		it("should redirect to the created post when the Post button is pressed with valid input", async () => {
-			server.use(
-				rest.post(`${process.env.REACT_APP_URL}/pact/1/post`, (req, res, ctx) => {
-					return res(
-						ctx.status(201),
-						ctx.json({
-							message: {
-								_id: 1,
-								title: "This is a title",
-								text: "This is a text field.",
-								image: null,
-								link: null,
-								type: "text"
-							},
-							errors: [],
-						})
-					);
-				})
-			);
+			serverPostRequest(server, "text")
 			const buttonElement = await screen.findByRole("button", {
 				name: "Post",
 			});
 			fireEvent.click(buttonElement);
-			await waitFor(() => expect(window.location.pathname).toBe("/pact/"+pactId+"/post/1"));
+			await waitFor(() => expect(window.location.pathname).toBe(`/pact/${pactId}/post/1`));
+		});
+
+		it("should determine the post as an image post if the image tab was pressed", async () => {
+			const iconElement = await screen.findByTestId("link-icon");
+			fireEvent.click(iconElement)
+			serverPostRequest(server, "link")
+			const buttonElement = await screen.findByRole("button", {
+				name: "Post",
+			});
+			fireEvent.click(buttonElement);
+		});
+
+		it("should determine the post as a link post if the link tab was pressed", async () => {
+			const iconElement = await screen.findByTestId("image-icon");
+			fireEvent.click(iconElement)
+			serverPostRequest(server, "image")
+			const buttonElement = await screen.findByRole("button", {
+				name: "Post",
+			});
+			fireEvent.click(buttonElement);
+		});
+
+		it("should display an error if there is an error with the title.", async () => {
+			server.use(
+				rest.post(`${process.env.REACT_APP_URL}/pact/${pactId}/post`, (req, res, ctx) => {
+					return res(
+						ctx.status(401),
+						ctx.json({
+							message: null,
+							errors: [{
+								field: "title", message: "Provide the title"
+							}],
+						})
+					);
+				})
+			);
+			const nonExistingElement = screen.queryByText("Provide the title");
+			expect(nonExistingElement).not.toBeInTheDocument();
+			const buttonElement = await screen.findByRole("button", {
+				name: "Post",
+			});
+			fireEvent.click(buttonElement);
+			const existingElement = await screen.findByText("Provide the title");
+			expect(existingElement).toBeInTheDocument();
+		});
+
+		it("should display an error if there is an error with the link.", async () => {
+			const iconElement = await screen.findByTestId("link-icon");
+			fireEvent.click(iconElement);
+			server.use(
+				rest.post(`${process.env.REACT_APP_URL}/pact/${pactId}/post`, (req, res, ctx) => {
+					return res(
+						ctx.status(401),
+						ctx.json({
+							message: null,
+							errors: [{
+								field: "link", message: "Provide a valid link"
+							}],
+						})
+					);
+				})
+			);
+			const nonExistingElement = screen.queryByText("Provide a valid link");
+			expect(nonExistingElement).not.toBeInTheDocument();
+			const buttonElement = await screen.findByRole("button", {
+				name: "Post",
+			});
+			fireEvent.click(buttonElement);
+			const existingElement = await screen.findByText("Provide a valid link");
+			expect(existingElement).toBeInTheDocument();
 		});
 	});
 	
