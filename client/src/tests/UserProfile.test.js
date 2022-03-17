@@ -9,6 +9,7 @@ import Profile from "../pages/Profile";
 import userEvent from "@testing-library/user-event";
 import {queryClient} from './utils/MockComponent'
 import { createMemoryHistory } from 'history';
+import pacts from "./utils/testPacts";
 
 const user = {
     pacts: [],
@@ -64,6 +65,15 @@ describe("Profile Page Tests", () => {
         })
       );
     }),
+
+    rest.get(`${process.env.REACT_APP_URL}/university`, (req, res, ctx) => {
+			return res(
+				ctx.json({
+					message: { pacts: pacts },
+					errors: [],
+				})
+			);
+		}),
 
     rest.post(`https://api.cloudinary.com/v1_1/${process.env.REACT_APP_CLOUDINARY_CLOUD_NAME}/image/upload`, (req, res, ctx) => {
       return res(

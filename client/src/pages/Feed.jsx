@@ -1,10 +1,5 @@
-import React from 'react';
-import { useAuth } from '../providers/AuthProvider';
+import React from "react";
 
 export default function Feed() {
-  const { user } = useAuth()
-  console.log(user)
-  return (
-    <div></div>
-  );
+	return <div>Feed</div>;
 }
