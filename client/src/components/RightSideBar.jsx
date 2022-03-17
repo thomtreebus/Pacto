@@ -1,14 +1,12 @@
 import * as React from "react";
 import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
-import { useAuth } from "../providers/AuthProvider";
-import { Toolbar } from "@mui/material";
+import PopularPactsList from "./PopularPactsList";
+import { Typography, Toolbar, Divider } from "@mui/material";
 
 const drawerWidth = 240;
 
 export default function RightSideBar() {
-    const { user } = useAuth();
-
 
 	return (
 		<Box sx={{ display: { xs: "none", md: "flex" } }}>
@@ -25,8 +23,16 @@ export default function RightSideBar() {
 					},
 				}}
 			>
-		<Toolbar data-testid="sidebar-toolbar2" />
-				{/*<UserList users={[user, user, user, user]}></UserList>*/}
+				<Toolbar data-testid="sidebar-toolbar2" />
+				<Divider sx={{ marginBlockEnd: 2 }} />
+				<Typography
+					data-testid="sidebar-popularpacts-text"
+					variant="p"
+					sx={{ marginLeft: 10 }}
+				>
+					Popular Pacts
+				</Typography>
+				<PopularPactsList numberOfPacts={10} />
 
 
 				{/* Insert content for right side bar here */}
