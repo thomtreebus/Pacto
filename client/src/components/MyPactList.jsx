@@ -14,7 +14,7 @@ export default function MyPactList() {
 	const { user } = useAuth();
 
 	if (isLoading) {
-		return "";
+		return "Loading Pacts...";
 	}
 
 	return (

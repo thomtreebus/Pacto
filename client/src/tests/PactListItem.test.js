@@ -7,7 +7,7 @@ import { BrowserRouter, Route } from "react-router-dom";
 import pacts from "./utils/testPacts";
 import PactListItem from "../components/PactListItem.jsx";
 
-describe("Pact List Tests", () => {
+describe("Pact List Item Tests", () => {
 	beforeEach(() => {
 		render(
 			<BrowserRouter>
@@ -17,12 +17,12 @@ describe("Pact List Tests", () => {
 	});
 
 	describe("Check elements are rendered", () => {
-		it("should render the pacts name", async () => {
+		it("should render the pact name", async () => {
 			const pactName = screen.getByText(pacts[0].name);
 			expect(pactName).toBeInTheDocument();
 		});
 
-		it("should render a the pacts image", async () => {
+		it("should render the pact image", async () => {
 			const avatar = screen.getByTestId(/avatar/i);
 			const image = avatar.querySelector("img");
 			expect(image).toBeInTheDocument();
