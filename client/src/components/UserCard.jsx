@@ -16,7 +16,7 @@ export default function UserCard({user}){
             padding: "15px",
             }}
         >
-            <Grid item xs={4}>
+            <Grid item xs={12} s={7}>
                 <Card onClick={handleViewButtonClick} 
                         sx={{
                             display:"flex",
@@ -24,9 +24,7 @@ export default function UserCard({user}){
                             alignItems: "center",
                             position: "relative",
                             "&:hover": {
-                                backgroundColor: '#007FFF',
-                                color: "white"
-                                // opacity:"0.6",
+                                color: "#007FFF"
                             }
                         }}
                 >
@@ -39,20 +37,20 @@ export default function UserCard({user}){
                             display: "flex",
                             width: "60px", 
                             height: "60px", 
-                            border: "3px solid #616161",
-                            borderColor: "inherit", 
+                            border: "2px solid #616161",                            
                             borderRadius: "170px", 
                             overflow: "hidden", 
-                            position: "center", 
+                            position: "center",
+                            borderColor: "inherit",
                         }}                   
-                />   
-                    <Typography variant="h4" 
+                    />   
+                    <Typography variant="h7" 
                         sx={{
-                            alignItems: "center",
-                            gap: "5px",
-                            textAlign: "center",
-                            borderRadius: "10px",
-                            justifyContent: "center",
+                            // alignItems: "center",
+                            // gap: "5px",
+                            // textAlign: "center",
+                            // borderRadius: "10px",
+                            // justifyContent: "center",
                             paddingLeft: "25px",
                         }}
                     >

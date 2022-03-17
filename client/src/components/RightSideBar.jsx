@@ -1,10 +1,16 @@
 import * as React from "react";
 import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
+import { useAuth } from "../providers/AuthProvider";
+import UserCard from "./UserCard";
+import { Toolbar } from "@mui/material";
 
 const drawerWidth = 240;
 
 export default function RightSideBar() {
+    const { user } = useAuth();
+
+
 	return (
 		<Box sx={{ display: { xs: "none", md: "flex" } }}>
 			<Drawer
@@ -20,6 +26,9 @@ export default function RightSideBar() {
 					},
 				}}
 			>
+		<Toolbar data-testid="sidebar-toolbar2" />
+        <UserCard user = {user}></UserCard>
+
 				{/* Insert content for right side bar here */}
 			</Drawer>
 		</Box>

@@ -13,7 +13,7 @@ async function seedUsers(university, USER_COUNT) {
 		await createUser(names[i].split(" ")[0], names[i].split(" ")[1], university);
 	}
 
-	await createUser("pac", "to", university);
+	await createUser("Pac", "To", university);
 	console.log(`Finished seeding ${USER_COUNT} users`);
 }
 
