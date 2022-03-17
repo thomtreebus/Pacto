@@ -9,33 +9,8 @@ import { setupServer } from "msw/node";
 import { Router, Route } from "react-router-dom";
 import { createMemoryHistory } from 'history';
 
+// test
 const pactId = 1;
-const response = {
-  message: {
-    name: "PactName",
-    description: "PactDescription",
-    members: [0,0,0],
-    posts: [
-      {
-        pact: 5,
-        author: {
-          firstName: "Krishi",
-          lastName: "Wali",
-          _id: 1
-        },
-        date: "5/5/5",
-        title: "Lorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem",
-        text: "Lorem ipsum dolor inventore ad! Porro soluta eum amet officia molestias esse!Lorem ipsum dolor inventore ad! Porro soluta eum amet officia molestias esse!Lorem ipsum dolor inventore ad! Porro soluta eum amet officia molestias esse!",
-        type: "text",
-        votes: 6,
-        upvoters: [],
-        downvoters: [],
-        comments: [0,0,0,0],
-        _id: 1
-      }
-    ]
-  }
-}
 
 describe("CreatePostCard Tests", () => {
 	const server = setupServer(
@@ -43,11 +18,6 @@ describe("CreatePostCard Tests", () => {
 			return res(
 				ctx.json({ message: { firstName: "pac", lastName: "to" }, errors: [] })
 			);
-		}),
-		rest.get(`${process.env.REACT_APP_URL}/pact/${pactId}`, (req, res, ctx) => {
-			return res(
-        		ctx.json(response)
-      		);
 		})
 	);
 
@@ -70,14 +40,6 @@ describe("CreatePostCard Tests", () => {
 
 		render(
 			<MockComponent>
-				<Router history={history}>
-					<Route exact path="/pact/:pactID">
-						<PactPage />
-					</Route>
-					<Route exact path="/not-found">
-						Not Found
-					</Route>
-				</Router>
 				<CreatePostCard />
 			</MockComponent>
 		);
@@ -160,8 +122,8 @@ describe("CreatePostCard Tests", () => {
 		});
 
 		it("should redirect to the created post when the Post button is pressed with valid input", async () => {
-			console.log(server.use(
-				rest.post(`${process.env.REACT_APP_URL}/pact/${pactId}/post`, (req, res, ctx) => {
+			server.use(
+				rest.post(`${process.env.REACT_APP_URL}/pact/1/post`, (req, res, ctx) => {
 					return res(
 						ctx.status(201),
 						ctx.json({
@@ -177,7 +139,7 @@ describe("CreatePostCard Tests", () => {
 						})
 					);
 				})
-			))
+			);
 			const buttonElement = await screen.findByRole("button", {
 				name: "Post",
 			});
