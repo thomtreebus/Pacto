@@ -11,13 +11,18 @@ export default function PactListItem({ pact }) {
 	return (
 		<ListItem
 			onClick={(event) => history.replace(`/pact/${pact._id}`)}
-			sx={{ cursor: "pointer" }}
-			data-testid="item"
+			sx={{ 
+				cursor: "pointer",
+				"&:hover": {
+					backgroundColor: "#f5f5f5"
+				} 
+			}}
+			data-testid="item"	
 		>
 			<ListItemIcon>
 				<Avatar src={pact.image} data-testid="avatar" />
 			</ListItemIcon>
-			<ListItemText primary={pact.name} />
+			<ListItemText primary={pact.name}/>
 		</ListItem>
 	);
 }
