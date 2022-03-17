@@ -61,7 +61,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 export default function PrimarySearchAppBar() {
   const history = useHistory() 
 
-	const { setIsAuthenticated } = useAuth();
+	const { user, setIsAuthenticated } = useAuth();
 
 	const [anchorEl, setAnchorEl] = React.useState(null);
 	const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
@@ -95,7 +95,7 @@ export default function PrimarySearchAppBar() {
 		setMobileMoreAnchorEl(event.currentTarget);
 	};
 
-	const handleProfileClick = () => {
+	const handleEditProfileClick = () => {
 		history.push("/edit-profile");
 		handleMenuClose();
 	}
@@ -125,6 +125,9 @@ export default function PrimarySearchAppBar() {
 		if (e.keyCode == 13) {
 			handleSearch();
 		}
+	const handleProfileClick = () => {
+		history.push("/user/"+user._id);
+		handleMenuClose();
 	}
 
 	const menuId = "primary-search-account-menu";
@@ -146,6 +149,7 @@ export default function PrimarySearchAppBar() {
 			onClose={handleMenuClose}
 		>
 			<MenuItem data-testid="profile-item" onClick={handleProfileClick}>Profile</MenuItem>
+			<MenuItem data-testid="edit-profile-item" onClick={handleEditProfileClick}>Edit Profile</MenuItem>
 			<Divider />
 			<MenuItem data-testid="logout-item" onClick={handleLogout}>Log Out</MenuItem>
 		</Menu>

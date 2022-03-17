@@ -29,6 +29,7 @@ module.exports.generateTestPact = async (foundingUser, name="My pact") => {
   return pact;
 }
 
+// Returns ID of most recent pact to be generated
 module.exports.getTestPactId = () => {
   if (myPact) {
     return myPact._id;

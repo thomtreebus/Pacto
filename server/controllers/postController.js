@@ -6,6 +6,7 @@ const User = require("../models/User");
 const Notification = require("../models/Notification");
 const { jsonResponse, jsonError } = require("../helpers/responseHandlers");
 const { POST_MESSAGES, MESSAGES } = require("../helpers/messages");
+const { upvote, downvote } = require("../helpers/genericVoteMethods");
 
 // POST post
 module.exports.postPost = async (req, res) => {
@@ -55,26 +56,7 @@ module.exports.upvotePostPost = async (req, res) => {
 			res.status(404).json(jsonResponse(null, [jsonError(null, POST_MESSAGES.NOT_FOUND)]));
 		} 
 		else {
-			// Checking if user already upvoted or downvoted
-			if(post.upvoters.includes(req.user._id)) {
-				// Cancel upvote
-				const index = post.upvoters.indexOf(req.user._id);
-				post.upvoters.splice(index, 1); // 2nd parameter means remove one item only
-				post.votes = post.votes - 1;
-			} 
-			else if(post.downvoters.includes(req.user._id)) {
-					// Remove downvote
-				const index = post.downvoters.indexOf(req.user._id);
-				post.downvoters.splice(index, 1);
-				post.upvoters.push(req.user._id);
-				post.votes = post.votes + 2;
-			}
-			else {
-				// Standard upvote
-				post.upvoters.push(req.user._id);
-				post.votes = post.votes + 1;
-			}
-			post.save();
+			await upvote(post, req.user);
 
 			// Notify poster that their post has been upvoted
 			await Notification.create({ user: post.author, text: `${req.user.firstName} ${req.user.lastName} upvoted your post in ${req.pact.name}` });
@@ -102,25 +84,7 @@ module.exports.downvotePostPost = async (req, res) => {
 			res.status(404).json(jsonResponse(null, [jsonError(null, POST_MESSAGES.NOT_FOUND)]));
 		} 
 		else {
-			// Checking if user already upvoted or downvoted
-			if(post.downvoters.includes(req.user._id)) {
-				// Cancel downvote
-				const index = post.downvoters.indexOf(req.user._id);
-				post.downvoters.splice(index, 1); 
-				post.votes = post.votes + 1;
-			} 
-			else if(post.upvoters.includes(req.user._id)) {
-				// Remove upvote
-				const index = post.upvoters.indexOf(req.user._id);
-				post.upvoters.splice(index, 1);
-				post.downvoters.push(req.user._id);
-				post.votes = post.votes - 2;
-			} else {
-				// Standard downvote
-				post.downvoters.push(req.user._id);
-				post.votes = post.votes - 1;
-			}
-			post.save()
+			await downvote(post, req.user);
 
 			// Populating before returning the post
 			await post.populate({ path: 'upvoters', model: User });
@@ -132,6 +96,7 @@ module.exports.downvotePostPost = async (req, res) => {
 		}
 	} 
 	catch (err) {
+		console.log(err.message);
 		res.status(400).json(jsonResponse(null, [jsonError(null, err.message)]));
 	}
 };
