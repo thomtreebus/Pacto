@@ -27,24 +27,36 @@ const PostSchema = mongoose.Schema({
     required: [true, POST_MESSAGES.TITLE.BLANK],
   },
 
-  image: {
-    type: String
-  },
-
-  text: {
-    type: String
-  },
-
-  link: {
-    type: String
-  },
-
   type: {
     type: String,
     enum: ["link", "image", "text"],
     validate: [isValidType, POST_MESSAGES.TYPE.INVALID],
     required: [true, POST_MESSAGES.TYPE.BLANK],
     default: "text"
+  },
+
+  image: {
+    type: String,
+    required: [
+      function() { return this.type === 'image' },
+      POST_MESSAGES.TYPE.IMAGE_NO_IMAGE
+    ]
+  },
+
+  text: {
+    type: String,
+    required: [
+      function() { return this.type === 'text' },
+      POST_MESSAGES.TYPE.TEXT_NO_TEXT
+    ]
+  },
+
+  link: {
+    type: String,
+    required: [
+      function() { return this.type === 'link' },
+      POST_MESSAGES.TYPE.LINK_NO_LINK
+    ]
   },
 
   votes: {
