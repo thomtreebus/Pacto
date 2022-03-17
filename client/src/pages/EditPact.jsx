@@ -98,7 +98,7 @@ export default function EditPact() {
         console.log(err);
       })
     }
-  }, [pactId])
+  }, [pactId, user, history])
 
 
   const handleSubmit = async (event) => {

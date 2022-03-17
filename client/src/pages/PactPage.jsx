@@ -38,7 +38,7 @@ export default function PactPage() {
       console.log(err)
       history.push("/not-found");
     })
-  }, [pactID, history])
+  }, [pactID, history, user])
 
   return (
     <>
