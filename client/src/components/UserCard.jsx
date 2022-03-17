@@ -24,7 +24,7 @@ export default function UserCard({user}){
                             alignItems: "center",
                             position: "relative",
                             "&:hover": {
-                                color: "#007FFF"
+                                backgroundColor: "#f5f5f5"
                             }
                         }}
                 >

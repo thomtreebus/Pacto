@@ -11,18 +11,30 @@ export default function PactListItem({ pact }) {
 	return (
 		<ListItem
 			onClick={(event) => history.replace(`/pact/${pact._id}`)}
-			sx={{ cursor: "pointer" }}
+			sx={{ 
+				cursor: "pointer",
+				"&:hover": {
+					backgroundColor: "#f5f5f5"
+				} 
+			}}
 			data-testid="item"
+	
 		>
-			<ListItemIcon>
+			<ListItemIcon
+				// sx={{
+				// 	"&:hover": {
+				// 		color: "#007FFF"
+				// 	}
+				// }}
+			>
 				<Avatar src={pact.image} data-testid="avatar" />
 			</ListItemIcon>
 			<ListItemText primary={pact.name} 				
-				sx={{
-					"&:hover": {
-						color: "#007FFF"
-					}
-				}}
+				// sx={{
+				// 	"&:hover": {
+				// 		color: "#007FFF"
+				// 	}
+				// }}
 			/>
 		</ListItem>
 	);
