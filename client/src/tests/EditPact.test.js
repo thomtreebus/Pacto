@@ -14,6 +14,7 @@ import { createMemoryHistory } from 'history';
 const testUser = {
   firstName: "pac",
   lastName: "to",
+  _id: 1,
 }
 
 
@@ -22,6 +23,11 @@ const testPact = {
   name: "pactname",
   category: "pactcategory",
   description: "pactdescription",
+  moderators: [
+    {
+      _id : 1,
+    }
+  ],
 }
 
 describe("EditPact Tests", () => {

@@ -35,7 +35,6 @@ export default function PactPage() {
         setIsMod(true)
       }
     }).catch((err) => {
-      console.log(err)
       history.push("/not-found");
     })
   }, [pactID, history, user])
