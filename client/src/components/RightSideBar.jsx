@@ -2,9 +2,7 @@ import * as React from "react";
 import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
 import { useAuth } from "../providers/AuthProvider";
-import UserCard from "./UserCard";
 import { Toolbar } from "@mui/material";
-import UserList from "./UserList";
 
 const drawerWidth = 240;
 
