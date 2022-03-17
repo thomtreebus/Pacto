@@ -13,7 +13,7 @@ import AuthRoute from "./components/AuthRoute";
 import NotFound from "./pages/NotFound";
 import UniversityHubPage from "./pages/UniversityHubPage";
 import PactPage from "./pages/PactPage";
-import UserList from "./pages/UserList";
+import UserPage from "./pages/UserPage";
 
 function App() {
 	return (
@@ -53,7 +53,7 @@ function App() {
 								<PactPage />
 							</PrivateRoute>
 							<PrivateRoute exact path="/users">
-								<UserList />
+								<UserPage />
 							</PrivateRoute>
 							<PrivateRoute path="*">
 								<NotFound />

@@ -13,7 +13,7 @@ export default function UserCard({user}){
     return (
         <Box sx={{
             width: '100%',
-            padding: "15px",
+            padding: "7px",
             }}
         >
             <Grid item xs={12} s={7}>

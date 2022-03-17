@@ -17,25 +17,12 @@ export default function PactListItem({ pact }) {
 					backgroundColor: "#f5f5f5"
 				} 
 			}}
-			data-testid="item"
-	
+			data-testid="item"	
 		>
-			<ListItemIcon
-				// sx={{
-				// 	"&:hover": {
-				// 		color: "#007FFF"
-				// 	}
-				// }}
-			>
+			<ListItemIcon>
 				<Avatar src={pact.image} data-testid="avatar" />
 			</ListItemIcon>
-			<ListItemText primary={pact.name} 				
-				// sx={{
-				// 	"&:hover": {
-				// 		color: "#007FFF"
-				// 	}
-				// }}
-			/>
+			<ListItemText primary={pact.name}/>
 		</ListItem>
 	);
 }

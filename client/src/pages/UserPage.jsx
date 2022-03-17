@@ -18,15 +18,14 @@ import Loading from "./Loading";
 import { useEffect } from "react";
 import UserPortfolio from "../components/TabComponent/UserPortfolio";
 import UserCard from "../components/UserCard";
+import UserList from "../components/UserList";
 
-export default function UserList() {
+export default function UserPage() {
 
     const { user } = useAuth();
 	
 	return (
-        
-       
         //<UserPortfolio user = {user}></UserPortfolio>
-        <UserCard user = {user}></UserCard>
+        <UserList users={[user, user, user, user]}></UserList>
     )
 }
