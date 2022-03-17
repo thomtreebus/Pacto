@@ -1,10 +1,41 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { waitForElementToBeRemoved } from "@testing-library/react";
 import CreatePostCard from "../components/CreatePostCard";
+import PactPage from "../pages/PactPage";
 import "@testing-library/jest-dom";
 import MockComponent from "./utils/MockComponent";
 import { rest } from "msw";
 import { setupServer } from "msw/node";
+import { Router, Route } from "react-router-dom";
+import { createMemoryHistory } from 'history';
+
+const pactId = 1;
+const response = {
+  message: {
+    name: "PactName",
+    description: "PactDescription",
+    members: [0,0,0],
+    posts: [
+      {
+        pact: 5,
+        author: {
+          firstName: "Krishi",
+          lastName: "Wali",
+          _id: 1
+        },
+        date: "5/5/5",
+        title: "Lorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem",
+        text: "Lorem ipsum dolor inventore ad! Porro soluta eum amet officia molestias esse!Lorem ipsum dolor inventore ad! Porro soluta eum amet officia molestias esse!Lorem ipsum dolor inventore ad! Porro soluta eum amet officia molestias esse!",
+        type: "text",
+        votes: 6,
+        upvoters: [],
+        downvoters: [],
+        comments: [0,0,0,0],
+        _id: 1
+      }
+    ]
+  }
+}
 
 describe("CreatePostCard Tests", () => {
 	const server = setupServer(
@@ -13,14 +44,10 @@ describe("CreatePostCard Tests", () => {
 				ctx.json({ message: { firstName: "pac", lastName: "to" }, errors: [] })
 			);
 		}),
-		rest.post(`${process.env.REACT_APP_URL}/pact/1/post`, (req, res, ctx) => {
+		rest.get(`${process.env.REACT_APP_URL}/pact/${pactId}`, (req, res, ctx) => {
 			return res(
-				ctx.status(401),
-				ctx.json({
-					message: null,
-					errors: [{ field: null, message: "The details entered are invalid." }],
-				})
-			);
+        		ctx.json(response)
+      		);
 		})
 	);
 
@@ -36,9 +63,21 @@ describe("CreatePostCard Tests", () => {
 		server.resetHandlers();
 	});
 
+	let history;
+
 	beforeEach(async () => {
+		history = createMemoryHistory({ initialEntries: [`/pact/1`] });
+
 		render(
 			<MockComponent>
+				<Router history={history}>
+					<Route exact path="/pact/:pactID">
+						<PactPage />
+					</Route>
+					<Route exact path="/not-found">
+						Not Found
+					</Route>
+				</Router>
 				<CreatePostCard />
 			</MockComponent>
 		);
@@ -82,7 +121,9 @@ describe("CreatePostCard Tests", () => {
 		});
 
 		it("should render the link input text field in the link tab", async () => {
-			const inputElement = await screen.findByLabelText("Link");
+			const iconElement = await screen.findByTestId("link-icon");
+			fireEvent.click(iconElement)
+			const inputElement = await screen.findByTestId("link-input");
 			expect(inputElement).toBeInTheDocument();
 		});
 
@@ -110,37 +151,39 @@ describe("CreatePostCard Tests", () => {
 		it("should be able to type into the link text field", async () => {
 			const link = "https://www.youtube.com/watch?v=dQw4w9WgXcQ";
 
-			const iconElement = await screen.findByLabelText("Link");
+			const iconElement = await screen.findByTestId("link-icon");
 			fireEvent.click(iconElement)
-			const inputElement = await screen.findByTestId("link-input");
-			console.log(inputElement)
+			const inputElementDiv = await screen.findByTestId("link-input");
+			const inputElement = inputElementDiv.querySelector("input");
 			fireEvent.change(inputElement, {target: { value: link } });
 			expect(inputElement.value).toBe(link);
 		});
 
-		// it("should redirect to the created post when the Post button is pressed with valid input", async () => {
-		// 	server.use(
-		// 		rest.post(`${process.env.REACT_APP_URL}/pact/1/post`, (req, res, ctx) => {
-		// 			return res(
-		// 				ctx.status(201),
-		// 				ctx.json({
-		// 					message: {
-		// 						_id: 1,
-		// 						title: "This is a title",
-		// 						text: "This is a text field.",
-		// 						type: "text"
-		// 					},
-		// 					errors: [],
-		// 				})
-		// 			);
-		// 		})
-		// 	);
-		// 	const buttonElement = await screen.findByRole("button", {
-		// 		name: "Post",
-		// 	});
-		// 	fireEvent.click(buttonElement);
-		// 	await waitFor(() => expect(window.location.pathname).toBe("/pact/1/post/1"));
-		// });
+		it("should redirect to the created post when the Post button is pressed with valid input", async () => {
+			console.log(server.use(
+				rest.post(`${process.env.REACT_APP_URL}/pact/${pactId}/post`, (req, res, ctx) => {
+					return res(
+						ctx.status(201),
+						ctx.json({
+							message: {
+								_id: 1,
+								title: "This is a title",
+								text: "This is a text field.",
+								image: null,
+								link: null,
+								type: "text"
+							},
+							errors: [],
+						})
+					);
+				})
+			))
+			const buttonElement = await screen.findByRole("button", {
+				name: "Post",
+			});
+			fireEvent.click(buttonElement);
+			await waitFor(() => expect(window.location.pathname).toBe("/pact/"+pactId+"/post/1"));
+		});
 	});
 	
 });

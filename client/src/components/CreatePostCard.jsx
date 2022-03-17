@@ -112,7 +112,6 @@ export default function CreatePostCard({pactID}) {
     });
 
     const json = await response.json();
-    console.log(json)
     
     Object.values(json['errors']).forEach(err => {
       const field = err["field"];
@@ -121,6 +120,8 @@ export default function CreatePostCard({pactID}) {
       switch (field) {
         case "title":
           setApiPostTitleError(message);
+          break;
+        case "link":
           break;
         default:
           break;
@@ -144,7 +145,7 @@ export default function CreatePostCard({pactID}) {
         <Tabs value={value} onChange={handleChange} aria-label="tabs" centered>
           <Tab icon={<TextIcon />} label="Post" {...a11yProps(0)} />
           <Tab icon={<PhotoIcon />} label="Image" {...a11yProps(1)} />
-          <Tab icon={<LinkIcon />} label="Link"{...a11yProps(2)} />
+          <Tab icon={<LinkIcon />} data-testid="link-icon" label="Link"{...a11yProps(2)} />
         </Tabs>
       </Box>
       <Box
@@ -155,7 +156,7 @@ export default function CreatePostCard({pactID}) {
         <TabPanel value={value} index={0}>
           <TitleTextField apiPostTitleError={apiPostTitleError}/>
           <TextField sx={{marginTop: '8px'}}
-            id="outlined-multiline-static"
+            id="text"
             fullWidth
             label="Text"
             multiline
@@ -187,7 +188,7 @@ export default function CreatePostCard({pactID}) {
         <TabPanel value={value} index={2}>
           <TitleTextField apiPostTitleError={apiPostTitleError}/> 
           <TextField sx={{marginTop: '8px'}}
-            id="outlined-multiline-static"
+            id="link"
             fullWidth
             label="Link"
             data-testid="link-input"
