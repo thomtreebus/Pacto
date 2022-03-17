@@ -14,6 +14,7 @@ async function seedUsers(university, USER_COUNT) {
 	}
 
 	await createUser("Pac", "To", university);
+	await generateFriends();
 	console.log(`Finished seeding ${USER_COUNT} users`);
 }
 
@@ -60,6 +61,31 @@ function getRandomHobbies() {
 	randomHobby = () => chance.integer({ min: 0, max: userConstants.HOBBIES.length-1 })
 	chance.unique(randomHobby, 2).forEach(hobby => hobbies.push(userConstants.HOBBIES[hobby]));
 	return hobbies;
+}
+
+async function generateFriends() {
+	const users = await User.find({});
+	for (let i = 0; i < users.length; i++) {
+		for (let j = 0; j < users.length; j++) {
+			if(i !== j && !areUsersFriends(users[i], users[j])) {
+				const randomNumber = chance.integer({ min: 1, max: 10 })
+				if(randomNumber < 4) {
+					await generateFriend(users[i], users[j]);
+				}
+			}
+		}
+	}
+}
+
+async function generateFriend(user1, user2) {
+	user1.friends.push(user2);
+	user2.friends.push(user1);
+	await user1.save();
+	await user2.save();
+}
+
+function areUsersFriends(user1, user2) {
+	return user1.friends.includes(user2._id) || user2.friends.includes(user1._id)
 }
 
 module.exports.seedUsers = seedUsers;
