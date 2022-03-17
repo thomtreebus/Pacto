@@ -45,10 +45,10 @@ export default function LoginPage() {
 				setIsButtonDisabled(false);
 				return;
 			}
-
-			setIsAuthenticated(true);
+			
 			setUser(json.message.user);
 			history.push("/feed");
+			setIsAuthenticated(true);
 		} catch (err) {
 			setSnackbarMessage(err.message);
 			setSnackbarOpen(true);
