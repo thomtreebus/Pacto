@@ -6,7 +6,7 @@ const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const supertest = require("supertest");
 const app = require("../../app");
-const { generateTestUser, getTestUserEmail, generateNextTestUser } = require("../fixtures/generateTestUser");
+const { generateTestUser, getDefaultTestUserEmail } = require("../fixtures/generateTestUser");
 const { generateTestPact, getTestPactId } = require("../fixtures/generateTestPact");
 const { generateTestPost, getTestPostId } = require("../fixtures/generateTestPost");
 const { createToken } = require("../../controllers/authController");
@@ -44,7 +44,7 @@ describe("search /search/:query", () =>{
   // Tests
   it("get search with query", async () => {
     const query = "test";
-    const user = await User.findOne({ uniEmail: getTestUserEmail() });
+    const user = await User.findOne({ uniEmail: getDefaultTestUserEmail() });
     const pact = await Pact.findOne({ id: getTestPactId() });
     const post = await Post.findOne({ id: getTestPostId() });
     const token = createToken(user._id);
@@ -62,7 +62,7 @@ describe("search /search/:query", () =>{
 
   it("returns pacts with names that match query", async () => {
     const query = "My pact";
-    const user = await User.findOne({ uniEmail: getTestUserEmail() });
+    const user = await User.findOne({ uniEmail: getDefaultTestUserEmail() });
     const token = createToken(user._id);
 
     const response = await supertest(app)
@@ -79,7 +79,7 @@ describe("search /search/:query", () =>{
 
   it("returns users with names that match query", async () => {
     const query = "Dummy title";
-    const user = await User.findOne({ uniEmail: getTestUserEmail() });
+    const user = await User.findOne({ uniEmail: getDefaultTestUserEmail() });
     const post = await Post.findOne({ id: getTestPostId() });
     const token = createToken(user._id);
 
@@ -98,8 +98,8 @@ describe("search /search/:query", () =>{
 
   it("returns posts with names that match query", async () => {
     const query = "pac";
-    const user = await User.findOne({ uniEmail: getTestUserEmail() });
-    const notReturnUser = await generateNextTestUser("bob");
+    const user = await User.findOne({ uniEmail: getDefaultTestUserEmail() });
+    const notReturnUser = await generateTestUser("bob");
     notReturnUser.save();
     const token = createToken(user._id);
 

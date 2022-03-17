@@ -3,7 +3,7 @@ const dotenv = require("dotenv");
 const supertest = require("supertest");
 const app = require("../../app");
 const { createToken } = require("../../controllers/authController");
-const { generateTestUser, getTestUserEmail } = require("../fixtures/generateTestUser");
+const { generateTestUser, getDefaultTestUserEmail } = require("../fixtures/generateTestUser");
 const { generateTestNotification, getTestNotificationId } = require("../fixtures/generateTestNotification");
 const { jsonResponse } = require("../../helpers/responseHandlers");
 const { MESSAGES, NOTIFICATION_MESSAGES } = require("../../helpers/messages");
@@ -38,7 +38,7 @@ describe("GET /notifications getNotifications()", () => {
   });
 
   it("user can get its notifications", async () => {
-    const user = await User.findOne({ uniEmail: getTestUserEmail() });
+    const user = await User.findOne({ uniEmail: getDefaultTestUserEmail() });
     const notification = await Notification.findOne({ id: getTestNotificationId() });
     const token = createToken(user._id);
 

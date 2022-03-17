@@ -122,7 +122,8 @@ module.exports.banMember = async (req, res) => {
 		await Pact.findByIdAndUpdate(pact._id, { $pull: { members: user._id } });
 		await Pact.findByIdAndUpdate(pact._id, { $push: { bannedUsers: user._id } });
 
-		await Notification.create({ user: user, text: `You have been banned from ${pact.name}` });
+		const notification = await Notification.create({ user: user, text: `You have been banned from ${pact.name}` });
+		await User.findByIdAndUpdate(user._id, { $push: { notifications: notification._id } }); 
 		
 		res.json(jsonResponse(PACT_MESSAGES.SUCCESSFUL_BAN, []));
 	}
@@ -148,7 +149,8 @@ module.exports.promoteMember = async (req, res) => {
 
 		await Pact.findByIdAndUpdate(pact._id, { $push: { moderators: user._id } });
 
-		await Notification.create({ user: user, text: `You have been promoted to moderator in ${pact.name}` });
+		const notification = await Notification.create({ user: user, text: `You have been promoted to moderator in ${pact.name}` });
+		await User.findByIdAndUpdate(user._id, { $push: { notifications: notification._id } }); 
 
 		res.json(jsonResponse(PACT_MESSAGES.SUCCESSFUL_PROMOTION, []));
 	}
@@ -171,7 +173,8 @@ module.exports.revokeBan = async (req, res) => {
 		await Pact.findByIdAndUpdate(pact._id, { $pull: { bannedUsers: user._id } });
 		await User.findByIdAndUpdate(user._id, { $push: { pacts: pact._id } });
 
-		await Notification.create({ user: user, text: `You are no longer banned from ${pact.name}` });
+		const notification = await Notification.create({ user: user, text: `You are no longer banned from ${pact.name}` });
+		await User.findByIdAndUpdate(user._id, { $push: { notifications: notification._id } }); 
 
 		res.json(jsonResponse(PACT_MESSAGES.SUCCESSFUL_REVOKE_BAN, []));
 	}

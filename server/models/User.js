@@ -60,7 +60,7 @@ const UserSchema = Schema({
   notifications: [{
     type: Schema.Types.ObjectId,
     ref: 'Notification'
-  }],
+  }], 
   image: {
     type: String,
     default: "https://res.cloudinary.com/djlwzi9br/image/upload/v1644582632/pacto-logo_zzeh98.png"

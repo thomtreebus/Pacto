@@ -3,7 +3,7 @@ const dotenv = require("dotenv");
 const supertest = require("supertest");
 const app = require("../../app");
 const { createToken } = require("../../controllers/authController");
-const { generateTestUser, getTestUserEmail, generateNextTestUser } = require("../fixtures/generateTestUser");
+const { generateTestUser, getDefaultTestUserEmail } = require("../fixtures/generateTestUser");
 const { generateTestNotification, getTestNotificationId } = require("../fixtures/generateTestNotification");
 const { jsonResponse } = require("../../helpers/responseHandlers");
 const { MESSAGES, NOTIFICATION_MESSAGES } = require("../../helpers/messages");
@@ -38,10 +38,9 @@ describe("GET /notifications getNotifications()", () => {
   });
 
   it("user can mark notification as read", async () => {
-    const user = await User.findOne({ uniEmail: getTestUserEmail() });
+    const user = await User.findOne({ uniEmail: getDefaultTestUserEmail() });
     const notification = await Notification.findOne({ id: getTestNotificationId() });
     const token = createToken(user._id);
-
     const response = await supertest(app)
     .put(`/notifications/${ notification._id }/update`)
     .set("Cookie", [`jwt=${token}`])
@@ -56,7 +55,7 @@ describe("GET /notifications getNotifications()", () => {
   });
 
   it("user can not mark notification that is already read as read", async () => {
-    const user = await User.findOne({ uniEmail: getTestUserEmail() });
+    const user = await User.findOne({ uniEmail: getDefaultTestUserEmail() });
     const notification = await Notification.findOne({ id: getTestNotificationId() });
     notification.read = true;
     notification.save();
@@ -73,7 +72,7 @@ describe("GET /notifications getNotifications()", () => {
   });
 
   it("error when notification does not exist", async () => {
-    const user = await User.findOne({ uniEmail: getTestUserEmail() });
+    const user = await User.findOne({ uniEmail: getDefaultTestUserEmail() });
     const invalidNotificationId = 3;
     // const notification = await Notification.findOne({ id: getTestNotificationId() });
     const token = createToken(user._id);
@@ -89,8 +88,8 @@ describe("GET /notifications getNotifications()", () => {
   });
 
   it("can not mark notification as read for other user", async () => {
-    const user = await User.findOne({ uniEmail: getTestUserEmail() });
-    const otherUser = await generateNextTestUser("bob");
+    const user = await User.findOne({ uniEmail: getDefaultTestUserEmail() });
+    const otherUser = await generateTestUser("bob");
     otherUser.active = true;
     otherUser.save()
     const notification = await Notification.findOne({ id: getTestNotificationId() });

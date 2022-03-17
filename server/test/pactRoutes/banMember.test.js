@@ -4,7 +4,7 @@ const supertest = require("supertest");
 const bcrypt = require("bcrypt");
 const app = require("../../app");
 const { createToken } = require("../../controllers/authController");
-const { generateTestUser, getDefaultTestUserEmail} = require("../fixtures/generateTestUser");
+const { generateTestUser, getDefaultTestUserEmail } = require("../fixtures/generateTestUser");
 const { generateTestPact, getTestPactId } = require("../fixtures/generateTestPact");
 const { generateTestPost, getTestPostId } = require("../fixtures/generateTestPost");
 const { jsonResponse } = require("../../helpers/responseHandlers");
@@ -75,7 +75,7 @@ describe("banMember /pact/:pactId/:userId/ban", () => {
   });
 
   it("banned user gets notification when they get banned", async () => {
-    const user = await User.findOne({ uniEmail: getTestUserEmail() });
+    const user = await User.findOne({ uniEmail: getDefaultTestUserEmail() });
     const pact = await Pact.findOne({ id: getTestPactId() });
     const banUser = await User.findOne({ uniEmail: "bob.to@kcl.ac.uk" });
     const token = createToken(user._id);

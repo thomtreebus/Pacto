@@ -4,7 +4,7 @@ const supertest = require("supertest");
 const bcrypt = require("bcrypt");
 const app = require("../../../app");
 const { createToken } = require("../../../controllers/authController");
-const { generateTestUser, getTestUserEmail, generateNextTestUser } = require("../../fixtures/generateTestUser");
+const { generateTestUser, getDefaultTestUserEmail, generateNextTestUser } = require("../../fixtures/generateTestUser");
 const { generateTestPact, getTestPactId } = require("../../fixtures/generateTestPact");
 const { generateTestPost, getTestPostId } = require("../../fixtures/generateTestPost");
 const { jsonResponse } = require("../../../helpers/responseHandlers");
@@ -47,7 +47,7 @@ describe("POST /post/upvote/:pactid/:id", () => {
   });
 
   it("upvote post with valid pact id and user part of pact", async () => {
-    const user = await User.findOne({ uniEmail: getTestUserEmail() });
+    const user = await User.findOne({ uniEmail: getDefaultTestUserEmail() });
     const pact = await Pact.findOne({ id: getTestPactId() });
     const post = await Post.findOne({ id: getTestPostId() });
     const token = createToken(user._id);
@@ -69,7 +69,7 @@ describe("POST /post/upvote/:pactid/:id", () => {
   });
 
   it("upvote post notifies poster that their post was upvoted", async () => {
-    const user = await User.findOne({ uniEmail: getTestUserEmail() });
+    const user = await User.findOne({ uniEmail: getDefaultTestUserEmail() });
     const pact = await Pact.findOne({ id: getTestPactId() });
     const post = await Post.findOne({ id: getTestPostId() });
     const token = createToken(user._id);
@@ -95,7 +95,7 @@ describe("POST /post/upvote/:pactid/:id", () => {
   });
 
   it("upvote twice does not change the votes count", async () => {
-    const user = await User.findOne({ uniEmail: getTestUserEmail() });
+    const user = await User.findOne({ uniEmail: getDefaultTestUserEmail() });
     const pact = await Pact.findOne({ id: getTestPactId() });
     const post = await Post.findOne({ id: getTestPostId() });
     const token = createToken(user._id);
@@ -121,7 +121,7 @@ describe("POST /post/upvote/:pactid/:id", () => {
   });
 
   it("two different users upvotes is cummulative", async () => {
-    const user1 = await User.findOne({ uniEmail: getTestUserEmail() });
+    const user1 = await User.findOne({ uniEmail: getDefaultTestUserEmail() });
     const pact = await Pact.findOne({ id: getTestPactId() });
     const post = await Post.findOne({ id: getTestPostId() });
     const token1 = createToken(user1._id);
@@ -214,7 +214,7 @@ describe("POST /post/upvote/:pactid/:id", () => {
   });
 
   it("user can upvote two different posts", async () => {
-    const user = await User.findOne({ uniEmail: getTestUserEmail() });
+    const user = await User.findOne({ uniEmail: getDefaultTestUserEmail() });
     const pact = await Pact.findOne({ id: getTestPactId() });
     let post1 = await Post.findOne({ id: getTestPostId() });
     let post2 = await generateTestPost(user, pact, "Second post");
@@ -255,7 +255,7 @@ describe("POST /post/upvote/:pactid/:id", () => {
   });
 
   it("upvote of downvoted post by same user", async () => {
-    const user1 = await User.findOne({ uniEmail: getTestUserEmail() });
+    const user1 = await User.findOne({ uniEmail: getDefaultTestUserEmail() });
     const pact = await Pact.findOne({ id: getTestPactId() });
     const post = await Post.findOne({ id: getTestPostId() });
     const token = createToken(user1._id);
@@ -286,7 +286,7 @@ describe("POST /post/upvote/:pactid/:id", () => {
   });
 
   it("upvote of downvoted post by different users", async () => {
-    const user1 = await User.findOne({ uniEmail: getTestUserEmail() });
+    const user1 = await User.findOne({ uniEmail: getDefaultTestUserEmail() });
     const pact = await Pact.findOne({ id: getTestPactId() });
     const post = await Post.findOne({ id: getTestPostId() });
     const token1 = createToken(user1._id);
@@ -327,7 +327,7 @@ describe("POST /post/upvote/:pactid/:id", () => {
   });
 
   it("upvote of non-existing post doesn't work", async () => {
-    const user = await User.findOne({ uniEmail: getTestUserEmail() });
+    const user = await User.findOne({ uniEmail: getDefaultTestUserEmail() });
     const pact = await Pact.findOne({ id: getTestPactId() });
     const post = await Post.findOne({ id: getTestPostId() });
     const token = createToken(user._id);
