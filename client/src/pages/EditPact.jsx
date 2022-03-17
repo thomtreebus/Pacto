@@ -15,6 +15,7 @@ import ErrorMessage from "../components/ErrorMessage";
 import {LoadingButton} from "@mui/lab";
 import {styled} from "@mui/material/styles";
 import Loading from "./Loading";
+import {useAuth} from "../providers/AuthProvider";
 
 function SaveIcon() {
   return null;
@@ -27,6 +28,7 @@ const Input = styled('input')({
 
 export default function EditPact() {
   const [isButtonDisabled, setIsButtonDisabled] = React.useState(false);
+  const {user} = useAuth();
   const {pactId} = useParams();
   const history = useHistory();
   const defaultData = {
@@ -83,6 +85,10 @@ export default function EditPact() {
         return res.json();
       }).then((resData) => {
         const data = resData.message;
+        if(!data.moderators.includes(user.id)){
+
+          return history.push(`/pact/${pactId}`);
+        }
         setName(data.name);
         setCategory(data.category);
         setDescription(data.description);
