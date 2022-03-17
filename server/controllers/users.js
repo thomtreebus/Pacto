@@ -11,8 +11,8 @@ module.exports.updateProfile = async(req, res) => {
   let resMessage = null;
   try {
     const { id } = req.params;
-  console.log(req.body);
-  const { firstName, lastName, personalEmail, course } = req.body;
+    console.log(req.body);
+    const { firstName, lastName, personalEmail, course } = req.body;
 
     // if (!mongoose.Types.ObjectId.isValid(id)) return res.status(404).send(`No user with id: ${id}`);
     if (!mongoose.Types.ObjectId.isValid(id)) {
@@ -50,12 +50,12 @@ module.exports.viewProfile = async(req, res) => {
   let status = 400;
   try {
     const university = req.user.university;
-    const { id } = req.params; 
+    const { id } = req.params;
 
     if (!university){
 			throw Error("User not authenticated");
     }
-    
+
     if (!mongoose.Types.ObjectId.isValid(id)) {
       status = 404;
       throw Error("User does not exist");
@@ -71,8 +71,30 @@ module.exports.viewProfile = async(req, res) => {
     }
 
     // await user.populate({ path: 'user', model: User })
-    
+
     res.status(200).json(jsonResponse(user, []));
+
+  } catch (err) {
+    res.status(status).json(jsonResponse(null, [jsonError(null, err.message)]));
+  }
+}
+
+module.exports.allUniUsers = async(req, res) => {
+  let status = 400;
+  try {
+    const university = req.user.university;
+
+    if (!university){
+      throw Error("User not authenticated");
+    }
+
+    const users = await User.find({university}).populate(
+      {path: 'university', model: University}
+    );
+
+    // await users.populate({ path: 'users', model: User })
+
+    res.status(200).json(jsonResponse(users, []));
 
   } catch (err) {
     res.status(status).json(jsonResponse(null, [jsonError(null, err.message)]));
