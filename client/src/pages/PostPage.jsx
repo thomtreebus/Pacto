@@ -14,6 +14,7 @@ export default function PostPage() {
   const [post, setPost] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [showReplyBox, setShowReplyBox] = useState(false);
+  const [topLevelComments, setTopLevelComments] = useState([]);
   const history = useHistory();
 
   useEffect(() => {
@@ -21,15 +22,22 @@ export default function PostPage() {
     fetch(`${process.env.REACT_APP_URL}/pact/${pactID}/post/${postID}`, {
       method: "GET",
       credentials: "include"
-    }).then((res) => {
+    })
+    .then((res) => {
       if (!res.ok) {
         throw Error("Could not fetch post");
       }
       return res.json();
-    }).then((data) => {
+    })
+    .then((data) => {
       setPost(data.message);
+
+      // Display comments replying directly to the post.
+      setTopLevelComments(data.message.comments.filter(c => c.parentComment==null));
+      
       setIsLoading(false);
-    }).catch((err) => {
+    })
+    .catch((err) => {
       setIsLoading(false);
       history.push("/not-found");
       //console.log(err.message)
@@ -39,12 +47,10 @@ export default function PostPage() {
   if(isLoading){
     return <Loading/>
   }
-
-  // Display comments replying directly to the post.
-  const topLevelComments = post.comments.filter(c => c.parentComment==null);
   
-  const commentSubmissionHandler = () => {
+  const commentSubmissionHandler = (newComment) => {
     setShowReplyBox(false);
+    setTopLevelComments([newComment] + topLevelComments);
   }
 
   return (post&&

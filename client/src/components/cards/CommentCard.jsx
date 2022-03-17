@@ -17,6 +17,7 @@ export default function CommentCard({ comment, post }) {
   const [thumbDown, setThumbDown] = useState(post.downvoters.includes(user._id));
   const [showReplyBox, setShowReplyBox] = useState(false);
   const [likes, setLikes] = useState(post.votes);
+  const [replies, setReplies] = useState([]);
 
   const history = useHistory();
 
@@ -37,10 +38,11 @@ export default function CommentCard({ comment, post }) {
 	};
 
   // Map each child comment to its populated representation in the post document.
-  const replies = comment.childComments.map(c => post.comments.filter(p=> p._id===c._id)[0]);
+  setReplies(comment.childComments.map(c => post.comments.filter(p=> p._id===c._id)[0]));
 
-  const replySubmissionHandler = () => {
+  const replySubmissionHandler = (newComment) => {
     setShowReplyBox(false);
+    setReplies([newComment] + replies);
   }
 
   return (comment &&
