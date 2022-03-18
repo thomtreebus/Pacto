@@ -7,7 +7,7 @@ const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const supertest = require("supertest");
 const app = require("../../app");
-const { generateTestUser, getTestUserEmail, generateNextTestUser } = require("../fixtures/generateTestUser");
+const { generateTestUser, getDefaultTestUserEmail} = require("../fixtures/generateTestUser");
 const { generateTestPact, getTestPactId } = require("../fixtures/generateTestPact");
 const { generateTestPost, getTestPostId } = require("../fixtures/generateTestPost");
 const { createToken } = require("../../controllers/authController");
@@ -64,7 +64,7 @@ describe("DELETE /pact/:pactId/post/:postId/comment/:commentId", () =>{
   }
 
   it("successfully deletes comment posted by user", async () =>{
-    const user = await User.findOne({uniEmail: getTestUserEmail()});
+    const user = await User.findOne({uniEmail: getDefaultTestUserEmail()});
     const token = createToken(user._id);
 
     const response = await sendRequest(token, 200);
@@ -75,7 +75,7 @@ describe("DELETE /pact/:pactId/post/:postId/comment/:commentId", () =>{
   });
 
   it("moderator successfully deletes comment posted by another user", async () =>{
-    const user = await generateNextTestUser("David");
+    const user = await generateTestUser("David");
     user.active = true;
     await user.save();
 
@@ -98,7 +98,7 @@ describe("DELETE /pact/:pactId/post/:postId/comment/:commentId", () =>{
 
   // This reason this is tested separately is that it is not done in a middleware.
   it("rejections deletion when user is neither author or moderator", async () =>{
-    const user = await generateNextTestUser("David");
+    const user = await generateTestUser("David");
     user.active = true;
     await user.save();
 
@@ -125,7 +125,7 @@ describe("DELETE /pact/:pactId/post/:postId/comment/:commentId", () =>{
   });
 
   it("uses checkIsMemberOfPact middleware", async () => {
-    const user = await generateNextTestUser("David");
+    const user = await generateTestUser("David");
     user.active = true;
     await user.save();
 
@@ -137,7 +137,7 @@ describe("DELETE /pact/:pactId/post/:postId/comment/:commentId", () =>{
   });
 
   it("uses checkValidPost middleware", async () => {
-    const user = await User.findOne({ uniEmail: getTestUserEmail() });
+    const user = await User.findOne({ uniEmail: getDefaultTestUserEmail() });
 
     const token = createToken(user._id);
     const response = await supertest(app)
@@ -150,7 +150,7 @@ describe("DELETE /pact/:pactId/post/:postId/comment/:commentId", () =>{
   });
 
   it("uses checkValidPostComment middleware", async () => {
-    const user = await User.findOne({ uniEmail: getTestUserEmail() });
+    const user = await User.findOne({ uniEmail: getDefaultTestUserEmail() });
 
     const token = createToken(user._id);
     commentId = "some gibberish";

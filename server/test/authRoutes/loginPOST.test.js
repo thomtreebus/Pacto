@@ -5,7 +5,7 @@ const app = require("../../app");
 const Cookies = require("expect-cookies");
 const User = require("../../models/User");
 const University = require("../../models/University");
-const { generateTestUser, getTestUserEmail } = require('../fixtures/generateTestUser');
+const { generateTestUser, getDefaultTestUserEmail } = require('../fixtures/generateTestUser');
 const { MESSAGES } = require("../../helpers/messages");
 
 dotenv.config();
@@ -88,7 +88,7 @@ describe("POST /login", () => {
 
   it("rejects inactive user with correct credentials", async () => {
     await User.findOneAndUpdate(
-      { uniEmail: getTestUserEmail() },
+      { uniEmail: getDefaultTestUserEmail() },
       { active: false }
     );
     await isInvalidCredentials(

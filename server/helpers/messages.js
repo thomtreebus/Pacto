@@ -123,3 +123,12 @@ module.exports.COMMENT_MESSAGES = {
   REMOVED: "This comment has been removed and locked",
   DELETED_COMMENT_TEXT: "[DATA EXPUNGED]"
 }
+
+module.exports.USER_MESSAGES = {
+	NOT_AUTHENTICATED: "Post not found",
+	DOES_NOT_EXIST: "User does not exist",
+	UNIVERSITY_NOT_SET: "User has no university",
+	UPDATE_OTHER_PROFILE_UNAUTHORISED: "Can not update someone else's profile",
+	SUCCESSFUL_DELETE: "Successfully deleted account!",
+	NOT_ACTIVE: "This user is not active"
+};

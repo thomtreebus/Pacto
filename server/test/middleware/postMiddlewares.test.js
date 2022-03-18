@@ -7,7 +7,7 @@ const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const supertest = require("supertest");
 const app = require("../../app");
-const { generateTestUser, getTestUserEmail, generateNextTestUser } = require("../fixtures/generateTestUser");
+const { generateTestUser, getDefaultTestUserEmail} = require("../fixtures/generateTestUser");
 const { generateTestPact, getTestPactId } = require("../fixtures/generateTestPact");
 const { generateTestPost, getTestPostId } = require("../fixtures/generateTestPost");
 const { createToken } = require("../../controllers/authController");
@@ -72,7 +72,7 @@ describe("Post/Comment Middlewares", () =>{
   }
 
   it("handles valid post and comment IDs", async () =>{
-    const user = await User.findOne({uniEmail: getTestUserEmail()});
+    const user = await User.findOne({uniEmail: getDefaultTestUserEmail()});
     const token = createToken(user._id);
 
     const postId = getTestPostId();
@@ -85,7 +85,7 @@ describe("Post/Comment Middlewares", () =>{
 
   describe("checkValidPost", () => {
     it("throws 404 error on invalid id", async () =>{
-      const user = await User.findOne({uniEmail: getTestUserEmail()});
+      const user = await User.findOne({uniEmail: getDefaultTestUserEmail()});
       const token = createToken(user._id);
   
       const postId = "some gibberish";
@@ -97,7 +97,7 @@ describe("Post/Comment Middlewares", () =>{
 
   describe("checkValidPostComment", () => {
     it("throws 404 error on invalid id", async () =>{
-      const user = await User.findOne({uniEmail: getTestUserEmail()});
+      const user = await User.findOne({uniEmail: getDefaultTestUserEmail()});
       const token = createToken(user._id);
   
       const postId = getTestPostId();
@@ -108,7 +108,7 @@ describe("Post/Comment Middlewares", () =>{
     });
 
     it("throws 404 error on comment not on given post", async () =>{
-      const user = await User.findOne({uniEmail: getTestUserEmail()});
+      const user = await User.findOne({uniEmail: getDefaultTestUserEmail()});
       const token = createToken(user._id);
 
       const pact = await Pact.findById(getTestPactId());
