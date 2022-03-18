@@ -68,15 +68,26 @@ module.exports.PACT_MESSAGES = {
 	NOT_FOUND: "Pact not found",
 	SUCCESSFUL_JOIN: "Successfully Joined the pact",
 	NOT_AUTHORISED: "User is not a member of this pact",
+	NOT_MODERATOR: "User is not a moderator of this pact",
+	SUCCESSFUL_BAN: "User has been banned from pact",
+	SUCCESSFUL_REVOKE_BAN: "User no longer banned from pact",
+	CANT_BAN: "Can't ban that user from the pact",
+	NOT_BANNED: "User is not banned from the pact",
+	ALREADY_BANNED: "User is already banned from the pact",
+	CANT_BAN_MODERATOR: "Can't ban a moderator from the pact",
+	CANT_BAN_NON_MEMBER: "Can't ban someone who is not a member of the pact",
+	CANT_PROMOTE_NON_MEMBER: "Can't promote a user that isn't a member of the pact",
+	CANT_PROMOTE_MODERATOR: "User is already a moderator of the pact",
+	SUCCESSFUL_PROMOTION: "Member has been promoted to moderator",
 };
 
 module.exports.POST_MESSAGES = {
-	NOT_FOUND: "Post not found",
-	NOT_AUTHORISED: {
-		NOT_AUTHOR_NOT_MOD: "User is neither a mod nor the author of the post",
-		NOT_AUTHOR: "User is not the author of the post",
-	},
-};
+  NOT_FOUND: "Post not found",
+  NOT_AUTHORISED: {
+    NOT_AUTHOR_NOT_MOD: "User is neither a mod nor the author of the post",
+    NOT_AUTHOR: "User is not the author of the post"
+  }
+}
 
 module.exports.FRIEND_MESSAGES = {
 	ALREADY_FRIEND: "Recipient is already a friend",
@@ -89,4 +100,25 @@ module.exports.FRIEND_REQUEST_MESSAGES = {
 		REJECT: "Cannot reject friend request for somebody else",
 	},
 	ALREADY_SENT: "Recipient has already got a friend request",
+};
+
+module.exports.COMMENT_MESSAGES = {
+  NOT_FOUND: "Comment not found",
+  NOT_AUTHORISED: {
+    VIEWING: "You are not authorised to view this comment",
+    MODIFY: "You are not authorised to modify this comment"
+  },
+  BLANK: "Comment text is required",
+  MAX_LENGTH_EXCEEDED: "Comment text cannot exceed 512 characters",
+  REMOVED: "This comment has been removed and locked",
+  DELETED_COMMENT_TEXT: "[DATA EXPUNGED]"
+}
+
+module.exports.USER_MESSAGES = {
+	NOT_AUTHENTICATED: "Post not found",
+	DOES_NOT_EXIST: "User does not exist",
+	UNIVERSITY_NOT_SET: "User has no university",
+	UPDATE_OTHER_PROFILE_UNAUTHORISED: "Can not update someone else's profile",
+	SUCCESSFUL_DELETE: "Successfully deleted account!",
+	NOT_ACTIVE: "This user is not active"
 };

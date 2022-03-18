@@ -5,6 +5,7 @@ const mongoose = require('mongoose');
 const {jsonResponse, jsonError} = require("../helpers/responseHandlers");
 const errorHandler = require("../helpers/errorHandler");
 const University = require("../models/University");
+const {USER_MESSAGES} = require("../helpers/messages");
 
 
 module.exports.updateProfile = async(req, res) => {
@@ -13,22 +14,25 @@ module.exports.updateProfile = async(req, res) => {
   let resMessage = null;
   try {
     const { id } = req.params;
-  console.log(req.body);
   const { firstName, lastName, personalEmail, course } = req.body;
 
   const user = await User.findByIdAndUpdate(id, { firstName, lastName, personalEmail, course });
     // if (!mongoose.Types.ObjectId.isValid(id)) return res.status(404).send(`No user with id: ${id}`);
     if (!mongoose.Types.ObjectId.isValid(id)) {
       status = 404;
-      throw Error("User does not exist");
+      throw Error(USER_MESSAGES.DOES_NOT_EXIST);
     }
     if (req.user._id.toString() !== id.toString()) {
       status = 401;
-      throw Error("Can not update someone else's profile")
+      throw Error(USER_MESSAGES.UPDATE_OTHER_PROFILE_UNAUTHORISED)
     }
-    const updatedUser = await User.findByIdAndUpdate(id, { ...req.body });
+    const updatedUser = await User.findByIdAndUpdate(id, { ...req.body }, {runValidators: true});
     status = 200
 
+    const university = req.user.university;
+    resMessage = await User.findOne({university, _id: req.params.id}).populate(
+      {path: 'university', model: University}
+    );
   } catch (err) {
     // When status code is not defined use status 500
     if(!status){
@@ -53,15 +57,15 @@ module.exports.viewProfile = async(req, res) => {
   let status = 400;
   try {
     const university = req.user.university;
-    const { id } = req.params; 
+    const { id } = req.params;
 
     if (!university){
-			throw Error("User not authenticated");
+			throw Error(USER_MESSAGES.UNIVERSITY_NOT_SET);
     }
     
     if (!mongoose.Types.ObjectId.isValid(id)) {
       status = 404;
-      throw Error("User does not exist");
+      throw Error(USER_MESSAGES.DOES_NOT_EXIST);
     }
 
     const user = await User.findOne({ university, _id:req.params.id }).populate(
@@ -70,7 +74,12 @@ module.exports.viewProfile = async(req, res) => {
 
 		if (!user){
 			status = 404;
-			throw Error("User not found");
+			throw Error(USER_MESSAGES.DOES_NOT_EXIST);
+    }
+
+    if (user.active === false){
+      status = 423
+      throw Error(USER_MESSAGES.NOT_ACTIVE)
     }
 
     // await user.populate({ path: 'user', model: User })
