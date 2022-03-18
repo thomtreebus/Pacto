@@ -264,6 +264,13 @@ describe("POST /pact/:pactId/post", () => {
   });
 
   describe("Type validation", () => {
+    it("rejects post with unknown type", async () =>{
+      const res = await isInvalidPost({
+        title: TITLE,
+        type: "notAType"
+      }, "type", POST_MESSAGES.TYPE.INVALID);
+    });
+
     it("accepts valid text post with no optional attributes", async () =>{
       await isValidPost({
         title: TITLE,
@@ -309,6 +316,14 @@ describe("POST /pact/:pactId/post", () => {
         title: TITLE,
         type: LINK_TYPE
       }, "link", POST_MESSAGES.TYPE.LINK.BLANK);
+    });
+
+    it("rejects link post with invalid link", async () => {
+      await isInvalidPost({
+        title: TITLE,
+        type: LINK_TYPE,
+        link: "noturl"
+      }, "link", POST_MESSAGES.TYPE.LINK.INVALID);
     });
 
     it("rejects post without type and text", async () =>{

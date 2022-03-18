@@ -40,7 +40,7 @@ const PostSchema = mongoose.Schema({
 
   type: {
     type: String,
-    enum: ["link", "image", "text"],
+    // enum: ["link", "image", "text"],
     validate: [isValidType, POST_MESSAGES.TYPE.INVALID],
     required: [true, POST_MESSAGES.TYPE.BLANK],
     default: "text"
