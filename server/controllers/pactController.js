@@ -8,8 +8,6 @@ const { MESSAGES, PACT_MESSAGES } = require("../helpers/messages")
 
 // POST pact
 module.exports.pactPost = async (req, res) => {
-	let jsonErrors = [];
-
 	try {
 		const user = req.user;
     const { name } = req.body;
@@ -44,14 +42,7 @@ module.exports.pactPost = async (req, res) => {
 		res.status(201).json(jsonResponse(pact, []));
 	} 
   catch (err) {
-		const allErrors = handleFieldErrors(err);
-    if(allErrors){
-			allErrors.forEach((myErr) => jsonErrors.push(myErr));
-		} 
-		else {
-			jsonErrors.push(jsonError(null, err.message));
-		}
-		res.status(400).json(jsonResponse(null, jsonErrors));
+		res.status(400).json(jsonResponse(null, handleFieldErrors(err)));
 	}
 };
 
