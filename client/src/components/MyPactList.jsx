@@ -15,7 +15,7 @@ export default function MyPactList() {
 
 	useEffect(() => {
 		refetch();
-	}, [user])
+	}, [user, refetch])
 
 	if (isLoading) {
 		return "Loading Pacts...";
