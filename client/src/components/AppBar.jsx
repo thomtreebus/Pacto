@@ -17,6 +17,7 @@ import Divider from "@mui/material/Divider";
 import Avatar from "@mui/material/Avatar";
 import { useAuth } from "../providers/AuthProvider";
 import PactoIcon from "../assets/pacto-logo.png";
+import MenuIcon from "@mui/icons-material/Menu";
 
 const Search = styled("div")(({ theme }) => ({
 	position: "relative",
@@ -58,14 +59,13 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 	},
 }));
 
-export default function PrimarySearchAppBar() {
-	const history = useHistory()
+export default function PrimarySearchAppBar({ handleDrawerToggle }) {
+	const history = useHistory();
 
 	const { user, setIsAuthenticated } = useAuth();
 
 	const [anchorEl, setAnchorEl] = React.useState(null);
 	const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
-	const [search, setSearch] = React.useState("");
 
 	const isMenuOpen = Boolean(anchorEl);
 	const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
@@ -75,7 +75,7 @@ export default function PrimarySearchAppBar() {
 			credentials: "include",
 		});
 		setIsAuthenticated(false);
-		history.push('login');
+		history.push("login");
 	};
 
 	const handleProfileMenuOpen = (event) => {
@@ -98,169 +98,160 @@ export default function PrimarySearchAppBar() {
 	const handleEditProfileClick = () => {
 		history.push("/edit-profile");
 		handleMenuClose();
-	}
+	};
 
-	const handleSearch = () => {
-		// fetch(`${process.env.REACT_APP_URL}/search`, {
-		//   method: "GET",
-		//   credentials: "include"
-		// }).then((res) => {
-		//   if (!res.ok) {
-		//     throw Error("Could not fetch pact");
-		//   }
-		//   return res.json();
-		// }).then((data) => {
-		//   setPact(data.message);
-		//   setIsLoading(false);
-		//   setError(null);
-		// }).catch((err) => {
-		//   setPact(null);
-		//   setIsLoading(false);
-		//   setError(err);
-		// })
-		history.push(`/search/${search}`);
-	}
+	const handleProfileClick = () => {
+		history.push("/user/" + user._id);
+		handleMenuClose();
+	};
 
-	const keyPress = (e) => {
-		if (e.keyCode == 13) {
-			handleSearch();
-		}
-		const handleProfileClick = () => {
-			history.push("/user/" + user._id);
-			handleMenuClose();
-		}
-
-		const menuId = "primary-search-account-menu";
-		const renderMenu = (
-			<Menu
-				data-testid={menuId}
-				anchorEl={anchorEl}
-				anchorOrigin={{
-					vertical: "top",
-					horizontal: "right",
-				}}
-				id={menuId}
-				keepMounted
-				transformOrigin={{
-					vertical: "top",
-					horizontal: "right",
-				}}
-				open={isMenuOpen}
-				onClose={handleMenuClose}
+	const menuId = "primary-search-account-menu";
+	const renderMenu = (
+		<Menu
+			data-testid={menuId}
+			anchorEl={anchorEl}
+			anchorOrigin={{
+				vertical: "top",
+				horizontal: "right",
+			}}
+			id={menuId}
+			keepMounted
+			transformOrigin={{
+				vertical: "top",
+				horizontal: "right",
+			}}
+			open={isMenuOpen}
+			onClose={handleMenuClose}
+		>
+			<MenuItem data-testid="profile-item" onClick={handleProfileClick}>
+				Profile
+			</MenuItem>
+			<MenuItem
+				data-testid="edit-profile-item"
+				onClick={handleEditProfileClick}
 			>
-				<MenuItem data-testid="profile-item" onClick={handleProfileClick}>Profile</MenuItem>
-				<MenuItem data-testid="edit-profile-item" onClick={handleEditProfileClick}>Edit Profile</MenuItem>
-				<Divider />
-				<MenuItem data-testid="logout-item" onClick={handleLogout}>Log Out</MenuItem>
-			</Menu>
-		);
+				Edit Profile
+			</MenuItem>
+			<Divider />
+			<MenuItem data-testid="logout-item" onClick={handleLogout}>
+				Log Out
+			</MenuItem>
+		</Menu>
+	);
 
-		const mobileMenuId = "primary-search-account-menu-mobile";
-		const renderMobileMenu = (
-			<Menu
-				data-testid={mobileMenuId}
-				anchorEl={mobileMoreAnchorEl}
-				anchorOrigin={{
-					vertical: "top",
-					horizontal: "right",
-				}}
-				id={mobileMenuId}
-				keepMounted
-				transformOrigin={{
-					vertical: "top",
-					horizontal: "right",
-				}}
-				open={isMobileMenuOpen}
-				onClose={handleMobileMenuClose}
+	const mobileMenuId = "primary-search-account-menu-mobile";
+	const renderMobileMenu = (
+		<Menu
+			data-testid={mobileMenuId}
+			anchorEl={mobileMoreAnchorEl}
+			anchorOrigin={{
+				vertical: "top",
+				horizontal: "right",
+			}}
+			id={mobileMenuId}
+			keepMounted
+			transformOrigin={{
+				vertical: "top",
+				horizontal: "right",
+			}}
+			open={isMobileMenuOpen}
+			onClose={handleMobileMenuClose}
+		>
+			<MenuItem
+				data-testid="profile-item-mobile"
+				onClick={handleMobileMenuClose}
 			>
-				<MenuItem data-testid="profile-item-mobile" onClick={handleMobileMenuClose}>
-					<IconButton
-						size="large"
-						aria-label="account of current user"
-						aria-controls="primary-search-account-menu"
-						aria-haspopup="true"
-						color="inherit"
-					>
-						<AccountCircle />
-					</IconButton>
-					<p>Profile</p>
-				</MenuItem>
-				<Divider />
-				<MenuItem data-testid="logout-item-mobile" onClick={handleLogout}>
-					<p>Log Out</p>
-				</MenuItem>
-			</Menu>
-		);
-
-		return (
-			<Box sx={{ flexGrow: 1 }}>
-				<AppBar
-					data-testid="app-bar"
-					position="fixed"
-					sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
-					style={{ background: "#2E3B55" }}
+				<IconButton
+					size="large"
+					aria-label="account of current user"
+					aria-controls="primary-search-account-menu"
+					aria-haspopup="true"
+					color="inherit"
 				>
-					<Toolbar>
-						<Typography
-							variant="h6"
-							noWrap
-							component="div"
-							sx={{ display: { xs: "none", sm: "block" } }}
+					<AccountCircle />
+				</IconButton>
+				<p>Profile</p>
+			</MenuItem>
+			<Divider />
+			<MenuItem data-testid="logout-item-mobile" onClick={handleLogout}>
+				<p>Log Out</p>
+			</MenuItem>
+		</Menu>
+	);
+
+	return (
+		<Box sx={{ flexGrow: 1 }}>
+			<AppBar
+				data-testid="app-bar"
+				position="fixed"
+				sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
+				style={{ background: "#2E3B55" }}
+			>
+				<Toolbar>
+					<IconButton
+						color="inherit"
+						aria-label="open drawer"
+						edge="start"
+						onClick={handleDrawerToggle}
+						sx={{ mr: 2, display: { sm: "none" } }}
+						data-testid="sidebar-menu-button"
+					>
+						<MenuIcon />
+					</IconButton>
+					<Typography
+						variant="h6"
+						noWrap
+						component="div"
+						sx={{ display: { xs: "none", sm: "block" } }}
+					>
+						<Button
+							data-testid="home-button"
+							component={Link}
+							to="/feed"
+							startIcon={<Avatar src={PactoIcon} alt="Pacto Icon" />}
+						/>
+					</Typography>
+					<Search data-testid="search-bar">
+						<SearchIconWrapper>
+							<SearchIcon data-testid="search-icon" />
+						</SearchIconWrapper>
+						<StyledInputBase
+							placeholder="Search…"
+							inputProps={{ "aria-label": "search" }}
+						/>
+					</Search>
+					<Box sx={{ flexGrow: 1 }} />
+					<Box sx={{ display: { xs: "none", md: "flex" } }}>
+						<IconButton
+							data-testid="profile-button"
+							size="large"
+							edge="end"
+							aria-label="account of current user"
+							aria-controls={menuId}
+							aria-haspopup="true"
+							onClick={handleProfileMenuOpen}
+							color="inherit"
 						>
-							<Button
-								data-testid="home-button"
-								component={Link}
-								to="/feed"
-								startIcon={<Avatar src={PactoIcon} alt="Pacto Icon" />}
-							/>
-						</Typography>
-						<Search
-							data-testid="search-bar"
+							<AccountCircle data-testid="account-circle" />
+						</IconButton>
+					</Box>
+					<Box sx={{ display: { xs: "flex", md: "none" } }}>
+						<IconButton
+							data-testid="mobile-menu-button"
+							size="large"
+							aria-label="show more"
+							aria-controls={mobileMenuId}
+							aria-haspopup="true"
+							onClick={handleMobileMenuOpen}
+							color="inherit"
 						>
-							<SearchIconWrapper>
-								<SearchIcon data-testid="search-icon" />
-							</SearchIconWrapper>
-							<StyledInputBase
-								placeholder="Search…"
-								value={search}
-								onChange={(e) => setSearch(e.target.value)}
-								inputProps={{ "aria-label": "search" }}
-								onKeyDown={keyPress}
-							/>
-						</Search>
-						<Box sx={{ flexGrow: 1 }} />
-						<Box sx={{ display: { xs: "none", md: "flex" } }}>
-							<IconButton
-								data-testid="profile-button"
-								size="large"
-								edge="end"
-								aria-label="account of current user"
-								aria-controls={menuId}
-								aria-haspopup="true"
-								onClick={handleProfileMenuOpen}
-								color="inherit"
-							>
-								<AccountCircle data-testid="account-circle" />
-							</IconButton>
-						</Box>
-						<Box sx={{ display: { xs: "flex", md: "none" } }}>
-							<IconButton
-								data-testid="mobile-menu-button"
-								size="large"
-								aria-label="show more"
-								aria-controls={mobileMenuId}
-								aria-haspopup="true"
-								onClick={handleMobileMenuOpen}
-								color="inherit"
-							>
-								<MoreIcon data-testid="more-button" />
-							</IconButton>
-						</Box>
-					</Toolbar>
-				</AppBar>
-				{renderMobileMenu}
-				{renderMenu}
-			</Box>
-		);
-	}
+							<MoreIcon data-testid="more-button" />
+						</IconButton>
+					</Box>
+				</Toolbar>
+			</AppBar>
+			{renderMobileMenu}
+			{renderMenu}
+		</Box>
+	);
 }
