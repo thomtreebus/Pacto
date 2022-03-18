@@ -35,11 +35,11 @@ export default function PactPage() {
   return (
     <>
     { isLoading && <Loading /> }
-      <Grid container width={"50vw"}>
-        <Grid item xs={12} lg={8}>
+      <Grid container width="100%" justifyContent="center">
+        <Grid item xs={12} lg={8} xl={7}>
           { pact && <PostList posts={pact.posts}/> }
         </Grid>
-        <Grid item lg={4}>
+        <Grid item lg={4} xl={3}>
           <Box sx={{ paddingTop: "16px", paddingRight: "16px" }} display={{ xs: "none", lg: "block" }} position={"sticky"} top={65}>
             { pact && <AboutPact pact={pact} /> }
           </Box>

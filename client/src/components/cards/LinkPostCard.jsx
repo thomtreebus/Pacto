@@ -40,7 +40,7 @@ export default function LinkPostCard({ post }) {
           </CardContent>
           }
           <CardContent sx={{ padding: "5px", backgroundColor: "gray", color: "white" }}>
-            <Typography variant={"subtitle"}>
+            <Typography variant="subtitle" sx={{ overflowWrap: "anywhere" }}>
               {post.link}
             </Typography>
           </CardContent>
