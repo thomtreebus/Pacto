@@ -215,6 +215,29 @@ describe("CreatePostCard Tests", () => {
 			const existingElement = await screen.findByText("Provide a valid link");
 			expect(existingElement).toBeInTheDocument();
 		});
+
+		it("uploaded image contents should be saved as a state", async () => {
+			server.use(
+				rest.post(`https://api.cloudinary.com/v1_1/${process.env.REACT_APP_CLOUDINARY_CLOUD_NAME}/image/upload`, (req, res, ctx) => {
+					return res(
+						ctx.status(201),
+						ctx.json({}),
+					);
+				})
+			);
+			const iconElement = await screen.findByTestId("image-icon");
+			fireEvent.click(iconElement)
+      const image = new File(['testImage'], 'testImage.png', {type: 'image/png'})
+      const buttonElement = await screen.findByTestId(
+        "image-upload-icon"
+      );
+      await act(async () => {
+        await waitFor(() => 
+					userEvent.upload(buttonElement, image))
+					await new Promise(resolve => setTimeout(resolve, 1000));
+					expect(buttonElement.files[0]).toBe(image);
+        	expect(buttonElement.files).toHaveLength(1);
+      });
+    });
 	});
-	
 });

@@ -11,11 +11,15 @@ import PhotoIcon from '@mui/icons-material/Photo';
 import PhotoCameraIcon from '@mui/icons-material/PhotoCamera';
 import TextIcon from '@mui/icons-material/TextSnippet';
 import LinkIcon from '@mui/icons-material/Link';
+import {styled} from "@mui/material/styles";
 import { useHistory } from "react-router-dom";
-import Input from "@mui/material/Input";
 import { Image } from 'cloudinary-react';
 import Axios from 'axios';
 import IconButton from '@mui/material/IconButton';
+
+const Input = styled('input')({
+  display: 'none',
+});
 
 function TitleTextField({apiPostTitleError}){
   return <TextField fullWidth name="title" label="Title" error={apiPostTitleError.length !== 0} helperText={apiPostTitleError}/> 
@@ -167,10 +171,11 @@ export default function CreatePostCard({pactID}) {
         </TabPanel>
         <TabPanel value={value} index={1}>
           <TitleTextField apiPostTitleError={apiPostTitleError}/> 
-          <label data-testid="image-upload-icon" htmlFor="contained-button-file">
+          <label htmlFor="contained-button-file">
             <Input
               accept="image/*"
               id="contained-button-file"
+              data-testid="image-upload-icon"
               type="file"
               sx={{display: "none"}}
               onChange={(e) => { uploadImage(e.target.files[0])}} />
