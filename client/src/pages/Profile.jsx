@@ -28,7 +28,6 @@ export default function Profile() {
   const [displayedUser, setDisplayedUser] = useState(null);
   const { id } = useParams();
   const history = useHistory();
-  const [value, setValue] = useState(0);
   const [canFriend, setCanFriend] = useState(false);
   const [canEditProfile, setCanEditProfile] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
