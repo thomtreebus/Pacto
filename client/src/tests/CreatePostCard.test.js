@@ -226,18 +226,42 @@ describe("CreatePostCard Tests", () => {
 				})
 			);
 			const iconElement = await screen.findByTestId("image-icon");
+			const image = new File(['testImage'], 'testImage.png', {type: 'image/png'})
+			
+			await act(async () => {
+				await waitFor( () => fireEvent.click(iconElement));
+				const buttonElement = await screen.findByTestId(
+						"image-upload-icon"
+				);
+				await waitFor(() => userEvent.upload(buttonElement, image));
+				await waitFor( () => expect(buttonElement.files[0]).toBe(image));
+				await waitFor( () => expect(buttonElement.files).toHaveLength(1));
+			});
+		});
+
+		
+		it("should console.log if there is an error", async () => {
+			server.use(
+				rest.post(`https://api.cloudinary.com/v1_1/${process.env.REACT_APP_CLOUDINARY_CLOUD_NAME}/image/upload`, (req, res, ctx) => {
+					return res(
+						ctx.status(500),
+						ctx.json({}),
+					);
+				})
+			);
+			const iconElement = await screen.findByTestId("image-icon");
 			fireEvent.click(iconElement)
       const image = new File(['testImage'], 'testImage.png', {type: 'image/png'})
       const buttonElement = await screen.findByTestId(
         "image-upload-icon"
       );
       await act(async () => {
-        await waitFor(() => 
-					userEvent.upload(buttonElement, image))
-					await new Promise(resolve => setTimeout(resolve, 1000));
-					expect(buttonElement.files[0]).toBe(image);
-        	expect(buttonElement.files).toHaveLength(1);
-      });
+				await waitFor( () => fireEvent.click(iconElement));
+				const buttonElement = await screen.findByTestId(
+						"image-upload-icon"
+				);
+				await waitFor(() => userEvent.upload(buttonElement, image));
+			});
     });
 	});
 });

@@ -177,7 +177,6 @@ export default function CreatePostCard({pactID}) {
               id="contained-button-file"
               data-testid="image-upload-icon"
               type="file"
-              sx={{display: "none"}}
               onChange={(e) => { uploadImage(e.target.files[0])}} />
             <IconButton color="primary" component="span">
               <PhotoCameraIcon />
