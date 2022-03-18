@@ -10,12 +10,14 @@ import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";
 import SearchIcon from "@mui/icons-material/Search";
 import AccountCircle from "@mui/icons-material/AccountCircle";
-import MoreIcon from "@mui/icons-material/MoreVert";
 import { Link, useHistory } from "react-router-dom";
 import Button from "@mui/material/Button";
 import Divider from "@mui/material/Divider";
 import Avatar from "@mui/material/Avatar";
 import { useAuth } from "../providers/AuthProvider";
+import NotificationsIcon from '@mui/icons-material/Notifications';
+import Badge from '@mui/material/Badge';
+import { useQuery } from "react-query";
 import PactoIcon from "../assets/pacto-logo.png";
 import MenuIcon from "@mui/icons-material/Menu";
 
@@ -65,10 +67,23 @@ export default function PrimarySearchAppBar({ handleDrawerToggle }) {
 	const { user, setIsAuthenticated } = useAuth();
 
 	const [anchorEl, setAnchorEl] = React.useState(null);
-	const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
 
 	const isMenuOpen = Boolean(anchorEl);
-	const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
+
+	const { isLoading, data } = useQuery("myNotifications", () =>
+		fetch(`${process.env.REACT_APP_URL}/notifications`, {
+			credentials: "include",
+		}).then((res) => res.json())
+	);
+	
+	function getNotificationCount(data) {
+		if (data === undefined) {
+			return 0
+		}
+		else {
+			return data.length
+		}
+	}
 
 	const handleLogout = async () => {
 		await fetch(`${process.env.REACT_APP_URL}/logout`, {
@@ -82,17 +97,8 @@ export default function PrimarySearchAppBar({ handleDrawerToggle }) {
 		setAnchorEl(event.currentTarget);
 	};
 
-	const handleMobileMenuClose = () => {
-		setMobileMoreAnchorEl(null);
-	};
-
 	const handleMenuClose = () => {
 		setAnchorEl(null);
-		handleMobileMenuClose();
-	};
-
-	const handleMobileMenuOpen = (event) => {
-		setMobileMoreAnchorEl(event.currentTarget);
 	};
 
 	const handleEditProfileClick = () => {
@@ -138,46 +144,10 @@ export default function PrimarySearchAppBar({ handleDrawerToggle }) {
 			</MenuItem>
 		</Menu>
 	);
-
-	const mobileMenuId = "primary-search-account-menu-mobile";
-	const renderMobileMenu = (
-		<Menu
-			data-testid={mobileMenuId}
-			anchorEl={mobileMoreAnchorEl}
-			anchorOrigin={{
-				vertical: "top",
-				horizontal: "right",
-			}}
-			id={mobileMenuId}
-			keepMounted
-			transformOrigin={{
-				vertical: "top",
-				horizontal: "right",
-			}}
-			open={isMobileMenuOpen}
-			onClose={handleMobileMenuClose}
-		>
-			<MenuItem
-				data-testid="profile-item-mobile"
-				onClick={handleMobileMenuClose}
-			>
-				<IconButton
-					size="large"
-					aria-label="account of current user"
-					aria-controls="primary-search-account-menu"
-					aria-haspopup="true"
-					color="inherit"
-				>
-					<AccountCircle />
-				</IconButton>
-				<p>Profile</p>
-			</MenuItem>
-			<Divider />
-			<MenuItem data-testid="logout-item-mobile" onClick={handleLogout}>
-				<p>Log Out</p>
-			</MenuItem>
-		</Menu>
-	);
+	
+	if (isLoading) {
+		return "Loading notifications...";
+	}
 
 	return (
 		<Box sx={{ flexGrow: 1 }}>
@@ -221,7 +191,16 @@ export default function PrimarySearchAppBar({ handleDrawerToggle }) {
 						/>
 					</Search>
 					<Box sx={{ flexGrow: 1 }} />
-					<Box sx={{ display: { xs: "none", md: "flex" } }}>
+						<IconButton
+							size="large"
+							aria-label="notifications"
+							color="inherit"
+						>
+							<Badge badgeContent={ getNotificationCount(data) } color="error">
+								<NotificationsIcon />
+							</Badge>
+						</IconButton>
+					<Box>
 						<IconButton
 							data-testid="profile-button"
 							size="large"
@@ -235,22 +214,8 @@ export default function PrimarySearchAppBar({ handleDrawerToggle }) {
 							<AccountCircle data-testid="account-circle" />
 						</IconButton>
 					</Box>
-					<Box sx={{ display: { xs: "flex", md: "none" } }}>
-						<IconButton
-							data-testid="mobile-menu-button"
-							size="large"
-							aria-label="show more"
-							aria-controls={mobileMenuId}
-							aria-haspopup="true"
-							onClick={handleMobileMenuOpen}
-							color="inherit"
-						>
-							<MoreIcon data-testid="more-button" />
-						</IconButton>
-					</Box>
 				</Toolbar>
 			</AppBar>
-			{renderMobileMenu}
 			{renderMenu}
 		</Box>
 	);

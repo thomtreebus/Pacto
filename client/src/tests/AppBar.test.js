@@ -95,22 +95,6 @@ describe("App Bar Tests", () => {
       const logoutItemElement = screen.getByTestId("logout-item");
       expect(logoutItemElement).toBeInTheDocument();
     });
-  
-    it("should render the mobile menu button element", () => {
-      const iconButtonElement = screen.getByTestId("mobile-menu-button");
-      expect(iconButtonElement).toBeInTheDocument();
-      const moreIconElement = screen.getByTestId("more-button");
-      expect(moreIconElement).toBeInTheDocument();
-    });
-  
-    it("should render the mobile button menu item elements", () => {
-      const menuElement = screen.getByTestId("primary-search-account-menu-mobile");
-      expect(menuElement).toBeInTheDocument();
-      const profileItemElement = screen.getByTestId("profile-item-mobile");
-      expect(profileItemElement).toBeInTheDocument();
-      const logoutItemElement = screen.getByTestId("logout-item-mobile");
-      expect(logoutItemElement).toBeInTheDocument();
-    });
   });
 
   describe("Check interaction with elements", () => {
@@ -144,29 +128,12 @@ describe("App Bar Tests", () => {
       await waitFor(() => expect(menuElement).toBeVisible());
     });
 
-    it("should open the mobile menu when the icon button is pressed", async () => {
-      const iconButtonElement = screen.getByTestId("mobile-menu-button");
-      fireEvent.click(iconButtonElement);
-      const menuElement = screen.getByTestId("primary-search-account-menu-mobile");
-      expect(menuElement).toBeVisible();
-    });
-
     it("should close the profile menu when a menu item is pressed", async () => { 
       const iconButtonElement = screen.getByTestId("profile-button");
       fireEvent.click(iconButtonElement);
       const menuElement = screen.getByTestId("primary-search-account-menu");
       expect(menuElement).toBeInTheDocument();
       const profileItemElement = screen.getByTestId("profile-item");
-      fireEvent.click(profileItemElement);
-      await waitFor(() => expect(menuElement).not.toBeVisible());
-    });
-
-    it("should close the mobile menu when a menu item is pressed", async () => { 
-      const iconButtonElement = screen.getByTestId("mobile-menu-button");
-      fireEvent.click(iconButtonElement);
-      const menuElement = screen.getByTestId("primary-search-account-menu-mobile");
-      expect(menuElement).toBeInTheDocument();
-      const profileItemElement = screen.getByTestId("profile-item-mobile");
       fireEvent.click(profileItemElement);
       await waitFor(() => expect(menuElement).not.toBeVisible());
     });
