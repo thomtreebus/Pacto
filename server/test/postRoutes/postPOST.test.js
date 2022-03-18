@@ -4,9 +4,9 @@ const supertest = require("supertest");
 const bcrypt = require("bcrypt");
 const app = require("../../app");
 const { createToken } = require("../../controllers/authController");
-const { generateTestUser, getTestUserEmail, generateNextTestUser } = require("../fixtures/generateTestUser");
+const { generateTestUser, getDefaultTestUserEmail, generateCustomUniTestUser} = require("../fixtures/generateTestUser");
 const { generateTestPact, getTestPactId } = require("../fixtures/generateTestPact");
-const { MESSAGES, PACT_MESSAGES } = require("../../helpers/messages");
+const { MESSAGES, PACT_MESSAGES, POST_MESSAGES } = require("../../helpers/messages");
 const { jsonResponse } = require("../../helpers/responseHandlers");
 const University = require('../../models/University');
 const User = require("../../models/User");
@@ -53,7 +53,7 @@ describe("POST /pact/:pactId/post", () => {
   });
 
   it("can create post with valid pact id and user part of pact", async () => {
-    const user = await User.findOne({ uniEmail: getTestUserEmail() });
+    const user = await User.findOne({ uniEmail: getDefaultTestUserEmail() });
     const pact = await Pact.findOne({ _id: getTestPactId() });
     const token = createToken(user._id);
     const response = await supertest(app)
@@ -64,7 +64,6 @@ describe("POST /pact/:pactId/post", () => {
       title: "Dummy title",
       text: "Dummy text",
       type: "text",
-      link: "https://example.com"
     })
     .expect(201)
     expect(response.body.message).toBeDefined();
@@ -75,12 +74,11 @@ describe("POST /pact/:pactId/post", () => {
     expect(post.title).toBe("Dummy title");
     expect(post.text).toBe("Dummy text");
     expect(post.type).toBe("text");
-    expect(post.link).toBe("https://example.com");
     expect(post.votes).toBe(0);
   });
 
   it("can post twice the same content in same pact", async () => {
-    const user = await User.findOne({ uniEmail: getTestUserEmail() });
+    const user = await User.findOne({ uniEmail: getDefaultTestUserEmail() });
     const pact = await Pact.findOne({ _id: getTestPactId() });
     const token = createToken(user._id);
 
@@ -89,7 +87,6 @@ describe("POST /pact/:pactId/post", () => {
                           title: "Dummy title",
                           text: "Dummy text",
                           type: "text",
-                          link: "https://example.com"
                         };
 
     const response1 = await supertest(app)
@@ -113,13 +110,12 @@ describe("POST /pact/:pactId/post", () => {
     expect(post.title).toBe("Dummy title");
     expect(post.text).toBe("Dummy text");
     expect(post.type).toBe("text");
-    expect(post.link).toBe("https://example.com");
     expect(post.votes).toBe(0);
   });
 
   // Check uses pactMiddleware
   it("user who is not in the correct uni cannot post", async () => {
-    const user = await generateNextTestUser("User", notkcl = true, uniname = "ucl");
+    const user = await generateCustomUniTestUser("User", "ucl");
     user.active = true;
     await user.save();
     const token = createToken(user._id);
@@ -134,7 +130,6 @@ describe("POST /pact/:pactId/post", () => {
       title: "Dummy title",
       text: "Dummy text",
       type: "text",
-      link: "https://example.com"
     })
     .expect(404);
     expect(response.body.message).toBe(null);
@@ -145,7 +140,7 @@ describe("POST /pact/:pactId/post", () => {
 
   // Check uses pactMiddleware
   it("user who is in the correct uni but not in the pact cannot post", async () => {
-    const user = await generateNextTestUser("User");
+    const user = await generateTestUser("User");
     user.active = true;
     await user.save();
     const token = createToken(user._id);
@@ -160,7 +155,6 @@ describe("POST /pact/:pactId/post", () => {
       title: "Dummy title",
       text: "Dummy text",
       type: "text",
-      link: "https://example.com"
     })
     .expect(401);
     expect(response.body.message).toBe(null);
@@ -170,7 +164,7 @@ describe("POST /pact/:pactId/post", () => {
   });
 
   it("check uses authMiddleware", async () => {
-    const user = await User.findOne({ uniEmail: getTestUserEmail() });
+    const user = await User.findOne({ uniEmail: getDefaultTestUserEmail() });
     const pact = await Pact.findOne({ _id: getTestPactId() });
 
     const response = await supertest(app)
@@ -180,7 +174,6 @@ describe("POST /pact/:pactId/post", () => {
       title: "Dummy title",
       text: "Dummy text",
       type: "text",
-      link: "https://example.com"
     })
     expect(response.body.message).toBe(null);
     expect(response.body.errors[0].field).toBe(null);
@@ -190,7 +183,8 @@ describe("POST /pact/:pactId/post", () => {
 
   // Helpers
   const isInvalidPost = async (postObject, expErrField, expErrMsg) => {
-    const user = await User.findOne({ uniEmail: getTestUserEmail() });
+    const user = await User.findOne({ uniEmail: getDefaultTestUserEmail() });
+    const pact = await Pact.findOne({ _id: getTestPactId() });
     const token = createToken(user._id);
     const response = await supertest(app)
       .post(`/pact/${ pact._id }/post`)
@@ -203,8 +197,8 @@ describe("POST /pact/:pactId/post", () => {
     expect(response.body.errors[0].message).toBe(expErrMsg);
   }
 
-  const isValidPost = async (postObject, expectedType=TEXT_TYPE) => {
-    const user = await User.findOne({ uniEmail: getTestUserEmail() });
+  const isValidPost = async (postObject, expectedTitle=TITLE, expectedType=TEXT_TYPE) => {
+    const user = await User.findOne({ uniEmail: getDefaultTestUserEmail() });
     const pact = await Pact.findOne({ _id: getTestPactId() });
     const token = createToken(user._id);
     const response = await supertest(app)
@@ -217,7 +211,7 @@ describe("POST /pact/:pactId/post", () => {
     expect(user.pacts.includes(response.body.message.pact)).toBe(true);
     expect(response.body.message.pact.toString()).toEqual(pact._id.toString());
     expect(response.body.message.author.toString()).toEqual(user._id.toString());
-    expect(response.body.message.title).toBe(TITLE);
+    expect(response.body.message.title).toBe(expectedTitle);
     expect(response.body.message.type).toBe(expectedType);
     switch(expectedType) {
       case TEXT_TYPE:
@@ -243,39 +237,95 @@ describe("POST /pact/:pactId/post", () => {
   }
 
   // Validation tests
-  it("accepts valid text post with no optional attributes", async () =>{
-    await isValidPost({
-      title: TITLE,
-      type: TEXT_TYPE,
-      text: TEXT
+  describe("Title validation", () => {
+    it("rejects when title exceeds 50 characters", async () => {
+      await isInvalidPost({
+        title: "x".repeat(51),
+        type: TEXT_TYPE,
+        text: TEXT
+      }, "title", POST_MESSAGES.TITLE.MAX_LENGTH_EXCEEDED);
+    });
+
+    it("accepts when title is exactly 50 characters", async () => {
+      await isValidPost({
+        title: "x".repeat(50),
+        type: TEXT_TYPE,
+        text: TEXT
+      }, expectedTitle="x".repeat(50));
+    });
+
+    it("rejects when title is blank", async () => {
+      await isInvalidPost({
+        name: TITLE,
+        type: TEXT_TYPE,
+        text: TEXT
+      }, "title", POST_MESSAGES.TITLE.BLANK);
     });
   });
 
-  it("accepts valid image post with no optional attributes", async () =>{
-    await isValidPost({
-      title: TITLE,
-      type: IMAGE_TYPE,
-      text: TEXT,
-      image: IMAGE
-    }, IMAGE_TYPE);
-  });
-
-  it("accepts valid link post with no optional attributes", async () =>{
-    await isValidPost({
-      title: TITLE,
-      type: LINK_TYPE,
-      text: TEXT,
-      link: LINK
-    }, LINK_TYPE);
-  });
-
-  it("assigns default type (text) if absent", async () =>{
-    const res = await isValidPost({
-      title: TITLE,
-      text: TEXT
+  describe("Type validation", () => {
+    it("accepts valid text post with no optional attributes", async () =>{
+      await isValidPost({
+        title: TITLE,
+        type: TEXT_TYPE,
+        text: TEXT
+      });
     });
 
-    expect(res.body.message.type).toBe(DEFAULT_TYPE);
-    expect(res.body.message.text).toBe(TEXT);
+    it("rejects text post without text", async () => {
+      await isInvalidPost({
+        title: TITLE,
+        type: TEXT_TYPE
+      }, "text", POST_MESSAGES.TYPE.TEXT.BLANK);
+    });
+
+    it("accepts valid image post with no optional attributes", async () =>{
+      await isValidPost({
+        title: TITLE,
+        type: IMAGE_TYPE,
+        text: TEXT,
+        image: IMAGE
+      }, undefined, expectedType=IMAGE_TYPE);
+    });
+
+    it("rejects image post without image", async () => {
+      await isInvalidPost({
+        title: TITLE,
+        type: IMAGE_TYPE
+      }, "image", POST_MESSAGES.TYPE.IMAGE.BLANK);
+    });
+
+    it("accepts valid link post with no optional attributes", async () =>{
+      await isValidPost({
+        title: TITLE,
+        type: LINK_TYPE,
+        text: TEXT,
+        link: LINK
+      }, undefined, expectedType=LINK_TYPE);
+    });
+
+    it("rejects link post without link", async () => {
+      await isInvalidPost({
+        title: TITLE,
+        type: LINK_TYPE
+      }, "link", POST_MESSAGES.TYPE.LINK.BLANK);
+    });
+
+    it("rejects post without type and text", async () =>{
+      const res = await isInvalidPost({
+        title: TITLE
+      }, "text", POST_MESSAGES.TYPE.TEXT.BLANK);
+    });
+
+    it("assigns default type (text) if absent", async () =>{
+      const res = await isValidPost({
+        title: TITLE,
+        text: TEXT
+      });
+
+      expect(res.body.message.type).toBe(DEFAULT_TYPE);
+      expect(res.body.message.text).toBe(TEXT);
+    });
   });
+
 });
