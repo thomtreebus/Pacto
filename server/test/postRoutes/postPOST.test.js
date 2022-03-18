@@ -25,8 +25,7 @@ const IMAGE = "(This is an image)";
 const LINK_TYPE = "link";
 const LINK = "https://examplelink.com";
 
-const DEFAULT_DESCRIPTION = "A Pact that doesn't know what it wants to be...";
-const DEFAULT_CATEGORY = "other";
+const DEFAULT_TYPE = TEXT_TYPE;
 
 describe("POST /pact/:pactId/post", () => {
   beforeAll(async () => {
@@ -250,5 +249,33 @@ describe("POST /pact/:pactId/post", () => {
       type: TEXT_TYPE,
       text: TEXT
     });
+  });
+
+  it("accepts valid image post with no optional attributes", async () =>{
+    await isValidPost({
+      title: TITLE,
+      type: IMAGE_TYPE,
+      text: TEXT,
+      image: IMAGE
+    }, IMAGE_TYPE);
+  });
+
+  it("accepts valid link post with no optional attributes", async () =>{
+    await isValidPost({
+      title: TITLE,
+      type: LINK_TYPE,
+      text: TEXT,
+      link: LINK
+    }, LINK_TYPE);
+  });
+
+  it("assigns default type (text) if absent", async () =>{
+    const res = await isValidPost({
+      title: TITLE,
+      text: TEXT
+    });
+
+    expect(res.body.message.type).toBe(DEFAULT_TYPE);
+    expect(res.body.message.text).toBe(TEXT);
   });
 });

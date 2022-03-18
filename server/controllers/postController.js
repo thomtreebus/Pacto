@@ -21,7 +21,7 @@ module.exports.postPost = async (req, res) => {
 		res.status(201).json(jsonResponse(post, []));
 	} 
   catch (err) {
-		res.status(400).json(jsonResponse(null, [jsonError(null, handleFieldErrors(err))]));
+		res.status(400).json(jsonResponse(null, handleFieldErrors(err)));
 	}
 };
 
@@ -68,7 +68,7 @@ module.exports.upvotePostPut = async (req, res) => {
 		}
 	} 
 	catch (err) {
-		res.status(400).json(jsonResponse(null, [jsonError(null, handleFieldErrors(err))]));
+		res.status(400).json(jsonResponse(null, handleFieldErrors(err)));
 	}
 };
 
@@ -93,7 +93,7 @@ module.exports.downvotePostPut = async (req, res) => {
 		}
 	} 
 	catch (err) {
-		res.status(400).json(jsonResponse(null, [jsonError(null, handleFieldErrors(err))]));
+		res.status(400).json(jsonResponse(null, handleFieldErrors(err)));
 	}
 };
 
