@@ -80,7 +80,7 @@ describe("POST /pact/:pactid/join", () => {
     expect(errors.length).toBe(1);
     
     const updatedUser = await User.findOne({_id : user._id});
-    const updatedPact = await Pact.findOne({ id: getTestPactId() });
+    const updatedPact = await Pact.findOne({ _id: getTestPactId() });
     expect(updatedUser.pacts.includes(pact._id)).toBe(false);
     expect(updatedPact.members.includes(user._id)).toBe(false);
     expect(updatedPact.members.length).toBe(1);
@@ -136,7 +136,7 @@ describe("POST /pact/:pactid/join", () => {
   });
 
   it("allows the user to successfully join a pact", async () => {
-    const pact = await Pact.findOne({ id: getTestPactId() });
+    const pact = await Pact.findOne({ _id: getTestPactId() });
     const user = await generateNextTestUser("User");
     user.active = true;
     await user.save();
@@ -168,7 +168,7 @@ describe("POST /pact/:pactid/join", () => {
 
   it("allows the user to successfully join multiple pacts", async () => {
     const foundingUser = await User.findOne({ uniEmail: getTestUserEmail() });
-    const pact = await Pact.findOne({ id: getTestPactId() });
+    const pact = await Pact.findOne({ _id: getTestPactId() });
     const secondPact = await generateTestPact(foundingUser, "Second pact");
     const user = await generateNextTestUser("User");
     user.active = true;

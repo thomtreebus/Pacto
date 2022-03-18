@@ -47,8 +47,8 @@ module.exports.postGet = async (req, res) => {
 	}
 };
 
-// POST upvote post
-module.exports.upvotePostPost = async (req, res) => {
+// PUT upvote post
+module.exports.upvotePostPut = async (req, res) => {
 	try {
 		// Checking post exists
 		const post = await Post.findOne({ pact: req.pact, _id:req.params.postId });
@@ -72,8 +72,8 @@ module.exports.upvotePostPost = async (req, res) => {
 	}
 };
 
-// POST downvote
-module.exports.downvotePostPost = async (req, res) => {
+// PUT downvote
+module.exports.downvotePostPut = async (req, res) => {
 	try {
 		// Checking post exists
 		const post = await Post.findOne({ pact: req.params.pactId, _id:req.params.postId });

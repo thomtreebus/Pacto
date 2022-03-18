@@ -143,7 +143,7 @@ describe("DELETE /pact/:pactId/post/:postId", () => {
     const notDeletedPost = await Post.findOne({ id: getTestPostId() });
     expect(notDeletedPost).toStrictEqual(post);
 
-    pact = await Pact.findOne({ id: getTestPactId() });
+    pact = await Pact.findOne({ _id: getTestPactId() });
     expect(pact.posts.includes(post._id)).toBe(true);
   });
 
@@ -153,7 +153,7 @@ describe("DELETE /pact/:pactId/post/:postId", () => {
     user.active = true;
     await user.save();
     const post = await Post.findOne({ id: getTestPostId() });
-    const pact = await Pact.findOne({ id: getTestPactId() });
+    const pact = await Pact.findOne({ _id: getTestPactId() });
     const token = createToken(user._id);
 
     expect(pact.posts.includes(post._id)).toBe(true);
@@ -178,7 +178,7 @@ describe("DELETE /pact/:pactId/post/:postId", () => {
     user.active = true;
     await user.save();
     const post = await Post.findOne({ id: getTestPostId() });
-    const pact = await Pact.findOne({ id: getTestPactId() });
+    const pact = await Pact.findOne({ _id: getTestPactId() });
     const token = createToken(user._id);
 
     expect(pact.posts.includes(post._id)).toBe(true);
@@ -194,7 +194,7 @@ describe("DELETE /pact/:pactId/post/:postId", () => {
   });
 
   it("check uses authMiddleware", async () => {
-    const pact = await Pact.findOne({ id: getTestPactId() });
+    const pact = await Pact.findOne({ _id: getTestPactId() });
     const post = await Post.findOne({ id: getTestPostId() })
 
     const response = await supertest(app)

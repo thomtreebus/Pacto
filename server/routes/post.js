@@ -6,8 +6,8 @@ const { checkIsMemberOfPact } = require("../middleware/pactMiddleware");
 
 router.post("/pact/:pactId/post", checkAuthenticated, checkIsMemberOfPact, postController.postPost);
 router.get("/pact/:pactId/post/:postId", checkAuthenticated, checkIsMemberOfPact, postController.postGet);
-router.put("/pact/:pactId/post/upvote/:postId", checkAuthenticated, checkIsMemberOfPact, postController.upvotePostPost);
-router.put("/pact/:pactId/post/downvote/:postId", checkAuthenticated, checkIsMemberOfPact, postController.downvotePostPost);
+router.put("/pact/:pactId/post/upvote/:postId", checkAuthenticated, checkIsMemberOfPact, postController.upvotePostPut);
+router.put("/pact/:pactId/post/downvote/:postId", checkAuthenticated, checkIsMemberOfPact, postController.downvotePostPut);
 router.delete("/pact/:pactId/post/:postId", checkAuthenticated, checkIsMemberOfPact, postController.postDelete);
 
 module.exports = router;
