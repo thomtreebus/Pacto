@@ -122,7 +122,7 @@ export default function PrimarySearchAppBar() {
 	}
 
 	const keyPress = (e) => {
-		if (e.keyCode == 13) {
+		if (e.keyCode === 13) {
 			handleSearch();
 		}
 	}
