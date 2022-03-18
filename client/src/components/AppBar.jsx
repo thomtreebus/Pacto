@@ -17,6 +17,7 @@ import Divider from "@mui/material/Divider";
 import Avatar from "@mui/material/Avatar";
 import { useAuth } from "../providers/AuthProvider";
 import PactoIcon from "../assets/pacto-logo.png";
+import MenuIcon from "@mui/icons-material/Menu";
 
 const Search = styled("div")(({ theme }) => ({
 	position: "relative",
@@ -58,10 +59,10 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 	},
 }));
 
-export default function PrimarySearchAppBar() {
-  const history = useHistory() 
+export default function PrimarySearchAppBar({ handleDrawerToggle }) {
+	const history = useHistory();
 
-	const { setIsAuthenticated } = useAuth();
+	const { user, setIsAuthenticated } = useAuth();
 
 	const [anchorEl, setAnchorEl] = React.useState(null);
 	const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
@@ -75,7 +76,7 @@ export default function PrimarySearchAppBar() {
 			credentials: "include",
 		});
 		setIsAuthenticated(false);
-		history.push('login');
+		history.push("login");
 	};
 
 	const handleProfileMenuOpen = (event) => {
@@ -95,10 +96,15 @@ export default function PrimarySearchAppBar() {
 		setMobileMoreAnchorEl(event.currentTarget);
 	};
 
-	const handleProfileClick = () => {
+	const handleEditProfileClick = () => {
 		history.push("/edit-profile");
 		handleMenuClose();
-	}
+	};
+
+	const handleProfileClick = () => {
+		history.push("/user/" + user._id);
+		handleMenuClose();
+	};
 
 	const handleSearch = () => {
 		// fetch(`${process.env.REACT_APP_URL}/search`, {
@@ -145,9 +151,19 @@ export default function PrimarySearchAppBar() {
 			open={isMenuOpen}
 			onClose={handleMenuClose}
 		>
-			<MenuItem data-testid="profile-item" onClick={handleProfileClick}>Profile</MenuItem>
+			<MenuItem data-testid="profile-item" onClick={handleProfileClick}>
+				Profile
+			</MenuItem>
+			<MenuItem
+				data-testid="edit-profile-item"
+				onClick={handleEditProfileClick}
+			>
+				Edit Profile
+			</MenuItem>
 			<Divider />
-			<MenuItem data-testid="logout-item" onClick={handleLogout}>Log Out</MenuItem>
+			<MenuItem data-testid="logout-item" onClick={handleLogout}>
+				Log Out
+			</MenuItem>
 		</Menu>
 	);
 
@@ -169,7 +185,10 @@ export default function PrimarySearchAppBar() {
 			open={isMobileMenuOpen}
 			onClose={handleMobileMenuClose}
 		>
-			<MenuItem data-testid="profile-item-mobile" onClick={handleMobileMenuClose}>
+			<MenuItem
+				data-testid="profile-item-mobile"
+				onClick={handleMobileMenuClose}
+			>
 				<IconButton
 					size="large"
 					aria-label="account of current user"
@@ -197,6 +216,16 @@ export default function PrimarySearchAppBar() {
 				style={{ background: "#2E3B55" }}
 			>
 				<Toolbar>
+					<IconButton
+						color="inherit"
+						aria-label="open drawer"
+						edge="start"
+						onClick={handleDrawerToggle}
+						sx={{ mr: 2, display: { sm: "none" } }}
+						data-testid="sidebar-menu-button"
+					>
+						<MenuIcon />
+					</IconButton>
 					<Typography
 						variant="h6"
 						noWrap
@@ -210,9 +239,7 @@ export default function PrimarySearchAppBar() {
 							startIcon={<Avatar src={PactoIcon} alt="Pacto Icon" />}
 						/>
 					</Typography>
-					<Search
-						data-testid="search-bar"
-					>
+					<Search data-testid="search-bar">
 						<SearchIconWrapper>
 							<SearchIcon data-testid="search-icon" />
 						</SearchIconWrapper>

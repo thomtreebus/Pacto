@@ -5,7 +5,6 @@ import { Image } from 'cloudinary-react';
 import { useHistory } from "react-router-dom";
 import Grid from '@mui/material/Grid';
 import {useParams } from "react-router-dom";
-import { useQuery } from "react-query";
 import Loading from "./Loading";
 import { useEffect } from "react";
 import Typography from "@mui/material/Typography";
@@ -27,6 +26,8 @@ import GroupIcon from '@mui/icons-material/Group';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import ForumIcon from '@mui/icons-material/Forum';
 import EditIcon from '@mui/icons-material/Edit';
+import {useAuth} from "../providers/AuthProvider";
+import MyPactList from '../components/MyPactList';
 
 
 function TabPanel(props) {
@@ -64,42 +65,60 @@ function a11yProps(index) {
 
 export default function Profile() {
 
-  // const { loggedInUser } = useAuth();
-  // console.log("currentUser: ", loggedInUser);
-  const [user, setUser] = useState(null);
+  const { user: loggedInUser } = useAuth();
+  const [displayedUser, setDisplayedUser] = useState(null);
   const { id } = useParams();
   const history = useHistory();
   const [value, setValue] = useState(0);
+  const [canFriend, setCanFriend] = useState(false);
+  const [canEditProfile, setCanEditProfile] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [data, setData] = useState(null)
 
-  const { isLoading, data } = useQuery("userData", () =>
-    fetch(`${process.env.REACT_APP_URL}/users/${id}`, {
-      credentials: "include",
-    }).then((res) => res.json())
-  );
-  
+  useEffect( () => {
+    if(id){
+      fetch(`${process.env.REACT_APP_URL}/users/${id}`, {
+          credentials: "include",
+        }).then((res) => res.json()).then((data) => setData(data))
+      }
+  },[id])
+
   useEffect(() => {
     if (data) {
       if (data.errors.length) {
         history.replace("/not-found");
       }
-      setUser(data.message);
+      setDisplayedUser(data.message);
     }
   }, [data, history]);
+
+
+  useEffect(() => {
+    if(displayedUser) {
+      if (loggedInUser._id === displayedUser._id) {
+        setCanEditProfile(true);
+        setCanFriend(false);
+      } else {
+        setCanEditProfile(false);
+        setCanFriend(true);
+      }
+      setIsLoading(false);
+    }
+  }, [displayedUser, loggedInUser]);
+
 
   
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
-
-
   
   if (isLoading) {
     return <Loading />;
   }
 
   return (
-     user && (<Grid
+     displayedUser && (<Grid
       container
       p={4}
       spacing={2}
@@ -113,22 +132,22 @@ export default function Profile() {
             style={{ width: "100px", height: "100px", border: "3px solid #616161", borderRadius: "180px", overflow: "hidden", position: "relative", }}
             alt="Profile Picture"
             cloudName={`${process.env.REACT_APP_CLOUDINARY_CLOUD_NAME}`}
-            publicID={user.image}>
+            publicID={displayedUser.image}>
           </Image>
           <Stack direction="column" alignItems="left" sx={{}}>
-            <Typography variant="h4">{user.firstName} {user.lastName}</Typography>
-            <Typography variant="subtitle1" sx={{ color: "#1976d2", marginTop: "2px" }}>  {user.course} student at {user.university.name} </Typography>
-            <Typography variant="subtitle1" sx={{ color: "#616161", }}>  {user.location} </Typography>
+            <Typography variant="h4">{displayedUser.firstName} {displayedUser.lastName}</Typography>
+            <Typography variant="subtitle1" sx={{ color: "#1976d2", marginTop: "2px" }}>  {displayedUser.course} student at {displayedUser.university.name} </Typography>
+            <Typography variant="subtitle1" sx={{ color: "#616161", }}>  {displayedUser.location} </Typography>
           </Stack>
         </Stack>
         <Divider sx={{ marginTop: "10px", marginBottom: "10px" }}></Divider>
         <Stack direction="row" alignItems="center" spacing={2} sx={{ marginTop: "2px" }}>
-          <Chip label={`${user.instagram}`} icon={<InstagramIcon />} variant="outlined" testid="instagram-icon" component="a" target="_blank" clickable href={`https://www.instagram.com/`} />
-          <Chip label={`${user.firstName} ${user.lastName}`} icon={<LinkedInIcon />} variant="outlined" component="a" target="_blank" clickable href={`https://www.linkedin.com/`} />
-          <Chip label={`${user.phone}`} icon={<WhatsAppIcon />} variant="outlined" />
+          <Chip label={`${displayedUser.instagram||""}`} icon={<InstagramIcon />} variant="outlined" data-testid="instagram-icon" component="a" target="_blank" clickable href={`https://www.instagram.com/`} />
+          <Chip label={`${displayedUser.linkedin||""}`} icon={<LinkedInIcon />} data-testid="linkedin-icon" variant="outlined" component="a" target="_blank" clickable href={`https://www.linkedin.com/`} />
+          <Chip label={`${displayedUser.phone||""}`} icon={<WhatsAppIcon />} data-testid="phone-icon" variant="outlined" />
         </Stack>
         <Divider sx={{ marginTop: "10px", marginBottom: "10px" }}></Divider>
-        <Typography variant="body1" sx={{}}> {user.bio} </Typography>
+        <Typography variant="body1" sx={{}}> {displayedUser.bio} </Typography>
         {/* <Divider sx={{ marginTop: "10px" }}></Divider> */}
         <Box sx={{ width: '100%' }}>
           <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
@@ -145,7 +164,7 @@ export default function Profile() {
             Comments
           </TabPanel>
           <TabPanel value={value} index={2}>
-            Pacts
+            <MyPactList/>
           </TabPanel>
         </Box>
       </Grid>
@@ -153,12 +172,12 @@ export default function Profile() {
       <Grid container item direction="column" xs={4}>
         <Card sx={{ minWidth: 275 }}>
           <CardContent>
-            <Stack direction="row" alignItems="center" spacing={2} fullWidth justifyContent="center">
-              <Chip label={`${user.friends.length} Friends`} icon={<GroupIcon />} variant="outlined" />
-              <Chip label={`${user.pacts.length} Pacts`} icon={<ForumIcon />} variant="outlined" />
+            <Stack direction="row" alignItems="center" spacing={2} fullwidth="true" justifyContent="center">
+              <Chip label={`${displayedUser.friends.length} Friends`} icon={<GroupIcon />} variant="outlined" />
+              <Chip label={`${displayedUser.pacts.length} Pacts`} icon={<ForumIcon />} variant="outlined" />
             </Stack>
-            <Button variant="outlined" fullWidth startIcon={<PersonAddIcon />} sx={{marginTop: "4px"}}>Send Friend Request</Button>
-            {<Button variant="contained" fullWidth color="error" onClick={() => history.push("/edit-profile")} startIcon={<EditIcon />} sx={{ marginTop: "2px" }}>
+            <Button variant="outlined" fullwidth="true" disabled={!canFriend} startIcon={<PersonAddIcon />} sx={{marginTop: "4px"}}>Send Friend Request</Button>
+            {<Button variant="contained" data-testid="edit-profile-button" disabled={!canEditProfile} fullwidth="true" color="error" onClick={() => history.push("/edit-profile")} startIcon={<EditIcon />} sx={{ marginTop: "2px" }}>
               Edit Profile </Button>
               }
           </CardContent>

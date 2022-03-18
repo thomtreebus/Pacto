@@ -20,6 +20,9 @@ app.use(cookieParser());
 const pactRoute = require("./routes/pact");
 app.use("/", pactRoute);
 
+const commentRoute = require("./routes/comment");
+app.use("/", commentRoute);
+
 const postRoute = require("./routes/post");
 app.use("/", postRoute);
 

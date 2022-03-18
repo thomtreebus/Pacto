@@ -1,5 +1,5 @@
 export default function LinkPostCard({ post }) {
   return (
-    post.link
+    <a href={post.link}>{post.link}</a>
   )
 }

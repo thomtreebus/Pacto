@@ -46,6 +46,7 @@ export default function CreatePactPage() {
 		});
 
 		const json = await response.json();
+		console.log(json)
 
 		Object.values(json['errors']).forEach(err => {
 			const field = err["field"];
@@ -61,8 +62,7 @@ export default function CreatePactPage() {
 				case "description":
 					setApiPactDescriptionError(message);
 					break;
-				default:
-					break;
+				// no default
 			}
 			setIsButtonDisabled(false);
 		});
