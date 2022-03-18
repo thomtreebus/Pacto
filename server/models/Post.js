@@ -8,16 +8,21 @@ const isValidType = (str) => {
   return regex.test(str);
 };
 
-// function returns true if the given url is a valid url
-const isValidHttpUrl = (str) => {
-  let url;
-  try {
-    url = new URL(str);
-  } catch (_) { 
-    return false;
+// function returns true if the given url is a valid url and type is link
+function isValidHttpUrl(str) {
+  // if type is not link, we don't care about the url string
+  if(this.type === "link") {
+    let url;
+    try {
+      url = new URL(str);
+    } catch (_) { 
+      return false;
+    }
+    return url.protocol === "http:" || url.protocol === "https:";
+  } else {
+    return true;
   }
-  return url.protocol === "http:" || url.protocol === "https:";
-}
+};
 
 const PostSchema = mongoose.Schema({
   pact: {

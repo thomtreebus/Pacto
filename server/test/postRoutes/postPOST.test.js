@@ -326,6 +326,54 @@ describe("POST /pact/:pactId/post", () => {
       }, "link", POST_MESSAGES.TYPE.LINK.INVALID);
     });
 
+    it("accepts text post with too much information", async () => {
+      await isValidPost({
+        title: TITLE,
+        type: TEXT_TYPE,
+        text: TEXT,
+        image: IMAGE,
+        link: LINK,
+      });
+    });
+
+    it("accepts image post with too much information", async () => {
+      await isValidPost({
+        title: TITLE,
+        type: IMAGE_TYPE,
+        text: TEXT,
+        image: IMAGE,
+        link: LINK,
+      }, undefined, expectedType=IMAGE_TYPE);
+    });
+
+    it("accepts link post with too much information", async () => {
+      await isValidPost({
+        title: TITLE,
+        type: LINK_TYPE,
+        text: TEXT,
+        image: IMAGE,
+        link: LINK,
+      }, undefined, expectedType=LINK_TYPE);
+    });
+
+    it("doesn't verify that the link is valid if the type is text", async () => {
+      await isValidPost({
+        title: TITLE,
+        type: TEXT_TYPE,
+        text: TEXT,
+        link: "noturl"
+      });
+    });
+
+    it("doesn't verify that the link is valid if the type is image", async () => {
+      await isValidPost({
+        title: TITLE,
+        type: IMAGE_TYPE,
+        image: IMAGE,
+        link: "noturl"
+      }, undefined, expectedType=IMAGE_TYPE);
+    });
+
     it("rejects post without type and text", async () =>{
       const res = await isInvalidPost({
         title: TITLE
