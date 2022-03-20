@@ -25,7 +25,6 @@ export default function BasePostCard({ children, post, onOwnPage=false }) {
         // no default
       }
     })();
-    console.log(url)
     fetch(`${process.env.REACT_APP_URL}/${url}`, {
       method: "PUT",
       credentials: "include",

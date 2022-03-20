@@ -24,13 +24,12 @@ export default function CommentCard({ comment, post, postUpdaterFunc }) {
     const url = (() => {
       let action = null;
       switch(eventCode) {
-        case 0: action = "upvote";
-        case 1: action = "downvote";
-        
-        return `pact/${post.pact._id}/post/${post._id}/comment/${comment._id}/${action}`;
+        case 0: return `pact/${post.pact._id}/post/${post._id}/comment/${comment._id}/upvote`;
+        case 1: return `pact/${post.pact._id}/post/${post._id}/comment/${comment._id}/downvote`;
       }
     })();
-    console.log(url)
+    console.log(user._id)
+    console.log(comment)
     fetch(`${process.env.REACT_APP_URL}/${url}`, {
       method: "PUT",
       credentials: "include",
