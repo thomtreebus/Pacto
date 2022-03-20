@@ -41,11 +41,13 @@ export default function CommentCard({ comment, post, postUpdaterFunc }) {
     const indexOfCommentToUpdate = post.comments.indexOf(comment);
 
     const newPostObj = JSON.parse(JSON.stringify(post)); // Deep clone the post so it can be modified and resaved
-    const newCommentObj = JSON.parse(JSON.stringify(comment)); // Deep clone the comment so it can be modified and resaved
+    const newRepliedToCommentObj = JSON.parse(JSON.stringify(comment)); // Deep clone the replied-tocomment so it can be modified and resaved
     
-    newCommentObj.childComments.unshift(newComment); // Add reply of comment to its children
+    newRepliedToCommentObj.childComments.unshift(newComment); // Add reply of comment to its children
     newPostObj.comments.unshift(newComment); // Add reply of comment to overall list of comments (for rendering)
-    newPostObj.comments[indexOfCommentToUpdate] = newCommentObj; // Update replied-to comment in post.comments
+
+    newPostObj.comments = newPostObj.comments.filter(c => c._id !== comment._id); // Remove replied-to comment from post
+    newPostObj.comments.splice(indexOfCommentToUpdate, 0, newRepliedToCommentObj); // Add updated replied-to comment
 
     postUpdaterFunc(newPostObj); // Send updated post object to parent
   }
@@ -126,7 +128,7 @@ export default function CommentCard({ comment, post, postUpdaterFunc }) {
               </AccordionSummary>
               <AccordionDetails>
                 <Grid item xs={12} lg={12}>
-                {comment.childComments.map(c => post.comments.filter(p=> p._id===c._id)[0]).map((c) => (<CommentCard post={post} comment={c}></CommentCard>))}
+                {comment.childComments.map(c => post.comments.filter(p=> p._id===c._id)[0]).map((c) => (<CommentCard post={post} comment={c} postUpdaterFunc={postUpdaterFunc}></CommentCard>))}
                 </Grid>
               </AccordionDetails>
             </Accordion>
