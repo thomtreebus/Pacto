@@ -48,9 +48,13 @@ export default function PostPage() {
   const commentSubmissionHandler = (newComment) => {
     setShowReplyBox(false);
 
-    const newPostObj = JSON.parse(JSON.stringify(post)); // Deep clone
+    const newPostObj = JSON.parse(JSON.stringify(post)); // Deep clone the post so it can be modified and resaved
     newPostObj.comments.unshift(newComment); // Add new comment to front of comments array ( to render at top)
 
+    setPost(newPostObj);
+  }
+
+  const recieveUpdatedPostObj = (newPostObj) => {
     setPost(newPostObj);
   }
 
@@ -69,7 +73,11 @@ export default function PostPage() {
         <Box sx={{width: "95%", marginInline: "auto"}}>
           <Grid item xs={16} lg={14}>
             {/* We display only the comments without a parentComment, i.e. top level comments */}
-            { post.comments.filter((x) => x.parentComment == null).map((c) => <CommentCard post={post} comment={c}></CommentCard>) }
+            { post.comments.filter((x) => x.parentComment == null).map((c) => {
+              return(
+                <CommentCard post={post} comment={c} postUpdaterFunc={recieveUpdatedPostObj}> </CommentCard>
+              );
+            })}
           </Grid>
         </Box>
       </Grid>

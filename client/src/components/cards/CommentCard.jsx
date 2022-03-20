@@ -1,5 +1,5 @@
 import { Box, Card, CardContent, IconButton, Grid } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
@@ -11,13 +11,12 @@ import ThumbDownRoundedIcon from "@mui/icons-material/ThumbDownRounded";
 import { useAuth } from "../../providers/AuthProvider";
 import CommentBox from "../CommentBox";
 
-export default function CommentCard({ comment, post }) {
+export default function CommentCard({ comment, post, postUpdaterFunc }) {
   const { user } = useAuth();
   const [thumbUp, setThumbUp] = useState(post.upvoters.includes(user._id));
   const [thumbDown, setThumbDown] = useState(post.downvoters.includes(user._id));
   const [showReplyBox, setShowReplyBox] = useState(false);
   const [likes, setLikes] = useState(post.votes);
-  const [replies, setReplies] = useState([]);
 
   const history = useHistory();
 
@@ -39,10 +38,23 @@ export default function CommentCard({ comment, post }) {
 
   const replySubmissionHandler = (newComment) => {
     setShowReplyBox(false);
-    setReplies([newComment] + replies);
+    const indexOfCommentToUpdate = post.comments.indexOf(comment);
+
+    const newPostObj = JSON.parse(JSON.stringify(post)); // Deep clone the post so it can be modified and resaved
+    const newCommentObj = JSON.parse(JSON.stringify(comment)); // Deep clone the comment so it can be modified and resaved
+    
+    newCommentObj.childComments.unshift(newComment); // Add reply of comment to its children
+    newPostObj.comments.unshift(newComment); // Add reply of comment to overall list of comments (for rendering)
+    newPostObj.comments[indexOfCommentToUpdate] = newCommentObj; // Update replied-to comment in post.comments
+
+    postUpdaterFunc(newPostObj); // Send updated post object to parent
   }
 
-  return (comment &&
+  if(!comment){
+    return null;
+  }
+
+  return (comment&&
     <Card sx={{ width: "100%" }} data-testid="card">
       <CardContent>
         <Box sx={{ overflow: "hidden" }}>
