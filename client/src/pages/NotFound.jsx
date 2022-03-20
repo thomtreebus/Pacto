@@ -8,12 +8,12 @@ export default function Notfound() {
 	return (
 		<>
 			<Toolbar/>
-			<Card sx={{ maxWidth: 345, margin: "auto" }}>
+			<Card sx={{ maxWidth: 690, margin: "auto" }}>
 			<CardMedia
 				component="img"
-				height="140"
+				height="280"
 				image={logo}
-				alt="cat"
+				alt="not-found"
 			/>
 			<CardContent>
 				<Typography gutterBottom variant="h5" component="div">
