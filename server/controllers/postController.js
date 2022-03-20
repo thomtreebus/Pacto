@@ -30,8 +30,8 @@ module.exports.postGet = async (req, res) => {
 	try {
 		post = await Post.findOne({ pact: req.pact, _id:req.params.postId });
 		try {
-			await post.populate({ path: 'upvoters', model: User });
-			await post.populate({ path: 'downvoters', model: User });
+			// await post.populate({ path: 'upvoters', model: User });
+			// await post.populate({ path: 'downvoters', model: User });
 			await post.populate({ path: 'pact', model: Pact});
 			await post.populate({ path: 'author', model: User});
 			await post.populate({ path: 'comments', model: Comment, populate : { path: "author", model: User } });
@@ -60,8 +60,8 @@ module.exports.upvotePostPost = async (req, res) => {
 			await upvote(post, req.user);
 
 			// Populating before returning the post
-			await post.populate({ path: 'upvoters', model: User });
-			await post.populate({ path: 'downvoters', model: User });
+			// await post.populate({ path: 'upvoters', model: User });
+			// await post.populate({ path: 'downvoters', model: User });
 			await post.populate({ path: 'pact', model: Pact});
 			await post.populate({ path: 'author', model: User});
 			await post.populate({ path: 'comments', model: Comment, populate : { path: "author", model: User } });
@@ -87,8 +87,8 @@ module.exports.downvotePostPost = async (req, res) => {
 			await downvote(post, req.user);
 
 			// Populating before returning the post
-			await post.populate({ path: 'upvoters', model: User });
-			await post.populate({ path: 'downvoters', model: User });
+			// await post.populate({ path: 'upvoters', model: User });
+			// await post.populate({ path: 'downvoters', model: User });
 			await post.populate({ path: 'pact', model: Pact});
 			await post.populate({ path: 'author', model: User});
 			await post.populate({ path: 'comments', model: Comment, populate : { path: "author", model: User } });

@@ -13,10 +13,10 @@ import CommentBox from "../CommentBox";
 
 export default function CommentCard({ comment, post, postUpdaterFunc }) {
   const { user } = useAuth();
-  const [thumbUp, setThumbUp] = useState(post.upvoters.includes(user._id));
-  const [thumbDown, setThumbDown] = useState(post.downvoters.includes(user._id));
+  const [thumbUp, setThumbUp] = useState(comment.upvoters.includes(user._id));
+  const [thumbDown, setThumbDown] = useState(comment.downvoters.includes(user._id));
   const [showReplyBox, setShowReplyBox] = useState(false);
-  const [likes, setLikes] = useState(post.votes);
+  const [likes, setLikes] = useState(comment.votes);
 
   const history = useHistory();
 
@@ -29,7 +29,8 @@ export default function CommentCard({ comment, post, postUpdaterFunc }) {
         
         return `pact/${post.pact._id}/post/${post._id}/comment/${comment._id}/${action}`;
       }
-    })()
+    })();
+    console.log(url)
     fetch(`${process.env.REACT_APP_URL}/${url}`, {
       method: "PUT",
       credentials: "include",

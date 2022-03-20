@@ -20,11 +20,12 @@ export default function BasePostCard({ children, post, onOwnPage=false }) {
   const handleLikeEvent = async (eventCode) => {
     const url = (() => {
       switch(eventCode) {
-        case 0: return `pact/${post.pact}/post/upvote/${post._id}`;
-        case 1: return `pact/${post.pact}/post/downvote/${post._id}`;
+        case 0: return `pact/${post.pact._id}/post/upvote/${post._id}`;
+        case 1: return `pact/${post.pact._id}/post/downvote/${post._id}`;
         // no default
       }
-    })()
+    })();
+    console.log(url)
     fetch(`${process.env.REACT_APP_URL}/${url}`, {
       method: "PUT",
       credentials: "include",
