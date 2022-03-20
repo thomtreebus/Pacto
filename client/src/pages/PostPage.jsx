@@ -1,6 +1,6 @@
 import { Fab, Grid, Typography } from "@mui/material";
 import { Box } from "@mui/system";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useParams } from "react-router-dom";
 import Loading from "./Loading";
 import { useHistory } from "react-router-dom";
@@ -14,7 +14,6 @@ export default function PostPage() {
   const [post, setPost] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [showReplyBox, setShowReplyBox] = useState(false);
-  const [topLevelComments, setTopLevelComments] = useState([]);
   const history = useHistory();
 
   useEffect(() => {
@@ -30,27 +29,29 @@ export default function PostPage() {
       return res.json();
     })
     .then((data) => {
+      
       setPost(data.message);
-
-      // Display comments replying directly to the post.
-      setTopLevelComments(data.message.comments.filter(c => c.parentComment==null));
       
       setIsLoading(false);
     })
     .catch((err) => {
       setIsLoading(false);
-      history.push("/not-found");
-      //console.log(err.message)
+      //history.push("/not-found");
+      console.log(err.message)
     });
-  }, [pactID, postID, history])
+  }, [pactID, postID, history]);
 
   if(isLoading){
     return <Loading/>
   }
-  
+
   const commentSubmissionHandler = (newComment) => {
     setShowReplyBox(false);
-    setTopLevelComments([newComment] + topLevelComments);
+
+    const newPostObj = JSON.parse(JSON.stringify(post)); // Deep clone
+    newPostObj.comments.unshift(newComment); // Add new comment to front of comments array ( to render at top)
+
+    setPost(newPostObj);
   }
 
   return (post&&
@@ -67,7 +68,8 @@ export default function PostPage() {
         </Grid>
         <Box sx={{width: "95%", marginInline: "auto"}}>
           <Grid item xs={16} lg={14}>
-            { topLevelComments.map((c) => <CommentCard post={post} comment={c}></CommentCard>) }
+            {/* We display only the comments without a parentComment, i.e. top level comments */}
+            { post.comments.filter((x) => x.parentComment == null).map((c) => <CommentCard post={post} comment={c}></CommentCard>) }
           </Grid>
         </Box>
       </Grid>
