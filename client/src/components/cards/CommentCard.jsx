@@ -22,14 +22,12 @@ export default function CommentCard({ comment, post, postUpdaterFunc }) {
 
   const handleLikeEvent = async (eventCode) => {
     const url = (() => {
-      let action = null;
       switch(eventCode) {
         case 0: return `pact/${post.pact._id}/post/${post._id}/comment/${comment._id}/upvote`;
         case 1: return `pact/${post.pact._id}/post/${post._id}/comment/${comment._id}/downvote`;
+        // No default
       }
     })();
-    console.log(user._id)
-    console.log(comment)
     fetch(`${process.env.REACT_APP_URL}/${url}`, {
       method: "PUT",
       credentials: "include",
