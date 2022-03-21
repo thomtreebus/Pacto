@@ -13,7 +13,7 @@ export default function LinkPostCard({ post }) {
           />}
           {post.text &&
           <CardContent sx={{ backgroundColor: "gold" }}>
-            <Typography>
+            <Typography data-testid="text">
               {post.text}
             </Typography>
           </CardContent>
