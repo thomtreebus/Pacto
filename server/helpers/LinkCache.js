@@ -6,17 +6,20 @@ const getPreview = async (url) => {
   if (preview !== null) {
     return preview;
   }
-  console.log("URL not cached, querying: " + url);
   return cacheLinkPreview(url);
 }
 
 const cacheLinkPreview = async (url) => {
-  //console.log("fetch request sent: " + url);
   try {
-    const res = await fetch(`${process.env.REACT_APP_LINKPREVIEW_URL}/?key=${process.env.REACT_APP_LINKPREVIEW_KEY}&q=${url}`, {
-      method: "GET",
+    const res = await fetch(`${process.env.LINKPREVIEW_URL}`, {
+      method: "POST",
+      body: {
+        key: process.env.LINKPREVIEW_KEY,
+        q: url
+      }
     })
-    if (!res.ok) return null;
+
+    if (!res.ok) throw Error();
     const data = await res.json();
     return await Link.create({ image: data.image, text: data.title, link: url});
   } catch (err) {
