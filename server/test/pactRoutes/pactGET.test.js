@@ -48,7 +48,7 @@ describe("GET /pact/:id", () =>{
 
     post = await generateTestPost(user, pact);
     await post.save();
-    post2 = await generateTestPost(user, pact, "randomtitle", "", "link", "google.com");
+    post2 = await generateTestPost(user, pact, "randomtitle", "", "link", "http://google.com");
     await post2.save();
   });
 
