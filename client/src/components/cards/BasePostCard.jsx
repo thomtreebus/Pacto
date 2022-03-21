@@ -9,11 +9,12 @@ import CommentIcon from '@mui/icons-material/Comment';
 
 import { useAuth } from "../../providers/AuthProvider";
 
-export default function BasePostCard({ children, post, onOwnPage=false }) {
+export default function BasePostCard({ children, post, numComments=null }) {
   const { user } = useAuth();
   const [thumbUp, setThumbUp] = useState(post.upvoters.includes(user._id));
   const [thumbDown, setThumbDown] = useState(post.downvoters.includes(user._id));
   const [likes, setLikes] = useState(post.votes);
+  const commentCount = (numComments === null ? post.comments.length : numComments);
 
   const history = useHistory();
 
@@ -84,7 +85,7 @@ export default function BasePostCard({ children, post, onOwnPage=false }) {
 
             <Typography variant="subtitle2" className="link" data-testid="comments" onClick={() => {history.push(`/pact/${post.pact._id}/post/${post._id}`)}}>
               <CommentIcon sx={{ verticalAlign: "middle", marginRight: "5px" }} />
-              {post.comments.length} {post.comments.length === 1 ? "Comment" : "Comments"}
+              {commentCount} {commentCount === 1 ? "Comment" : "Comments"}
             </Typography>
           </Box>
         </Box>

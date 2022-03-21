@@ -62,7 +62,7 @@ export default function PostPage() {
     <>
       <Grid container width={"60vw"}>
         <Grid item xs={16} lg={14} paddingBottom={4}>
-          <PostCard post={post}></PostCard>
+          <PostCard post={post} numComments={post.comments.length}></PostCard>
           <Typography variant="caption" className="link" onClick={() => {setShowReplyBox(!showReplyBox)}}>
             {showReplyBox ? "Hide" : "Add comment"}
           </Typography>
