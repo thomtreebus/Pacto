@@ -2,6 +2,10 @@ const getPreview = require("../../helpers/LinkCache");
 const Link = require("../../models/Link");
 const { rest } = require("msw");
 const { setupServer } = require("msw/node");
+const mongoose = require("mongoose");
+const dotenv = require("dotenv");
+const supertest = require("supertest");
+const app = require("../../app");
 
 describe("LinkCache tests", () => {
   const url = "google.com";
@@ -20,32 +24,33 @@ describe("LinkCache tests", () => {
 		})
 	);
 
-  beforeAll(() => {
+  beforeAll(async () => {
     server.listen();
+    await mongoose.connect(process.env.TEST_DB_CONNECTION_URL);
   })
 
-  afterAll(() => {
+  afterAll(async () => {
     server.close();
+    await mongoose.connection.close();
   })
 
   beforeEach(() => {
     server.resetHandlers();
   })
 
-  afterEach(() => {
-    Link.deleteMany({});
+  afterEach(async () => {
+    await Link.deleteMany({});
   })
 
   it("should return a preview when available on first request", async () => {
     const preview = await getPreview(url);
-    expect(preview).toBe({
-      image: image,
-      text: title,
-      link: url
-    })
+    expect(preview.image).toBe(image);
+    expect(preview.text).toBe(title);
+    expect(preview.link).toBe(url);
   });
 
   it("should return a preview when available on second request, without making a fetch request", async () => {
+    await getPreview(url);
     server.use(
       rest.post(`${process.env.LINKPREVIEW_URL}`, (req, res, ctx) => {
         return res(
@@ -55,11 +60,9 @@ describe("LinkCache tests", () => {
     );
 
     const preview = await getPreview(url);
-    expect(preview).toBe({
-      image: image,
-      text: title,
-      link: url
-    })
+    expect(preview.image).toBe(image);
+    expect(preview.text).toBe(title);
+    expect(preview.link).toBe(url);
   });
 
   it("should return null when a preview is not available", async () => {
@@ -78,11 +81,9 @@ describe("LinkCache tests", () => {
   it("should create a link document on first request if a preview is available", async () => {
     await getPreview(url);
     const preview = await Link.findOne({ link: url })
-    expect(preview).toBe({
-      image: image,
-      text: title,
-      link: url
-    })
+    expect(preview.image).toBe(image);
+    expect(preview.text).toBe(title);
+    expect(preview.link).toBe(url);
   });
 
   it("should not create link document on first request if a preview is not available", async () => {
