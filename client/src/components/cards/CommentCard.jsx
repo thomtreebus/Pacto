@@ -5,19 +5,13 @@ import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import Typography from '@mui/material/Typography';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';import { useHistory } from "react-router-dom";
-import ThumbUpRoundedIcon from "@mui/icons-material/ThumbUpRounded";
-import ThumbDownRoundedIcon from "@mui/icons-material/ThumbDownRounded";
-
 import { useAuth } from "../../providers/AuthProvider";
 import CommentBox from "../CommentBox";
+import Voter from "../Voter";
 
 export default function CommentCard({ comment, post, postUpdaterFunc }) {
   const { user } = useAuth();
-  const [thumbUp, setThumbUp] = useState(comment.upvoters.includes(user._id));
-  const [thumbDown, setThumbDown] = useState(comment.downvoters.includes(user._id));
   const [showReplyBox, setShowReplyBox] = useState(false);
-  const [likes, setLikes] = useState(comment.votes);
-
   const history = useHistory();
 
   const handleLikeEvent = async (eventCode) => {
@@ -58,41 +52,12 @@ export default function CommentCard({ comment, post, postUpdaterFunc }) {
     <Card sx={{ width: "100%" }} data-testid="card">
       <CardContent>
         <Box sx={{ overflow: "hidden" }}>
-          <Box sx={{ float: "left", paddingRight: "16px", textAlign: "center" }}>
-            <IconButton sx={{ paddingRight: 0, paddingLeft: 0, paddingTop: 0 ,paddingBottom: 0 }} onClick={() => {
-              if (thumbUp) {
-                setLikes(likes - 1);
-              } else if (thumbDown) {
-                setLikes(likes + 2);
-                setThumbDown(false);
-              } else {
-                setLikes(likes + 1);
-              }
-              setThumbUp(!thumbUp);
-              handleLikeEvent(0);
-            }}>
-              <ThumbUpRoundedIcon color={thumbUp ? "primary" : "inherit"}/>
-            </IconButton>
-
-            <Typography data-testid="likes">
-              {likes}
-            </Typography>
-
-            <IconButton sx={{ paddingRight: 0, paddingLeft: 0, paddingTop: 0 ,paddingBottom: 0 }} onClick={() => {
-              if (thumbDown) {
-                setLikes(likes + 1);
-              } else if (thumbUp) {
-                setLikes(likes - 2);
-                setThumbUp(false);
-              } else {
-                setLikes(likes - 1);
-              }
-              setThumbDown(!thumbDown);
-              handleLikeEvent(1);
-            }}>
-              <ThumbDownRoundedIcon color={thumbDown ? "secondary" : "inherit"}/>
-            </IconButton>
-          </Box>
+          <Voter 
+          initThumbUp={comment.upvoters.includes(user._id)} 
+          initThumbDown={comment.downvoters.includes(user._id)} 
+          handleLikeEvent={handleLikeEvent}
+          initLikes={comment.votes}>
+          </Voter>
 
           <Box sx={{ overflow: "hidden" }}>
             <Typography variant="caption" data-testid="author-date-line">
