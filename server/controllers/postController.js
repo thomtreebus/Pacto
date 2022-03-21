@@ -7,6 +7,7 @@ const handleFieldErrors = require('../helpers/errorHandler');
 const { jsonResponse, jsonError } = require("../helpers/responseHandlers");
 const { POST_MESSAGES, MESSAGES } = require("../helpers/messages");
 const { upvote, downvote } = require("../helpers/genericVoteMethods");
+const getPreview = require("../helpers/LinkCache");
 
 // POST post
 module.exports.postPost = async (req, res) => {
@@ -30,6 +31,15 @@ module.exports.postGet = async (req, res) => {
 	let post = null;
 	try {
 		post = await Post.findOne({ pact: req.pact, _id:req.params.postId });
+
+		if (post.type === "link") {
+			const preview = await getPreview(post.link);
+			if (preview !== null) {
+				post.text = preview.text;
+				post.image = preview.image;
+			}
+		}
+
 		try {
 			await post.populate({ path: 'upvoters', model: User });
 			await post.populate({ path: 'downvoters', model: User });

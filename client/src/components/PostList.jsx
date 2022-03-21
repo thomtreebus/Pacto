@@ -22,7 +22,7 @@ export default function PostList({ posts }) {
 	}, [search, posts]);
 
   return (
-    <Grid container sx={{ paddingRight: "16px", paddingTop: "8px" }}>
+    <Grid container sx={{ paddingTop: "8px" }}>
       <Grid container sx={{ paddingLeft: "16px", paddingRight: "16px" }}>
         <Grid item sx={{ minWidth: "100%" }}>
           <Card

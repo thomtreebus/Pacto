@@ -49,3 +49,5 @@ jobs:
           CLOUDINARY_KEY: ${{ secrets.CLOUDINARY_KEY }}
           CLOUDINARY_SECRET: ${{ secrets.CLOUDINARY_SECRET }}
           UNIVERSITY_API: ${{ secrets.UNIVERSITY_API }}
+          LINKPREVIEW_KEY: ${{ secrets.LINKPREVIEW_KEY }}
+          LINKPREVIEW_URL: ${{ secrets.LINKPREVIEW_URL }}
