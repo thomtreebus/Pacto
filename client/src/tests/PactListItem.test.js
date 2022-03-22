@@ -11,13 +11,16 @@ describe("Pact List Item Tests", () => {
 	const server = setupServer(
 		rest.get(`${process.env.REACT_APP_URL}/me`, (req, res, ctx) => {
 			return res(
-				ctx.json({ message: {
-          _id : pacts[0].members[0],
-          firstName: "pac",
-          lastName: "to"
-          }, errors: [] })
+				ctx.json({
+					message: {
+						_id: pacts[0].members[0],
+						firstName: "pac",
+						lastName: "to",
+					},
+					errors: [],
+				})
 			);
-		}),
+		})
 	);
 
 	beforeAll(() => {
@@ -32,36 +35,54 @@ describe("Pact List Item Tests", () => {
 		server.resetHandlers();
 	});
 
-	beforeEach(async () => {
-		render(
-			<MockComponent>
-				<PactListItem pact={pacts[0]} />
-			</MockComponent>
-		);
+	const renderWithMock = async (element) => {
+		render(<MockComponent>{element}</MockComponent>);
+		await waitForElementToBeRemoved(() => screen.getByText("Loading"));
+	};
 
-    await waitForElementToBeRemoved(() => screen.getByText("Loading"));
-	});
-
-	describe("Check elements are rendered", () => {
-		it("should render the pact name", async () => {
-			const pactName = screen.getByText(pacts[0].name);
-			expect(pactName).toBeInTheDocument();
+	describe("Tests concerning the pacts that the user is in", () => {
+		beforeEach(async () => {
+			await renderWithMock(<PactListItem pact={pacts[0]} />);
 		});
 
-		it("should render the pact image", async () => {
-			const avatar = screen.getByTestId(/avatar/i);
-			const image = avatar.querySelector("img");
-			expect(image).toBeInTheDocument();
-			expect(image).toHaveAttribute("src", pacts[0].image);
+		describe("Check elements are rendered", () => {
+			it("should render the pact name", async () => {
+				const pactName = screen.getByText(pacts[0].name);
+				expect(pactName).toBeInTheDocument();
+			});
+
+			it("should render the pact image", async () => {
+				const avatar = screen.getByTestId(/avatar/i);
+				const image = avatar.querySelector("img");
+				expect(image).toBeInTheDocument();
+				expect(image).toHaveAttribute("src", pacts[0].image);
+			});
+		});
+
+		describe("Check elements iteractions", () => {
+			it("should redirect to the pact page when the pact item is clicked on if user is member of the pact", () => {
+				const item = screen.getByTestId(/item/i);
+				expect(item).toBeInTheDocument();
+				fireEvent.click(item);
+				expect(window.location.pathname).toBe(`/pact/${pacts[0]._id}`);
+			});
 		});
 	});
 
-	describe("Check elements iteractions", () => {
-		it("should redirect to the pact page when the pact item is clicked on if user is member of the pact", () => {
+	describe("Tests concerning the pacts that the user is not in", () => {
+		beforeEach(async () => {
+			await renderWithMock(<PactListItem pact={pacts[1]} />);
+		});
+
+		it("should show the join confirmation dialogue if the user is not a part of the pact", async () => {
 			const item = screen.getByTestId(/item/i);
 			expect(item).toBeInTheDocument();
 			fireEvent.click(item);
-			expect(window.location.pathname).toBe(`/pact/${pacts[0]._id}`);
+			const promptText = await screen.findByText(/Do you want to join/i);
+			expect(promptText).toBeInTheDocument();
+			const closeButton = await screen.findByText(/close/i);
+			fireEvent.click(closeButton);
+			waitForElementToBeRemoved(() => promptText);
 		});
 	});
 });

@@ -56,7 +56,7 @@ export default function PactListItem({ pact }) {
 						}}
 					>
 						<Typography id="parent-modal-description" variant="h6">
-							Do you want to join the '{pact.name}' pact
+							Do you want to join '{pact.name}'
 						</Typography>
 						<Divider sx={{ marginBlock: "20px" }} />
 						<Button onClick={handleClose}>Confirm</Button>
