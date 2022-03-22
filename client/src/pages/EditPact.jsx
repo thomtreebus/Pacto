@@ -48,7 +48,7 @@ export default function EditPact() {
   const [apiPactNameError, setApiPactNameError] = React.useState('');
   const [apiPactCategoryError, setApiPactCategoryError] = React.useState('');
   const [apiPactDescriptionError, setApiPactDescriptionError] = React.useState('');
-  const [uploadImageError, setUploadImageError] = React.useState('')
+  const [snackBarError, setSnackBarError] = React.useState('')
 
   const [uploadImageIsDisabled, setUploadImageIsDisabled] = React.useState(false);
   const [snackbarOpen, setSnackbarOpen] = React.useState(false);
@@ -66,7 +66,7 @@ export default function EditPact() {
       setImage(res.data.url);
       setSnackbarOpen(false)
     } catch (err) {
-      setUploadImageError("Error uploading image")
+      setSnackBarError("Error uploading image")
       setSnackbarOpen(true)
     }
     setUploadImageIsDisabled(false);
@@ -95,7 +95,9 @@ export default function EditPact() {
         setImage(data.image)
         setIsLoading(false);
       }).catch((err) => {
-        console.log(err);
+        setSnackBarError(err)
+        setSnackbarOpen(true)
+        return history.push(`/not-found`);
       })
     }
   }, [pactId, user, history])
@@ -198,7 +200,7 @@ export default function EditPact() {
                         overflow: "hidden",
                         position: "relative",
                       }}
-                      alt="Profile Picture"
+                      alt="Pact Picture"
                       cloudName={`${process.env.REACT_APP_CLOUDINARY_CLOUD_NAME}`}
                       publicID={image}
                     >
@@ -313,7 +315,7 @@ export default function EditPact() {
             <ErrorMessage
               isOpen={snackbarOpen}
               setIsOpen={setSnackbarOpen}
-              message={uploadImageError}
+              message={snackBarError}
             />
           </Grid>
         </Card>
