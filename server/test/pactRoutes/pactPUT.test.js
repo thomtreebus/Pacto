@@ -200,4 +200,38 @@ describe("PUT /pact", () => {
       },"category",PACT_MESSAGES.CATEGORY.BLANK);
     });
   });
+
+  describe("Permission checks", () => {
+    it("Rejects request if user is not moderator", async () => {
+      const user2 = await generateTestUser("user_one");
+      user2.active = true;
+      await user2.save();
+
+      const user3 = await generateTestUser("user_two");
+      user3.active = true;
+      await user3.save();
+
+      const user2Pact = await generateTestPact(user2, "user_two_pact");
+
+      // add user3 to pact.
+      user3.pacts.push(user2Pact);
+      await user3.save();
+      user2Pact.members.push(user3);
+      await user2Pact.save();
+
+      // user3 tries updating user2's pact.
+      const user3Token = createToken(user3);
+      const res = await supertest(app)
+        .put("/pact/"+user2Pact._id)
+        .set("Cookie", [`jwt=${user3Token}`])
+        .send(user2Pact)
+        .expect(401)
+
+      console.log(res.body)
+      expect(res.body.errors).toHaveLength(1);
+      expect(res.body.errors[0]['field']).toBeNull();
+      expect(res.body.errors[0]['message']).toBe(PACT_MESSAGES.NOT_MODERATOR)
+    })
+  });
+
 });
