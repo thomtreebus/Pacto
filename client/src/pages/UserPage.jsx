@@ -55,31 +55,31 @@ export default function UserPage() {
     const [value, setValue] = useState(0);
 
     useEffect(() => {
-    fetch(`${process.env.REACT_APP_URL}/users`, {
-      method: "GET",
-      credentials: "include"
-    }).then((res) => {
-      if (!res.ok) {
-        throw Error("Could not fetch pact");
-      }
-      return res.json();
-    }).then((data) => {
-      const resAllUsers = data.message
-      setAllFriends(
-        resAllUsers.filter(curUser => curUser.friends.includes(user._id))
-      );
-      setAllSameCourse(
-        resAllUsers.filter(curUser => curUser.course === user.course)
-      );
-      setAllSameLocation(
-        resAllUsers.filter(curUser => curUser.location === user.location)
-      );
-      setAllUsers(resAllUsers);
-      setIsLoading(false);
-    }).catch(() => {
-      history.push("/not-found");
+      fetch(`${process.env.REACT_APP_URL}/users`, {
+        method: "GET",
+        credentials: "include"
+      }).then((res) => {
+        if (!res.ok) {
+          throw Error("Could not fetch pact");
+        }
+        return res.json();
+      }).then((data) => {
+        const resAllUsers = data.message
+        setAllFriends(
+          resAllUsers.filter(curUser => curUser.friends.includes(user._id))
+        );
+        setAllSameCourse(
+          resAllUsers.filter(curUser => curUser.course === user.course)
+        );
+        setAllSameLocation(
+          resAllUsers.filter(curUser => curUser.location === user.location)
+        );
+        setAllUsers(resAllUsers);
+        setIsLoading(false);
+      }).catch(() => {
+        history.push("/not-found");
     })
-  }, [])
+    }, [history, user])
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
