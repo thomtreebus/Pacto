@@ -12,7 +12,7 @@ const textPost = {
     lastName: "Wali",
     _id: 1
   },
-  date: "5/5/5",
+  createdAt: new Date(Date.now() - (86400000) * 0).toISOString(),
   title: "ipsumLorem ipsumLorem ipsumLorem ipsumLorem",
   text: "amet officia molestias esse!",
   type: "text",
@@ -30,7 +30,7 @@ const imagePost = {
     lastName: "Wali",
     _id: 1
   },
-  date: "5/5/5",
+  createdAt: new Date(Date.now() - (86400000) * 0).toISOString(),
   title: "ipsumLorem ipsumLorem ipsumLorem ipsumLorem",
   image: "imagelink",
   type: "image",
@@ -48,7 +48,7 @@ const linkPost = {
     lastName: "Wali",
     _id: 1
   },
-  date: "5/5/5",
+  createdAt: new Date(Date.now() - (86400000) * 0).toISOString(),
   title: "ipsumLorem ipsumLorem ipsumLorem ipsumLorem",
   link: "link",
   type: "link",

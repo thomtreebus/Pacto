@@ -27,6 +27,7 @@ import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import ForumIcon from '@mui/icons-material/Forum';
 import EditIcon from '@mui/icons-material/Edit';
 import {useAuth} from "../providers/AuthProvider";
+import MyPactList from '../components/MyPactList';
 
 
 function TabPanel(props) {
@@ -163,7 +164,7 @@ export default function Profile() {
             Comments
           </TabPanel>
           <TabPanel value={value} index={2}>
-            Pacts
+            <MyPactList/>
           </TabPanel>
         </Box>
       </Grid>
