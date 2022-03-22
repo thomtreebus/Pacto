@@ -49,6 +49,8 @@ export default function UserPage() {
     const [isLoading, setIsLoading] = useState(true);
     const [allUsers, setAllUsers] = useState(null);
     const [allFriends, setAllFriends] = useState(null);
+    const [allSameLocation, setAllSameLocation] = useState(null);
+    const [allSameCourse, setAllSameCourse] = useState(null);
     const history = useHistory();
     const [value, setValue] = useState(0);
 
@@ -65,6 +67,12 @@ export default function UserPage() {
       const resAllUsers = data.message
       setAllFriends(
         resAllUsers.filter(curUser => curUser.friends.includes(user._id))
+      );
+      setAllSameCourse(
+        resAllUsers.filter(curUser => curUser.course === user.course)
+      );
+      setAllSameLocation(
+        resAllUsers.filter(curUser => curUser.location === user.location)
       );
       setAllUsers(resAllUsers);
       setIsLoading(false);
@@ -90,6 +98,8 @@ export default function UserPage() {
           <Tabs value={value} onChange={handleChange} aria-label="User type tab">
             <Tab label="All university users" {...a11yProps(0)} />
             <Tab label="Friends" {...a11yProps(1)} />
+            <Tab label="Same Course" {...a11yProps(2)} />
+            <Tab label="Same Location" {...a11yProps(2)} />
           </Tabs>
         </Box>
         <TabPanel value={value} index={0}>
@@ -97,6 +107,12 @@ export default function UserPage() {
         </TabPanel>
         <TabPanel value={value} index={1}>
           <UserList users={allFriends}/>
+        </TabPanel>
+        <TabPanel value={value} index={2}>
+          <UserList users={allSameCourse}/>
+        </TabPanel>
+        <TabPanel value={value} index={2}>
+          <UserList users={allSameLocation}/>
         </TabPanel>
       </Box>
     </Container>
