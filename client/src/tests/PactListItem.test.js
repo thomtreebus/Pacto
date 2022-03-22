@@ -106,7 +106,12 @@ describe("Pact List Item Tests", () => {
 				rest.post(
 					`${process.env.REACT_APP_URL}/pact/:id/join`,
 					(req, res, ctx) => {
-						return res(ctx.json({ message: null, errors: ["Pact not Found"] }));
+						return res(
+							ctx.json({
+								message: null,
+								errors: [{ message: "Pact not Found" }],
+							})
+						);
 					}
 				)
 			);
