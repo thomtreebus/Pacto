@@ -1,12 +1,44 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitForElementToBeRemoved } from "@testing-library/react";
 import "@testing-library/jest-dom";
-import { BrowserRouter } from "react-router-dom";
 import PactList from "../components/PactList.jsx";
+import { rest } from "msw";
+import { setupServer } from "msw/node";
 import pacts from "./utils/testPacts";
+import MockComponent from "./utils/MockComponent.jsx";
 
 describe("Pact List Tests", () => {
+	const server = setupServer(
+		rest.get(`${process.env.REACT_APP_URL}/me`, (req, res, ctx) => {
+			return res(
+				ctx.json({ message: {
+          _id : "userid1",
+          firstName: "pac",
+          lastName: "to"
+          }, errors: [] })
+			);
+		}),
+	);
+
+	beforeAll(() => {
+		server.listen();
+	});
+
+	afterAll(() => {
+		server.close();
+	});
+
+	beforeEach(async () => {
+		server.resetHandlers();
+	});
+
 	const renderWithMock = async (element) => {
-		render(<BrowserRouter>{element}</BrowserRouter>);
+		render(
+			<MockComponent>
+				{element}
+			</MockComponent>
+		);
+
+    await waitForElementToBeRemoved(() => screen.getByText("Loading"));
 	};
 
 	describe("Check elements are rendered", () => {
