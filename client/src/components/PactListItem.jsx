@@ -12,8 +12,8 @@ export default function PactListItem({ pact }) {
 	const { user, setUser } = useAuth();
 	const history = useHistory();
 	const [showJoinConfirmation, setShowJoinConfirmation] = useState(false);
-	const [isJoinButtonDisabled, setIsJoinButtonDisabled] = React.useState(false);
-	const [errorMessage, setErrorMessage] = React.useState(null);
+	const [isJoinButtonDisabled, setIsJoinButtonDisabled] = useState(false);
+	const [errorMessage, setErrorMessage] = useState(null);
 
 	const handleClose = () => {
 		setShowJoinConfirmation(false);
