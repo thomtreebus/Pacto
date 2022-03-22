@@ -92,13 +92,7 @@ module.exports.signupPost = async (req, res) => {
 		errorFound = true;
 		
 		// Convert mongoose errors into a nice format.
-		const allErrors = handleFieldErrors(err);
-    if(allErrors){
-			allErrors.forEach((myErr) => jsonErrors.push(myErr));
-		} 
-		else {
-			jsonErrors.push(jsonError(null, err.message));
-		}
+		jsonErrors = handleFieldErrors(err);
 	}
 	finally {
 		if(errorFound){
