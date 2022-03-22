@@ -1,4 +1,4 @@
-import {Fab, Grid, IconButton} from "@mui/material";
+import {Fab, Grid} from "@mui/material";
 import { Box } from "@mui/system";
 import EditIcon from '@mui/icons-material/Edit';
 import { useEffect, useState } from "react";
@@ -35,6 +35,9 @@ export default function PactPage() {
       if(moderators.includes(user._id)){
         setIsMod(true)
       }
+      else{
+        setIsMod(false)
+      }
     }).catch((err) => {
       history.push("/not-found");
     })
@@ -50,15 +53,18 @@ export default function PactPage() {
         <Grid item lg={4} xl={3}>
           <Box sx={{ paddingTop: "16px", paddingRight: "16px" }} display={{ xs: "none", lg: "block" }} position={"sticky"} top={65}>
             { pact && <AboutPact pact={pact} /> }
-            {isMod && <IconButton
-              onClick={() => {
-                history.push(`/pact/${pactID}/edit-pact`)
-              }}
-            >
-            <EditIcon  color="primary" />
-            </IconButton>}
-            <Box position={"absolute"} bottom={12} right={50}>
-              <Fab color="primary" aria-label="add">
+
+            <Box position={"absolute"} bottom={12} right={50} >
+              {isMod && <Fab
+                onClick={() => {
+                  history.push(`/pact/${pactID}/edit-pact`)
+                }}
+                size="medium"
+                padding="0 8px"
+              >
+                <EditIcon  color="primary" />
+              </Fab>}
+              <Fab color="primary" aria-label="add" size="medium">
                 <AddIcon />
               </Fab>
             </Box>
