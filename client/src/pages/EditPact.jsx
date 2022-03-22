@@ -151,174 +151,172 @@ export default function EditPact() {
 
   };
 
-  if (isLoading) {
-    return <Loading/>;
-  } else {
-    return (
-      <>
-        <Card
-          sx={{
-            padding: "40px",
-            margin: "auto",
-          }}
-        >
-          <Grid container
-                direction="row"
-                justifyContent="center"
-                alignItems="center"
-                spacing={1}>
-            <Grid item xs={3}>
-              <Card sx={{padding: "10px", margin: "auto"}}>
-                <label htmlFor="contained-button-file">
-                  <Input
-                    accept="image/*"
-                    id="contained-button-file"
-                    data-testid="image-upload-input"
-                    disabled={uploadImageIsDisabled}
-                    sx={{display: "none"}}
-                    type="file"
-                    onChange={(e) => {
-                      uploadImage(e.target.files[0])
-                    }}/>
-                  <ButtonBase
-                    label="Upload Image"
-                    variant="contained"
-                    disabled={uploadImageIsDisabled}
-                    component="span"
-                    sx={{
-                      marginTop: 1
-                    }}
+  if (isLoading) { return <Loading/>; }
 
-                  >
-                    <Image
-                      style={{
-                        width: "100%",
-                        minWidth: "20%",
-                        minHeight: "25%",
-                        borderRadius: "10px",
-                        overflow: "hidden",
-                        position: "relative",
-                      }}
-                      alt="Pact Picture"
-                      cloudName={`${process.env.REACT_APP_CLOUDINARY_CLOUD_NAME}`}
-                      publicID={image}
-                    >
-                    </Image>
-                  </ButtonBase>
-                  <LoadingButton
-                    loading={uploadImageIsDisabled}
-                    loadingPosition="start"
-                    startIcon={<SaveIcon/>}
-                    fullWidth
-                    label="Upload Image"
-                    variant="contained"
-                    disabled={uploadImageIsDisabled}
-                    component="span"
-                    sx={{
-                      marginTop: 1
-                    }}
-                  >
-                    Upload Image
-                  </LoadingButton>
-                </label>
-              </Card>
+  return (
+    <>
+      <Card
+        sx={{
+          padding: "40px",
+          margin: "auto",
+        }}
+      >
+        <Grid container
+              direction="row"
+              justifyContent="center"
+              alignItems="center"
+              spacing={1}>
+          <Grid item xs={3}>
+            <Card sx={{padding: "10px", margin: "auto"}}>
+              <label htmlFor="contained-button-file">
+                <Input
+                  accept="image/*"
+                  id="contained-button-file"
+                  data-testid="image-upload-input"
+                  disabled={uploadImageIsDisabled}
+                  sx={{display: "none"}}
+                  type="file"
+                  onChange={(e) => {
+                    uploadImage(e.target.files[0])
+                  }}/>
+                <ButtonBase
+                  label="Upload Image"
+                  variant="contained"
+                  disabled={uploadImageIsDisabled}
+                  component="span"
+                  sx={{
+                    marginTop: 1
+                  }}
 
-            </Grid>
-            <Grid item xs>
-              <Box
-                sx={{
-                  // height: "calc(100vh - 68.5px)",
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  // backgroundColor: "white",
-                  paddingInline: "50px",
-                  // paddingBlock: "10px",
-                  // marginTop: "68.5px"
-                }}
-              >
-                <Avatar alt="Pacto Icon" src={Icon}/>
-
-                <Typography component="h1" variant="h5" sx={{fontWeight: "bold"}}>
-                  Edit Pact
-                </Typography>
-                <Box
-                  component="form"
-                  noValidate
-                  onSubmit={handleSubmit}
-                  sx={{mt: 1}}
                 >
-                  <TextField
-                    margin="normal"
-                    required
-                    fullWidth
-                    label="Pact Name"
-                    data-testid="pact-name"
-                    id="name"
-                    name="name"
-                    error={apiPactNameError.length !== 0}
-                    helperText={apiPactNameError}
-                    autoFocus
-                    value={name}
-                    onChange={(e) => {
-                      setName(e.target.value)
+                  <Image
+                    style={{
+                      width: "100%",
+                      minWidth: "20%",
+                      minHeight: "25%",
+                      borderRadius: "10px",
+                      overflow: "hidden",
+                      position: "relative",
                     }}
-                  />
-
-                  <TextField
-                    data-testid='category-select'
-                    alignitems='center'
-                    margin="normal"
-                    required
-                    fullWidth
-                    id="category"
-                    name="category"
-                    label="Category"
-                    error={apiPactCategoryError.length !== 0}
-                    helperText={apiPactCategoryError}
-                    value={category}
-                    onChange={(e) => {
-                      setCategory(e.target.value)
-                    }}
+                    alt="Pact Picture"
+                    cloudName={`${process.env.REACT_APP_CLOUDINARY_CLOUD_NAME}`}
+                    publicID={image}
                   >
-                  </TextField>
+                  </Image>
+                </ButtonBase>
+                <LoadingButton
+                  loading={uploadImageIsDisabled}
+                  loadingPosition="start"
+                  startIcon={<SaveIcon/>}
+                  fullWidth
+                  label="Upload Image"
+                  variant="contained"
+                  disabled={uploadImageIsDisabled}
+                  component="span"
+                  sx={{
+                    marginTop: 1
+                  }}
+                >
+                  Upload Image
+                </LoadingButton>
+              </label>
+            </Card>
 
-                  <TextField
-                    name="description"
-                    margin="normal"
-                    id="description"
-                    label="Description"
-                    required
-                    fullWidth
-                    multiline
-                    rows={4}
-                    error={apiPactDescriptionError.length !== 0}
-                    helperText={apiPactDescriptionError}
-                    value={description}
-                    onChange={(e) => {
-                      setDescription(e.target.value)
-                    }}
-                  />
-                  <Button
-                    type="submit"
-                    fullWidth
-                    variant="contained"
-                    disabled={isButtonDisabled}
-                    sx={{mt: 3, mb: 2}}
-                  >
-                    Edit Pact
-                  </Button>
-                </Box>
-              </Box>
-            </Grid>
-            <ErrorMessage
-              isOpen={snackbarOpen}
-              setIsOpen={setSnackbarOpen}
-              message={snackBarError}
-            />
           </Grid>
-        </Card>
-      </>
-    );
-  }
+          <Grid item xs>
+            <Box
+              sx={{
+                // height: "calc(100vh - 68.5px)",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                // backgroundColor: "white",
+                paddingInline: "50px",
+                // paddingBlock: "10px",
+                // marginTop: "68.5px"
+              }}
+            >
+              <Avatar alt="Pacto Icon" src={Icon}/>
+
+              <Typography component="h1" variant="h5" sx={{fontWeight: "bold"}}>
+                Edit Pact
+              </Typography>
+              <Box
+                component="form"
+                noValidate
+                onSubmit={handleSubmit}
+                sx={{mt: 1}}
+              >
+                <TextField
+                  margin="normal"
+                  required
+                  fullWidth
+                  label="Pact Name"
+                  data-testid="pact-name"
+                  id="name"
+                  name="name"
+                  error={apiPactNameError.length !== 0}
+                  helperText={apiPactNameError}
+                  autoFocus
+                  value={name}
+                  onChange={(e) => {
+                    setName(e.target.value)
+                  }}
+                />
+
+                <TextField
+                  data-testid='category-select'
+                  alignitems='center'
+                  margin="normal"
+                  required
+                  fullWidth
+                  id="category"
+                  name="category"
+                  label="Category"
+                  error={apiPactCategoryError.length !== 0}
+                  helperText={apiPactCategoryError}
+                  value={category}
+                  onChange={(e) => {
+                    setCategory(e.target.value)
+                  }}
+                >
+                </TextField>
+
+                <TextField
+                  name="description"
+                  margin="normal"
+                  id="description"
+                  label="Description"
+                  required
+                  fullWidth
+                  multiline
+                  rows={4}
+                  error={apiPactDescriptionError.length !== 0}
+                  helperText={apiPactDescriptionError}
+                  value={description}
+                  onChange={(e) => {
+                    setDescription(e.target.value)
+                  }}
+                />
+                <Button
+                  type="submit"
+                  fullWidth
+                  variant="contained"
+                  disabled={isButtonDisabled}
+                  sx={{mt: 3, mb: 2}}
+                >
+                  Edit Pact
+                </Button>
+              </Box>
+            </Box>
+          </Grid>
+          <ErrorMessage
+            isOpen={snackbarOpen}
+            setIsOpen={setSnackbarOpen}
+            message={snackBarError}
+          />
+        </Grid>
+      </Card>
+    </>
+  );
 }
