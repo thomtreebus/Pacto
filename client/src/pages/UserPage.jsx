@@ -7,6 +7,7 @@ import Loading from "./Loading";
 import UserList from "../components/UserList";
 import Tabs from "@mui/material/Tabs";
 import PropTypes from "prop-types";
+import Container from "@mui/material/Container";
 
 
 function TabPanel(props) {
@@ -22,7 +23,7 @@ function TabPanel(props) {
     >
       {value === index && (
         <Box sx={{ p: 3 }}>
-          <Typography>{children}</Typography>
+          <Typography component={'div'}>{children}</Typography>
         </Box>
       )}
     </div>
@@ -69,7 +70,6 @@ export default function UserPage() {
           myFriends.push(resAllUsers[x]);
         }
       }
-      console.log(myFriends);
       setAllFriends(myFriends);
       setIsLoading(false);
     }).catch(() => {
@@ -88,21 +88,22 @@ export default function UserPage() {
   }
 	
 	return (
-
-    <Box sx={{ width: '100%' }}>
-      <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-        <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
-          <Tab label="All university users" {...a11yProps(0)} />
-          <Tab label="Friends" {...a11yProps(1)} />
-        </Tabs>
+    <Container fixed>
+      <Box sx={{ width: '100%' }}>
+        <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+          <Tabs value={value} onChange={handleChange} aria-label="User type tab">
+            <Tab label="All university users" {...a11yProps(0)} />
+            <Tab label="Friends" {...a11yProps(1)} />
+          </Tabs>
+        </Box>
+        <TabPanel value={value} index={0}>
+          <UserList users={allUsers}/>
+        </TabPanel>
+        <TabPanel value={value} index={1}>
+          <UserList users={allFriends}/>
+        </TabPanel>
       </Box>
-      <TabPanel value={value} index={0}>
-        <UserList users={allUsers}/>
-      </TabPanel>
-      <TabPanel value={value} index={1}>
-        <UserList users={allFriends}/>
-      </TabPanel>
-    </Box>
-            //<UserPortfolio user = {user}></UserPortfolio>
+    </Container>
+    // <UserPortfolio user = {user}></UserPortfolio>
     )
 }
