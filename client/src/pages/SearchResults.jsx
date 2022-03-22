@@ -10,6 +10,7 @@ import Box from '@mui/material/Box';
 import PropTypes from 'prop-types';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
+import UserList from '../components/UserList';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -104,7 +105,7 @@ export default function SearchResults() {
         {results && <PostList posts={results.posts}/>}
       </TabPanel>
       <TabPanel value={type} index={2}>
-        Users
+        {results && <UserList users={results.users}/>}
       </TabPanel>
     </Box>
       
