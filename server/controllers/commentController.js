@@ -34,15 +34,7 @@ const makeComment = async(req, res, parentComment=undefined) => {
     return res.status(201).json(jsonResponse(comment, []));
   }
   catch(err) {
-    let jsonErrors = [];
-    const allErrors = handleFieldErrors(err);
-    if(allErrors.length !== 0){
-			allErrors.forEach((myErr) => jsonErrors.push(myErr));
-		} 
-		else {
-			jsonErrors.push(jsonError(null, err.message));
-		}
-    return res.status(400).json(jsonResponse(null, jsonErrors));
+    return res.status(400).json(jsonResponse(null, handleFieldErrors(err)));
   }
 }
 

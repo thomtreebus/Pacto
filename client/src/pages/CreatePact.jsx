@@ -7,6 +7,7 @@ import Box from "@mui/material/Box";
 import Icon from "../assets/pacto-logo.ico";
 import { useHistory } from "react-router-dom";
 import MenuItem from '@mui/material/MenuItem';
+import { useAuth } from "../providers/AuthProvider";
 
 export default function CreatePactPage() {
   const [category, setCategory] = React.useState('');
@@ -17,7 +18,7 @@ export default function CreatePactPage() {
 	const [apiPactCategoryError, setApiPactCategoryError] = React.useState('');
 	const [apiPactDescriptionError, setApiPactDescriptionError] = React.useState('');
 
-
+	const {user, setUser} = useAuth();
 
   const handleCategoryChange = (event) => {
     setCategory(event.target.value);
@@ -69,6 +70,10 @@ export default function CreatePactPage() {
 		if (response.status !== 201) {
 			return;
 		}
+
+		let newUser = Object.assign({}, user);
+		newUser.pacts.push(json.message._id);
+		setUser(newUser);
 
 		history.push(`/pact/${json.message._id}`);
 		
