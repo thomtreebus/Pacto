@@ -20,8 +20,8 @@ function SaveIcon() {
   return null;
 }
 
-const Input = styled('input')({
-  display: 'none',
+const Input = styled("input")({
+  display: "none",
 });
 
 
@@ -44,10 +44,10 @@ export default function EditPact() {
   const [description, setDescription] = useState(defaultData.description)
   const [image, setImage] = useState(defaultData.image)
 
-  const [apiPactNameError, setApiPactNameError] = useState('');
-  const [apiPactCategoryError, setApiPactCategoryError] = useState('');
-  const [apiPactDescriptionError, setApiPactDescriptionError] = useState('');
-  const [snackBarError, setSnackBarError] = useState('')
+  const [apiPactNameError, setApiPactNameError] = useState("");
+  const [apiPactCategoryError, setApiPactCategoryError] = useState("");
+  const [apiPactDescriptionError, setApiPactDescriptionError] = useState("");
+  const [snackBarError, setSnackBarError] = useState("")
 
   const [uploadImageIsDisabled, setUploadImageIsDisabled] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
@@ -106,9 +106,9 @@ export default function EditPact() {
     event.preventDefault();
     setIsButtonDisabled(true);
 
-    setApiPactNameError('');
-    setApiPactCategoryError('');
-    setApiPactDescriptionError('');
+    setApiPactNameError("");
+    setApiPactCategoryError("")
+    setApiPactDescriptionError("");
 
     const response = await fetch(`${process.env.REACT_APP_URL}/pact/${pactId}`, {
       method: "PUT",
@@ -127,7 +127,7 @@ export default function EditPact() {
 
     const json = await response.json();
 
-    Object.values(json['errors']).forEach(err => {
+    Object.values(json["errors"]).forEach(err => {
       const field = err["field"];
       const message = err["message"];
 
@@ -265,8 +265,8 @@ export default function EditPact() {
                 />
 
                 <TextField
-                  data-testid='category-select'
-                  alignitems='center'
+                  data-testid="category-select"
+                  alignitems="center"
                   margin="normal"
                   required
                   fullWidth
