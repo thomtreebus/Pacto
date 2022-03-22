@@ -1,6 +1,8 @@
-import * as React from "react";
+import React from "react";
 import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
+import PopularPactsList from "./PopularPactsList";
+import { Typography, Toolbar, Divider } from "@mui/material";
 
 const drawerWidth = 240;
 
@@ -20,7 +22,16 @@ export default function RightSideBar() {
 					},
 				}}
 			>
-				{/* Insert content for right side bar here */}
+				<Toolbar data-testid="sidebar-toolbar2" />
+				<Divider sx={{ marginBlockEnd: 2 }} />
+				<Typography
+					data-testid="sidebar-popularpacts-text"
+					variant="p"
+					sx={{ marginLeft: 10 }}
+				>
+					Popular Pacts
+				</Typography>
+				<PopularPactsList numberOfPacts={10} />
 			</Drawer>
 		</Box>
 	);

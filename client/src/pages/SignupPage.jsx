@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useState } from "react";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
@@ -10,12 +10,12 @@ import Container from "@mui/material/Container";
 import Icon from "../assets/pacto-logo.ico";
 
 export default function SignupPage() {
-	const [passwordConfirmError, setPasswordConfirmError] = React.useState("");
-	const [apiFirstNameError, setApiFirstNameError] = React.useState("");
-	const [apiLastNameError, setApiLastNameError] = React.useState("");
-	const [apiUniEmailError, setApiUniEmailError] = React.useState("");
-	const [apiPasswordError, setApiPasswordError] = React.useState("");
-	const [isButtonDisabled, setIsButtonDisabled] = React.useState(false);
+	const [passwordConfirmError, setPasswordConfirmError] = useState("");
+	const [apiFirstNameError, setApiFirstNameError] = useState("");
+	const [apiLastNameError, setApiLastNameError] = useState("");
+	const [apiUniEmailError, setApiUniEmailError] = useState("");
+	const [apiPasswordError, setApiPasswordError] = useState("");
+	const [isButtonDisabled, setIsButtonDisabled] = useState(false);
 	const history = useHistory();
 
 	const handleSubmit = async (event) => {
