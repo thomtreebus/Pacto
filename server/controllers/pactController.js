@@ -87,7 +87,7 @@ module.exports.pactPut = async(req, res) => {
 		// Checks if user can update the pact ( is a moderator )
 		if (!moderators.includes(req.user._id)){
 			status = 401
-			throw Error("You don't have permission to update this pact.");
+			throw Error(PACT_MESSAGES.NOT_MODERATOR);
 		}
 
 		const updatedPact = await Pact.findByIdAndUpdate(pact.id, { ...req.body }, { runValidators: true });
