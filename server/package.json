@@ -2,12 +2,13 @@
   "name": "server",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
     "start": "nodemon server.js",
     "dbstart": "docker-compose up -d",
     "dbclose": "docker-compose down",
     "test": "jest --runInBand",
+    "refresh-test": "jest --runInBand  --watchAll",
     "seed": "node ./tools/seed.js",
     "unseed": "node ./tools/unseed.js",
     "coverage": "jest --coverage --runInBand"
@@ -18,15 +19,26 @@
   "dependencies": {
     "bcrypt": "^5.0.1",
     "chance": "^1.1.8",
+    "cloudinary": "^1.28.1",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
+    "crypto-random-string": "^3.3.1",
     "dotenv": "^14.2.0",
+    "env": "^0.0.2",
     "expect-cookies": "^0.2.0",
     "express": "^4.17.2",
     "jest": "^27.4.7",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.1.7",
+    "msw": "^0.39.2",
+    "multer": "^1.4.4",
+    "multer-storage-cloudinary": "^4.0.0",
+    "node-cache": "^5.1.2",
+    "node-fetch": "^2.6.7",
+    "nodemailer": "^6.7.2",
     "nodemon": "^2.0.15",
-    "supertest": "^6.2.2"
+    "password-validator": "^5.2.1",
+    "supertest": "^6.2.2",
+    "validator": "^13.7.0"
   }
 }

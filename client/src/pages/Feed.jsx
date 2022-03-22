@@ -1,10 +1,5 @@
-import React from 'react';
-import CreatePostCard from '../components/CreatePostCard';
-import ImagePost from '../components/ImagePost';
+import React from "react";
 
 export default function Feed() {
-  return (
-    <CreatePostCard />
-    // <ImagePost />
-  );
+	return <div>Feed</div>;
 }
