@@ -1,7 +1,7 @@
 import {Fab, Grid, IconButton} from "@mui/material";
 import { Box } from "@mui/system";
 import EditIcon from '@mui/icons-material/Edit';
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import AboutPact from "../components/AboutPact";
 import PostList from "../components/PostList";

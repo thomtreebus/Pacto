@@ -1,4 +1,3 @@
-import * as React from "react";
 import {ButtonBase, Card, Grid, Typography} from "@mui/material";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
@@ -27,7 +26,7 @@ const Input = styled('input')({
 
 
 export default function EditPact() {
-  const [isButtonDisabled, setIsButtonDisabled] = React.useState(false);
+  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   const {user} = useAuth();
   const {pactId} = useParams();
   const history = useHistory();
@@ -38,20 +37,20 @@ export default function EditPact() {
     image: ""
   };
 
-  const [isLoading, setIsLoading] = React.useState(true);
+  const [isLoading, setIsLoading] = useState(true);
 
   const [name, setName] = useState(defaultData.name)
   const [category, setCategory] = useState(defaultData.category)
   const [description, setDescription] = useState(defaultData.description)
   const [image, setImage] = useState(defaultData.image)
 
-  const [apiPactNameError, setApiPactNameError] = React.useState('');
-  const [apiPactCategoryError, setApiPactCategoryError] = React.useState('');
-  const [apiPactDescriptionError, setApiPactDescriptionError] = React.useState('');
-  const [snackBarError, setSnackBarError] = React.useState('')
+  const [apiPactNameError, setApiPactNameError] = useState('');
+  const [apiPactCategoryError, setApiPactCategoryError] = useState('');
+  const [apiPactDescriptionError, setApiPactDescriptionError] = useState('');
+  const [snackBarError, setSnackBarError] = useState('')
 
-  const [uploadImageIsDisabled, setUploadImageIsDisabled] = React.useState(false);
-  const [snackbarOpen, setSnackbarOpen] = React.useState(false);
+  const [uploadImageIsDisabled, setUploadImageIsDisabled] = useState(false);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   const uploadImage = async (newImage) => {
     setUploadImageIsDisabled(true);
