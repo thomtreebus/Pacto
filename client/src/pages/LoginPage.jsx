@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useState } from "react";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -14,9 +14,9 @@ import ErrorMessage from "../components/ErrorMessage";
 
 export default function LoginPage() {
 	const { setIsAuthenticated, setUser } = useAuth();
-	const [snackbarOpen, setSnackbarOpen] = React.useState(false);
-	const [snackbarMessage, setSnackbarMessage] = React.useState(null);
-	const [isButtonDisabled, setIsButtonDisabled] = React.useState(false);
+	const [snackbarOpen, setSnackbarOpen] = useState(false);
+	const [snackbarMessage, setSnackbarMessage] = useState(null);
+	const [isButtonDisabled, setIsButtonDisabled] = useState(false);
 	const history = useHistory();
 
 	const handleSubmit = async (event) => {
@@ -45,7 +45,7 @@ export default function LoginPage() {
 				setIsButtonDisabled(false);
 				return;
 			}
-			
+
 			setUser(json.message.user);
 			history.push("/feed");
 			setIsAuthenticated(true);
