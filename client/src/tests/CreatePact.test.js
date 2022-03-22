@@ -10,7 +10,7 @@ describe("CreatePact Tests", () => {
 	const server = setupServer(
 		rest.get(`${process.env.REACT_APP_URL}/me`, (req, res, ctx) => {
 			return res(
-				ctx.json({ message: { firstName: "pac", lastName: "to" }, errors: [] })
+				ctx.json({ message: { _id: "01", firstName: "pac", lastName: "to", pacts : [] }, errors: [] })
 			);
 		}),
 		rest.post(`${process.env.REACT_APP_URL}/pact`, (req, res, ctx) => {
