@@ -63,14 +63,10 @@ export default function UserPage() {
       return res.json();
     }).then((data) => {
       const resAllUsers = data.message
+      setAllFriends(
+        resAllUsers.filter(curUser => curUser.friends.includes(user._id))
+      );
       setAllUsers(resAllUsers);
-      let myFriends = [];
-      for (let x = 0; x< resAllUsers.length; x++){
-        if(resAllUsers[x].friends.includes(user._id)){
-          myFriends.push(resAllUsers[x]);
-        }
-      }
-      setAllFriends(myFriends);
       setIsLoading(false);
     }).catch(() => {
       history.push("/not-found");
