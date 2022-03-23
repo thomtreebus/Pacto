@@ -16,7 +16,6 @@ export default function Feed() {
       return res.json();
     }).then((data) => {
       setPosts(data.message);
-      console.log(data.message);
       setIsLoading(false);
       setError(null);
 		})
