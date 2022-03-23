@@ -145,7 +145,9 @@ export default function CreatePostCard({pactID}) {
 
       if (getPostType() === "text") {
         switch (field) {
-          case ("text"): setApiPostTextError(message);
+          case ("text"): 
+            setApiPostTextError(message);
+            break;
           default: // do nothing
         }
       }
@@ -154,11 +156,14 @@ export default function CreatePostCard({pactID}) {
           case ("image"): 
             setApiPostImageError(message);
             setOpen(true);
+            break;
           default: // do nothing
         }
       } else {
         switch (field) {
-          case ("link") : setApiPostLinkError(message);
+          case ("link"): 
+            setApiPostLinkError(message);
+            break;
           default: // do nothing
         }
       }
