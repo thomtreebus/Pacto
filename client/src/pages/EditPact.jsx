@@ -14,11 +14,8 @@ import ErrorMessage from "../components/ErrorMessage";
 import {LoadingButton} from "@mui/lab";
 import {styled} from "@mui/material/styles";
 import Loading from "./Loading";
+import UploadIcon from '@mui/icons-material/Upload';
 import {useAuth} from "../providers/AuthProvider";
-
-function SaveIcon() {
-  return null;
-}
 
 const Input = styled("input")({
   display: "none",
@@ -27,7 +24,7 @@ const Input = styled("input")({
 
 export default function EditPact() {
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
-  const {user} = useAuth();
+  const {user, setUser} = useAuth();
   const {pactId} = useParams();
   const history = useHistory();
   const defaultData = {
@@ -146,7 +143,9 @@ export default function EditPact() {
 
 
     if (response.status === 200) {
-      return history.push(`/pact/${pactId}`);
+      history.push(`/pact/${pactId}`);
+      let newUser = Object.assign({}, user);
+      setUser(newUser);
     }
 
   };
@@ -223,7 +222,7 @@ export default function EditPact() {
                 <LoadingButton
                   loading={uploadImageIsDisabled}
                   loadingPosition="start"
-                  startIcon={<SaveIcon/>}
+                  startIcon={<UploadIcon/>}
                   fullWidth
                   label="Upload Image"
                   variant="contained"
