@@ -88,7 +88,8 @@ export default function CreatePostCard({pactID}) {
       const res = await Axios.post(`https://api.cloudinary.com/v1_1/${process.env.REACT_APP_CLOUDINARY_CLOUD_NAME}/image/upload`, data)
       setImage(res.data.url);
     } catch (err) {
-      console.log(err);
+      setApiPostImageError(err.message);
+      setOpen(true);
     }
   }
 
@@ -104,10 +105,6 @@ export default function CreatePostCard({pactID}) {
   }
 
   const handleClose = (event, reason) => {
-    if (reason === 'clickaway') {
-      return;
-    }
-
     setOpen(false);
   };
 
@@ -225,9 +222,9 @@ export default function CreatePostCard({pactID}) {
 								publicID={image}
 							> </Image>}
           </label>
-          <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+          <Snackbar data-testid="snackbar" open={open} autoHideDuration={6000} onClose={handleClose}>
             <Alert onClose={handleClose} severity="error" sx={{ width: '100%' }}>
-              {apiPostImageError}
+              {apiPostImageError} 
             </Alert>
           </Snackbar>
         </TabPanel>

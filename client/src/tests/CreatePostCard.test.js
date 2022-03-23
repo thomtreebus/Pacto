@@ -190,6 +190,54 @@ describe("CreatePostCard Tests", () => {
 			expect(existingElement).toBeInTheDocument();
 		});
 
+		it("should display an error if there is an error with the text", async () => {
+			server.use(
+				rest.post(`${process.env.REACT_APP_URL}/pact/${pactId}/post`, (req, res, ctx) => {
+					return res(
+						ctx.status(401),
+						ctx.json({
+							message: null,
+							errors: [{
+								field: "text", message: "Provide the text"
+							}],
+						})
+					);
+				})
+			);
+			const nonExistingElement = screen.queryByText("Provide the text");
+			expect(nonExistingElement).not.toBeInTheDocument();
+			const buttonElement = await screen.findByRole("button", {
+				name: "Post",
+			});
+			fireEvent.click(buttonElement);
+			const existingElement = await screen.findByText("Provide the text");
+			expect(existingElement).toBeInTheDocument();
+		})
+
+		it("should display a snackbar error if there is no image", async () => {
+			const iconElement = await screen.findByTestId("image-icon");
+			fireEvent.click(iconElement);
+			server.use(
+				rest.post(`${process.env.REACT_APP_URL}/pact/${pactId}/post`, (req, res, ctx) => {
+					return res(
+						ctx.status(401),
+						ctx.json({
+							message: null,
+							errors: [{
+								field: "image", message: "Provide the image"
+							}],
+						})
+					);
+				})
+			);
+			const buttonElement = await screen.findByRole("button", {
+				name: "Post",
+			});
+			fireEvent.click(buttonElement);
+			const snackbarElement = await screen.findByText("Provide the image");
+			expect(snackbarElement).toBeInTheDocument();
+		})
+
 		it("should display an error if there is an error with the link.", async () => {
 			const iconElement = await screen.findByTestId("link-icon");
 			fireEvent.click(iconElement);
@@ -240,7 +288,9 @@ describe("CreatePostCard Tests", () => {
 		});
 
 		
-		it("should console.log if there is an error", async () => {
+		it("should display a snackbar error if there is a Cloudinary error", async () => {
+			const iconElement = await screen.findByTestId("image-icon");
+			fireEvent.click(iconElement);
 			server.use(
 				rest.post(`https://api.cloudinary.com/v1_1/${process.env.REACT_APP_CLOUDINARY_CLOUD_NAME}/image/upload`, (req, res, ctx) => {
 					return res(
@@ -249,8 +299,6 @@ describe("CreatePostCard Tests", () => {
 					);
 				})
 			);
-			const iconElement = await screen.findByTestId("image-icon");
-			fireEvent.click(iconElement)
       const image = new File(['testImage'], 'testImage.png', {type: 'image/png'})
       const buttonElement = await screen.findByTestId(
         "image-upload-icon"
@@ -262,6 +310,64 @@ describe("CreatePostCard Tests", () => {
 				);
 				await waitFor(() => userEvent.upload(buttonElement, image));
 			});
+			const snackbarElement = await screen.findByTestId("snackbar");
+			expect(snackbarElement).toBeInTheDocument();
     });
+
+		it("should close the snackbar when the cross button is pressed", async () => {
+			const iconElement = await screen.findByTestId("image-icon");
+			fireEvent.click(iconElement);
+			server.use(
+				rest.post(`${process.env.REACT_APP_URL}/pact/${pactId}/post`, (req, res, ctx) => {
+					return res(
+						ctx.status(401),
+						ctx.json({
+							message: null,
+							errors: [{
+								field: "image", message: "Provide a valid image"
+							}],
+						})
+					);
+				})
+			);
+			const buttonElement = await screen.findByRole("button", {
+				name: "Post",
+			});
+			fireEvent.click(buttonElement);
+			
+			const snackbarButtonElement = await screen.findByTestId("snackbar");
+			expect(snackbarButtonElement).toBeInTheDocument();
+			fireEvent.click(snackbarButtonElement.querySelector("button"));
+
+			await waitForElementToBeRemoved(() => screen.queryByTestId("snackbar"));
+		});
+
+		it("should close the snackbar when 6 seconds have passed", async () => {
+			const iconElement = await screen.findByTestId("image-icon");
+			fireEvent.click(iconElement);
+			server.use(
+				rest.post(`${process.env.REACT_APP_URL}/pact/${pactId}/post`, (req, res, ctx) => {
+					return res(
+						ctx.status(401),
+						ctx.json({
+							message: null,
+							errors: [{
+								field: "image", message: "Provide a valid image"
+							}],
+						})
+					);
+				})
+			);
+			const buttonElement = await screen.findByRole("button", {
+				name: "Post",
+			});
+			fireEvent.click(buttonElement);
+
+			const snackbarButtonElement = await screen.findByTestId("snackbar");
+			expect(snackbarButtonElement).toBeInTheDocument();
+			setTimeout(() => {
+				expect(screen.queryByTestId("snackbar")).not.toBeInTheDocument(), 6500;
+			});
+		});
 	});
 });
