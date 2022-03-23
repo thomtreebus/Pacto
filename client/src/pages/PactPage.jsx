@@ -61,16 +61,13 @@ export default function PactPage() {
             { pact && <AboutPact pact={pact} /> }
             <Box position={"absolute"} bottom={-27} right={50}>
               <Fab color="primary" aria-label="add">
-                <AddIcon />
+                <AddIcon onClick={handleClickOpen}/>
               </Fab>
             </Box>
           </Box>
         </Grid>
       </Grid>
       <Box position={"fixed"} bottom={50} right={300}>
-        <Fab color="primary" aria-label="add">
-          <AddIcon onClick={handleClickOpen}/>
-        </Fab>
         <Dialog
           fullScreen={fullScreen}
           open={open}

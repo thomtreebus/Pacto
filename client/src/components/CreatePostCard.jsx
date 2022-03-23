@@ -16,6 +16,12 @@ import { useHistory } from "react-router-dom";
 import { Image } from 'cloudinary-react';
 import Axios from 'axios';
 import IconButton from '@mui/material/IconButton';
+import MuiAlert from '@mui/material/Alert';
+import Snackbar from '@mui/material/Snackbar';
+
+const Alert = React.forwardRef(function Alert(props, ref) {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
 
 const Input = styled('input')({
   display: 'none',
@@ -63,9 +69,13 @@ export default function CreatePostCard({pactID}) {
   const history = useHistory();
 
   const [apiPostTitleError, setApiPostTitleError] = React.useState('');
+  const [apiPostTextError, setApiPostTextError] = React.useState('');
+  const [apiPostImageError, setApiPostImageError] = React.useState('');
   const [apiPostLinkError, setApiPostLinkError] = React.useState('');
 
   const [image, setImage] = React.useState(null);
+
+  const [open, setOpen] = React.useState(false);
 
   const uploadImage = async (newImage) => {
     const data = new FormData();
@@ -93,11 +103,21 @@ export default function CreatePostCard({pactID}) {
     }
   }
 
+  const handleClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    setOpen(false);
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
 
     setApiPostTitleError('');
+    setApiPostTextError('');
+    setApiPostImageError('');
     setApiPostLinkError('');
 
     const response = await fetch(`${process.env.REACT_APP_URL}/pact/${pactID}/post`, {
@@ -116,19 +136,34 @@ export default function CreatePostCard({pactID}) {
     });
 
     const json = await response.json();
+    console.log(json)
     
     Object.values(json['errors']).forEach(err => {
       const field = err["field"];
       const message = err["message"];
 
-      switch (field) {
-        case "title":
-          setApiPostTitleError(message);
-          break;
-        case "link":
-          setApiPostTitleError(message);
-          break;
-        default: // do nothing
+      if (field === "title") {
+        setApiPostTitleError(message);
+      }
+
+      if (getPostType() === "text") {
+        switch (field) {
+          case ("text"): setApiPostTextError(message);
+          default: // do nothing
+        }
+      }
+      else if (getPostType() === "image") {
+        switch (field) {
+          case ("image"): 
+            setApiPostImageError(message);
+            setOpen(true);
+          default: // do nothing
+        }
+      } else {
+        switch (field) {
+          case ("link") : setApiPostLinkError(message);
+          default: // do nothing
+        }
       }
     })
 
@@ -167,6 +202,8 @@ export default function CreatePostCard({pactID}) {
             name="text"
             rows={4}
             variant="outlined"
+            error={apiPostTextError.length !== 0}
+            helperText={apiPostTextError}
           />
         </TabPanel>
         <TabPanel value={value} index={1}>
@@ -188,6 +225,11 @@ export default function CreatePostCard({pactID}) {
 								publicID={image}
 							> </Image>}
           </label>
+          <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+            <Alert onClose={handleClose} severity="error" sx={{ width: '100%' }}>
+              {apiPostImageError}
+            </Alert>
+          </Snackbar>
         </TabPanel>
         <TabPanel value={value} index={2}>
           <TitleTextField apiPostTitleError={apiPostTitleError}/> 
