@@ -71,7 +71,7 @@ module.exports.sendFriendRequest = async (req, res) => {
     }
   }
 
-  module.exports.acceptFriendRequest = async (req, res) => {
+  module.exports.rejectFriendRequest = async (req, res) => {
     const recipient = req.user;
     const { id } = req.params;
 
@@ -82,12 +82,8 @@ module.exports.sendFriendRequest = async (req, res) => {
         if(friendRequest.recipient.toString() === recipient._id.toString()) {
           const requestor = await User.findById(friendRequest.requestor);
   
-          // Add to friends
-          await User.findByIdAndUpdate(recipient._id, { $push: { friends: requestor._id } }); 
-          await User.findByIdAndUpdate(requestor._id, { $push: { friends: recipient._id } });
-    
           // Remove request from users
-          await User.findByIdAndUpdate(recipient._id, { $pull: { receivedRequests: id } }); 
+          await User.findByIdAndUpdate(recipient._id, { $pull: { receivedRequests: id } });
           await User.findByIdAndUpdate(requestor._id, { $pull: { sentRequests: id } });
     
           // Delete the friend request
@@ -95,40 +91,13 @@ module.exports.sendFriendRequest = async (req, res) => {
     
           res.status(201).json(jsonResponse(null, []));
         } else {
-          res.status(400).json(jsonResponse(null, [jsonError(null, FRIEND_REQUEST_MESSAGES.NOT_AUTHORISED.ACCEPT)]));
+          res.status(400).json(jsonResponse(null, [jsonError(null, FRIEND_REQUEST_MESSAGES.NOT_AUTHORISED.REJECT)]));
         }
       } catch(err) {
         res.status(400).json(jsonResponse(null, [jsonError(null, err.message)]));
       }
     } catch(err) {
       res.status(404).json(jsonResponse(null, [jsonError(null, FRIEND_REQUEST_MESSAGES.NOT_FOUND)]));
-    }
-  }
-  
-  module.exports.rejectFriendRequest = async (req, res) => {
-    try {
-      const recipient = req.user;
-  
-      const { id } = req.params;
-      const friendRequest = await FriendRequest.findById(id);
-  
-      if(friendRequest.recipient === recipient._id) {
-        const requestor = User.findById(friendRequest.requestor);
-  
-        // Remove request from users
-        await User.findByIdAndUpdate(recipient._id, { $pull: { receivedRequests: id } });
-        await User.findByIdAndUpdate(requestor._id, { $pull: { sentRequests: id } });
-  
-        // Delete the friend request
-        await FriendRequest.findByIdAndDelete(id);
-  
-        res.status(201).json(jsonResponse(null, []));
-      } else {
-        res.status(400).json(jsonResponse(null, [jsonError(null, FRIEND_REQUEST_MESSAGES.NOT_AUTHORISED.REJECT)]));
-      }
-    } 
-    catch (err) {
-      res.status(400).json(jsonResponse(null, [jsonError(null, err.message)]));
     }
   }
   
