@@ -4,7 +4,7 @@ const supertest = require("supertest");
 const bcrypt = require("bcrypt");
 const app = require("../../app");
 const { createToken } = require("../../controllers/authController");
-const { generateTestUser, getTestUserEmail, generateNextTestUser } = require("../fixtures/generateTestUser");
+const { generateTestUser, getDefaultTestUserEmail} = require("../fixtures/generateTestUser");
 const { generateTestPact, getTestPactId } = require("../fixtures/generateTestPact");
 const { generateTestPost, getTestPostId } = require("../fixtures/generateTestPost");
 const { jsonResponse } = require("../../helpers/responseHandlers");
@@ -31,7 +31,7 @@ describe("promoteMember /pact/:pactId/:userId/promote", () => {
     // Makes user a member and mod of pact
     const pact = await generateTestPact(user);
     //Make other user a member of pact
-    const secondUser = await generateNextTestUser("bob");
+    const secondUser = await generateTestUser("bob");
     secondUser.active = true;
     secondUser.pacts.push(pact._id);
     pact.members.push(secondUser._id);
@@ -46,8 +46,8 @@ describe("promoteMember /pact/:pactId/:userId/promote", () => {
   });
 
   it("moderator can promote member of pact", async () => {
-    const user = await User.findOne({ uniEmail: getTestUserEmail() });
-    const pact = await Pact.findOne({ id: getTestPactId() });
+    const user = await User.findOne({ uniEmail: getDefaultTestUserEmail() });
+    const pact = await Pact.findOne({ _id: getTestPactId() });
     const promoteUser = await User.findOne({ uniEmail: "bob.to@kcl.ac.uk" });
     const token = createToken(user._id);
     const oldModeratorCount = pact.moderators.length;
@@ -59,14 +59,14 @@ describe("promoteMember /pact/:pactId/:userId/promote", () => {
     expect(response.body.message).toBeDefined();
     expect(response.body.errors.length).toBe(0);
 
-    const responsePact = await Pact.findOne({ id: getTestPactId() });
+    const responsePact = await Pact.findOne({ _id: getTestPactId() });
     const newModeratorCount = responsePact.members.length;
     expect(newModeratorCount).toBe(oldModeratorCount + 1);
   });
 
   it("moderator can not promote existing moderator", async () => {
-    const user = await User.findOne({ uniEmail: getTestUserEmail() });
-    const pact = await Pact.findOne({ id: getTestPactId() });
+    const user = await User.findOne({ uniEmail: getDefaultTestUserEmail() });
+    const pact = await Pact.findOne({ _id: getTestPactId() });
     const moderator = await User.findOne({ uniEmail: "bob.to@kcl.ac.uk" });
     pact.moderators.push(moderator._id);
     await pact.save();
@@ -83,10 +83,10 @@ describe("promoteMember /pact/:pactId/:userId/promote", () => {
   });
 
   it("can not promote someone who is not a member", async () => {
-    const user = await User.findOne({ uniEmail: getTestUserEmail() });
-    const otherUser = await generateNextTestUser("joe");
+    const user = await User.findOne({ uniEmail: getDefaultTestUserEmail() });
+    const otherUser = await generateTestUser("joe");
     otherUser.save();
-    const pact = await Pact.findOne({ id: getTestPactId() });
+    const pact = await Pact.findOne({ _id: getTestPactId() });
     const token = createToken(user._id);
 
     const response = await supertest(app)
@@ -101,9 +101,9 @@ describe("promoteMember /pact/:pactId/:userId/promote", () => {
 
   it("member can not promote other member", async () => {
     const user = await User.findOne({ uniEmail: "bob.to@kcl.ac.uk" });
-    const otherUser = await generateNextTestUser("joe");
+    const otherUser = await generateTestUser("joe");
     otherUser.save();
-    const pact = await Pact.findOne({ id: getTestPactId() });
+    const pact = await Pact.findOne({ _id: getTestPactId() });
     pact.members.push(otherUser._id);
     pact.save();
     const token = createToken(user._id);
@@ -120,7 +120,7 @@ describe("promoteMember /pact/:pactId/:userId/promote", () => {
 
   it("check uses authMiddleware", async () => {
     const user = await User.findOne({ uniEmail: "bob.to@kcl.ac.uk" });
-    const pact = await Pact.findOne({ id: getTestPactId() });
+    const pact = await Pact.findOne({ _id: getTestPactId() });
 
     const response = await supertest(app)
     .put(`/pact/${ pact._id }/${ user._id }/promote/`)

@@ -1,13 +1,29 @@
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import {
+	render,
+	screen,
+	fireEvent,
+	waitFor,
+	waitForElementToBeRemoved,
+} from "@testing-library/react";
 import PactCard from "../components/PactCard";
 import "@testing-library/jest-dom";
 import testPacts from "./utils/testPacts";
 import { BrowserRouter } from "react-router-dom";
 import { rest } from "msw";
 import { setupServer } from "msw/node";
+import MockComponent from "./utils/MockComponent";
+import { Children } from "react";
 
 describe("Pact Card Tests", () => {
 	const server = setupServer(
+		rest.get(`${process.env.REACT_APP_URL}/me`, (req, res, ctx) => {
+			return res(
+				ctx.json({
+					message: { firstName: "pac", lastName: "to", _id: "01", pacts: [] },
+					errors: [],
+				})
+			);
+		}),
 		rest.post(`${process.env.REACT_APP_URL}/pact/:id/join`, (req, res, ctx) => {
 			return res(
 				ctx.json({
@@ -30,9 +46,14 @@ describe("Pact Card Tests", () => {
 		server.resetHandlers();
 	});
 
+	const renderWithMock = async (children) => {
+		render(<MockComponent>{children}</MockComponent>);
+		await waitForElementToBeRemoved(() => screen.getByText("Loading"));
+	};
+
 	describe("renders the correct static elements of the pact", () => {
-		beforeEach(() => {
-			render(<PactCard pact={testPacts[0]} />);
+		beforeEach(async () => {
+			await renderWithMock(<PactCard pact={testPacts[0]} />);
 		});
 
 		it("should render the pact image", () => {
@@ -57,22 +78,22 @@ describe("Pact Card Tests", () => {
 	});
 
 	describe("renders the correct number of people in a pact", () => {
-		it("should render the number of people in a pact when there is only one member", () => {
-			render(<PactCard pact={testPacts[0]} />);
+		it("should render the number of people in a pact when there is only one member", async () => {
+			await renderWithMock(<PactCard pact={testPacts[0]} />);
 			const numberOfPeopleText = screen.getByTestId(/member/i);
 			expect(numberOfPeopleText).toBeInTheDocument();
 			expect(numberOfPeopleText.textContent.trim()).toBe("1");
 		});
 
-		it("should render the number of people in a pact when there are no members", () => {
-			render(<PactCard pact={testPacts[1]} />);
+		it("should render the number of people in a pact when there are no members", async () => {
+			await renderWithMock(<PactCard pact={testPacts[1]} />);
 			const numberOfPeopleText = screen.getByTestId(/member/i);
 			expect(numberOfPeopleText).toBeInTheDocument();
 			expect(numberOfPeopleText.textContent.trim()).toBe("0");
 		});
 
-		it("should render the number of people in a pact when there are multiple members", () => {
-			render(<PactCard pact={testPacts[2]} />);
+		it("should render the number of people in a pact when there are multiple members", async () => {
+			await renderWithMock(<PactCard pact={testPacts[2]} />);
 			const numberOfPeopleText = screen.getByTestId(/member/i);
 			expect(numberOfPeopleText).toBeInTheDocument();
 			expect(numberOfPeopleText.textContent.trim()).toBe("2");
@@ -80,12 +101,8 @@ describe("Pact Card Tests", () => {
 	});
 
 	describe("button interactions", () => {
-		function renderWithRouter(element) {
-			render(<BrowserRouter>{element}</BrowserRouter>);
-		}
-
 		it("should render the error message if there is an error", async () => {
-			renderWithRouter(<PactCard pact={testPacts[0]} />);
+			await renderWithMock(<PactCard pact={testPacts[0]} />);
 
 			server.use(
 				rest.post(
@@ -125,28 +142,28 @@ describe("Pact Card Tests", () => {
 			}
 
 			it("should render the not joined button when no joined is supplied", async () => {
-				renderWithRouter(<PactCard pact={testPacts[0]} />);
+				await renderWithMock(<PactCard pact={testPacts[0]} />);
 				const button = screen.getByText(/Join/i);
 				expect(button).toBeInTheDocument();
 				await testSuccessfullJoinButtonClick(button);
 			});
 
 			it("should render the not joined button when joined is explicity false", async () => {
-				renderWithRouter(<PactCard pact={testPacts[0]} joined={false} />);
+				await renderWithMock(<PactCard pact={testPacts[0]} joined={false} />);
 				const button = screen.getByText(/Join/i);
 				expect(button).toBeInTheDocument();
 				await testSuccessfullJoinButtonClick(button);
 			});
 
 			it("should render the joined button when joined is suplied", async () => {
-				renderWithRouter(<PactCard pact={testPacts[0]} joined />);
+				await renderWithMock(<PactCard pact={testPacts[0]} joined />);
 				const button = screen.getByText(/View/i);
 				expect(button).toBeInTheDocument();
 				await testViewButtonClick(button);
 			});
 
 			it("should render the joined button when joined is explicitly true", async () => {
-				renderWithRouter(<PactCard pact={testPacts[0]} joined={true} />);
+				await renderWithMock(<PactCard pact={testPacts[0]} joined={true} />);
 				const button = screen.getByText(/View/i);
 				expect(button).toBeInTheDocument();
 				await testViewButtonClick(button);

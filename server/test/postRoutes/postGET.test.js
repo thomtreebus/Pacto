@@ -4,7 +4,7 @@ const supertest = require("supertest");
 const bcrypt = require("bcrypt");
 const app = require("../../app");
 const { createToken } = require("../../controllers/authController");
-const { generateTestUser, getTestUserEmail, generateNextTestUser } = require("../fixtures/generateTestUser");
+const { generateTestUser, getDefaultTestUserEmail} = require("../fixtures/generateTestUser");
 const { generateTestPact, getTestPactId } = require("../fixtures/generateTestPact");
 const { generateTestPost, getTestPostId } = require("../fixtures/generateTestPost");
 const { jsonResponse } = require("../../helpers/responseHandlers");
@@ -13,6 +13,9 @@ const User = require("../../models/User");
 const Pact = require('../../models/Pact');
 const University = require('../../models/University');
 const Post = require('../../models/Post');
+const Link = require("../../models/Link")
+const { rest } = require("msw");
+const { setupServer } = require("msw/node");
 
 dotenv.config();
 
@@ -20,16 +23,32 @@ describe("GET /pact/:pactId/post/:postId", () => {
   let user = undefined;
   let pact = undefined;
   let post = undefined;
+  let post2 = undefined;
+
+  const server = setupServer(
+		rest.post(`${process.env.LINKPREVIEW_URL}`, (req, res, ctx) => {
+			return res(
+				ctx.status(200),
+				ctx.json({
+					title: "Google",
+          image: "https://www.google.com/images/logo.png"
+				})
+			);
+		})
+	);
 
   beforeAll(async () => {
+    server.listen({ onUnhandledRequest: "bypass" });
     await mongoose.connect(process.env.TEST_DB_CONNECTION_URL);
   });
 
   afterAll(async () => {
+    server.close();
     await mongoose.connection.close();
   });
 
   beforeEach(async () => {
+    server.resetHandlers();
     user = await generateTestUser();
     user.active = true;
     await user.save();
@@ -39,6 +58,8 @@ describe("GET /pact/:pactId/post/:postId", () => {
     // User posts a post in the pact
     post = await generateTestPost(user, pact);
     await post.save();
+    post2 = await generateTestPost(user, pact, "randomtitle", "", "link", "http://google.com");
+    await post2.save();
   });
 
   afterEach(async () => {
@@ -46,6 +67,7 @@ describe("GET /pact/:pactId/post/:postId", () => {
     await Post.deleteMany({});
     await Pact.deleteMany({});
     await University.deleteMany({});
+    await Link.deleteMany({});
   });
 
   it("author can get its post", async () => {
@@ -69,7 +91,7 @@ describe("GET /pact/:pactId/post/:postId", () => {
 
   it("other member of the pact can get the post", async () => {
     // Creating 2nd user
-    const user2 = await generateNextTestUser("SecondUser");
+    const user2 = await generateTestUser("SecondUser");
     user2.active = true;
     await user2.pacts.push(pact);
     await user2.save();
@@ -110,7 +132,7 @@ describe("GET /pact/:pactId/post/:postId", () => {
   // Check uses pactMiddleware
   it("user in correct uni but not in the pact cannot get the post", async () => {
     // Creating the user who is in the correct uni but not in the pact
-    const user2 = await generateNextTestUser("User");
+    const user2 = await generateTestUser("User");
     user2.active = true;
     await user2.save();
     const token = createToken(user2._id);
@@ -135,4 +157,42 @@ describe("GET /pact/:pactId/post/:postId", () => {
     expect(response.body.errors[0].message).toBe(MESSAGES.AUTH.IS_NOT_LOGGED_IN);
     expect(response.body.errors.length).toBe(1);
   });
+
+  it("returns image, title and url for link post when available", async () => {
+    const user = await User.findOne({ uniEmail: getDefaultTestUserEmail() });
+
+    const token = createToken(user._id);
+
+    const response = await supertest(app)
+      .get(`/pact/${ pact._id }/post/${ post2._id }`)
+      .set("Cookie", [`jwt=${token}`])
+      .expect(200);
+
+    const post_ = response.body.message
+    expect(post_.text).toBe("Google")
+    expect(post_.image).toBe("https://www.google.com/images/logo.png")
+  });
+
+  it("returns just url for a link post when a preview couldn't be fetched", async () => {
+    server.use(
+      rest.post(`${process.env.LINKPREVIEW_URL}`, (req, res, ctx) => {
+        return res(
+          ctx.status(400)
+        );
+      })
+    );
+
+    const user = await User.findOne({ uniEmail: getDefaultTestUserEmail() });
+
+    const token = createToken(user._id);
+
+    const response = await supertest(app)
+      .get(`/pact/${ pact._id }/post/${ post2._id }`)
+      .set("Cookie", [`jwt=${token}`])
+      .expect(200);
+
+    const post_ = response.body.message
+    expect(post_.text).toBe("")
+    expect(post_.image).toBe(undefined)
+  })
 });
