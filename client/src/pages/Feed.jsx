@@ -1,14 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import ErrorPage from "./Error";
 import Loading from "./Loading";
-import { useHistory } from "react-router-dom";
 import PostList from '../components/PostList';
 
 export default function Feed() {
 	const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [posts, setPosts] = useState(null);
-	const history = useHistory();
 
 	useEffect(() => {
     fetch(`${process.env.REACT_APP_URL}/feed`, {

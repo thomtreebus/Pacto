@@ -1,8 +1,6 @@
 const Post = require("../models/Post");
 const Pact = require("../models/Pact");
-const User = require("../models/User");
 const {jsonResponse, jsonError} = require("../helpers/responseHandlers");
-const handleFieldErrors = require('../helpers/errorHandler');
 
 module.exports.feedGET = async (req, res) => {
   try {
