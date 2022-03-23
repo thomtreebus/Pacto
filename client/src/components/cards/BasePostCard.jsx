@@ -2,7 +2,6 @@ import { Box, Card, CardContent, IconButton } from "@mui/material";
 import { useState } from "react";
 import { Typography } from "@mui/material";
 import { useHistory } from "react-router-dom";
-
 import ThumbUpRoundedIcon from "@mui/icons-material/ThumbUpRounded";
 import ThumbDownRoundedIcon from "@mui/icons-material/ThumbDownRounded";
 import CommentIcon from '@mui/icons-material/Comment';
