@@ -75,6 +75,7 @@ export default function PactPage() {
           aria-labelledby="responsive-dialog-title"
           fullWidth
           maxWidth="sm"
+          data-testid="dialog"
         >
           <DialogTitle id="responsive-dialog-title">
             {"Create Post"}
