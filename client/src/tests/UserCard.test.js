@@ -39,48 +39,46 @@ describe("UserCard Tests", () => {
 		await waitForElementToBeRemoved(() => screen.getByText("Loading"));
 	};
 
-        describe("Check elements are rendered", () => {
+    beforeEach(async () => {
+        await renderWithMock(<UserCard user={testUsers[0]} />);
+    });
 
-            beforeEach(async () => {
-                await renderWithMock(<UserCard user={testUsers[0]} />);
-            });
+    describe("Check elements are rendered", () => {
 
-            it("should render the user's profile picture", async () => {
-                const cardImage = await screen.getByAltText(/image/i);
-                expect(cardImage).toBeInTheDocument();
-            });
 
-            it("should render the user's first name", () => {
-                const firstName = screen.getByText(/Pac/i);
-                expect(firstName).toBeInTheDocument();
-            });
-
-            it("should render the user's last name", () => {
-                const lastName = screen.getByText(/To/i);
-                expect(lastName).toBeInTheDocument();
-            });
+        it("should render the user's profile picture", async () => {
+            const cardImage = await screen.getByAltText(/image/i);
+            expect(cardImage).toBeInTheDocument();
         });
 
-        // describe("Check interaction with elements", () => {
- 
-            // it("should redirect to user profile when the user card is pressed", async () => {
-            //     server.use(
-            //         rest.post(`${process.env.REACT_APP_URL}/user/:id`, (req, res, ctx) => {
-            //             return res(
-            //                 ctx.status(201),
-            //                 ctx.json({ 
-            //                     message: 'Success', 
-            //                     errors: [], 
-            //                 })
-            //             );
-            //         })
-            //     );
-            //     const buttonElement = await screen.findByRole("button", {
-            //         //name: "Sign Up",
-            //     });
-            //     fireEvent.click(buttonElement);
-            //     await waitFor(() => expect(window.location.pathname).toBe("/user/:id"));	
-            // });
-        // });
-    
+        it("should render the user's first name", () => {
+            const firstName = screen.getByText(/Pac/i);
+            expect(firstName).toBeInTheDocument();
+        });
+
+        it("should render the user's last name", () => {
+            const lastName = screen.getByText(/To/i);
+            expect(lastName).toBeInTheDocument();
+        });
+    });
+
+    describe("Check interaction with elements", () => {
+
+        it("should redirect to user profile when the user card is pressed", async () => {
+            server.use(
+                rest.post(`${process.env.REACT_APP_URL}/user/:id`, (req, res, ctx) => {
+                    return res(
+                        ctx.status(201),
+                        ctx.json({ 
+                            message: 'Success', 
+                            errors: [], 
+                        })
+                    );
+                })
+            );
+            const buttonElement = await screen.findByTestId("userCard");
+            fireEvent.click(buttonElement);
+            await waitFor(() => expect(window.location.pathname).toBe("/user/1"));	
+        });
+    });  
 });
