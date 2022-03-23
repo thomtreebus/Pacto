@@ -51,9 +51,7 @@ export default function UserCard({user}){
                             // justifyContent: "center",
                             paddingLeft: "25px",
                         }}
-                    >
-                        {user.firstName} {user.lastName}
-                    </Typography>                                    
+                    >{user.firstName} {user.lastName}</Typography>                                    
                 </Card>
             </Grid>
         </Box>		
