@@ -54,7 +54,7 @@ export default function PactPage() {
           <Box sx={{ paddingTop: "16px", paddingRight: "16px" }} display={{ xs: "none", lg: "block" }} position={"sticky"} top={65}>
             { pact && <AboutPact pact={pact} /> }
 
-            <Box position={"absolute"} bottom={12} right={50} >
+            <Box position={"absolute"} bottom={-16} right={20} >
               {isMod && <Fab
                 onClick={() => {
                   history.push(`/pact/${pactID}/edit-pact`)
