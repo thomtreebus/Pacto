@@ -117,8 +117,10 @@ module.exports.sendFriendRequest = async (req, res) => {
 
     const { recipientId } = req.params;
     const recipient = await User.findById(recipientId);
+    
+    await user.populate({path: 'sentRequests', model: FriendRequest});
 
-    if(user.sentRequests.filter(r => r.recipient === recipientId).length !== 0) {
+    if(user.sentRequests.filter(r => r.recipient._id.toString() === recipientId).length !== 0) {
       res.status(400).json(jsonResponse(null, [jsonError(null, FRIEND_REQUEST_MESSAGES.ALREADY_SENT)]));
     } else if (recipient.friends.includes(user._id)){
       res.status(400).json(jsonResponse(null, [jsonError(null, FRIEND_MESSAGES.ALREADY_FRIEND)]));
@@ -129,7 +131,7 @@ module.exports.sendFriendRequest = async (req, res) => {
       await User.findByIdAndUpdate(user._id, { $push: { sentRequests: friendRequest._id } });
       await User.findByIdAndUpdate(recipientId, { $push: { receivedRequests: friendRequest._id } });
 
-      res.status(201).json(jsonResponse(null, []));
+      res.status(201).json(jsonResponse(friendRequest, []));
     }
 	} 
   catch (err) {

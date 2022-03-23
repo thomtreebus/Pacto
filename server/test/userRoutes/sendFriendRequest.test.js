@@ -6,7 +6,7 @@ const app = require("../../app");
 const supertest = require("supertest");
 const { generateTestUser, getDefaultTestUserEmail, generateCustomUniTestUser} = require("../fixtures/generateTestUser");
 const { createToken } = require("../../controllers/authController");
-const { MESSAGES, FRIEND_MESSAGES } = require("../../helpers/messages");
+const { MESSAGES, FRIEND_MESSAGES, FRIEND_REQUEST_MESSAGES } = require("../../helpers/messages");
 
 dotenv.config();
 
@@ -45,9 +45,15 @@ describe("sendFriendRequest /friends", () => {
     expect(response.body.errors.length).toBe(0);
 
     const updatedUser = await User.findOne({ uniEmail: getDefaultTestUserEmail() });
-    const updatedRecipient = await User.findOne({_id: recipientUser._id})
+    const updatedRecipient = await User.findOne({_id: recipientUser._id});
+
     expect(updatedUser.sentRequests.length).toBe(1);
+    expect(updatedUser.sentRequests[0]._id.toString()).toBe(response.body.message._id);
+    expect(updatedUser.receivedRequests.length).toBe(0);
+
+    expect(updatedRecipient.sentRequests.length).toBe(0);
     expect(updatedRecipient.receivedRequests.length).toBe(1);
+    expect(updatedRecipient.receivedRequests[0]._id.toString()).toBe(response.body.message._id);
   });
 
   it("does not let user send a friend request to existing friend", async () => {
@@ -75,9 +81,13 @@ describe("sendFriendRequest /friends", () => {
     
     const request = await FriendRequest.create({requestor: user, recipient: recipientUser});
     const sentRequests = [request._id];
-    await User.findByIdAndUpdate(recipientUser._id, {sentRequests});
+    await User.findByIdAndUpdate(user._id, {sentRequests});
+    const receivedRequests = [request._id];
+    await User.findByIdAndUpdate(recipientUser._id, {receivedRequests});
+
+    const updatedUser = await User.findOne({ _id : recipientUser._id });
     
-    await supertest(app)
+    const response = await supertest(app)
     .post(`/friends/${ recipientUser._id }`)
     .set("Cookie", [`jwt=${ token }`])
     .expect(400)
@@ -85,7 +95,7 @@ describe("sendFriendRequest /friends", () => {
     expect(response.body.message).toBeDefined();
     expect(response.body.errors.length).toBe(1);
     expect(response.body.errors[0].field).toBe(null);
-    expect(response.body.errors[0].message).toBe(FRIEND_MESSAGES.ALREADY_SENT);
+    expect(response.body.errors[0].message).toBe(FRIEND_REQUEST_MESSAGES.ALREADY_SENT);
   });
 
   it("check uses authMiddleware", async () => {
