@@ -61,6 +61,7 @@ export default function PactPage() {
                 }}
                 size="medium"
                 padding="0 8px"
+                data-testid="edit-pact-button"
               >
                 <EditIcon  color="primary" />
               </Fab>}

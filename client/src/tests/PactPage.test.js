@@ -6,6 +6,7 @@ import { setupServer } from "msw/node";
 import MockComponent from "./utils/MockComponent";
 import { Router, Route } from "react-router-dom";
 import { createMemoryHistory } from 'history';
+import userEvent from "@testing-library/user-event";
 
 const response = {
   message: {
@@ -31,7 +32,11 @@ const response = {
         _id: 1
       }
     ],
-    moderators : [],
+    moderators : [
+      {
+        _id: "5"
+      }
+    ],
   }
 }
 
@@ -71,6 +76,9 @@ describe("PactPage Tests", () => {
         <Router history={history}>
           <Route exact path="/pact/:pactID">
             <PactPage />
+          </Route>
+          <Route exact path="/pact/:pactID/edit-pact">
+            Redirected to edit-pact
           </Route>
           <Route exact path="/not-found">
             Not Found
@@ -117,5 +125,15 @@ describe("PactPage Tests", () => {
       await screen.findAllByText(/Not found/i);
       expect(history.location.pathname).toBe("/not-found");
     })
+
+    it("redirects to edit-pact if edit-pact icon is selected", async () => {
+      await renderWithMock();
+      const button = await screen.findByTestId("edit-pact-button")
+      await userEvent.click(button);
+
+      await screen.findAllByText("Redirected to edit-pact");
+      expect(history.location.pathname).toBe("/pact/1/edit-pact");
+    })
+
   })
 })
