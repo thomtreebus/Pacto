@@ -242,7 +242,7 @@ describe("sendFriendRequest /friends", () => {
     const user = await User.findOne({ uniEmail: getDefaultTestUserEmail() });
 
     const response = await supertest(app)
-    .post(`/friends/${ recipientUser._id }`)
+    .post(`/friends/${ recipientUser._id }`);
 
     expect(response.body.message).toBe(null);
     expect(response.body.errors[0].field).toBe(null);

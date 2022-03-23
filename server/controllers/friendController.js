@@ -38,35 +38,70 @@ module.exports.sendFriendRequest = async (req, res) => {
   }
   
   module.exports.acceptFriendRequest = async (req, res) => {
-    try {
-      const recipient = req.user;
-  
-      const { id } = req.params;
-      const friendRequest = await FriendRequest.findById(id);
-      if (!friendRequest){
-        res.status(404).json(jsonResponse(null, [jsonError(null, FRIEND_REQUEST_MESSAGES.NOT_FOUND)]));
-      } else if(friendRequest.recipient.toString() === recipient._id.toString()) {
-        const requestor = await User.findById(friendRequest.requestor);
+    const recipient = req.user;
+    const { id } = req.params;
 
+    let friendRequest = null;
+    try {
+      friendRequest = await FriendRequest.findById(id);
+      try {
+        if(friendRequest.recipient.toString() === recipient._id.toString()) {
+          const requestor = await User.findById(friendRequest.requestor);
   
-        // Add to friends
-        await User.findByIdAndUpdate(recipient._id, { $push: { friends: requestor._id } }); 
-        await User.findByIdAndUpdate(requestor._id, { $push: { friends: recipient._id } });
-  
-        // Remove request from users
-        await User.findByIdAndUpdate(recipient._id, { $pull: { receivedRequests: id } }); 
-        await User.findByIdAndUpdate(requestor._id, { $pull: { sentRequests: id } });
-  
-        // Delete the friend request
-        await FriendRequest.findByIdAndDelete(id);
-  
-        res.status(201).json(jsonResponse(null, []));
-      } else {
-        res.status(400).json(jsonResponse(null, [jsonError(null, FRIEND_REQUEST_MESSAGES.NOT_AUTHORISED.ACCEPT)]));
+          // Add to friends
+          await User.findByIdAndUpdate(recipient._id, { $push: { friends: requestor._id } }); 
+          await User.findByIdAndUpdate(requestor._id, { $push: { friends: recipient._id } });
+    
+          // Remove request from users
+          await User.findByIdAndUpdate(recipient._id, { $pull: { receivedRequests: id } }); 
+          await User.findByIdAndUpdate(requestor._id, { $pull: { sentRequests: id } });
+    
+          // Delete the friend request
+          await FriendRequest.findByIdAndDelete(id);
+    
+          res.status(201).json(jsonResponse(null, []));
+        } else {
+          res.status(400).json(jsonResponse(null, [jsonError(null, FRIEND_REQUEST_MESSAGES.NOT_AUTHORISED.ACCEPT)]));
+        }
+      } catch(err) {
+        res.status(400).json(jsonResponse(null, [jsonError(null, err.message)]));
       }
-    } 
-    catch (err) {
-      res.status(400).json(jsonResponse(null, [jsonError(null, err.message)]));
+    } catch(err) {
+      res.status(404).json(jsonResponse(null, [jsonError(null, FRIEND_REQUEST_MESSAGES.NOT_FOUND)]));
+    }
+  }
+
+  module.exports.acceptFriendRequest = async (req, res) => {
+    const recipient = req.user;
+    const { id } = req.params;
+
+    let friendRequest = null;
+    try {
+      friendRequest = await FriendRequest.findById(id);
+      try {
+        if(friendRequest.recipient.toString() === recipient._id.toString()) {
+          const requestor = await User.findById(friendRequest.requestor);
+  
+          // Add to friends
+          await User.findByIdAndUpdate(recipient._id, { $push: { friends: requestor._id } }); 
+          await User.findByIdAndUpdate(requestor._id, { $push: { friends: recipient._id } });
+    
+          // Remove request from users
+          await User.findByIdAndUpdate(recipient._id, { $pull: { receivedRequests: id } }); 
+          await User.findByIdAndUpdate(requestor._id, { $pull: { sentRequests: id } });
+    
+          // Delete the friend request
+          await FriendRequest.findByIdAndDelete(id);
+    
+          res.status(201).json(jsonResponse(null, []));
+        } else {
+          res.status(400).json(jsonResponse(null, [jsonError(null, FRIEND_REQUEST_MESSAGES.NOT_AUTHORISED.ACCEPT)]));
+        }
+      } catch(err) {
+        res.status(400).json(jsonResponse(null, [jsonError(null, err.message)]));
+      }
+    } catch(err) {
+      res.status(404).json(jsonResponse(null, [jsonError(null, FRIEND_REQUEST_MESSAGES.NOT_FOUND)]));
     }
   }
   
