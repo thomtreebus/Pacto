@@ -43,16 +43,18 @@ module.exports.sendFriendRequest = async (req, res) => {
   
       const { id } = req.params;
       const friendRequest = await FriendRequest.findById(id);
-  
-      if(friendRequest.recipient === recipient._id) {
-        const requestor = User.findById(friendRequest.requestor);
+      if (!friendRequest){
+        res.status(404).json(jsonResponse(null, [jsonError(null, FRIEND_REQUEST_MESSAGES.NOT_FOUND)]));
+      } else if(friendRequest.recipient.toString() === recipient._id.toString()) {
+        const requestor = await User.findById(friendRequest.requestor);
+
   
         // Add to friends
-        await User.findByIdAndUpdate(recipient._id, { $push: { friends: requestor._id } });
+        await User.findByIdAndUpdate(recipient._id, { $push: { friends: requestor._id } }); 
         await User.findByIdAndUpdate(requestor._id, { $push: { friends: recipient._id } });
   
         // Remove request from users
-        await User.findByIdAndUpdate(recipient._id, { $pull: { receivedRequests: id } });
+        await User.findByIdAndUpdate(recipient._id, { $pull: { receivedRequests: id } }); 
         await User.findByIdAndUpdate(requestor._id, { $pull: { sentRequests: id } });
   
         // Delete the friend request
@@ -62,10 +64,10 @@ module.exports.sendFriendRequest = async (req, res) => {
       } else {
         res.status(400).json(jsonResponse(null, [jsonError(null, FRIEND_REQUEST_MESSAGES.NOT_AUTHORISED.ACCEPT)]));
       }
-      } 
+    } 
     catch (err) {
-          res.status(400).json(jsonResponse(null, [jsonError(null, err.message)]));
-      }
+      res.status(400).json(jsonResponse(null, [jsonError(null, err.message)]));
+    }
   }
   
   module.exports.rejectFriendRequest = async (req, res) => {
@@ -89,10 +91,10 @@ module.exports.sendFriendRequest = async (req, res) => {
       } else {
         res.status(400).json(jsonResponse(null, [jsonError(null, FRIEND_REQUEST_MESSAGES.NOT_AUTHORISED.REJECT)]));
       }
-      } 
+    } 
     catch (err) {
-          res.status(400).json(jsonResponse(null, [jsonError(null, err.message)]));
-      }
+      res.status(400).json(jsonResponse(null, [jsonError(null, err.message)]));
+    }
   }
   
   module.exports.removeFriend = async (req, res) => {

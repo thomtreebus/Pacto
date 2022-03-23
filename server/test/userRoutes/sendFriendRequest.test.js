@@ -23,9 +23,6 @@ describe("sendFriendRequest /friends", () => {
     const user = await generateTestUser();
     user.active = true;
     await user.save();
-    const recipientUser = await generateCustomUniTestUser("pacTwo");
-    recipientUser.active = true;
-    await recipientUser.save();
   });
 
 	afterEach(async () => {

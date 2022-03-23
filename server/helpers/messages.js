@@ -118,6 +118,7 @@ module.exports.FRIEND_MESSAGES = {
 };
 
 module.exports.FRIEND_REQUEST_MESSAGES = {
+	NOT_FOUND: "Friend request not found",
 	NOT_AUTHORISED: {
 		ACCEPT: "Cannot accept friend request for somebody else",
 		REJECT: "Cannot reject friend request for somebody else",
