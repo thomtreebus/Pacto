@@ -1,18 +1,30 @@
 import React from "react";
-import { Card, Typography } from "@mui/material";
+import { Card, Toolbar, Typography } from "@mui/material";
+import logo from '../assets/foiled-again-foil.gif';
+import CardContent from '@mui/material/CardContent';
+import CardMedia from '@mui/material/CardMedia';
 
 export default function Notfound() {
 	return (
-		<Card
-			sx={{
-				padding: "200px 20px",
-				margin: "auto",
-				transform: "translateY(128px)",
-			}}
-		>
-			<Typography variant="h4">
-				The Page you are looking for was not found
-			</Typography>
+		<>
+			<Toolbar/>
+			<Card sx={{ maxWidth: 690, margin: "auto" }}>
+			<CardMedia
+				component="img"
+				height="280"
+				image={logo}
+				alt="not-found"
+			/>
+			<CardContent>
+				<Typography gutterBottom variant="h5" component="div">
+					ERORR 404
+				</Typography>
+				<Typography variant="body2" color="text.secondary">
+					The Page you are looking for was not found!
+				</Typography>
+			</CardContent>
 		</Card>
+	</>
 	);
 }
+

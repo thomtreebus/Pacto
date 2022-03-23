@@ -4,7 +4,8 @@ const User = require("../models/User");
 const Post = require("../models/Post");
 const {jsonResponse, jsonError} = require("../helpers/responseHandlers");
 const handleFieldErrors = require('../helpers/errorHandler');
-const { MESSAGES, PACT_MESSAGES } = require("../helpers/messages")
+const { MESSAGES, PACT_MESSAGES } = require("../helpers/messages");
+const getPreview = require("../helpers/LinkCache");
 
 // POST pact
 module.exports.pactPost = async (req, res) => {
@@ -54,6 +55,18 @@ module.exports.pactGet = async (req, res) => {
 		await pact.populate({ path: "members", model: User });
 		await pact.populate({ path: "moderators", model: User });
 		await pact.populate({ path: "posts", model: Post, populate: {path: "author", model: User}  });
+
+		for (let index = 0; index < pact.posts.length; index++) {
+			const post = pact.posts[index];
+			if (post.type === "link") {
+				const preview = await getPreview(post.link);
+				if (preview !== null) {
+					post.text = preview.text;
+					post.image = preview.image;
+				}
+			}
+		}
+
 		res.status(200).json(jsonResponse(pact, []));
 	} 
   catch (err) {
