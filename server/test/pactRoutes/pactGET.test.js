@@ -28,7 +28,7 @@ describe("GET /pact/:id", () =>{
 	);
 
   beforeAll(async () => {
-    server.listen();
+    server.listen({ onUnhandledRequest: "bypass" });
 		await mongoose.connect(process.env.TEST_DB_CONNECTION_URL);
 	});
 
