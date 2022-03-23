@@ -62,7 +62,7 @@ describe("GET /feed", () =>{
 	});
 
   // Tests
-  it("returns posts for pacts a user is member of", async () => {
+  it("returns posts for pacts a user is member of in order by date/time", async () => {
     const user = await User.findOne({ uniEmail: getDefaultTestUserEmail() });
     const post = await Post.findOne({ id: getTestPostId });
     const token = createToken(user._id);
@@ -73,7 +73,7 @@ describe("GET /feed", () =>{
       .expect(200);
 
     expect(response.body.message).toBeDefined();
-    expect(response.body.message[0]._id.toString()).toBe(post._id.toString());    
+    expect(response.body.message[1]._id.toString()).toBe(post._id.toString());    
   })
 
   it("uses checkAuthenticated middleware", async () =>{
