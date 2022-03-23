@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
@@ -16,12 +16,7 @@ import { useHistory } from "react-router-dom";
 import { Image } from 'cloudinary-react';
 import Axios from 'axios';
 import IconButton from '@mui/material/IconButton';
-import MuiAlert from '@mui/material/Alert';
-import Snackbar from '@mui/material/Snackbar';
-
-const Alert = React.forwardRef(function Alert(props, ref) {
-  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
-});
+import ErrorMessage from './ErrorMessage';
 
 const Input = styled('input')({
   display: 'none',
@@ -104,10 +99,6 @@ export default function CreatePostCard({pactID}) {
     }
   }
 
-  const handleClose = (event, reason) => {
-    setOpen(false);
-  };
-
   const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -133,7 +124,6 @@ export default function CreatePostCard({pactID}) {
     });
 
     const json = await response.json();
-    console.log(json)
     
     Object.values(json['errors']).forEach(err => {
       const field = err["field"];
@@ -227,11 +217,7 @@ export default function CreatePostCard({pactID}) {
 								publicID={image}
 							> </Image>}
           </label>
-          <Snackbar data-testid="snackbar" open={open} autoHideDuration={6000} onClose={handleClose}>
-            <Alert onClose={handleClose} severity="error" sx={{ width: '100%' }}>
-              {apiPostImageError} 
-            </Alert>
-          </Snackbar>
+          <ErrorMessage  isOpen={open} setIsOpen={setOpen} message={apiPostImageError}/>
         </TabPanel>
         <TabPanel value={value} index={2}>
           <TitleTextField apiPostTitleError={apiPostTitleError}/> 

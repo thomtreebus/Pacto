@@ -60,8 +60,8 @@ export default function PactPage() {
           <Box sx={{ paddingTop: "16px", paddingRight: "16px" }} display={{ xs: "none", lg: "block" }} position={"sticky"} top={65}>
             { pact && <AboutPact pact={pact} /> }
             <Box position={"absolute"} bottom={-27} right={50}>
-              <Fab color="primary" aria-label="add">
-                <AddIcon onClick={handleClickOpen}/>
+              <Fab color="primary" aria-label="add" onClick={handleClickOpen}>
+                <AddIcon/>
               </Fab>
             </Box>
           </Box>
