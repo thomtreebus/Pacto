@@ -32,4 +32,8 @@ describe("acceptFriendRequest /friends", () => {
 		await User.deleteMany({});
 	});
 
+  it("passes", async () => {
+    expect(true).toBe(true);
+  });
+
 });

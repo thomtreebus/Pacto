@@ -157,6 +157,21 @@ describe("sendFriendRequest /friends", () => {
     expect(updatedRecipient3.receivedRequests[2].recipient).toEqual(recipientUser3._id);
   });
 
+  it("does not let user send a friend request to themself", async () => {
+    const user = await User.findOne({ uniEmail: getDefaultTestUserEmail() });
+    
+    const token = createToken(user._id);
+    const response = await supertest(app)
+    .post(`/friends/${ user._id }`)
+    .set("Cookie", [`jwt=${ token }`])
+    .expect(400)
+
+    expect(response.body.message).toBeDefined();
+    expect(response.body.errors[0].field).toBe(null);
+    expect(response.body.errors.length).toBe(1);
+    expect(response.body.errors[0].message).toBe(FRIEND_REQUEST_MESSAGES.SELF);
+  });
+
   it("does not let user send a friend request to existing friend", async () => {
     const recipientUser = await generateCustomUniTestUser("User", "ucl");
     const user = await User.findOne({ uniEmail: getDefaultTestUserEmail() });

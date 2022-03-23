@@ -125,7 +125,8 @@ module.exports.FRIEND_REQUEST_MESSAGES = {
 	ALREADY: {
 		SENT: "Friend request already sent to this person",
 		RECEIVED: "Already received a friend request from this person"
-	}
+	},
+	SELF: "Cannot send friend request to yourself"
 };
 
 module.exports.COMMENT_MESSAGES = {
