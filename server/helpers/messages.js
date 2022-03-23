@@ -122,7 +122,10 @@ module.exports.FRIEND_REQUEST_MESSAGES = {
 		ACCEPT: "Cannot accept friend request for somebody else",
 		REJECT: "Cannot reject friend request for somebody else",
 	},
-	ALREADY_SENT: "Recipient has already got a friend request",
+	ALREADY: {
+		SENT: "Friend request already sent to this person",
+		RECEIVED: "Already received a friend request from this person"
+	}
 };
 
 module.exports.COMMENT_MESSAGES = {
