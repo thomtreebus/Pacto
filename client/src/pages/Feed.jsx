@@ -13,20 +13,13 @@ export default function Feed() {
       method: "GET",
       credentials: "include"
     }).then((res) => {
-      if (!res.ok) {
-        throw Error("Could not get feed posts");
-      }
       return res.json();
     }).then((data) => {
       setPosts(data.message);
       console.log(data.message);
       setIsLoading(false);
       setError(null);
-		}).catch((err) => {
-      setPosts(null);
-      setIsLoading(false);
-      setError(err);
-    })
+		})
 	}, [])
  	
 
