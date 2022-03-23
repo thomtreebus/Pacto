@@ -167,16 +167,17 @@ export default function EditPact() {
           justifyContent="center"
           alignItems="center"
         >
-          <Grid container xs={12} justifyContent="center" alignItems="center">
+          <Grid container item xs={12} justifyContent="center" alignItems="center">
             <Avatar alt="Pacto Icon" src={Icon}/>
           </Grid>
-          <Grid container xs={12} justifyContent="center" alignItems="center">
+          <Grid container item xs={12} justifyContent="center" alignItems="center">
             <Typography component="h1" variant="h5" sx={{fontWeight: "bold"}}>
               Edit Pact
             </Typography>
           </Grid>
         </Grid>
         <Grid container
+              item
               direction="row"
               justifyContent="space-evenly"
               alignItems="center"
