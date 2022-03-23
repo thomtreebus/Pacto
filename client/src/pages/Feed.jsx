@@ -37,7 +37,6 @@ export default function Feed() {
     { isLoading && <Loading /> }
     {error && <ErrorPage />}
     {posts && <PostList posts={posts}/>}
-
     </>
 	);
 }
