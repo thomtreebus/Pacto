@@ -1,4 +1,4 @@
-import { render, screen, waitForElementToBeRemoved } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor, waitForElementToBeRemoved } from "@testing-library/react";
 import PactPage from "../pages/PactPage";
 import "@testing-library/jest-dom";
 import { rest } from "msw";
@@ -100,6 +100,27 @@ describe("PactPage Tests", () => {
         await screen.findByTestId("AddIcon");
       });
     })
+  })
+
+  describe("Check interaction with elements", () => {
+
+    beforeEach(async () => {
+      await renderWithMock();
+    });
+
+    it("should open the create post dialog when the add button is pressed, and close when escape is pressed", async () => {
+      const addIconElement = await screen.findByTestId("AddIcon");
+      fireEvent.click(addIconElement);
+      const dialogElement = await screen.findByTestId("dialog")
+      expect(dialogElement).toBeInTheDocument()
+      fireEvent.keyDown(dialogElement, {
+        key: "Escape",
+        code: "Escape",
+        keyCode: 27,
+        charCode: 27
+      });
+      await waitFor(() => expect(dialogElement).not.toBeInTheDocument())
+    }); 
   })
 
   describe("Check miscellaneous behaviour", () => {
