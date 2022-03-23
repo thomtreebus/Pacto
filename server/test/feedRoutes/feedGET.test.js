@@ -73,7 +73,7 @@ describe("GET /feed", () =>{
       .expect(200);
 
     expect(response.body.message).toBeDefined();
-    expect(response.body.message[1]._id.toString()).toBe(post._id.toString());    
+    expect(response.body.message[1]._id.toString()).toBe(post2._id.toString());    
   })
 
   it("uses checkAuthenticated middleware", async () =>{
