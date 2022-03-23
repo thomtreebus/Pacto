@@ -157,16 +157,32 @@ export default function EditPact() {
     <>
       <Card
         sx={{
-          padding: "40px",
+          padding: "30px",
           margin: "auto",
         }}
       >
+        <Grid
+          container
+          direction="row"
+          justifyContent="center"
+          alignItems="center"
+        >
+          <Grid container xs={12} justifyContent="center" alignItems="center">
+            <Avatar alt="Pacto Icon" src={Icon}/>
+          </Grid>
+          <Grid container xs={12} justifyContent="center" alignItems="center">
+            <Typography component="h1" variant="h5" sx={{fontWeight: "bold"}}>
+              Edit Pact
+            </Typography>
+          </Grid>
+        </Grid>
         <Grid container
               direction="row"
-              justifyContent="center"
+              justifyContent="space-evenly"
               alignItems="center"
+              xs={12}
               spacing={1}>
-          <Grid item xs={3}>
+          <Grid item xs={8} lg={3}>
             <Card sx={{padding: "10px", margin: "auto"}}>
               <label htmlFor="contained-button-file">
                 <Input
@@ -179,31 +195,30 @@ export default function EditPact() {
                   onChange={(e) => {
                     uploadImage(e.target.files[0])
                   }}/>
-                <ButtonBase
-                  label="Upload Image"
-                  variant="contained"
-                  disabled={uploadImageIsDisabled}
-                  component="span"
-                  sx={{
-                    marginTop: 1
-                  }}
-
-                >
-                  <Image
-                    style={{
-                      width: "100%",
-                      minWidth: "20%",
-                      minHeight: "25%",
-                      borderRadius: "10px",
-                      overflow: "hidden",
-                      position: "relative",
-                    }}
-                    alt="Pact Picture"
-                    cloudName={`${process.env.REACT_APP_CLOUDINARY_CLOUD_NAME}`}
-                    publicID={image}
+                <Grid container justifyContent="center">
+                  <ButtonBase
+                    label="Upload Image"
+                    variant="contained"
+                    disabled={uploadImageIsDisabled}
+                    component="span"
                   >
-                  </Image>
-                </ButtonBase>
+                    <Image
+                      style={{
+                        width: "100%",
+                        minWidth: "20%",
+                        minHeight: "25%",
+                        borderRadius: "10px",
+                        overflow: "hidden",
+                        position: "relative",
+                      }}
+                      alt="Pact Picture"
+                      cloudName={`${process.env.REACT_APP_CLOUDINARY_CLOUD_NAME}`}
+                      publicID={image}
+                    >
+                    </Image>
+                  </ButtonBase>
+                </Grid>
+
                 <LoadingButton
                   loading={uploadImageIsDisabled}
                   loadingPosition="start"
@@ -223,9 +238,19 @@ export default function EditPact() {
             </Card>
 
           </Grid>
-          <Grid item xs>
+          <Grid item xs={12} lg={6}>
             <Box
               sx={{
+                // height: "calc(100vh - 68.5px)",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                // backgroundColor: "white",
+                paddingInline: "10px",
+                // paddingBlock: "10px",
+                // marginTop: "68.5px"
+              }}
+              lg={{
                 // height: "calc(100vh - 68.5px)",
                 display: "flex",
                 flexDirection: "column",
@@ -236,11 +261,7 @@ export default function EditPact() {
                 // marginTop: "68.5px"
               }}
             >
-              <Avatar alt="Pacto Icon" src={Icon}/>
 
-              <Typography component="h1" variant="h5" sx={{fontWeight: "bold"}}>
-                Edit Pact
-              </Typography>
               <Box
                 component="form"
                 noValidate
