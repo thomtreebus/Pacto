@@ -77,13 +77,6 @@ describe("CreatePact Tests", () => {
 			expect(inputElement).toBeInTheDocument();
 		});
 
-		it("should render the Upload Image button", async () => {
-			const buttonElement = await screen.findByRole("button", {
-				name: "Upload Image",
-			});
-			expect(buttonElement).toBeInTheDocument();
-		});
-
 		it("should render the Create Pact button", async () => {
 			const buttonElement = await screen.findByRole("button", {
 				name: "Create Pact",
