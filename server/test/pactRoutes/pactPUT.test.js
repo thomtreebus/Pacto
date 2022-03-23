@@ -227,7 +227,6 @@ describe("PUT /pact", () => {
         .send(user2Pact)
         .expect(401)
 
-      console.log(res.body)
       expect(res.body.errors).toHaveLength(1);
       expect(res.body.errors[0]['field']).toBeNull();
       expect(res.body.errors[0]['message']).toBe(PACT_MESSAGES.NOT_MODERATOR)
