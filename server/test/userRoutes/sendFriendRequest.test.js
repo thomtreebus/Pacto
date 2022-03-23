@@ -56,6 +56,96 @@ describe("sendFriendRequest /friends", () => {
     expect(updatedRecipient.receivedRequests[0]._id.toString()).toBe(response.body.message._id);
   });
 
+  /**
+   * user sends requests to recipientUser1,2 and 3.
+   * recipientUser1 sends requests to user and recipientUser2.
+   */
+  it("lets users send friend requests to each other", async () => {
+    const recipientUser1 = await generateCustomUniTestUser("UserOne", "ucl");
+    recipientUser1.active = true;
+    recipientUser1.save();
+    const recipientUser2 = await generateCustomUniTestUser("UserTwo", "lse");
+    recipientUser2.active = true;
+    recipientUser2.save();
+    const recipientUser3 = await generateCustomUniTestUser("UserThree", "icl");
+    recipientUser3.active = true;
+    recipientUser3.save();
+
+    const user = await User.findOne({ uniEmail: getDefaultTestUserEmail() });
+    const token = createToken(user._id);
+    const response = await supertest(app)
+    .post(`/friends/${ recipientUser1._id }`)
+    .set("Cookie", [`jwt=${ token }`])
+    .expect(201)
+    expect(response.body.message).toBeDefined();
+    expect(response.body.errors.length).toBe(0);
+    await supertest(app)
+    .post(`/friends/${ recipientUser2._id }`)
+    .set("Cookie", [`jwt=${ token }`])
+    .expect(201)
+    await supertest(app)
+    .post(`/friends/${ recipientUser3._id }`)
+    .set("Cookie", [`jwt=${ token }`])
+    .expect(201)
+
+    const token2 = createToken(recipientUser1._id);
+    const response2 = await supertest(app)
+    .post(`/friends/${ user._id }`)
+    .set("Cookie", [`jwt=${ token2 }`])
+    .expect(201)
+    expect(response2.body.message).toBeDefined();
+    expect(response2.body.errors.length).toBe(0);
+    await supertest(app)
+    .post(`/friends/${ recipientUser2._id }`)
+    .set("Cookie", [`jwt=${ token2 }`])
+    .expect(201)
+
+    const updatedUser = await User.findOne({ uniEmail: getDefaultTestUserEmail() });
+    await updatedUser.populate({path: 'sentRequests', model: FriendRequest});
+    await updatedUser.populate({path: 'receivedRequests', model: FriendRequest});
+    const updatedRecipient1 = await User.findOne({_id: recipientUser1._id});
+    await updatedRecipient1.populate({path: 'sentRequests', model: FriendRequest});
+    await updatedRecipient1.populate({path: 'receivedRequests', model: FriendRequest});
+    const updatedRecipient2 = await User.findOne({_id: recipientUser2._id});
+    await updatedRecipient2.populate({path: 'sentRequests', model: FriendRequest});
+    await updatedRecipient2.populate({path: 'receivedRequests', model: FriendRequest});
+    const updatedRecipient3 = await User.findOne({_id: recipientUser3._id});
+    await updatedRecipient3.populate({path: 'sentRequests', model: FriendRequest});
+    await updatedRecipient3.populate({path: 'receivedRequests', model: FriendRequest});
+
+    expect(updatedUser.sentRequests.length).toBe(3);
+    expect(updatedUser.sentRequests[0].requestor).toEqual(user._id);
+    expect(updatedUser.sentRequests[0].recipient).toEqual(recipientUser1._id);
+    expect(updatedUser.sentRequests[1].requestor).toEqual(user._id);
+    expect(updatedUser.sentRequests[1].recipient).toEqual(recipientUser2._id);
+    expect(updatedUser.sentRequests[2].requestor).toEqual(user._id);
+    expect(updatedUser.sentRequests[2].recipient).toEqual(recipientUser3._id);
+    expect(updatedUser.receivedRequests.length).toBe(1);
+    expect(updatedUser.receivedRequests[0].requestor).toEqual(recipientUser1._id);
+    expect(updatedUser.receivedRequests[0].recipient).toEqual(user._id);
+
+    expect(updatedRecipient1.sentRequests.length).toBe(2);
+    expect(updatedRecipient1.sentRequests[0].requestor).toEqual(recipientUser1._id);
+    expect(updatedRecipient1.sentRequests[0].recipient).toEqual(user._id);
+    expect(updatedRecipient1.sentRequests[1].requestor).toEqual(recipientUser1._id);
+    expect(updatedRecipient1.sentRequests[1].recipient).toEqual(recipientUser2._id);
+    expect(updatedRecipient1.receivedRequests.length).toBe(1);
+    expect(updatedRecipient1.receivedRequests[0].requestor).toEqual(user._id);
+    expect(updatedRecipient1.receivedRequests[0].recipient).toEqual(recipientUser1._id);
+
+    expect(updatedRecipient2.sentRequests.length).toBe(0);
+    expect(updatedRecipient2.receivedRequests.length).toBe(2);
+    expect(updatedRecipient2.receivedRequests[0].requestor).toEqual(user._id);
+    expect(updatedRecipient2.receivedRequests[0].recipient).toEqual(recipientUser2._id);
+    expect(updatedRecipient2.receivedRequests[1].requestor).toEqual(recipientUser1._id);
+    expect(updatedRecipient2.receivedRequests[1].recipient).toEqual(recipientUser2._id);
+
+    expect(updatedRecipient3.sentRequests.length).toBe(0);
+    expect(updatedRecipient3.receivedRequests.length).toBe(1);
+    expect(updatedRecipient3.receivedRequests[0].requestor).toEqual(user._id);
+    expect(updatedRecipient3.receivedRequests[0].recipient).toEqual(recipientUser3._id);
+  });
+
   it("does not let user send a friend request to existing friend", async () => {
     const recipientUser = await generateCustomUniTestUser("User", "ucl");
     const user = await User.findOne({ uniEmail: getDefaultTestUserEmail() });
