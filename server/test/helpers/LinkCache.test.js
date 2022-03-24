@@ -26,7 +26,7 @@ describe("LinkCache tests", () => {
 
   beforeAll(async () => {
     server.listen({ onUnhandledRequest: "bypass" });
-    await mongoose.connect(process.env.TEST_DB_CONNECTION_URL);
+    await mongoose.connect(`${process.env.TEST_DB_CONNECTION_URL}linkCache`);
   })
 
   afterAll(async () => {
