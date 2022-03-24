@@ -38,7 +38,7 @@ describe("User Page Tests", () => {
 	beforeEach(async () => {
 		server.resetHandlers();
 	});
-
+ 
 	beforeEach(async () => {
 		render(
 			<MockComponent>
