@@ -65,9 +65,11 @@ export default function PrimarySearchAppBar({ handleDrawerToggle }) {
 
 	const { user, setIsAuthenticated } = useAuth();
 
-	const [anchorEl, setAnchorEl] = useState(null);
+	const [profileAnchorEl, setProfileAnchorEl] = useState(null);
+	const [notificationsAnchorEl, setNotificationsAnchorEl] = useState(null);
 
-	const isMenuOpen = Boolean(anchorEl);
+	const isProfileMenuOpen = Boolean(profileAnchorEl);
+	const isNotificationsMenuOpen = Boolean(notificationsAnchorEl);
 	
 	function getNotificationCount(user) {
 		if (user.notifications === undefined) {
@@ -87,40 +89,48 @@ export default function PrimarySearchAppBar({ handleDrawerToggle }) {
 	};
 
 	const handleProfileMenuOpen = (event) => {
-		setAnchorEl(event.currentTarget);
+		setProfileAnchorEl(event.currentTarget);
 	};
 
-	const handleMenuClose = () => {
-		setAnchorEl(null);
+	const handleProfileMenuClose = () => {
+		setProfileAnchorEl(null);
 	};
 
 	const handleEditProfileClick = () => {
 		history.push("/edit-profile");
-		handleMenuClose();
+		handleProfileMenuClose();
 	};
 
 	const handleProfileClick = () => {
 		history.push("/user/" + user._id);
-		handleMenuClose();
+		handleProfileMenuClose();
 	};
 
-	const menuId = "primary-search-account-menu";
-	const renderMenu = (
+	const handleNotificationsMenuOpen = (event) => {
+		setNotificationsAnchorEl(event.currentTarget);
+	};
+
+	const handleNotificationsMenuClose = () => {
+		setNotificationsAnchorEl(null);
+	}
+
+	const profileMenuId = "primary-search-account-menu";
+	const renderProfileMenu = (
 		<Menu
-			data-testid={menuId}
-			anchorEl={anchorEl}
+			data-testid={profileMenuId}
+			anchorEl={profileAnchorEl}
 			anchorOrigin={{
 				vertical: "top",
 				horizontal: "right",
 			}}
-			id={menuId}
+			id={profileMenuId}
 			keepMounted
 			transformOrigin={{
 				vertical: "top",
 				horizontal: "right",
 			}}
-			open={isMenuOpen}
-			onClose={handleMenuClose}
+			open={isProfileMenuOpen}
+			onClose={handleProfileMenuClose}
 		>
 			<MenuItem data-testid="profile-item" onClick={handleProfileClick}>
 				Profile
@@ -137,6 +147,30 @@ export default function PrimarySearchAppBar({ handleDrawerToggle }) {
 			</MenuItem>
 		</Menu>
 	);
+
+	const notificationsMenuId = "notifications-menu"
+	const renderNotificationsMenu = (
+		<Menu
+			data-testid={notificationsMenuId}
+			anchorEl={notificationsAnchorEl}
+			anchorOrigin={{
+				vertical: "middle",
+				horizontal: "right",
+			}}
+			id={notificationsMenuId}
+			keepMounted
+			transformOrigin={{
+				vertical: "middle",
+				horizontal: "right",
+			}}
+			open={isNotificationsMenuOpen}
+			onClose={handleNotificationsMenuClose}
+		>
+			<MenuItem onClick={handleNotificationsMenuClose}>
+				Test
+			</MenuItem>
+		</Menu>
+	)
 
 	return (
 		<Box sx={{ flexGrow: 1 }}>
@@ -182,8 +216,12 @@ export default function PrimarySearchAppBar({ handleDrawerToggle }) {
 					<Box sx={{ flexGrow: 1 }} />
 						<IconButton
 							size="large"
+							edge="end"
 							aria-label="notifications"
 							color="inherit"
+							aria-controls={notificationsMenuId}
+							aria-haspopup="true"
+							onClick={handleNotificationsMenuOpen}
 						>
 							<Badge data-testid="badge" badgeContent={ getNotificationCount(user) } max={99} color="error">
 								<NotificationsIcon />
@@ -195,7 +233,7 @@ export default function PrimarySearchAppBar({ handleDrawerToggle }) {
 							size="large"
 							edge="end"
 							aria-label="account of current user"
-							aria-controls={menuId}
+							aria-controls={profileMenuId}
 							aria-haspopup="true"
 							onClick={handleProfileMenuOpen}
 							color="inherit"
@@ -205,7 +243,8 @@ export default function PrimarySearchAppBar({ handleDrawerToggle }) {
 					</Box>
 				</Toolbar>
 			</AppBar>
-			{renderMenu}
+			{renderProfileMenu}
+			{renderNotificationsMenu}
 		</Box>
 	);
 }
