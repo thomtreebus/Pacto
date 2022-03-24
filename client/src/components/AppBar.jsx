@@ -17,7 +17,6 @@ import Avatar from "@mui/material/Avatar";
 import { useAuth } from "../providers/AuthProvider";
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import Badge from '@mui/material/Badge';
-import { useQuery } from "react-query";
 import PactoIcon from "../assets/pacto-logo.png";
 import MenuIcon from "@mui/icons-material/Menu";
 
@@ -67,22 +66,15 @@ export default function PrimarySearchAppBar({ handleDrawerToggle }) {
 	const { user, setIsAuthenticated } = useAuth();
 
 	const [anchorEl, setAnchorEl] = useState(null);
-	const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState(null);
 
 	const isMenuOpen = Boolean(anchorEl);
-
-	const { isLoading, data } = useQuery("myNotifications", () =>
-		fetch(`${process.env.REACT_APP_URL}/notifications`, {
-			credentials: "include",
-		}).then((res) => res.json())
-	);
 	
-	function getNotificationCount(data) {
-		if (data === undefined) {
+	function getNotificationCount(user) {
+		if (user.notifications === undefined) {
 			return 0
 		}
 		else {
-			return data.length
+			return user.notifications.length
 		}
 	}
 
@@ -145,10 +137,6 @@ export default function PrimarySearchAppBar({ handleDrawerToggle }) {
 			</MenuItem>
 		</Menu>
 	);
-	
-	if (isLoading) {
-		return "Loading notifications...";
-	}
 
 	return (
 		<Box sx={{ flexGrow: 1 }}>
@@ -197,7 +185,7 @@ export default function PrimarySearchAppBar({ handleDrawerToggle }) {
 							aria-label="notifications"
 							color="inherit"
 						>
-							<Badge badgeContent={ getNotificationCount(data) } color="error">
+							<Badge data-testid="badge" badgeContent={ getNotificationCount(user) } max={99} color="error">
 								<NotificationsIcon />
 							</Badge>
 						</IconButton>

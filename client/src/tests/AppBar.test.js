@@ -9,14 +9,14 @@ import { Route } from "react-router-dom";
 
 describe("App Bar Tests", () => {
 
-
   const server = setupServer(
 		rest.get(`${process.env.REACT_APP_URL}/me`, (req, res, ctx) => {
 			return res(
 				ctx.json({ message: {
           _id : "userid1",
           firstName: "pac",
-          lastName: "to"
+          lastName: "to",
+          notifications: []
           }, errors: [] })
 			);
 		}),
@@ -95,9 +95,27 @@ describe("App Bar Tests", () => {
       const logoutItemElement = screen.getByTestId("logout-item");
       expect(logoutItemElement).toBeInTheDocument();
     });
+    
+    it("should render the notifications icon bell", () => {
+      const menuElement = screen.getByTestId("NotificationsIcon");
+      expect(menuElement).toBeInTheDocument();
+    });
   });
 
   describe("Check interaction with elements", () => {
+    const server = setupServer(
+      rest.get(`${process.env.REACT_APP_URL}/me`, (req, res, ctx) => {
+        return res(
+          ctx.json({ message: {
+            _id : "userid1",
+            firstName: "pac",
+            lastName: "to",
+            notifications: undefined
+            }, errors: [] })
+        );
+      })
+    )
+
     it("should log out the user when log out is pressed", async () => {
       const logoutItemElement = await screen.findByTestId("logout-item");
       fireEvent.click(logoutItemElement);
