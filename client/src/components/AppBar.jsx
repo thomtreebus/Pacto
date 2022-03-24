@@ -19,6 +19,7 @@ import NotificationsIcon from '@mui/icons-material/Notifications';
 import Badge from '@mui/material/Badge';
 import PactoIcon from "../assets/pacto-logo.png";
 import MenuIcon from "@mui/icons-material/Menu";
+import { Card } from "@mui/material";
 
 const Search = styled("div")(({ theme }) => ({
 	position: "relative",
@@ -59,6 +60,15 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 		},
 	},
 }));
+
+function NotificationCard({ notification }){
+	return (
+		<Card sx={{ width: '100%', padding: '100', marginTop: '18px'}}>
+			{notification.text}
+			{notification.time}
+		</Card>
+	)
+}
 
 export default function PrimarySearchAppBar({ handleDrawerToggle }) {
 	const history = useHistory();
@@ -166,9 +176,9 @@ export default function PrimarySearchAppBar({ handleDrawerToggle }) {
 			open={isNotificationsMenuOpen}
 			onClose={handleNotificationsMenuClose}
 		>
-			<MenuItem onClick={handleNotificationsMenuClose}>
-				Test
-			</MenuItem>
+			{user.notifications.map((notification) => (
+				<NotificationCard notification={notification} />
+			))}
 		</Menu>
 	)
 
