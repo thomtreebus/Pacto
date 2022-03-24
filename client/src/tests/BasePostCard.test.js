@@ -61,17 +61,8 @@ describe("BasePostCard Tests", () => {
 	});
 
   describe("Check elements are rendered", () => {
-    it("should render upvote button", async () => {
-      await screen.findByTestId("ThumbUpRoundedIcon");
-    });
-
-    it("should render downvote button", async () => {
-      await screen.findByTestId("ThumbDownRoundedIcon");
-    });
-
-    it("should render vote number", async () => {
-      const likes = await screen.findByTestId("likes");
-      expect(likes.innerHTML).toBe("6");
+    it("should render voter component", async () => {
+      await screen.findByTestId("voter");
     });
 
     it("should render post title", async () => {
@@ -113,52 +104,6 @@ describe("BasePostCard Tests", () => {
   });
 
   describe("Check interaction with elements", () => {
-    it("should increment votes when upvote button pressed", () => {
-      fireEvent.click(screen.getByTestId("ThumbUpRoundedIcon"));
-      const likes = screen.getByTestId("likes");
-      expect(likes.innerHTML).toBe("7");
-    });
-
-    it("should decrement votes when downvote button pressed", () => {
-      fireEvent.click(screen.getByTestId("ThumbDownRoundedIcon"));
-      const likes = screen.getByTestId("likes");
-      expect(likes.innerHTML).toBe("5");
-    });
-
-    it("should keep votes the same when upvote button pressed twice", async () => {
-      const upvote = await screen.findByTestId("ThumbUpRoundedIcon");
-      fireEvent.click(upvote);
-      fireEvent.click(upvote);
-      const likes = screen.getByTestId("likes");
-      expect(likes.innerHTML).toBe("6");
-    });
-
-    it("should keep votes the same when downvote button pressed twice", async () => {
-      const downvote = await screen.findByTestId("ThumbDownRoundedIcon");
-      fireEvent.click(downvote);
-      fireEvent.click(downvote);
-      const likes = screen.getByTestId("likes");
-      expect(likes.innerHTML).toBe("6");
-    });
-
-    it("should decrement votes when upvote button is pressed followed by downvote button", async () => {
-      const upvote = await screen.findByTestId("ThumbUpRoundedIcon");
-      const downvote = await screen.findByTestId("ThumbDownRoundedIcon");
-      fireEvent.click(upvote);
-      fireEvent.click(downvote);
-      const likes = screen.getByTestId("likes");
-      expect(likes.innerHTML).toBe("5");
-    })
-
-    it("should increment votes when downvote button is pressed followed by upvote button", async () => {
-      const upvote = await screen.findByTestId("ThumbUpRoundedIcon");
-      const downvote = await screen.findByTestId("ThumbDownRoundedIcon");
-      fireEvent.click(downvote);
-      fireEvent.click(upvote);
-      const likes = screen.getByTestId("likes");
-      expect(likes.innerHTML).toBe("7");
-    })
-
     it("should redirect to profile page when author text is clicked", async () => {
       const author = await screen.findByTestId("author");
       fireEvent.click(author);
