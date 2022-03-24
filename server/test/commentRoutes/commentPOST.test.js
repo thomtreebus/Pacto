@@ -1,6 +1,7 @@
 const Pact = require("../../models/Pact");
 const Post = require("../../models/Pact");
 const User = require("../../models/User");
+const Notification = require("../../models/Notification");
 const Comment = require("../../models/Comment");
 const University = require("../../models/University");
 const mongoose = require("mongoose");
@@ -63,6 +64,30 @@ describe("POST /pact/:pactId/post/:postId/comment", () =>{
     expect(response.body.errors.length).toBe(0);
     expect(response.body.message.text).toBe(sentText);
   });
+
+  it("notifies post author that comment has been created", async () => {
+    const user = await User.findOne({ uniEmail: getDefaultTestUserEmail() });
+    const token = createToken(user._id);
+    const post = await Post.findOne({ id: getTestPostId() });
+    const author = await User.findOne({ id: post.author });
+    const beforeCount = author.notifications.length;
+
+    const sentText = COMMENT_TEXT;
+    const response = await sendRequest(token, sentText, 201);
+
+    expect(response.body.errors.length).toBe(0);
+    expect(response.body.message.text).toBe(sentText);
+
+    const updatedAuthor = await User.findOne({ id: post.author });
+    const afterCount = updatedAuthor.notifications.length;
+    expect(afterCount).toBe(beforeCount + 1);
+
+    const notification = await Notification.findOne({ user: author._id });
+    expect(notification).toBeDefined();
+    expect(notification.user._id.toString()).toBe(author._id.toString());
+    expect(notification.text).toBe("Your post received a new comment");
+
+  })
 
   it("rejects blank comment", async () =>{
     const user = await User.findOne({uniEmail: getDefaultTestUserEmail()});
