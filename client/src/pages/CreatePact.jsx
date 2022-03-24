@@ -158,17 +158,6 @@ export default function CreatePactPage() {
 							helperText={apiPactDescriptionError}
 						/>
 						<Button
-							fullWidth
-							label="Upload Image"
-							variant="contained"
-							component="span"
-							sx={{
-								marginTop: 1,
-							}}
-						>
-							Upload Image
-						</Button>
-						<Button
 							type="submit"
 							fullWidth
 							variant="contained"

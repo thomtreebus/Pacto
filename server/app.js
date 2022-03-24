@@ -29,6 +29,9 @@ app.use("/", postRoute);
 const uniRoute = require("./routes/university");
 app.use("/", uniRoute);
 
+const feedRoute = require("./routes/feed");
+app.use("/", feedRoute);
+
 const authRoutes = require("./routes/auth");
 app.use("/", authRoutes);
 
