@@ -2,18 +2,26 @@ import { Box, Card, CardContent, IconButton } from "@mui/material";
 import { useState } from "react";
 import { Typography } from "@mui/material";
 import { useHistory } from "react-router-dom";
-
 import ThumbUpRoundedIcon from "@mui/icons-material/ThumbUpRounded";
 import ThumbDownRoundedIcon from "@mui/icons-material/ThumbDownRounded";
 import CommentIcon from '@mui/icons-material/Comment';
 
 import { useAuth } from "../../providers/AuthProvider";
 
+const vagueTime = require("vague-time");
+
 export default function BasePostCard({ children, post }) {
   const { user } = useAuth();
   const [thumbUp, setThumbUp] = useState(post.upvoters.includes(user._id));
   const [thumbDown, setThumbDown] = useState(post.downvoters.includes(user._id));
   const [likes, setLikes] = useState(post.votes);
+
+  const relativeTime = (time) => {
+    return vagueTime.get({
+      from: Date.now(),
+      to: new Date(time)
+    });
+  };
 
   const history = useHistory();
 
@@ -73,7 +81,7 @@ export default function BasePostCard({ children, post }) {
 
           <Box sx={{ overflow: "hidden" }}>
             <Typography variant="caption" data-testid="author-date-line">
-              Posted by <span onClick={() => history.push(`/user/${post.author._id}`)} className="link" data-testid="author">{post.author.firstName + " " + post.author.lastName}</span> on {post.createdAt}
+              Posted by <span onClick={() => history.push(`/user/${post.author._id}`)} className="link" data-testid="author">{post.author.firstName + " " + post.author.lastName}</span> {relativeTime(post.createdAt)}
             </Typography>
 
             <Typography variant="h6" data-testid="title">

@@ -65,7 +65,7 @@ describe("POST /login", () => {
   }
 
   // Tests
-  // Not using getTestUserEmail for invalid inputs
+  // Not using getDefaultTestUserEmail for invalid inputs
   it("rejects invalid email", async () => {
     await isInvalidCredentials("pac.to", "Password123");
   });

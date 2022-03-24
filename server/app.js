@@ -29,13 +29,20 @@ app.use("/", postRoute);
 const uniRoute = require("./routes/university");
 app.use("/", uniRoute);
 
-const authRoutes = require("./routes/auth");
-const userRoutes = require("./routes/users");
-const notificationRoute = require("./routes/notifications");
-app.use("/", notificationRoute);
+const feedRoute = require("./routes/feed");
+app.use("/", feedRoute);
 
+const authRoutes = require("./routes/auth");
 app.use("/", authRoutes);
+
+const userRoutes = require("./routes/users");
 app.use("/users", userRoutes)
+
+const friendRoutes = require("./routes/friends");
+app.use("/", friendRoutes);
+
+const notificationRoute = require("./routes/notifications");
+app.use("/", notificationRoute)
 
 app.get("/ping", (req, res) => {
 	res.json({ ping: "pong" });

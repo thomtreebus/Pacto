@@ -48,7 +48,7 @@ describe("POST /post/upvote/:pactid/:id", () => {
 
   it("moderator can revoke ban of banned user", async () => {
     const user = await User.findOne({ uniEmail: getDefaultTestUserEmail() });
-    const pact = await Pact.findOne({ id: getTestPactId() });
+    const pact = await Pact.findOne({ _id: getTestPactId() });
     const revokeBanUser = await User.findOne({ uniEmail: "bob.to@kcl.ac.uk" });
     const token = createToken(user._id);
     const oldBanCount = pact.bannedUsers.length;
@@ -61,7 +61,7 @@ describe("POST /post/upvote/:pactid/:id", () => {
     expect(response.body.message).toBeDefined();
     expect(response.body.errors.length).toBe(0);
 
-    const responsePact = await Pact.findOne({ id: getTestPactId() });
+    const responsePact = await Pact.findOne({ _id: getTestPactId() });
     const newBanCount = responsePact.bannedUsers.length;
     expect(newBanCount).toBe(oldBanCount - 1);
 
@@ -105,7 +105,7 @@ describe("POST /post/upvote/:pactid/:id", () => {
 
   it("moderator can not revoke ban of user that is not banned", async () => {
     const user = await User.findOne({ uniEmail: getDefaultTestUserEmail() });
-    const pact = await Pact.findOne({ id: getTestPactId() });
+    const pact = await Pact.findOne({ _id: getTestPactId() });
     const notBannedUser = await generateTestUser("joe");
     pact.members.push(notBannedUser._id);
     pact.save();
@@ -127,7 +127,7 @@ describe("POST /post/upvote/:pactid/:id", () => {
     const user = await User.findOne({ uniEmail: getDefaultTestUserEmail() });
     const otherUser = await generateTestUser("joe");
     otherUser.save();
-    const pact = await Pact.findOne({ id: getTestPactId() });
+    const pact = await Pact.findOne({ _id: getTestPactId() });
     const token = createToken(user._id);
 
     const response = await supertest(app)
@@ -144,7 +144,7 @@ describe("POST /post/upvote/:pactid/:id", () => {
     const user = await User.findOne({ uniEmail: "bob.to@kcl.ac.uk" });
     const otherUser = await generateTestUser("joe");
     otherUser.save();
-    const pact = await Pact.findOne({ id: getTestPactId() });
+    const pact = await Pact.findOne({ _id: getTestPactId() });
     pact.members.push(otherUser._id);
     pact.members.push(user._id);
     pact.save();
@@ -162,7 +162,7 @@ describe("POST /post/upvote/:pactid/:id", () => {
 
   it("check uses authMiddleware", async () => {
     const user = await User.findOne({ uniEmail: "bob.to@kcl.ac.uk" });
-    const pact = await Pact.findOne({ id: getTestPactId() });
+    const pact = await Pact.findOne({ _id: getTestPactId() });
 
     const response = await supertest(app)
     .put(`/pact/${ pact._id }/${ user._id }/revokeban/`)

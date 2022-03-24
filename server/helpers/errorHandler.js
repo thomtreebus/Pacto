@@ -17,7 +17,7 @@ const errorHandler = (err) => {
     fieldErrors.push(jsonError(field, getUniqueError(field)));
 	}
 
-  if (err.message.includes('validation failed')) {
+  if (err.message.toLowerCase().includes('validation failed')){
     Object.values(err.errors).forEach((properties) => {
       fieldErrors.push(jsonError(properties.path, properties.message));
     });
@@ -25,4 +25,17 @@ const errorHandler = (err) => {
   return fieldErrors;
 }
 
-module.exports = errorHandler;
+// Helper function returns a list of errors in an easily readable format.
+const getErrorList = (err) => {
+  let jsonErrors = [];
+  const allErrors = errorHandler(err);
+    if(allErrors){
+			allErrors.forEach((myErr) => jsonErrors.push(myErr));
+		} 
+		else {
+			jsonErrors.push(jsonError(null, err.message));
+		}
+	return jsonErrors;
+}
+
+module.exports = getErrorList;

@@ -87,6 +87,34 @@ module.exports.POST_MESSAGES = {
 		NOT_AUTHOR_NOT_MOD: "User is neither a mod nor the author of the post",
 		NOT_AUTHOR: "User is not the author of the post",
 	},
+	NO_AUTHOR: "Author is a required field",
+  NO_PACT: "Post is a required field",
+  TITLE: {
+		BLANK: "Title is a required field",
+		MAX_LENGTH_EXCEEDED: "Title cannot exceed 50 characters",
+	},
+  TYPE: {
+    BLANK: "Type is a required field",
+    INVALID: "Type must be either link, image or text",
+	IMAGE: {
+		BLANK: "Type is 'image', so Image is a required field"
+	},
+	TEXT: {
+		BLANK: "Type is 'text', so Text is a required field"
+	},
+	LINK: {
+		BLANK: "Type is 'link', so Link is a required field",
+		INVALID: "The provided HTTP URL is invalid"
+	}
+  },
+  NO_VOTES: "Votes is a required field",
+  NO_UPVOTERS: "Upvoters is a required field",
+  NO_DOWNVOTERS: "Downvoters is a required field",
+  NOT_FOUND: "Post not found",
+  NOT_AUTHORISED: {
+    NOT_AUTHOR_NOT_MOD: "User is neither a mod nor the author of the post",
+    NOT_AUTHOR: "User is not the author of the post"
+  }
 };
 
 module.exports.NOTIFICATION_MESSAGES = {
@@ -94,6 +122,24 @@ module.exports.NOTIFICATION_MESSAGES = {
 	ALREADY_READ: "Notification has already been marked as read",
 	OTHER_USER: "Can not mark a notification as read for another user"
 }
+
+module.exports.FRIEND_MESSAGES = {
+	NOT_FOUND: "The user is not found",
+	NOT_FRIEND: "The user exists but is not a friend",
+	ALREADY_FRIEND: "The user is already a friend",
+	REQUEST: {
+		NOT_FOUND: "Friend request not found",
+		NOT_AUTHORISED: {
+			ACCEPT: "Cannot accept friend request for somebody else",
+			REJECT: "Cannot reject friend request for somebody else",
+		},
+		ALREADY: {
+			SENT: "Friend request already sent to this person",
+			RECEIVED: "Already received a friend request from this person"
+		},
+		SELF: "Cannot send friend request to yourself"
+	}
+};
 
 module.exports.COMMENT_MESSAGES = {
   NOT_FOUND: "Comment not found",

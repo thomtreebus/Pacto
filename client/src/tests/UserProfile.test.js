@@ -176,21 +176,6 @@ describe("Profile Page Tests", () => {
         expect(phoneText).toBeInTheDocument();
       });
 
-      it("should render the posts button", async () => {
-        const postsButton = await screen.findByLabelText("Posts");
-        expect(postsButton).toBeInTheDocument();
-      });
-
-      it("should render the comments button", async () => {
-        const commentsButton = await screen.findByLabelText("Comments");
-        expect(commentsButton).toBeInTheDocument();
-      });
-
-      it("should render the pacts button", async () => {
-        const pactsButton = await screen.findByLabelText("Pacts");
-        expect(pactsButton).toBeInTheDocument();
-      });
-
       it("should render the friends text", async () => {
         const friendsInfo = await screen.findByText("2 Friends");
         expect(friendsInfo).toBeInTheDocument();
@@ -225,28 +210,13 @@ describe("Profile Page Tests", () => {
         expect(history.location.pathname).toBe("/edit-profile");
       });
 
-      it("Clicking on Comments tab tab highlights it", async () => {
-        const commentsButton = await screen.getByRole('tab', { name: 'Comments' });
-        await waitFor(() => {
-          userEvent.click(commentsButton);
-        });
-        expect(screen.getByRole('tab', { selected: true })).toHaveTextContent('Comments');
-      });
 
-      it("Clicking on Pacts tab tab highlights it", async () => {
-        const pactsButton = await screen.getByRole('tab', { name: 'Pacts' });
+      it("Friends chip button takes you to users page", async () => {
+        const friendsButton = await screen.findByTestId("friends-button")
         await waitFor(() => {
-          userEvent.click(pactsButton);
+          userEvent.click(friendsButton)
         });
-        expect(screen.getByRole('tab', { selected: true })).toHaveTextContent('Pacts');
-      });
-
-      it("Clicking on Posts tab highlights it", async () => {
-        const postsButton = await screen.getByRole('tab', { name: 'Posts' });
-        await waitFor(() => {
-          userEvent.click(postsButton);
-        });
-        expect(screen.getByRole('tab', { selected: true })).toHaveTextContent('Posts');
+        await waitFor(() => expect(history.location.pathname).toBe("/users"));
       });
     });
   });

@@ -4,9 +4,11 @@ const University = require("../models/University");
 const Comment = require("../models/Comment");
 const User = require("../models/User");
 const Notification = require("../models/Notification");
+const handleFieldErrors = require('../helpers/errorHandler');
 const { jsonResponse, jsonError } = require("../helpers/responseHandlers");
 const { POST_MESSAGES, MESSAGES } = require("../helpers/messages");
 const { upvote, downvote } = require("../helpers/genericVoteMethods");
+const getPreview = require("../helpers/LinkCache");
 
 // POST post
 module.exports.postPost = async (req, res) => {
@@ -21,7 +23,7 @@ module.exports.postPost = async (req, res) => {
 		res.status(201).json(jsonResponse(post, []));
 	} 
   catch (err) {
-		res.status(400).json(jsonResponse(null, [jsonError(null, err.message)]));
+		res.status(400).json(jsonResponse(null, handleFieldErrors(err)));
 	}
 };
 
@@ -30,6 +32,15 @@ module.exports.postGet = async (req, res) => {
 	let post = null;
 	try {
 		post = await Post.findOne({ pact: req.pact, _id:req.params.postId });
+
+		if (post.type === "link") {
+			const preview = await getPreview(post.link);
+			if (preview !== null) {
+				post.text = preview.text;
+				post.image = preview.image;
+			}
+		}
+
 		try {
 			await post.populate({ path: 'upvoters', model: User });
 			await post.populate({ path: 'downvoters', model: User });
@@ -47,15 +58,14 @@ module.exports.postGet = async (req, res) => {
 	}
 };
 
-// POST upvote post
-module.exports.upvotePostPost = async (req, res) => {
+// PUT upvote post
+module.exports.upvotePostPut = async (req, res) => {
 	try {
 		// Checking post exists
 		const post = await Post.findOne({ pact: req.pact, _id:req.params.postId });
 		if (!post){
 			res.status(404).json(jsonResponse(null, [jsonError(null, POST_MESSAGES.NOT_FOUND)]));
-		} 
-		else {
+		} else {
 			await upvote(post, req.user);
 
 			// Notify poster that their post has been upvoted
@@ -71,12 +81,12 @@ module.exports.upvotePostPost = async (req, res) => {
 		}
 	} 
 	catch (err) {
-		res.status(400).json(jsonResponse(null, [jsonError(null, err.message)]));
+		res.status(400).json(jsonResponse(null, handleFieldErrors(err)));
 	}
 };
 
-// POST downvote
-module.exports.downvotePostPost = async (req, res) => {
+// PUT downvote
+module.exports.downvotePostPut = async (req, res) => {
 	try {
 		// Checking post exists
 		const post = await Post.findOne({ pact: req.params.pactId, _id:req.params.postId });
@@ -96,8 +106,7 @@ module.exports.downvotePostPost = async (req, res) => {
 		}
 	} 
 	catch (err) {
-		console.log(err.message);
-		res.status(400).json(jsonResponse(null, [jsonError(null, err.message)]));
+		res.status(400).json(jsonResponse(null, handleFieldErrors(err)));
 	}
 };
 
