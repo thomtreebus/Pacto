@@ -1,12 +1,12 @@
-const User = require("../../models/User");
-const FriendRequest = require("../../models/FriendRequest");
+const User = require("../../../models/User");
+const FriendRequest = require("../../../models/FriendRequest");
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
-const app = require("../../app");
+const app = require("../../../app");
 const supertest = require("supertest");
-const { generateTestUser, getDefaultTestUserEmail, generateCustomUniTestUser} = require("../fixtures/generateTestUser");
-const { createToken } = require("../../controllers/authController");
-const { MESSAGES, FRIEND_MESSAGES, FRIEND_REQUEST_MESSAGES } = require("../../helpers/messages");
+const { generateTestUser, getDefaultTestUserEmail, generateCustomUniTestUser} = require("../../fixtures/generateTestUser");
+const { createToken } = require("../../../controllers/authController");
+const { MESSAGES, FRIEND_MESSAGES } = require("../../../helpers/messages");
 
 dotenv.config();
 
@@ -27,6 +27,7 @@ describe("sendFriendRequest /friends", () => {
 
 	afterEach(async () => {
 		await User.deleteMany({});
+    await FriendRequest.deleteMany({});
 	});
 
   it("lets user send a friend request to another user", async () => {
@@ -166,7 +167,7 @@ describe("sendFriendRequest /friends", () => {
     expect(response.body.message).toBeDefined();
     expect(response.body.errors[0].field).toBe(null);
     expect(response.body.errors.length).toBe(1);
-    expect(response.body.errors[0].message).toBe(FRIEND_REQUEST_MESSAGES.SELF);
+    expect(response.body.errors[0].message).toBe(FRIEND_MESSAGES.REQUEST.SELF);
   });
 
   it("does not let user send a friend request to existing friend", async () => {
@@ -207,7 +208,7 @@ describe("sendFriendRequest /friends", () => {
     expect(response.body.message).toBeDefined();
     expect(response.body.errors.length).toBe(1);
     expect(response.body.errors[0].field).toBe(null);
-    expect(response.body.errors[0].message).toBe(FRIEND_REQUEST_MESSAGES.ALREADY.SENT);
+    expect(response.body.errors[0].message).toBe(FRIEND_MESSAGES.REQUEST.ALREADY.SENT);
   });
 
   it("does not let user send a friend request to someone if already received one from that person", async () => {
@@ -234,7 +235,7 @@ describe("sendFriendRequest /friends", () => {
     expect(response.body.message).toBeDefined();
     expect(response.body.errors.length).toBe(1);
     expect(response.body.errors[0].field).toBe(null);
-    expect(response.body.errors[0].message).toBe(FRIEND_REQUEST_MESSAGES.ALREADY.RECEIVED);
+    expect(response.body.errors[0].message).toBe(FRIEND_MESSAGES.REQUEST.ALREADY.RECEIVED);
   });
 
   it("check uses authMiddleware", async () => {

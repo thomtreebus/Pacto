@@ -113,21 +113,21 @@ module.exports.POST_MESSAGES = {
 }
 
 module.exports.FRIEND_MESSAGES = {
-	ALREADY_FRIEND: "Recipient is already a friend",
-	NOT_FRIEND: "Recipient is not a friend"
-};
-
-module.exports.FRIEND_REQUEST_MESSAGES = {
-	NOT_FOUND: "Friend request not found",
-	NOT_AUTHORISED: {
-		ACCEPT: "Cannot accept friend request for somebody else",
-		REJECT: "Cannot reject friend request for somebody else",
-	},
-	ALREADY: {
-		SENT: "Friend request already sent to this person",
-		RECEIVED: "Already received a friend request from this person"
-	},
-	SELF: "Cannot send friend request to yourself"
+	NOT_FOUND: "The user is not found",
+	NOT_FRIEND: "The user exists but is not a friend",
+	ALREADY_FRIEND: "The user is already a friend",
+	REQUEST: {
+		NOT_FOUND: "Friend request not found",
+		NOT_AUTHORISED: {
+			ACCEPT: "Cannot accept friend request for somebody else",
+			REJECT: "Cannot reject friend request for somebody else",
+		},
+		ALREADY: {
+			SENT: "Friend request already sent to this person",
+			RECEIVED: "Already received a friend request from this person"
+		},
+		SELF: "Cannot send friend request to yourself"
+	}
 };
 
 module.exports.COMMENT_MESSAGES = {

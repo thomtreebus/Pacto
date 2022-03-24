@@ -1,12 +1,12 @@
-const User = require("../../models/User");
-const FriendRequest = require("../../models/FriendRequest");
+const User = require("../../../models/User");
+const FriendRequest = require("../../../models/FriendRequest");
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
-const app = require("../../app");
+const app = require("../../../app");
 const supertest = require("supertest");
-const { generateTestUser, getDefaultTestUserEmail, generateCustomUniTestUser} = require("../fixtures/generateTestUser");
-const { createToken } = require("../../controllers/authController");
-const { MESSAGES, FRIEND_REQUEST_MESSAGES } = require("../../helpers/messages");
+const { generateTestUser, getDefaultTestUserEmail, generateCustomUniTestUser} = require("../../fixtures/generateTestUser");
+const { createToken } = require("../../../controllers/authController");
+const { MESSAGES, FRIEND_MESSAGES } = require("../../../helpers/messages");
 
 dotenv.config();
 
@@ -27,6 +27,7 @@ describe("rejectFriendRequest /friends", () => {
 
 	afterEach(async () => {
 		await User.deleteMany({});
+    await FriendRequest.deleteMany({});
 	});
 
   it("lets user reject a friend request they received", async () => {
@@ -90,7 +91,7 @@ describe("rejectFriendRequest /friends", () => {
     expect(response.body.message).toBeDefined();
     expect(response.body.errors[0].field).toBe(null);
     expect(response.body.errors.length).toBe(1);
-    expect(response.body.errors[0].message).toBe(FRIEND_REQUEST_MESSAGES.NOT_AUTHORISED.REJECT);
+    expect(response.body.errors[0].message).toBe(FRIEND_MESSAGES.REQUEST.NOT_AUTHORISED.REJECT);
 
     // Checking nothing changed
     const updatedUser = await User.findOne({ uniEmail: getDefaultTestUserEmail() });
@@ -127,7 +128,7 @@ describe("rejectFriendRequest /friends", () => {
     expect(response.body.message).toBeDefined();
     expect(response.body.errors[0].field).toBe(null);
     expect(response.body.errors.length).toBe(1);
-    expect(response.body.errors[0].message).toBe(FRIEND_REQUEST_MESSAGES.NOT_FOUND);
+    expect(response.body.errors[0].message).toBe(FRIEND_MESSAGES.REQUEST.NOT_FOUND);
   });
 
   it("check uses authMiddleware", async () => {
