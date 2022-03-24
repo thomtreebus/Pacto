@@ -66,8 +66,11 @@ export default function PactPage() {
 	const [open, setOpen] = useState(false);
 	const theme = useTheme();
 	const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
-	const [tabValue, setTabValue] = useState(0);
+	const [membersTabValue, setMembersTabValue] = useState(0);
+	const [mainPactTabValue, setMainPactTabValue] = useState(0);
 
+	const [allModerators, setAllModerators] = useState(null);
+	const [allBannedUsers, setAllBannedUsers] = useState(null);
 	const [allPactMembers, setAllPactMembers] = useState(null);
 
 	const handleClickOpen = () => {
@@ -78,8 +81,12 @@ export default function PactPage() {
 		setOpen(false);
 	};
 
-	const handleTabChange = (event, newValue) => {
-		setTabValue(newValue);
+	const handleMainPactTabChange = (event, newValue) => {
+		setMainPactTabValue(newValue);
+	};
+
+	const handleMembersTabChange = (event, newValue) => {
+		setMembersTabValue(newValue);
 	};
 	
 
@@ -96,8 +103,9 @@ export default function PactPage() {
 			})
 			.then((data) => {
 				setPact(data.message);
-				console.log(data.message.members)
 				setAllPactMembers(data.message.members)
+				setAllModerators(data.message.moderators)
+				setAllBannedUsers(data.message.bannedUsers)
 				setIsLoading(false);
 				const moderators = data.message.moderators.flatMap((user) => user._id);
 				if (moderators.includes(user._id)) {
@@ -114,11 +122,11 @@ export default function PactPage() {
 	return (
 		<>
 			{isLoading && <Loading />}
-			<Tabs value={tabValue} onChange={handleTabChange} aria-label="User type tab">
+			<Tabs value={mainPactTabValue} onChange={handleMainPactTabChange} aria-label="User type tab">
 				<Tab label="Pact Posts" {...a11yProps(0)} />
 				<Tab label="Pact Members" {...a11yProps(1)} />
 			</Tabs>
-			<TabPanel value={tabValue} index={0} >
+			<TabPanel value={mainPactTabValue} index={0} >
 				<Grid container width="100%" justifyContent="center">
 					<Grid item xs={12} lg={8} xl={7}>
 						{pact && <PostList posts={pact.posts} />}
@@ -176,8 +184,21 @@ export default function PactPage() {
 					</Dialog>
 				</Box>
 			</TabPanel>
-			<TabPanel value={tabValue} index={1}>
-				<UserList users={allPactMembers}/>
+			<TabPanel value={mainPactTabValue} index={1}>
+				<Tabs value={membersTabValue} onChange={handleMembersTabChange} aria-label="User type tab">
+					<Tab label="All Members" {...a11yProps(0)} />
+					<Tab label="Moderators" {...a11yProps(1)} />
+					<Tab label="Banned Users" {...a11yProps(1)} />
+				</Tabs>
+				<TabPanel value={membersTabValue} index={0}>
+					<UserList users={allPactMembers}/>
+				</TabPanel>
+				<TabPanel value={membersTabValue} index={1}>
+					<UserList users={allModerators}/>
+				</TabPanel>
+				<TabPanel value={membersTabValue} index={2}>
+					<UserList users={allBannedUsers}/>
+				</TabPanel>
 			</TabPanel>
 		</>
 	);
