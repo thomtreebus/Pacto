@@ -91,6 +91,9 @@ export default function PactPage() {
 	
 
 	useEffect(() => {
+		setIsLoading(true);
+		setMembersTabValue(0);
+		setMainPactTabValue(0);
 		fetch(`${process.env.REACT_APP_URL}/pact/${pactID}`, {
 			method: "GET",
 			credentials: "include",
