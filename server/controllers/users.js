@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const {jsonResponse, jsonError} = require("../helpers/responseHandlers");
 const University = require("../models/University");
 const {USER_MESSAGES} = require("../helpers/messages");
-
+const FriendRequest = require('../models/FriendRequest');
 
 module.exports.updateProfile = async(req, res) => {
   let status = undefined;
@@ -24,9 +24,10 @@ module.exports.updateProfile = async(req, res) => {
       const updatedUser = await User.findByIdAndUpdate(id, { ...req.body }, {runValidators: true});
       status = 200
       const university = req.user.university;
-      resMessage = await User.findOne({university, _id: req.params.id}).populate(
-        {path: 'university', model: University}
-      );
+      resMessage = await User.findOne({university, _id: req.params.id});
+      await resMessage.populate({path: 'university', model: University});
+      await resMessage.populate({path: 'sentRequests', model: FriendRequest});
+      await resMessage.populate({path: 'receivedRequests', model: FriendRequest});
     }
   } catch (err) {
     // When status code is not defined use status 500

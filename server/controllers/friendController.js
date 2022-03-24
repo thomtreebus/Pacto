@@ -1,7 +1,6 @@
 const User = require('../models/User');
 const FriendRequest = require('../models/FriendRequest');
 const { FRIEND_MESSAGES } = require('../helpers/messages');
-const mongoose = require('mongoose');
 const {jsonResponse, jsonError} = require("../helpers/responseHandlers");
 
 module.exports.sendFriendRequest = async (req, res) => {
@@ -10,9 +9,6 @@ module.exports.sendFriendRequest = async (req, res) => {
 
     const { id } = req.params;
     const recipient = await User.findById(id);
-
-    await user.populate({path: 'sentRequests', model: FriendRequest});
-    await user.populate({path: 'receivedRequests', model: FriendRequest});
 
     if(user._id.toString() === id) {
       res.status(400).json(jsonResponse(null, [jsonError(null, FRIEND_MESSAGES.REQUEST.SELF)]));

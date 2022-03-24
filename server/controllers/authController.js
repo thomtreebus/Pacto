@@ -1,4 +1,5 @@
 const User = require("../models/User");
+const FriendRequest = require('../models/FriendRequest');
 const EmailVerificationCode = require("../models/EmailVerificationCode");
 const { handleVerification } = require("../helpers/emailHandlers");
 const jwt = require("jsonwebtoken");
@@ -107,6 +108,9 @@ module.exports.loginPost = async (req, res) => {
 
 	try {
 		const user = await User.findOne({ uniEmail });
+    await user.populate({path: 'university', model: University});
+    await user.populate({path: 'sentRequests', model: FriendRequest});
+    await user.populate({path: 'receivedRequests', model: FriendRequest});
 
 		if (!user) {
 			throw Error(MESSAGES.LOGIN.INVALID_CREDENTIALS);
