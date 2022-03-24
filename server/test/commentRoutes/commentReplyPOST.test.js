@@ -3,6 +3,7 @@ const Post = require("../../models/Pact");
 const User = require("../../models/User");
 const Comment = require("../../models/Comment");
 const University = require("../../models/University");
+const Notification = require("../../models/Notification");
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const supertest = require("supertest");
@@ -52,6 +53,7 @@ describe("POST /pact/:pactId/post/:postId/comment/:commentId/reply", () =>{
 		await University.deleteMany({});
     await Post.deleteMany({});
     await Comment.deleteMany({});
+    await Notification.deleteMany({});
 	});
 
   const sendRequest = async (token, text, expStatus) => {
@@ -79,6 +81,34 @@ describe("POST /pact/:pactId/post/:postId/comment/:commentId/reply", () =>{
     expect(response.body.message.parentComment._id.toString()).toEqual(parent._id.toString());
     expect(parent.childComments[0].toString()).toEqual(response.body.message._id.toString());
   });
+
+  // it("notifies parent comment author a reply has been left", async () => {
+  //   const user = await User.findOne({uniEmail: getDefaultTestUserEmail()});
+  //   const token = createToken(user._id);
+
+  //   const sentText = COMMENT_TEXT;
+  //   const response = await sendRequest(token, sentText, 201);
+
+  //   const parent = await Comment.findById(commentId);
+  //   const parentAuthor = await User.findOne({ id: parent.author });
+  //   const beforeCount = parentAuthor.notifications.length;
+
+  //   expect(response.body.errors.length).toBe(0);
+  //   expect(response.body.message.text).toBe(sentText);
+
+  //   expect(response.body.message.parentComment._id.toString()).toEqual(parent._id.toString());
+  //   expect(parent.childComments[0].toString()).toEqual(response.body.message._id.toString());
+
+  //   const updatedAuthor = await User.findOne({ id: parent.author });
+  //   const afterCount = updatedAuthor.notifications.length;
+  //   expect(afterCount).toBe(beforeCount + 1);
+    
+
+  //   const notification = await Notification.findOne({ user: parent.author });
+  //   expect(notification).toBeDefined();
+  //   expect(notification.user._id.toString()).toBe(author._id.toString());
+  //   expect(notification.text).toBe("Your post received a new comment");
+  // })
 
   it("rejects blank comment", async () =>{
     const user = await User.findOne({uniEmail: getDefaultTestUserEmail()});
