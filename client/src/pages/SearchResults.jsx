@@ -44,7 +44,6 @@ export default function SearchResults() {
   const [error, setError] = useState(null);
   const [results, setResults] = useState(null);
   const [type, setType] = useState(0);
-  // const [data, setData] = useState([]);
   const history = useHistory();
 
   useEffect(() => {
@@ -69,16 +68,6 @@ export default function SearchResults() {
     })
   }, [query, results])
 
-  // useEffect(() => {
-  //   if (results) {
-  //     let data = []
-  //     if (type === 0) data = results.pacts;
-  //     if (type === 1) data = results.posts;
-  //     if (type === 2) data = results.users;
-  //     setData()
-  //   }
-  // }, [results, type])
-
   const handleTabChange = (event, newType) => {
     setType(newType);
   };
@@ -87,7 +76,7 @@ export default function SearchResults() {
     <>
     { isLoading && <Loading /> }
     {error && <ErrorPage />}
-      {results && (<Typography variant="subtitle2" sx={{ fontSize: "1.5rem" }} data-testid="typography-element">
+      {results && (<Typography variant="subtitle2" sx={{ fontSize: "1.5rem" }} data-testid="tp-element">
         Showing {results.pacts.length + results.posts.length + results.users.length} search results for: "{query}"
       </Typography>)}
     <Box sx={{ width: '100%'}}>
