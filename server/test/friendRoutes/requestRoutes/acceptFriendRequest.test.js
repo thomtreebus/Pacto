@@ -121,7 +121,7 @@ describe("acceptFriendRequest /friends", () => {
   it("can't accept a non-existent request", async () => {
     const user = await User.findOne({ uniEmail: getDefaultTestUserEmail() });
     const token = createToken(user._id);
-    var falseRequestId = new mongoose.Types.ObjectId();
+    const falseRequestId = new mongoose.Types.ObjectId();
     const response = await supertest(app)
     .put(`/friends/${ falseRequestId }/accept`)
     .set("Cookie", [`jwt=${ token }`])
