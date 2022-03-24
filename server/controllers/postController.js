@@ -64,8 +64,7 @@ module.exports.upvotePostPut = async (req, res) => {
 		const post = await Post.findOne({ pact: req.pact, _id:req.params.postId });
 		if (!post){
 			res.status(404).json(jsonResponse(null, [jsonError(null, POST_MESSAGES.NOT_FOUND)]));
-		} 
-		else {
+		} else {
 			await upvote(post, req.user);
 
 			// Populating before returning the post

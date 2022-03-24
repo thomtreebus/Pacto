@@ -75,6 +75,18 @@ const UserSchema = Schema({
     required: false,
     default: ""
   },
+  sentRequests: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: 'FriendRequest'
+    }
+  ],
+  receivedRequests: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: 'FriendRequest'
+    }
+  ],
   friends: [
     {
       type: Schema.Types.ObjectId,
