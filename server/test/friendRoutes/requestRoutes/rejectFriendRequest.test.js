@@ -1,34 +1,21 @@
 const User = require("../../../models/User");
 const FriendRequest = require("../../../models/FriendRequest");
 const mongoose = require("mongoose");
-const dotenv = require("dotenv");
 const app = require("../../../app");
 const supertest = require("supertest");
 const { generateTestUser, getDefaultTestUserEmail, generateCustomUniTestUser} = require("../../fixtures/generateTestUser");
 const { createToken } = require("../../../controllers/authController");
 const { MESSAGES, FRIEND_MESSAGES } = require("../../../helpers/messages");
-
-dotenv.config();
+const useTestDatabase = require("../../helpers/useTestDatabase");
 
 describe("rejectFriendRequest /friends", () => {
-  beforeAll(async () => {
-  await mongoose.connect(process.env.TEST_DB_CONNECTION_URL);
-	});
-
-	afterAll(async () => {
-		await mongoose.connection.close();
-	});
+  useTestDatabase("rejectFriendRequest");
 
   beforeEach(async () => {
     const user = await generateTestUser();
     user.active = true;
     await user.save();
   });
-
-	afterEach(async () => {
-		await User.deleteMany({});
-    await FriendRequest.deleteMany({});
-	});
 
   it("lets user reject a friend request they received", async () => {
     const recipientUser = await generateCustomUniTestUser("User", "ucl");

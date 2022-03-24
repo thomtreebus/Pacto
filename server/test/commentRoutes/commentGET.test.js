@@ -1,10 +1,5 @@
-const Pact = require("../../models/Pact");
-const Post = require("../../models/Pact");
 const User = require("../../models/User");
 const Comment = require("../../models/Comment");
-const University = require("../../models/University");
-const mongoose = require("mongoose");
-const dotenv = require("dotenv");
 const supertest = require("supertest");
 const app = require("../../app");
 const { generateTestUser, getDefaultTestUserEmail} = require("../fixtures/generateTestUser");
@@ -12,20 +7,13 @@ const { generateTestPact, getTestPactId } = require("../fixtures/generateTestPac
 const { generateTestPost, getTestPostId } = require("../fixtures/generateTestPost");
 const { createToken } = require("../../controllers/authController");
 const { PACT_MESSAGES, MESSAGES, COMMENT_MESSAGES, POST_MESSAGES } = require("../../helpers/messages");
-
-dotenv.config();
+const useTestDatabase = require("../helpers/useTestDatabase");
 
 const COMMENT_TEXT = "Some random text."
 
 describe("GET /pact/:pactId/post/:postId/comment/:commentId", () =>{
+  useTestDatabase("getComment");
   let commentId = null;
-  beforeAll(async () => {
-		await mongoose.connect(process.env.TEST_DB_CONNECTION_URL);
-	});
-
-	afterAll(async () => {
-		await mongoose.connection.close();
-	});
 
   beforeEach(async () => {
     const user = await generateTestUser();
@@ -45,14 +33,6 @@ describe("GET /pact/:pactId/post/:postId/comment/:commentId", () =>{
     post.comments.push(comment);
     await post.save();
   });
-
-	afterEach(async () => {
-		await User.deleteMany({});
-    await Pact.deleteMany({});
-		await University.deleteMany({});
-    await Post.deleteMany({});
-    await Comment.deleteMany({});
-	});
 
   const sendRequest = async (token, expStatus) => {
     const response = await supertest(app)

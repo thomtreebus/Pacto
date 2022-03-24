@@ -1,12 +1,7 @@
-const mongoose = require("mongoose");
-const dotenv = require("dotenv");
-const supertest = require("supertest");
-const app = require("../../app");
 const {upvote, downvote} = require("../../helpers/genericVoteMethods");
 const { generateTestUser, getDefaultTestUserEmail} = require("../fixtures/generateTestUser");
 const User = require("../../models/User");
-
-dotenv.config();
+const useTestDatabase = require("../helpers/useTestDatabase");
 
 let obj = {
   upvoters: [],
@@ -15,13 +10,7 @@ let obj = {
   save: () => {}
 }
 describe("Generic downvote", () => {
-  beforeAll(async () => {
-    await mongoose.connect(process.env.TEST_DB_CONNECTION_URL);
-  });
-
-  afterAll(async () => {
-    await mongoose.connection.close();
-  });
+  useTestDatabase("genericDownvote");
 
   beforeEach(async () => {
     const user = await generateTestUser();
@@ -32,10 +21,6 @@ describe("Generic downvote", () => {
     obj.upvoters = [];
     obj.downvoters = [];
     obj.votes = 0;
-  });
-
-  afterEach(async () => {
-    await User.deleteMany({});
   });
 
   it("handles standard downvote", async () => {
