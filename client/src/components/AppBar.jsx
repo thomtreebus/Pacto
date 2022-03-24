@@ -63,7 +63,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 
 function NotificationCard({ notification }){
 	return (
-		<Card sx={{ width: '100%', padding: '100', marginTop: '18px'}}>
+		<Card sx={{ width: '20px', padding: '100', marginTop: '18px'}}>
 			{notification.text}
 			{notification.time}
 		</Card>
