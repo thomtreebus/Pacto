@@ -1,6 +1,7 @@
 const Pact = require("../../models/Pact");
 const User = require("../../models/User");
 const University = require("../../models/University");
+const Post = require("../../models/Post");
 const Link = require("../../models/Link");
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
@@ -10,11 +11,11 @@ const { generateTestUser, getDefaultTestUserEmail } = require("../fixtures/gener
 const { generateTestPact, getTestPactId } = require("../fixtures/generateTestPact");
 const { generateTestPost, getTestPostId } = require("../fixtures/generateTestPost");
 const { createToken } = require("../../controllers/authController");
-const { PACT_MESSAGES, MESSAGES } = require("../../helpers/messages");
+const { MESSAGES } = require("../../helpers/messages");
 const { rest } = require("msw");
 const { setupServer } = require("msw/node");
 
-describe("GET /pact/:id", () =>{
+describe("GET /feed", () =>{
   const server = setupServer(
 		rest.post(`${process.env.LINKPREVIEW_URL}`, (req, res, ctx) => {
 			return res(
@@ -57,66 +58,34 @@ describe("GET /pact/:id", () =>{
     await Pact.deleteMany({});
 		await University.deleteMany({});
     await Link.deleteMany({});
+    await Post.deleteMany({});
 	});
 
   // Tests
-  it("returns appropriate error when id invalid", async () =>{
+  it("returns posts for pacts a user is member of in order by date/time", async () => {
     const user = await User.findOne({ uniEmail: getDefaultTestUserEmail() });
-
+    const post = await Post.findOne({ id: getTestPostId });
     const token = createToken(user._id);
-    const id = "gibberish";
 
     const response = await supertest(app)
-      .get("/pact/"+id)
-      .set("Cookie", [`jwt=${token}`])
-      .expect(404);
-
-    expect(response.body.errors[0].message).toBe("Pact not found");
-  });  
-
-  it("returns pact relating to id given", async () =>{
-    const user = await User.findOne({ uniEmail: getDefaultTestUserEmail() });
-
-    const token = createToken(user._id);
-    const id = await getTestPactId();
-
-    const response = await supertest(app)
-      .get("/pact/"+id.toString())
+      .get("/feed")
       .set("Cookie", [`jwt=${token}`])
       .expect(200);
 
     expect(response.body.message).toBeDefined();
-  });  
+    expect(response.body.message.length).toBe(2);    
+  })
 
   it("uses checkAuthenticated middleware", async () =>{
     const token = "some gibberish";
     const id = await getTestPactId();
 
     const response = await supertest(app)
-      .get("/pact/"+id.toString())
+      .get("/feed")
       .set("Cookie", [`jwt=${token}`])
       .expect(401);
 
     expect(response.body.errors[0].message).toBe(MESSAGES.AUTH.IS_NOT_LOGGED_IN);
-  });
-
-  it("returns images, titles and url's for any link posts when available", async () => {
-    const user = await User.findOne({ uniEmail: getDefaultTestUserEmail() });
-
-    const token = createToken(user._id);
-    const id = await getTestPactId();
-
-    const response = await supertest(app)
-      .get("/pact/"+id.toString())
-      .set("Cookie", [`jwt=${token}`])
-      .expect(200);
-
-    response.body.message.posts.forEach((post) => {
-      if (post.type === "link") {
-        expect(post.text).toBe("Google")
-        expect(post.image).toBe("https://www.google.com/images/logo.png")
-      }
-    })
   });
 
   it("returns just url's for any link posts when a preview couldn't be fetched", async () => {
@@ -134,11 +103,11 @@ describe("GET /pact/:id", () =>{
     const id = await getTestPactId();
 
     const response = await supertest(app)
-      .get("/pact/"+id.toString())
+      .get("/feed")
       .set("Cookie", [`jwt=${token}`])
       .expect(200);
 
-    response.body.message.posts.forEach((post) => {
+    response.body.message.forEach((post) => {
       if (post.type === "link") {
         expect(post.text).toBe("")
         expect(post.image).toBe(undefined)

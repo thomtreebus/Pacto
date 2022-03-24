@@ -59,13 +59,13 @@ describe("EditPact Tests", () => {
     server.resetHandlers();
   });
 
-  beforeEach(async () => {
-    history = createMemoryHistory({initialEntries:[`/pact/${testPact._id}/edit-pact`]})
+  const renderWithMock = async () => {
+    history = createMemoryHistory({initialEntries: [`/pact/${testPact._id}/edit-pact`]})
     render(
       <MockComponent>
         <Router history={history}>
           <Route exact path="/pact/:pactId/edit-pact">
-            <EditPact />
+            <EditPact/>
           </Route>
           <Route exact path="/pact/:pactId">
             <h1>Redirected to pact</h1>
@@ -77,9 +77,14 @@ describe("EditPact Tests", () => {
       </MockComponent>
     );
     await waitForElementToBeRemoved(() => screen.getByText("Loading"));
-  });
+  }
 
   describe("Check elements are rendered", () => {
+
+    beforeEach(async () => {
+      await renderWithMock();
+    });
+
     it("should render the Pacto icon element", async () => {
       const avatarElement = await screen.findByAltText("Pacto Icon");
       expect(avatarElement).toBeInTheDocument();
@@ -121,6 +126,10 @@ describe("EditPact Tests", () => {
 
   describe("Check interaction with elements", () => {
 
+    beforeEach(async () => {
+      await renderWithMock();
+    });
+
     it("should be able to type into name field", async () => {
       const inputElementDiv = await screen.findByTestId("pact-name");
       const inputElement = inputElementDiv.querySelector("input");
@@ -161,7 +170,6 @@ describe("EditPact Tests", () => {
         await waitFor( () => expect(history.location.pathname).toBe("/pact/1"))
         await waitFor(() => screen.findByText("Redirected to pact"));
       });
-
     });
 
     it("should return error when invalid Pact name is entered and Edit Pact button is pressed with invalid input", async () => {
@@ -300,5 +308,67 @@ describe("EditPact Tests", () => {
         });
       });
     });
+
+    it("error during image upload doesn't update profile image shown", async () => {
+      server.use(
+        rest.post(`https://api.cloudinary.com/v1_1/${process.env.REACT_APP_CLOUDINARY_CLOUD_NAME}/image/upload`, (req, res, ctx) => {
+          return res(
+            ctx.status(404),
+            ctx.json({}),
+          );
+        })
+      );
+
+      const image = new File(['testImage'], 'testImage.png', {type: 'image/png'});
+      const previousImage = (await screen.findByAltText("Pact Picture")).getAttribute('src');
+
+      const buttonElement = await screen.findByTestId(
+        "image-upload-input"
+      );
+
+      await act(async () => {
+        await waitFor(() => userEvent.upload(buttonElement, image));
+        await waitFor(() => {
+          const updatedImage = (screen.getByAltText("Pact Picture")).getAttribute('src');
+          expect(previousImage === updatedImage).toBe(true);
+        });
+      });
+    });
+
+  });
+
+  describe("Check Redirects ", () => {
+    it("Redirects to pact if not a moderator", async () => {
+      server.use(
+        rest.get(`${process.env.REACT_APP_URL}/me`, (req, res, ctx) => {
+          return res(
+            ctx.json({
+              message: {
+                firstName: "pac",
+                lastName: "to",
+                _id: 2,
+              }, errors: []
+            })
+          );
+        }));
+      await renderWithMock();
+
+      await waitFor(() => screen.findByText("Redirected to pact"));
+      expect(history.location.pathname).toBe("/pact/1");
+    })
+
+    it("Redirects to not-found if failed to fetch pact", async () => {
+      server.use(
+        rest.get(`${process.env.REACT_APP_URL}/pact/1`, (req, res, ctx) => {
+          return res(
+            ctx.status(404),
+            ctx.json({ message: testPact, errors: [] })
+          )
+        }));
+      await renderWithMock();
+
+      await waitFor(() => screen.findByText("Redirected to not-found"));
+      expect(history.location.pathname).toBe("/not-found");
+    })
   });
 });

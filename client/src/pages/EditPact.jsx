@@ -1,4 +1,3 @@
-import * as React from "react";
 import {ButtonBase, Card, Grid, Typography} from "@mui/material";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
@@ -15,20 +14,17 @@ import ErrorMessage from "../components/ErrorMessage";
 import {LoadingButton} from "@mui/lab";
 import {styled} from "@mui/material/styles";
 import Loading from "./Loading";
+import UploadIcon from '@mui/icons-material/Upload';
 import {useAuth} from "../providers/AuthProvider";
 
-function SaveIcon() {
-  return null;
-}
-
-const Input = styled('input')({
-  display: 'none',
+const Input = styled("input")({
+  display: "none",
 });
 
 
 export default function EditPact() {
-  const [isButtonDisabled, setIsButtonDisabled] = React.useState(false);
-  const {user} = useAuth();
+  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
+  const {user, setUser} = useAuth();
   const {pactId} = useParams();
   const history = useHistory();
   const defaultData = {
@@ -38,20 +34,20 @@ export default function EditPact() {
     image: ""
   };
 
-  const [isLoading, setIsLoading] = React.useState(true);
+  const [isLoading, setIsLoading] = useState(true);
 
   const [name, setName] = useState(defaultData.name)
   const [category, setCategory] = useState(defaultData.category)
   const [description, setDescription] = useState(defaultData.description)
   const [image, setImage] = useState(defaultData.image)
 
-  const [apiPactNameError, setApiPactNameError] = React.useState('');
-  const [apiPactCategoryError, setApiPactCategoryError] = React.useState('');
-  const [apiPactDescriptionError, setApiPactDescriptionError] = React.useState('');
-  const [uploadImageError, setUploadImageError] = React.useState('')
+  const [apiPactNameError, setApiPactNameError] = useState("");
+  const [apiPactCategoryError, setApiPactCategoryError] = useState("");
+  const [apiPactDescriptionError, setApiPactDescriptionError] = useState("");
+  const [snackBarError, setSnackBarError] = useState("")
 
-  const [uploadImageIsDisabled, setUploadImageIsDisabled] = React.useState(false);
-  const [snackbarOpen, setSnackbarOpen] = React.useState(false);
+  const [uploadImageIsDisabled, setUploadImageIsDisabled] = useState(false);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   const uploadImage = async (newImage) => {
     setUploadImageIsDisabled(true);
@@ -66,7 +62,7 @@ export default function EditPact() {
       setImage(res.data.url);
       setSnackbarOpen(false)
     } catch (err) {
-      setUploadImageError("Error uploading image")
+      setSnackBarError("Error uploading image")
       setSnackbarOpen(true)
     }
     setUploadImageIsDisabled(false);
@@ -95,7 +91,9 @@ export default function EditPact() {
         setImage(data.image)
         setIsLoading(false);
       }).catch((err) => {
-        console.log(err);
+        setSnackBarError(err)
+        setSnackbarOpen(true)
+        return history.push(`/not-found`);
       })
     }
   }, [pactId, user, history])
@@ -105,9 +103,9 @@ export default function EditPact() {
     event.preventDefault();
     setIsButtonDisabled(true);
 
-    setApiPactNameError('');
-    setApiPactCategoryError('');
-    setApiPactDescriptionError('');
+    setApiPactNameError("");
+    setApiPactCategoryError("")
+    setApiPactDescriptionError("");
 
     const response = await fetch(`${process.env.REACT_APP_URL}/pact/${pactId}`, {
       method: "PUT",
@@ -126,7 +124,7 @@ export default function EditPact() {
 
     const json = await response.json();
 
-    Object.values(json['errors']).forEach(err => {
+    Object.values(json["errors"]).forEach(err => {
       const field = err["field"];
       const message = err["message"];
 
@@ -145,49 +143,64 @@ export default function EditPact() {
 
 
     if (response.status === 200) {
-      return history.push(`/pact/${pactId}`);
+      history.push(`/pact/${pactId}`);
+      let newUser = Object.assign({}, user);
+      setUser(newUser);
     }
 
   };
 
-  if (isLoading) {
-    return <Loading/>;
-  } else {
-    return (
-      <>
-        <Card
-          sx={{
-            padding: "40px",
-            margin: "auto",
-          }}
+  if (isLoading) { return <Loading/>; }
+
+  return (
+    <>
+      <Card
+        sx={{
+          padding: "30px",
+          margin: "auto",
+        }}
+      >
+        <Grid
+          container
+          direction="row"
+          justifyContent="center"
+          alignItems="center"
         >
-          <Grid container
-                direction="row"
-                justifyContent="center"
-                alignItems="center"
-                spacing={1}>
-            <Grid item xs={3}>
-              <Card sx={{padding: "10px", margin: "auto"}}>
-                <label htmlFor="contained-button-file">
-                  <Input
-                    accept="image/*"
-                    id="contained-button-file"
-                    data-testid="image-upload-input"
-                    disabled={uploadImageIsDisabled}
-                    sx={{display: "none"}}
-                    type="file"
-                    onChange={(e) => {
-                      uploadImage(e.target.files[0])
-                    }}/>
+          <Grid container item xs={12} justifyContent="center" alignItems="center">
+            <Avatar alt="Pacto Icon" src={Icon}/>
+          </Grid>
+          <Grid container item xs={12} justifyContent="center" alignItems="center">
+            <Typography component="h1" variant="h5" sx={{fontWeight: "bold"}}>
+              Edit Pact
+            </Typography>
+          </Grid>
+        </Grid>
+        <Grid container
+              item
+              direction="row"
+              justifyContent="space-evenly"
+              alignItems="center"
+              xs={12}
+              spacing={1}>
+          <Grid item xs={8} lg={3}>
+            <Card sx={{padding: "10px", margin: "auto"}}>
+              <label htmlFor="contained-button-file">
+                <Input
+                  accept="image/*"
+                  id="contained-button-file"
+                  data-testid="image-upload-input"
+                  disabled={uploadImageIsDisabled}
+                  sx={{display: "none"}}
+                  type="file"
+                  onChange={(e) => {
+                    uploadImage(e.target.files[0])
+                  }}/>
+                <Grid container justifyContent="center">
                   <ButtonBase
                     label="Upload Image"
                     variant="contained"
                     disabled={uploadImageIsDisabled}
                     component="span"
-                    sx={{
-                      marginTop: 1
-                    }}
-
                   >
                     <Image
                       style={{
@@ -198,126 +211,133 @@ export default function EditPact() {
                         overflow: "hidden",
                         position: "relative",
                       }}
-                      alt="Profile Picture"
+                      alt="Pact Picture"
                       cloudName={`${process.env.REACT_APP_CLOUDINARY_CLOUD_NAME}`}
                       publicID={image}
                     >
                     </Image>
                   </ButtonBase>
-                  <LoadingButton
-                    loading={uploadImageIsDisabled}
-                    loadingPosition="start"
-                    startIcon={<SaveIcon/>}
-                    fullWidth
-                    label="Upload Image"
-                    variant="contained"
-                    disabled={uploadImageIsDisabled}
-                    component="span"
-                    sx={{
-                      marginTop: 1
-                    }}
-                  >
-                    Upload Image
-                  </LoadingButton>
-                </label>
-              </Card>
+                </Grid>
 
-            </Grid>
-            <Grid item xs>
-              <Box
-                sx={{
-                  // height: "calc(100vh - 68.5px)",
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  // backgroundColor: "white",
-                  paddingInline: "50px",
-                  // paddingBlock: "10px",
-                  // marginTop: "68.5px"
-                }}
-              >
-                <Avatar alt="Pacto Icon" src={Icon}/>
-
-                <Typography component="h1" variant="h5" sx={{fontWeight: "bold"}}>
-                  Edit Pact
-                </Typography>
-                <Box
-                  component="form"
-                  noValidate
-                  onSubmit={handleSubmit}
-                  sx={{mt: 1}}
+                <LoadingButton
+                  loading={uploadImageIsDisabled}
+                  loadingPosition="start"
+                  startIcon={<UploadIcon/>}
+                  fullWidth
+                  label="Upload Image"
+                  variant="contained"
+                  disabled={uploadImageIsDisabled}
+                  component="span"
+                  sx={{
+                    marginTop: 1
+                  }}
                 >
-                  <TextField
-                    margin="normal"
-                    required
-                    fullWidth
-                    label="Pact Name"
-                    data-testid="pact-name"
-                    id="name"
-                    name="name"
-                    error={apiPactNameError.length !== 0}
-                    helperText={apiPactNameError}
-                    autoFocus
-                    value={name}
-                    onChange={(e) => {
-                      setName(e.target.value)
-                    }}
-                  />
+                  Upload Image
+                </LoadingButton>
+              </label>
+            </Card>
 
-                  <TextField
-                    data-testid='category-select'
-                    alignitems='center'
-                    margin="normal"
-                    required
-                    fullWidth
-                    id="category"
-                    name="category"
-                    label="Category"
-                    error={apiPactCategoryError.length !== 0}
-                    helperText={apiPactCategoryError}
-                    value={category}
-                    onChange={(e) => {
-                      setCategory(e.target.value)
-                    }}
-                  >
-                  </TextField>
-
-                  <TextField
-                    name="description"
-                    margin="normal"
-                    id="description"
-                    label="Description"
-                    required
-                    fullWidth
-                    multiline
-                    rows={4}
-                    error={apiPactDescriptionError.length !== 0}
-                    helperText={apiPactDescriptionError}
-                    value={description}
-                    onChange={(e) => {
-                      setDescription(e.target.value)
-                    }}
-                  />
-                  <Button
-                    type="submit"
-                    fullWidth
-                    variant="contained"
-                    disabled={isButtonDisabled}
-                    sx={{mt: 3, mb: 2}}
-                  >
-                    Edit Pact
-                  </Button>
-                </Box>
-              </Box>
-            </Grid>
-            <ErrorMessage
-              isOpen={snackbarOpen}
-              setIsOpen={setSnackbarOpen}
-              message={uploadImageError}
-            />
           </Grid>
-        </Card>
-      </>
-    );
-  }
+          <Grid item xs={12} lg={6}>
+            <Box
+              sx={{
+                // height: "calc(100vh - 68.5px)",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                // backgroundColor: "white",
+                paddingInline: "10px",
+                // paddingBlock: "10px",
+                // marginTop: "68.5px"
+              }}
+              lg={{
+                // height: "calc(100vh - 68.5px)",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                // backgroundColor: "white",
+                paddingInline: "50px",
+                // paddingBlock: "10px",
+                // marginTop: "68.5px"
+              }}
+            >
+
+              <Box
+                component="form"
+                noValidate
+                onSubmit={handleSubmit}
+                sx={{mt: 1}}
+              >
+                <TextField
+                  margin="normal"
+                  required
+                  fullWidth
+                  label="Pact Name"
+                  data-testid="pact-name"
+                  id="name"
+                  name="name"
+                  error={apiPactNameError.length !== 0}
+                  helperText={apiPactNameError}
+                  autoFocus
+                  value={name}
+                  onChange={(e) => {
+                    setName(e.target.value)
+                  }}
+                />
+
+                <TextField
+                  data-testid="category-select"
+                  alignitems="center"
+                  margin="normal"
+                  required
+                  fullWidth
+                  id="category"
+                  name="category"
+                  label="Category"
+                  error={apiPactCategoryError.length !== 0}
+                  helperText={apiPactCategoryError}
+                  value={category}
+                  onChange={(e) => {
+                    setCategory(e.target.value)
+                  }}
+                >
+                </TextField>
+
+                <TextField
+                  name="description"
+                  margin="normal"
+                  id="description"
+                  label="Description"
+                  required
+                  fullWidth
+                  multiline
+                  rows={4}
+                  error={apiPactDescriptionError.length !== 0}
+                  helperText={apiPactDescriptionError}
+                  value={description}
+                  onChange={(e) => {
+                    setDescription(e.target.value)
+                  }}
+                />
+                <Button
+                  type="submit"
+                  fullWidth
+                  variant="contained"
+                  disabled={isButtonDisabled}
+                  sx={{mt: 3, mb: 2}}
+                >
+                  Edit Pact
+                </Button>
+              </Box>
+            </Box>
+          </Grid>
+          <ErrorMessage
+            isOpen={snackbarOpen}
+            setIsOpen={setSnackbarOpen}
+            message={snackBarError}
+          />
+        </Grid>
+      </Card>
+    </>
+  );
 }

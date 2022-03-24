@@ -4,12 +4,11 @@ const User = require("../models/User");
 const Post = require("../models/Post");
 const {jsonResponse, jsonError} = require("../helpers/responseHandlers");
 const handleFieldErrors = require('../helpers/errorHandler');
-const { MESSAGES, PACT_MESSAGES } = require("../helpers/messages")
+const { MESSAGES, PACT_MESSAGES } = require("../helpers/messages");
+const getPreview = require("../helpers/LinkCache");
 
 // POST pact
 module.exports.pactPost = async (req, res) => {
-	let jsonErrors = [];
-
 	try {
 		const user = req.user;
     const { name } = req.body;
@@ -44,14 +43,7 @@ module.exports.pactPost = async (req, res) => {
 		res.status(201).json(jsonResponse(pact, []));
 	} 
   catch (err) {
-		const allErrors = handleFieldErrors(err);
-    if(allErrors){
-			allErrors.forEach((myErr) => jsonErrors.push(myErr));
-		} 
-		else {
-			jsonErrors.push(jsonError(null, err.message));
-		}
-		res.status(400).json(jsonResponse(null, jsonErrors));
+		res.status(400).json(jsonResponse(null, handleFieldErrors(err)));
 	}
 };
 
@@ -63,6 +55,18 @@ module.exports.pactGet = async (req, res) => {
 		await pact.populate({ path: "members", model: User });
 		await pact.populate({ path: "moderators", model: User });
 		await pact.populate({ path: "posts", model: Post, populate: {path: "author", model: User}  });
+
+		for (let index = 0; index < pact.posts.length; index++) {
+			const post = pact.posts[index];
+			if (post.type === "link") {
+				const preview = await getPreview(post.link);
+				if (preview !== null) {
+					post.text = preview.text;
+					post.image = preview.image;
+				}
+			}
+		}
+
 		res.status(200).json(jsonResponse(pact, []));
 	} 
   catch (err) {
@@ -83,7 +87,7 @@ module.exports.pactPut = async(req, res) => {
 		// Checks if user can update the pact ( is a moderator )
 		if (!moderators.includes(req.user._id)){
 			status = 401
-			throw Error("You don't have permission to update this pact.");
+			throw Error(PACT_MESSAGES.NOT_MODERATOR);
 		}
 
 		const updatedPact = await Pact.findByIdAndUpdate(pact.id, { ...req.body }, { runValidators: true });

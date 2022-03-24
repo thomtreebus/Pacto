@@ -1,14 +1,14 @@
 const User = require('../models/User');
 const mongoose = require('mongoose');
 const {jsonResponse, jsonError} = require("../helpers/responseHandlers");
-const errorHandler = require("../helpers/errorHandler");
+const handleFieldErrors = require("../helpers/errorHandler");
 const University = require("../models/University");
 const {USER_MESSAGES} = require("../helpers/messages");
 
 
 module.exports.updateProfile = async(req, res) => {
   let status = undefined;
-  const jsonErrors = [];
+  let jsonErrors = [];
   let resMessage = null;
   try {
     const { id } = req.params;
@@ -18,31 +18,23 @@ module.exports.updateProfile = async(req, res) => {
     if (!mongoose.Types.ObjectId.isValid(id)) {
       status = 404;
       throw Error(USER_MESSAGES.DOES_NOT_EXIST);
-    }
-    if (req.user._id.toString() !== id.toString()) {
+    } else if (req.user._id.toString() !== id.toString()) {
       status = 401;
       throw Error(USER_MESSAGES.UPDATE_OTHER_PROFILE_UNAUTHORISED)
+    } else {
+      const updatedUser = await User.findByIdAndUpdate(id, { ...req.body }, {runValidators: true});
+      status = 200
+      const university = req.user.university;
+      resMessage = await User.findOne({university, _id: req.params.id}).populate(
+        {path: 'university', model: University}
+      );
     }
-    const updatedUser = await User.findByIdAndUpdate(id, { ...req.body }, {runValidators: true});
-    status = 200
-
-    const university = req.user.university;
-    resMessage = await User.findOne({university, _id: req.params.id}).populate(
-      {path: 'university', model: University}
-    );
   } catch (err) {
     // When status code is not defined use status 500
     if(!status){
       status = 500;
     }
-    // converts error array into json array.
-    const fieldErrors = errorHandler(err);
-    if(fieldErrors.length !== 0){
-      fieldErrors.forEach((myErr) => jsonErrors.push(myErr));
-    }
-    else {
-      jsonErrors.push(jsonError(null, err.message));
-    }
+    jsonErrors = [jsonError(null, err.message)];
   }
   finally {
     res.status(status).json(jsonResponse(resMessage, jsonErrors));
