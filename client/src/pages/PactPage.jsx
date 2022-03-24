@@ -1,7 +1,7 @@
-import { Fab, Grid } from "@mui/material";
+import {Fab, Grid, Typography} from "@mui/material";
 import { Box } from "@mui/system";
 import EditIcon from "@mui/icons-material/Edit";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import AboutPact from "../components/AboutPact";
 import PostList from "../components/PostList";
@@ -16,6 +16,45 @@ import { useTheme } from "@mui/material/styles";
 
 import AddIcon from "@mui/icons-material/Add";
 import { useAuth } from "../providers/AuthProvider";
+import Tabs from "@mui/material/Tabs";
+import Tab from "@mui/material/Tab";
+import PropTypes from "prop-types";
+import UserList from "../components/UserList";
+
+
+function TabPanel(props) {
+	const { children, value, index, ...other } = props;
+
+	return (
+		<div
+			role="tabpanel"
+			hidden={value !== index}
+			id={`simple-tabpanel-${index}`}
+			aria-labelledby={`simple-tab-${index}`}
+			{...other}
+		>
+			{value === index && (
+				<Box sx={{ p: 3 }}>
+					<Typography component={'div'}>{children}</Typography>
+				</Box>
+			)}
+		</div>
+	);
+}
+
+TabPanel.propTypes = {
+	children: PropTypes.node,
+	index: PropTypes.number.isRequired,
+	value: PropTypes.number.isRequired,
+};
+
+function a11yProps(index) {
+	return {
+		id: `simple-tab-${index}`,
+		'aria-controls': `simple-tabpanel-${index}`,
+	};
+}
+
 
 export default function PactPage() {
 	const { pactID } = useParams();
@@ -27,6 +66,9 @@ export default function PactPage() {
 	const [open, setOpen] = useState(false);
 	const theme = useTheme();
 	const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
+	const [tabValue, setTabValue] = useState(0);
+
+	const [allPactMembers, setAllPactMembers] = useState(null);
 
 	const handleClickOpen = () => {
 		setOpen(true);
@@ -35,6 +77,11 @@ export default function PactPage() {
 	const handleClose = () => {
 		setOpen(false);
 	};
+
+	const handleTabChange = (event, newValue) => {
+		setTabValue(newValue);
+	};
+	
 
 	useEffect(() => {
 		fetch(`${process.env.REACT_APP_URL}/pact/${pactID}`, {
@@ -49,6 +96,8 @@ export default function PactPage() {
 			})
 			.then((data) => {
 				setPact(data.message);
+				console.log(data.message.members)
+				setAllPactMembers(data.message.members)
 				setIsLoading(false);
 				const moderators = data.message.moderators.flatMap((user) => user._id);
 				if (moderators.includes(user._id)) {
@@ -65,62 +114,71 @@ export default function PactPage() {
 	return (
 		<>
 			{isLoading && <Loading />}
-			<Grid container width="100%" justifyContent="center">
-				<Grid item xs={12} lg={8} xl={7}>
-					{pact && <PostList posts={pact.posts} />}
-				</Grid>
-				<Grid item lg={4} xl={3}>
-					<Box
-						sx={{ paddingTop: "16px", paddingRight: "16px" }}
-						display={{ xs: "none", lg: "block" }}
-						position={"sticky"}
-						top={65}
-					>
-						{pact && <AboutPact pact={pact} />}
+			<Tabs value={tabValue} onChange={handleTabChange} aria-label="User type tab">
+				<Tab label="Pact Posts" {...a11yProps(0)} />
+				<Tab label="Pact Members" {...a11yProps(1)} />
+			</Tabs>
+			<TabPanel value={tabValue} index={0} >
+				<Grid container width="100%" justifyContent="center">
+					<Grid item xs={12} lg={8} xl={7}>
+						{pact && <PostList posts={pact.posts} />}
+					</Grid>
+					<Grid item lg={4} xl={3}>
+						<Box
+							sx={{ paddingTop: "16px", paddingRight: "16px" }}
+							display={{ xs: "none", lg: "block" }}
+							position={"sticky"}
+							top={65}
+						>
+							{pact && <AboutPact pact={pact} />}
 
-						<Box position={"absolute"} bottom={-16} right={20}>
-							{isMod && (
+							<Box position={"absolute"} bottom={-16} right={20}>
+								{isMod && (
+									<Fab
+										onClick={() => {
+											history.push(`/pact/${pactID}/edit-pact`);
+										}}
+										size="medium"
+										padding="0 8px"
+										data-testid="edit-pact-button"
+									>
+										<EditIcon color="primary" />
+									</Fab>
+								)}
 								<Fab
-									onClick={() => {
-										history.push(`/pact/${pactID}/edit-pact`);
-									}}
+									color="primary"
+									aria-label="add"
 									size="medium"
-									padding="0 8px"
-									data-testid="edit-pact-button"
+									onClick={handleClickOpen}
 								>
-									<EditIcon color="primary" />
+									<AddIcon />
 								</Fab>
-							)}
-							<Fab
-								color="primary"
-								aria-label="add"
-								size="medium"
-								onClick={handleClickOpen}
-							>
-								<AddIcon />
-							</Fab>
+							</Box>
 						</Box>
-					</Box>
+					</Grid>
 				</Grid>
-			</Grid>
-			<Box position={"fixed"} bottom={50} right={300}>
-				<Dialog
-					fullScreen={fullScreen}
-					open={open}
-					onClose={handleClose}
-					aria-labelledby="responsive-dialog-title"
-					fullWidth
-					maxWidth="sm"
-					data-testid="dialog"
-				>
-					<DialogTitle id="responsive-dialog-title">
-						{"Create Post"}
-					</DialogTitle>
-					<DialogContent>
-						<CreatePostCard pactID={pactID} />
-					</DialogContent>
-				</Dialog>
-			</Box>
+				<Box position={"fixed"} bottom={50} right={300}>
+					<Dialog
+						fullScreen={fullScreen}
+						open={open}
+						onClose={handleClose}
+						aria-labelledby="responsive-dialog-title"
+						fullWidth
+						maxWidth="sm"
+						data-testid="dialog"
+					>
+						<DialogTitle id="responsive-dialog-title">
+							{"Create Post"}
+						</DialogTitle>
+						<DialogContent>
+							<CreatePostCard pactID={pactID} />
+						</DialogContent>
+					</Dialog>
+				</Box>
+			</TabPanel>
+			<TabPanel value={tabValue} index={1}>
+				<UserList users={allPactMembers}/>
+			</TabPanel>
 		</>
 	);
 }
