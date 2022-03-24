@@ -51,10 +51,30 @@ module.exports.pactPost = async (req, res) => {
 module.exports.pactGet = async (req, res) => {
 	try {
 		const pact = req.pact;
-		await pact.populate({ path: 'university', model: University });
-		await pact.populate({ path: "members", model: User });
-		await pact.populate({ path: "moderators", model: User });
-		await pact.populate({ path: "posts", model: Post, populate: {path: "author", model: User}  });
+		await pact.populate({
+			path: 'university',
+			model: University,
+			select: ["name"]
+		});
+		await pact.populate({
+			path: "members",
+			model: User,
+			select: ["firstName", "lastName", "course", "university"]
+		});
+		await pact.populate({
+			path: "moderators",
+			model: User,
+			select: ["firstName", "lastName", "course", "university"]
+		});
+		await pact.populate({
+			path: "posts",
+			model: Post,
+			populate: {
+				path: "author",
+				model: User,
+				select: ["firstName", "lastName", "course", "university"]
+			}
+		});
 
 		for (let index = 0; index < pact.posts.length; index++) {
 			const post = pact.posts[index];
