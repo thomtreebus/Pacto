@@ -39,6 +39,9 @@ module.exports.acceptFriendRequest = async (req, res) => {
   let friendRequest = null;
   try {
     friendRequest = await FriendRequest.findById(id);
+    if(!friendRequest) {
+      throw Error(FRIEND_MESSAGES.REQUEST.NOT_FOUND);
+    }
     try {
       if(friendRequest.recipient.toString() === recipient._id.toString()) {
         const requestor = await User.findById(friendRequest.requestor);
@@ -73,6 +76,9 @@ module.exports.rejectFriendRequest = async (req, res) => {
   let friendRequest = null;
   try {
     friendRequest = await FriendRequest.findById(id);
+    if(!friendRequest) {
+      throw Error(FRIEND_MESSAGES.REQUEST.NOT_FOUND);
+    }
     try {
       if(friendRequest.recipient.toString() === recipient._id.toString()) {
         const requestor = await User.findById(friendRequest.requestor);
