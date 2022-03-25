@@ -17,7 +17,7 @@ const errorHandler = (err) => {
     fieldErrors.push(jsonError(field, getUniqueError(field)));
 	}
 
-  if (err.message.includes('validation failed')) {
+  if (err.message.toLowerCase().includes('validation failed')){
     Object.values(err.errors).forEach((properties) => {
       fieldErrors.push(jsonError(properties.path, properties.message));
     });

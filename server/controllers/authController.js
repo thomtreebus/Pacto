@@ -1,4 +1,5 @@
 const User = require("../models/User");
+const FriendRequest = require('../models/FriendRequest');
 const EmailVerificationCode = require("../models/EmailVerificationCode");
 const { handleVerification } = require("../helpers/emailHandlers");
 const jwt = require("jsonwebtoken");
@@ -126,6 +127,9 @@ module.exports.loginPost = async (req, res) => {
 		// Generate cookie to log in user
 		const token = createToken(user._id);
 		res.cookie("jwt", token, { httpOnly: true, maxAge: COOKIE_MAX_AGE * 1000 });
+		await user.populate({path: 'university', model: University});
+    await user.populate({path: 'sentRequests', model: FriendRequest});
+    await user.populate({path: 'receivedRequests', model: FriendRequest});
 		res.status(200).json(jsonResponse({ user }, []));
 	} 
   catch (err) {

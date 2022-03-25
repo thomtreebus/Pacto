@@ -1,19 +1,12 @@
-const mongoose = require("mongoose");
-const dotenv = require("dotenv");
 const supertest = require("supertest");
-const bcrypt = require("bcrypt");
 const app = require("../../app");
 const { createToken } = require("../../controllers/authController");
 const { generateTestUser, getDefaultTestUserEmail, generateCustomUniTestUser} = require("../fixtures/generateTestUser");
 const { generateTestPact, getTestPactId } = require("../fixtures/generateTestPact");
 const { MESSAGES, PACT_MESSAGES, POST_MESSAGES } = require("../../helpers/messages");
-const { jsonResponse } = require("../../helpers/responseHandlers");
-const University = require('../../models/University');
 const User = require("../../models/User");
 const Pact = require('../../models/Pact');
-const Post = require('../../models/Post');
-
-dotenv.config();
+const useTestDatabase = require("../helpers/useTestDatabase");
 
 // Magic values
 const TITLE = "My post";
@@ -28,13 +21,7 @@ const LINK = "https://examplelink.com";
 const DEFAULT_TYPE = TEXT_TYPE;
 
 describe("POST /pact/:pactId/post", () => {
-  beforeAll(async () => {
-    await mongoose.connect(process.env.TEST_DB_CONNECTION_URL);
-  });
-
-  afterAll(async () => {
-    await mongoose.connection.close();
-  });
+  useTestDatabase("createPost");
 
   beforeEach(async () => {
     const user = await generateTestUser();
@@ -43,13 +30,6 @@ describe("POST /pact/:pactId/post", () => {
     // Makes user a member and mod of pact
     const pact = await generateTestPact(user);
     await pact.save();
-  });
-
-  afterEach(async () => {
-    await User.deleteMany({});
-    await Post.deleteMany({});
-    await Pact.deleteMany({});
-    await University.deleteMany({});
   });
 
   it("can create post with valid pact id and user part of pact", async () => {

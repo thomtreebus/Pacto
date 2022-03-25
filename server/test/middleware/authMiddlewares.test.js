@@ -1,33 +1,15 @@
-const mongoose = require("mongoose");
-const dotenv = require("dotenv");
 const supertest = require("supertest");
-const bcrypt = require("bcrypt");
 const app = require("../../app");
-
 const { checkAuthenticated } = require("../../middleware/authMiddleware");
 const { checkNotAuthenticated } = require("../../middleware/notAuthMiddleware");
 const { jsonResponse } = require("../../helpers/responseHandlers");
 const { createToken } = require("../../controllers/authController");
-const University = require('../../models/University');
 const { MESSAGES } = require("../../helpers/messages");
 const { generateTestUser } = require("../fixtures/generateTestUser");
-const User = require("../../models/User");
-
-dotenv.config();
+const useTestDatabase = require("../helpers/useTestDatabase");
 
 describe("Auth Middlewares", () => {
-  beforeAll(async () => {
-    await mongoose.connect(process.env.TEST_DB_CONNECTION_URL);
-  });
-
-  afterAll(async () => {
-    await mongoose.connection.close();
-  });
-
-  afterEach(async () => {
-    await User.deleteMany({});
-    await University.deleteMany({});
-  });
+  useTestDatabase("authMiddleWare");
 
   describe("Authentication Middleware", () => {
     app.get("/mockRoute", checkAuthenticated, function (req, res) {
