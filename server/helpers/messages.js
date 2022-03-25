@@ -81,7 +81,7 @@ module.exports.PACT_MESSAGES = {
 	SUCCESSFUL_PROMOTION: "Member has been promoted to moderator",
 	LEAVE: {
 		SUCCESSFUL: "Successfully left the pact",
-		ONLY_MEMBER: "You are the only member, you must delete the pact",
+		ALONE: "You are alone in the pact, so you must delete it to leave",
 		ONLY_MODERATOR: "You are the only moderator, make at least one new moderator to be able to leave",
 	},
 	DELETE: {

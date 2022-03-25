@@ -221,7 +221,7 @@ module.exports.leavePact = async (req, res) => {
 		const pact = await Pact.findById(req.params.pactId);
 
 		if(pact.members.length === 1) {
-			res.status(404).json(jsonResponse(null, [jsonError(null, PACT_MESSAGES.LEAVE.ONLY_MEMBER)]));
+			res.status(404).json(jsonResponse(null, [jsonError(null, PACT_MESSAGES.LEAVE.ALONE)]));
 		} else if(pact.moderators.length === 1 && pact.moderators[0]._id.toString() === user._id.toString()) {
 			res.status(404).json(jsonResponse(null, [jsonError(null, PACT_MESSAGES.LEAVE.ONLY_MODERATOR)]));
 		} else {
