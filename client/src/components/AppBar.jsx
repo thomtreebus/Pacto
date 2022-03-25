@@ -63,9 +63,8 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 
 function NotificationCard({ notification }){
 	return (
-		<Card sx={{ width: '20px', padding: '100', marginTop: '18px'}}>
-			{notification.text}
-			{notification.time}
+		<Card sx={{ width: '300px', padding: '100', marginTop: '18px'}}>
+			{notification}
 		</Card>
 	)
 }
@@ -98,6 +97,10 @@ export default function PrimarySearchAppBar({ handleDrawerToggle }) {
 		history.push("login");
 	};
 
+
+	/**
+	 * Profile Menu
+	 */
 	const handleProfileMenuOpen = (event) => {
 		setProfileAnchorEl(event.currentTarget);
 	};
@@ -116,6 +119,9 @@ export default function PrimarySearchAppBar({ handleDrawerToggle }) {
 		handleProfileMenuClose();
 	};
 
+	/**
+	 * Notifications Menu
+	 */
 	const handleNotificationsMenuOpen = (event) => {
 		setNotificationsAnchorEl(event.currentTarget);
 	};
@@ -164,20 +170,20 @@ export default function PrimarySearchAppBar({ handleDrawerToggle }) {
 			data-testid={notificationsMenuId}
 			anchorEl={notificationsAnchorEl}
 			anchorOrigin={{
-				vertical: "middle",
+				vertical: "top",
 				horizontal: "right",
 			}}
 			id={notificationsMenuId}
 			keepMounted
 			transformOrigin={{
-				vertical: "middle",
+				vertical: "top",
 				horizontal: "right",
 			}}
 			open={isNotificationsMenuOpen}
 			onClose={handleNotificationsMenuClose}
 		>
 			{user.notifications.map((notification) => (
-				<NotificationCard notification={notification} />
+				<NotificationCard key="{notification}" notification={notification} />
 			))}
 		</Menu>
 	)
