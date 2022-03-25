@@ -13,13 +13,19 @@ dotenv.config();
 function useTestDatabase(key = "") {
 	beforeAll(async () => {
 		await mongoose.connect(`${process.env.TEST_DB_CONNECTION_URL}${key}`);
+		await clearDatabase();
 	});
 
 	afterAll(async () => {
+		await clearDatabase();
 		await mongoose.connection.close();
 	});
 
 	afterEach(async () => {
+		await clearDatabase();
+	});
+
+	async function clearDatabase() {
 		await User.deleteMany({});
 		await Pact.deleteMany({});
 		await University.deleteMany({});
@@ -27,7 +33,7 @@ function useTestDatabase(key = "") {
 		await Comment.deleteMany({});
 		await EmailVerificationCode.deleteMany({});
 		await FriendRequest.deleteMany({});
-	});
+	}
 }
 
 module.exports = useTestDatabase;
