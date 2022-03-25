@@ -1,10 +1,5 @@
-const Pact = require("../../models/Pact");
 const User = require("../../models/User");
-const University = require("../../models/University");
 const Post = require("../../models/Post");
-const Link = require("../../models/Link");
-const mongoose = require("mongoose");
-const dotenv = require("dotenv");
 const supertest = require("supertest");
 const app = require("../../app");
 const { generateTestUser, getDefaultTestUserEmail } = require("../fixtures/generateTestUser");
@@ -14,6 +9,7 @@ const { createToken } = require("../../controllers/authController");
 const { MESSAGES } = require("../../helpers/messages");
 const { rest } = require("msw");
 const { setupServer } = require("msw/node");
+const useTestDatabase = require("../helpers/useTestDatabase");
 
 describe("GET /feed", () =>{
   const server = setupServer(
@@ -28,15 +24,7 @@ describe("GET /feed", () =>{
 		})
 	);
 
-  beforeAll(async () => {
-    server.listen({ onUnhandledRequest: "bypass" });
-		await mongoose.connect(process.env.TEST_DB_CONNECTION_URL);
-	});
-
-	afterAll(async () => {
-    server.close();
-		await mongoose.connection.close();
-	});
+  useTestDatabase("feed");
 
   beforeEach(async () => {
     server.resetHandlers();
@@ -52,14 +40,6 @@ describe("GET /feed", () =>{
     post2 = await generateTestPost(user, pact, "randomtitle", "", "link", "http://google.com");
     await post2.save();
   });
-
-	afterEach(async () => {
-		await User.deleteMany({});
-    await Pact.deleteMany({});
-		await University.deleteMany({});
-    await Link.deleteMany({});
-    await Post.deleteMany({});
-	});
 
   // Tests
   it("returns posts for pacts a user is member of in order by date/time", async () => {

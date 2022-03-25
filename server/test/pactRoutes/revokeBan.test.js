@@ -1,29 +1,18 @@
-const mongoose = require("mongoose");
-const dotenv = require("dotenv");
 const supertest = require("supertest");
-const bcrypt = require("bcrypt");
 const app = require("../../app");
 const { createToken } = require("../../controllers/authController");
 const { generateTestUser, getDefaultTestUserEmail } = require("../fixtures/generateTestUser");
 const { generateTestPact, getTestPactId } = require("../fixtures/generateTestPact");
-const { generateTestPost, getTestPostId } = require("../fixtures/generateTestPost");
-const { jsonResponse } = require("../../helpers/responseHandlers");
 const { MESSAGES, PACT_MESSAGES } = require("../../helpers/messages");
-const University = require('../../models/University');
 const User = require("../../models/User");
 const Pact = require('../../models/Pact');
 const Notification = require('../../models/Notification');
 
 dotenv.config();
+const useTestDatabase = require("../helpers/useTestDatabase");
 
 describe("POST /post/upvote/:pactid/:id", () => {
-  beforeAll(async () => {
-    await mongoose.connect(process.env.TEST_DB_CONNECTION_URL);
-  });
-
-  afterAll(async () => {
-    await mongoose.connection.close();
-  });
+  useTestDatabase("revokeBan");
 
   beforeEach(async () => {
     const user = await generateTestUser();

@@ -1,5 +1,3 @@
-const Pact = require("../../models/Pact");
-const Post = require("../../models/Pact");
 const User = require("../../models/User");
 const Notification = require("../../models/Notification");
 const Comment = require("../../models/Comment");
@@ -13,19 +11,12 @@ const { generateTestPact, getTestPactId } = require("../fixtures/generateTestPac
 const { generateTestPost, getTestPostId } = require("../fixtures/generateTestPost");
 const { createToken } = require("../../controllers/authController");
 const { PACT_MESSAGES, MESSAGES, COMMENT_MESSAGES } = require("../../helpers/messages");
-
-dotenv.config();
+const useTestDatabase = require("../helpers/useTestDatabase");
 
 const COMMENT_TEXT = "This is my 1st comment.";
 
 describe("POST /pact/:pactId/post/:postId/comment", () =>{
-  beforeAll(async () => {
-		await mongoose.connect(process.env.TEST_DB_CONNECTION_URL);
-	});
-
-	afterAll(async () => {
-		await mongoose.connection.close();
-	});
+  useTestDatabase("createComment");
 
   beforeEach(async () => {
     const user = await generateTestUser();
@@ -35,14 +26,6 @@ describe("POST /pact/:pactId/post/:postId/comment", () =>{
     const pact = await generateTestPact(user);
     await generateTestPost(user, pact);
   });
-
-	afterEach(async () => {
-		await User.deleteMany({});
-    await Pact.deleteMany({});
-		await University.deleteMany({});
-    await Post.deleteMany({});
-    await Comment.deleteMany({});
-	});
 
   const sendRequest = async (token, text, expStatus) => {
     const response = await supertest(app)

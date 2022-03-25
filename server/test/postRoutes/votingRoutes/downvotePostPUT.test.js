@@ -1,29 +1,16 @@
-const mongoose = require("mongoose");
-const dotenv = require("dotenv");
 const supertest = require("supertest");
-const bcrypt = require("bcrypt");
 const app = require("../../../app");
 const { createToken } = require("../../../controllers/authController");
 const { generateTestUser, getDefaultTestUserEmail} = require("../../fixtures/generateTestUser");
 const { generateTestPact, getTestPactId } = require("../../fixtures/generateTestPact");
 const { generateTestPost, getTestPostId } = require("../../fixtures/generateTestPost");
-const { jsonResponse } = require("../../../helpers/responseHandlers");
 const { MESSAGES, PACT_MESSAGES } = require("../../../helpers/messages");
 const User = require("../../../models/User");
-const Pact = require('../../../models/Pact');
 const Post = require('../../../models/Post');
-const University = require('../../../models/University');
-
-dotenv.config();
+const useTestDatabase = require("../../helpers/useTestDatabase");
 
 describe("PUT /pact/:pactId/post/downvote/:postId", () => {
-  beforeAll(async () => {
-    await mongoose.connect(process.env.TEST_DB_CONNECTION_URL);
-  });
-
-  afterAll(async () => {
-    await mongoose.connection.close();
-  });
+  useTestDatabase("downvoteComment")
 
   beforeEach(async () => {
     const user = await generateTestUser();
@@ -35,13 +22,6 @@ describe("PUT /pact/:pactId/post/downvote/:postId", () => {
     // User posts a post in the pact
     const post = await generateTestPost(user, pact);
     await post.save();
-  });
-
-  afterEach(async () => {
-    await User.deleteMany({});
-    await Post.deleteMany({});
-    await Pact.deleteMany({});
-    await University.deleteMany({});
   });
 
   const sendRequest = async (token, expStatus=200, pactId=getTestPactId(), postId=getTestPostId()) => {
