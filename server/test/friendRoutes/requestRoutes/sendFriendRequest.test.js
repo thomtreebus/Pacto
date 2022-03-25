@@ -1,4 +1,5 @@
 const User = require("../../../models/User");
+const Notification = require("../../../models/Notification");
 const FriendRequest = require("../../../models/FriendRequest");
 const app = require("../../../app");
 const supertest = require("supertest");
@@ -38,6 +39,28 @@ describe("sendFriendRequest /friends", () => {
     expect(updatedRecipient.sentRequests.length).toBe(0);
     expect(updatedRecipient.receivedRequests.length).toBe(1);
     expect(updatedRecipient.receivedRequests[0]._id.toString()).toBe(response.body.message._id);
+  });
+
+  it("notifies recipient that they have received a friend request", async () => {
+    const recipientUser = await generateCustomUniTestUser("User", "ucl");
+    const oldCount = recipientUser.notifications.length
+    const user = await User.findOne({ uniEmail: getDefaultTestUserEmail() });
+    const token = createToken(user._id);
+    const response = await supertest(app)
+    .post(`/friends/${ recipientUser._id }`)
+    .set("Cookie", [`jwt=${ token }`])
+    .expect(201)
+
+    expect(response.body.message).toBeDefined();
+    expect(response.body.errors.length).toBe(0);
+
+    const updatedRecipient = await User.findOne({_id: recipientUser._id});
+    const newCount = updatedRecipient.notifications.length;
+    expect(newCount).toBe(oldCount + 1);
+    const notification = await Notification.findOne({ user: updatedRecipient._id });
+    expect(notification).toBeDefined();
+    expect(notification.user._id.toString()).toBe(updatedRecipient._id.toString());
+    expect(notification.text).toBe(`${user.firstName} ${user.lastName} has sent you a friend request`);
   });
 
   /**

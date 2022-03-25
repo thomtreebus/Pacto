@@ -1,5 +1,6 @@
 const User = require('../models/User');
 const FriendRequest = require('../models/FriendRequest');
+const Notification = require('../models/Notification');
 const { FRIEND_MESSAGES } = require('../helpers/messages');
 const {jsonResponse, jsonError} = require("../helpers/responseHandlers");
 
@@ -26,7 +27,7 @@ module.exports.sendFriendRequest = async (req, res) => {
       await User.findByIdAndUpdate(id, { $push: { receivedRequests: friendRequest._id } });
 
       // Notify recipient that they have received a new friend request
-      const notification = await Notification.create({ user: user, text: `${user.firstName} ${user.lastName} has sent you a friend request` });
+      const notification = await Notification.create({ user: recipient._id, text: `${user.firstName} ${user.lastName} has sent you a friend request` });
 		  await User.findByIdAndUpdate(recipient._id, { $push: { notifications: notification._id } }); 
 
       res.status(201).json(jsonResponse(friendRequest, []));
