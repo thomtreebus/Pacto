@@ -25,6 +25,10 @@ module.exports.sendFriendRequest = async (req, res) => {
       await User.findByIdAndUpdate(user._id, { $push: { sentRequests: friendRequest._id } });
       await User.findByIdAndUpdate(id, { $push: { receivedRequests: friendRequest._id } });
 
+      // Notify recipient that they have received a new friend request
+      const notification = await Notification.create({ user: user, text: `${user.firstName} ${user.lastName} has sent you a friend request` });
+		  await User.findByIdAndUpdate(recipient._id, { $push: { notifications: notification._id } }); 
+
       res.status(201).json(jsonResponse(friendRequest, []));
     }
   } catch (err) {
