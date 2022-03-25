@@ -137,7 +137,6 @@ describe("PactPage Tests", () => {
         it("redirect to hub page when the delete icon is clicked", async () => {
           const deleteIcon = await screen.findByTestId("DeleteIcon");
           fireEvent.click(deleteIcon);
-          screen.debug();
           await waitFor(() => expect(history.location.pathname).toBe("/hub"));
         })
 
