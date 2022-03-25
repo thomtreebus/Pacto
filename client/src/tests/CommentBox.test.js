@@ -45,10 +45,20 @@ describe("CommentBox Tests", () => {
 			);
 		}),
     rest.post(`${process.env.REACT_APP_URL}/pact/5/post/1/comment/1/reply`, (req, res, ctx) => {
-			return res();
+			return res(
+        ctx.json({
+          message: {},
+          errors: []
+        })
+      );
 		}),
     rest.post(`${process.env.REACT_APP_URL}/pact/5/post/1/comment`, (req, res, ctx) => {
-			return res();
+			return res(
+        ctx.json({
+          message: {},
+          errors: []
+        })
+      );
 		}),
 	);
 
