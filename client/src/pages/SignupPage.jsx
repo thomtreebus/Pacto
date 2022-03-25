@@ -80,8 +80,7 @@ export default function SignupPage() {
 
 	return (
 		<Container component="main" maxWidth="xs">
-			<Toolbar />
-			<Alert severity="info">
+			<Alert severity="info" sx={{ marginTop: 3 }}>
 				<AlertTitle>Use a valid university email!</AlertTitle>
 				You will be sent an email with a link to verify after signing up
 				<strong> remember to check you spam as well!</strong>
