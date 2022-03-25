@@ -228,7 +228,7 @@ module.exports.leavePact = async (req, res) => {
 			// Make the user leave the pact
 			await Pact.findByIdAndUpdate(pact._id, { $pull: { members: user._id, moderators: user._id } });
 			await User.findByIdAndUpdate(user._id, { $pull: { pacts: pact._id } });
-			res.json(jsonResponse(PACT_MESSAGES.LEAVE.SUCCESSFUL, []));
+			res.status(201).json(jsonResponse(PACT_MESSAGES.LEAVE.SUCCESSFUL, []));
 		}
 	}
 	catch (err) {
@@ -236,14 +236,31 @@ module.exports.leavePact = async (req, res) => {
 	}
 }
 
-// Need to be the only mod
-// Delete pact from all users, delete all posts and comments
 module.exports.deletePact = async (req, res) => {
 	try {
 		const user = await User.findById(req.params.userId);
 		const pact = await Pact.findById(req.params.pactId);
-
 		
+		// Already checked via middleware that the user is a mod
+		if(pact.moderators.length !== 1) {
+			res.status(404).json(jsonResponse(null, [jsonError(null, PACT_MESSAGES.DELETE.TOO_MANY_MODERATORS)]));
+		} else {
+			// Make every user leave the pact
+			pact.members.forEach(async (m) => {
+				await User.findByIdAndUpdate(m._id, { $pull: { pacts: pact._id } });
+			});
+			// Delete all posts and comments
+			pact.posts.forEach(async (p) => {
+				const post = await Post.findById(p._id);
+				post.comments.forEach(async (c) => {
+					await Comment.findByIdAndDelete(c._id);
+				});
+				await Post.findByIdAndDelete(post._id);
+			});
+			// Delete the pact itself
+			await Pact.findByIdAndDelete(pact._id);
+			res.status(201).json(jsonResponse(PACT_MESSAGES.DELETE.SUCCESSFUL, []));
+		}
 	}
 	catch (err) {
 		res.status(404).json(jsonResponse(null, [jsonError(null, err.message)]));

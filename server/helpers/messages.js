@@ -84,6 +84,10 @@ module.exports.PACT_MESSAGES = {
 		ONLY_MEMBER: "You are the only member, you must delete the pact",
 		ONLY_MODERATOR: "You are the only moderator, make at least one new moderator to be able to leave",
 	},
+	DELETE: {
+		SUCCESSFUL: "Successfully deleted the pact",
+		TOO_MANY_MODERATORS: "You cannot delete a pact if you are not the only moderator of it",
+	},
 };
 
 module.exports.POST_MESSAGES = {
