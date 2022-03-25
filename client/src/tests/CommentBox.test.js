@@ -14,11 +14,12 @@ const mockSuccessHandler = jest.fn((msg) => {
 });
 
 const comment = {
-  pact: 5,
+  pact: {_id:5},
   post: {
     text: "lorem ispum",
     type: "text",
     _id: 1,
+    pact: {_id:5},
     comments: []
   },
   author: {
@@ -36,7 +37,7 @@ const comment = {
   _id: 1
 }
 
-describe("CommentCard Tests", () => {
+describe("CommentBox Tests", () => {
   const server = setupServer(
 		rest.get(`${process.env.REACT_APP_URL}/me`, (req, res, ctx) => {
 			return res(
@@ -88,7 +89,9 @@ describe("CommentCard Tests", () => {
   describe("Check interaction with elements", () => {
     it("should successfully submit comment", async () => {
       const submit = await screen.findByTestId("submit-button");
-      const input = await screen.findByTestId("text-entry-field");
+      const input = await screen.findByRole("textbox", {
+				name: "Comment",
+			});
       fireEvent.change(input, { target: { value: COMMENT_TEXT } });
       fireEvent.click(submit);
       expect(mockSuccessHandler.mock.calls.length).toBe(1);
@@ -103,7 +106,9 @@ describe("CommentCard Tests", () => {
       );
 
       const submit = await screen.findByTestId("submit-button");
-      const input = await screen.findByTestId("text-entry-field");
+      const input = await screen.findByRole("textbox", {
+				name: "Comment",
+			});
       fireEvent.change(input, { target: { value: COMMENT_TEXT } });
       fireEvent.click(submit);
       expect(mockSuccessHandler.mock.calls.length).toBe(1);

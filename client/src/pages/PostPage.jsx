@@ -36,8 +36,7 @@ export default function PostPage() {
     })
     .catch((err) => {
       setIsLoading(false);
-      //history.push("/not-found");
-      console.log(err.message)
+      history.push("/not-found");
     });
   }, [pactID, postID, history]);
 
@@ -63,7 +62,7 @@ export default function PostPage() {
       <Grid container width={"60vw"}>
         <Grid item xs={16} lg={14} paddingBottom={4}>
           <PostCard post={post} numComments={post.comments.length}></PostCard>
-          <Typography variant="caption" className="link" onClick={() => {setShowReplyBox(!showReplyBox)}}>
+          <Typography variant="caption" className="link" onClick={() => {setShowReplyBox(!showReplyBox)}} data-testid="comment-adder">
             {showReplyBox ? "Hide" : "Add comment"}
           </Typography>
           {showReplyBox && <Box>
@@ -71,7 +70,7 @@ export default function PostPage() {
           </Box>}
         </Grid>
         <Box sx={{width: "95%", marginInline: "auto"}}>
-          <Grid item xs={16} lg={14}>
+          <Grid item xs={16} lg={14} data-testid="comment-list">
             {/* We display only the comments without a parentComment, i.e. top level comments */}
             { post.comments.filter((x) => x.parentComment == null).map((c) => {
               return(
