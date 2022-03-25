@@ -13,10 +13,10 @@ const cacheLinkPreview = async (url) => {
   try {
     const res = await fetch(`${process.env.LINKPREVIEW_URL}`, {
       method: "POST",
-      body: {
+      body: JSON.stringify({
         key: process.env.LINKPREVIEW_KEY,
         q: url
-      }
+      })
     })
 
     if (!res.ok) throw Error();

@@ -44,11 +44,6 @@ export default function UserCard({user}){
                     />   
                     <Typography variant="h7" 
                         sx={{
-                            // alignItems: "center",
-                            // gap: "5px",
-                            // textAlign: "center",
-                            // borderRadius: "10px",
-                            // justifyContent: "center",
                             paddingLeft: "25px",
                         }}
                     >{user.firstName} {user.lastName}</Typography>                                    

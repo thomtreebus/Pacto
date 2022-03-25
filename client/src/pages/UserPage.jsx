@@ -96,10 +96,10 @@ export default function UserPage() {
       <Box sx={{ width: '100%' }}>
         <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
           <Tabs value={value} onChange={handleChange} aria-label="User type tab">
-            <Tab label="All university users" {...a11yProps(0)} />
+            <Tab label="Same University" {...a11yProps(0)} />
             <Tab label="Friends" {...a11yProps(1)} />
-            <Tab label="Same Course" {...a11yProps(2)} />
-            <Tab label="Same Location" {...a11yProps(3)} />
+            <Tab label="Same Course" sx={{display : {xs: "none", md: "block"}}} {...a11yProps(2)} />
+            <Tab label="Same Location"  sx={{display : {xs: "none", md: "block"}}}  {...a11yProps(3)} />
           </Tabs>
         </Box>
         <TabPanel value={value} index={0}>

@@ -1,33 +1,17 @@
-const mongoose = require("mongoose");
-const dotenv = require("dotenv");
 const EmailVerificationCode = require("../../models/EmailVerificationCode");
 const supertest = require("supertest");
 const app = require("../../app");
-const University = require("../../models/University");
 const User = require("../../models/User");
 const { generateTestUser, getDefaultTestUserEmail } = require('../fixtures/generateTestUser');
 const { MESSAGES } = require("../../helpers/messages");
-
-dotenv.config();
+const useTestDatabase = require("../helpers/useTestDatabase");
 
 // Magic values
 const VERIFICATION_CODE = "kaushik12";
 
 describe("GET /verify", () => {
-  beforeAll(async () => {
-		await mongoose.connect(process.env.TEST_DB_CONNECTION_URL);
-	});
+  useTestDatabase("verification");
 
-	afterAll(async () => {
-		await mongoose.connection.close();
-	});
-
-	afterEach(async () => {
-		await User.deleteMany({});
-    await EmailVerificationCode.deleteMany({});
-		await University.deleteMany({});
-	});
-  
   beforeEach(async () => {
     const user = await generateTestUser();
     await EmailVerificationCode.create({
