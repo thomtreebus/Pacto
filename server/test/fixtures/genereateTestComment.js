@@ -1,11 +1,9 @@
-const Pact = require("../../models/Pact");
 const Post = require("../../models/Post");
-const User = require("../../models/User");
 const Comment = require("../../models/Comment");
 
 let myComment = null;
 
-module.exports.generateTestComment = async (commentingUser, post, text="Dummy text") => {
+module.exports.generateTestComment = async (commentingUser, post=null, text="Dummy text") => {
   if(!commentingUser.active){
     throw Error("The commenting user provided is not active");
   }
@@ -15,9 +13,11 @@ module.exports.generateTestComment = async (commentingUser, post, text="Dummy te
     text: text
   });
 
-  const post = await Post.findById(post._id);
-  post.comments.push(comment);
-  await post.save();
+  if(post !== null) {
+    const commentedPost = await Post.findById(post._id);
+    commentedPost.comments.push(comment);
+    await commentedPost.save();
+  }
 
   myComment = comment;
   return comment;

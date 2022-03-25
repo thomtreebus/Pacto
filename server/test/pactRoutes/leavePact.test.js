@@ -88,7 +88,7 @@ describe("DELETE /pact/:pact_id/leave", () => {
     const response = await supertest(app)
     .delete(`/pact/${ pact._id }/leave`)
     .set("Cookie", [`jwt=${token}`])
-    .expect(404);
+    .expect(401);
     expect(response.body.message).toBeDefined();
     expect(response.body.errors.length).toBe(1);
     expect(response.body.errors[0].field).toBe(null);
@@ -121,7 +121,7 @@ describe("DELETE /pact/:pact_id/leave", () => {
     const response = await supertest(app)
     .delete(`/pact/${ pact._id }/leave`)
     .set("Cookie", [`jwt=${token}`])
-    .expect(404);
+    .expect(401);
     expect(response.body.message).toBeDefined();
     expect(response.body.errors.length).toBe(1);
     expect(response.body.errors[0].field).toBe(null);

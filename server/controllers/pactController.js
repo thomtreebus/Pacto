@@ -2,6 +2,7 @@ const Pact = require("../models/Pact");
 const University = require("../models/University");
 const User = require("../models/User");
 const Post = require("../models/Post");
+const Comment = require("../models/Comment");
 const {jsonResponse, jsonError} = require("../helpers/responseHandlers");
 const handleFieldErrors = require('../helpers/errorHandler');
 const { MESSAGES, PACT_MESSAGES } = require("../helpers/messages");
@@ -221,9 +222,9 @@ module.exports.leavePact = async (req, res) => {
 		const pact = await Pact.findById(req.params.pactId);
 
 		if(pact.members.length === 1) {
-			res.status(404).json(jsonResponse(null, [jsonError(null, PACT_MESSAGES.LEAVE.ALONE)]));
+			res.status(401).json(jsonResponse(null, [jsonError(null, PACT_MESSAGES.LEAVE.ALONE)]));
 		} else if(pact.moderators.length === 1 && pact.moderators[0]._id.toString() === user._id.toString()) {
-			res.status(404).json(jsonResponse(null, [jsonError(null, PACT_MESSAGES.LEAVE.ONLY_MODERATOR)]));
+			res.status(401).json(jsonResponse(null, [jsonError(null, PACT_MESSAGES.LEAVE.ONLY_MODERATOR)]));
 		} else {
 			// Make the user leave the pact
 			await Pact.findByIdAndUpdate(pact._id, { $pull: { members: user._id, moderators: user._id } });
@@ -237,34 +238,37 @@ module.exports.leavePact = async (req, res) => {
 }
 
 // Helper to delete recursively all comments of comments
-const deleteAllComments = async (comments) => {
-	comments.forEach(async (c) => {
-		if(c.childComments.length !== 0) {
-			deleteAllComments(c.childComments);
+async function deleteAllComments(comments) {
+	for (let i = 0; i < comments.length; i++) {
+		const actual = await Comment.findById(comments[i]._id);
+		if(actual.childComments !== undefined && actual.childComments !== null && actual.childComments.length !== 0) {
+			await deleteAllComments(actual.childComments);
 		}
-		await Comment.findByIdAndDelete(c._id);
-	});
+		await Comment.findByIdAndDelete(actual._id);
+	}
 }
 
 module.exports.deletePact = async (req, res) => {
 	try {
-		const user = await User.findById(req.params.userId);
 		const pact = await Pact.findById(req.params.pactId);
 		
 		// Already checked via middleware that the user is a mod
 		if(pact.moderators.length !== 1) {
-			res.status(404).json(jsonResponse(null, [jsonError(null, PACT_MESSAGES.DELETE.TOO_MANY_MODERATORS)]));
+			res.status(401).json(jsonResponse(null, [jsonError(null, PACT_MESSAGES.DELETE.TOO_MANY_MODERATORS)]));
 		} else {
 			// Make every user leave the pact
-			pact.members.forEach(async (m) => {
-				await User.findByIdAndUpdate(m._id, { $pull: { pacts: pact._id } });
-			});
+			for (let i = 0; i < pact.members.length; i++) {
+				const actual = pact.members[i];
+				await User.findByIdAndUpdate(actual._id, { $pull: { pacts: pact._id } });
+			}
 			// Delete all posts and comments
-			pact.posts.forEach(async (p) => {
-				const post = await Post.findById(p._id);
-				deleteAllComments(post.comments);
-				await Post.findByIdAndDelete(post._id);
-			});
+			for (let i = 0; i < pact.posts.length; i++) {
+				const actual = await Post.findById(pact.posts[i]._id);
+				if(actual.comments !== undefined && actual.comments !== null && actual.comments.length > 0) {
+					await deleteAllComments(actual.comments);
+				}
+				await Post.findByIdAndDelete(actual._id);
+			}
 			// Delete the pact itself
 			await Pact.findByIdAndDelete(pact._id);
 			res.status(201).json(jsonResponse(PACT_MESSAGES.DELETE.SUCCESSFUL, []));
@@ -272,5 +276,6 @@ module.exports.deletePact = async (req, res) => {
 	}
 	catch (err) {
 		res.status(404).json(jsonResponse(null, [jsonError(null, err.message)]));
+		console.log(err.message);
 	}
 }
