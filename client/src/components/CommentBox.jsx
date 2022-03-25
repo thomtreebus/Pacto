@@ -54,6 +54,7 @@ export default function CommentBox({post, successHandler=()=>{}, repliedToCommen
     <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }} data-testid="comment-reply-box">
       <Grid item xs={12} sm={6}>
         <TextField
+          data-testid="text-entry-field"
           name="text"
           required
           fullWidth
@@ -66,6 +67,7 @@ export default function CommentBox({post, successHandler=()=>{}, repliedToCommen
       </Grid>
 
       <Button
+        data-testid="submit-button"
         type="submit"
         disabled={isButtonDisabled}
         variant="contained"
