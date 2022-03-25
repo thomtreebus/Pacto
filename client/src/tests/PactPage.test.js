@@ -51,6 +51,16 @@ describe("PactPage Tests", () => {
 			return res(
         ctx.json(response)
       );
+		}),
+    rest.delete(`${process.env.REACT_APP_URL}/pact/1/leave`, (req, res, ctx) => {
+			return res(
+				ctx.json({ message: "Successfully left the pact", errors: [] })
+      );
+		}),
+    rest.delete(`${process.env.REACT_APP_URL}/pact/1/delete`, (req, res, ctx) => {
+			return res(
+				ctx.json({ message: "Successfully deleted the pact", errors: [] })
+      );
 		})
 	);
 
@@ -83,6 +93,9 @@ describe("PactPage Tests", () => {
           <Route exact path="/not-found">
             Not Found
           </Route>
+          <Route exact path="/hub">
+            Hub
+          </Route>
         </Router>
       </MockComponent>
     );
@@ -111,19 +124,62 @@ describe("PactPage Tests", () => {
       it("Should render the edit button", () => {
         screen.getByTestId("edit-pact-button");
       });
-    })
+
+      describe("when the user is the only moderator",  () => {
+        it("renders only the delete icon", async() => {
+          const deleteIcon = await screen.findByTestId("DeleteIcon");
+          expect(deleteIcon).toBeInTheDocument();
+          const leaveIcon = screen.queryByTestId("ExitToAppIcon");
+          expect(leaveIcon).not.toBeInTheDocument();
+        })
+      });
+
+      describe("When the user is there is more than one moderator", () => {
+        beforeAll(() => {
+          const responseCopy = Object.assign({}, response);
+          responseCopy.message.moderators.push("anotherModerator");
+          server.use(
+            rest.get(`${process.env.REACT_APP_URL}/pact/1`, (req, res, ctx) => {
+              return res(
+                ctx.json(responseCopy)
+              );
+            }),
+          );
+        }),
+
+        it("renders only the exit icon", async () => {
+          const leaveIcon = await screen.findByTestId("ExitToAppIcon");
+          expect(leaveIcon).toBeInTheDocument();
+          const deleteIcon = screen.queryByTestId("DeleteIcon");
+          expect(deleteIcon).not.toBeInTheDocument();
+        })
+      });
+
+    })        
+
 
     describe("When the user is not a moderator", () => {
-      it("Should not render the edit button", async () => {
+
+      beforeEach(async () => {
         server.use(
           rest.get(`${process.env.REACT_APP_URL}/me`, (req, res, ctx) => {
             return res(ctx.json({ message: { firstName: "pac", lastName: "to", _id: response.message.moderators[0]._id + 1 }, errors: [] }));
           })
         );
         await renderWithMock();
+      })
+
+      it("Should not render the edit button", async () => {
         const editPactButton = screen.queryByTestId("edit-pact-button");
         expect(editPactButton).not.toBeInTheDocument()
       });
+
+      it("renders only the exit icon", async () => {
+        const leaveIcon = await screen.findByTestId("ExitToAppIcon");
+        expect(leaveIcon).toBeInTheDocument();
+        const deleteIcon = screen.queryByTestId("DeleteIcon");
+        expect(deleteIcon).not.toBeInTheDocument();
+      })
     })
   })
 
