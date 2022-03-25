@@ -176,11 +176,11 @@ describe("PactPage Tests", () => {
           expect(deleteIcon).not.toBeInTheDocument();
         })
 
-        // it("redirect to hub page when the exit icon is clicked", async () => {
-        //   const deleteIcon = await screen.findByTestId("ExitToAppIcon");
-        //   fireEvent.click(deleteIcon);
-        //   await waitFor(() => expect(history.location.pathname).toBe("/hub"));
-        // })
+        it("redirect to hub page when the exit icon is clicked", async () => {
+          const deleteIcon = await screen.findByTestId("ExitToAppIcon");
+          fireEvent.click(deleteIcon);
+          await waitFor(() => expect(history.location.pathname).toBe("/hub"));
+        })
       });
 
     })        
