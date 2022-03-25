@@ -32,7 +32,8 @@ const post = {message:{
     votes: 0,
     createdAt: "5/5/5",
     text: "lorem ipsum stuff",
-    _id: 1
+    _id: 1,
+    childComments: []
   }],
   createdAt: "5/5/5",
 }};
