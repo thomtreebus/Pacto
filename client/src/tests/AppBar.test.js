@@ -24,7 +24,12 @@ describe("App Bar Tests", () => {
 			return res(
 				ctx.json({ message: null, errors: [] })
 			);
-		})
+		}),
+    rest.get(`${process.env.REACT_APP_URL}/notifications`, (req, res, ctx) => {
+      return res(
+        ctx.json({ message: [], errors: [] })
+      );
+    })
 	);
 
 	beforeAll(() => {
@@ -96,9 +101,9 @@ describe("App Bar Tests", () => {
       expect(logoutItemElement).toBeInTheDocument();
     });
     
-    it("should render the notifications icon bell", () => {
+    it("should render the notifications icon bell", async () => {
       const menuElement = screen.getByTestId("NotificationsIcon");
-      expect(menuElement).toBeInTheDocument();
+      await waitFor(() => expect(menuElement).toBeInTheDocument());
     });
   });
 

@@ -78,7 +78,10 @@ export default function PrimarySearchAppBar({ handleDrawerToggle }) {
 	useEffect(() => {
 		fetch(`${process.env.REACT_APP_URL}/notifications`, {method: "GET", credentials: 'include'})
 			.then(res => {return res.json()})
-			.then((data) => {console.log(data.message); setNotifications(data.message);})
+			.then((data) => {setNotifications(data.message);});
+			return () => {
+				setNotifications({});
+			};
 	},[notificationsAnchorEl]);
 
 	function getNotificationCount(notifications) {
