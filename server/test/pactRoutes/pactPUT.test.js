@@ -1,33 +1,21 @@
 const Pact = require("../../models/Pact");
 const User = require("../../models/User");
 const University = require("../../models/University");
-const mongoose = require("mongoose");
-const dotenv = require("dotenv");
 const supertest = require("supertest");
 const app = require("../../app");
 const { generateTestUser, getDefaultTestUserEmail } = require("../fixtures/generateTestUser");
 const { createToken } = require("../../controllers/authController");
 const { PACT_MESSAGES } = require("../../helpers/messages");
 const {generateTestPact, getTestPactId} = require("../fixtures/generateTestPact");
-
-dotenv.config();
+const useTestDatabase = require("../helpers/useTestDatabase");
 
 // Magic values
 const NAME = "My pact";
 const DESCRIPTION = "This is my 1st pact."
 const CATEGORY = "course";
 
-const DEFAULT_DESCRIPTION = "A Pact that doesn't know what it wants to be...";
-const DEFAULT_CATEGORY = "other";
-
 describe("PUT /pact", () => {
-  beforeAll(async () => {
-    await mongoose.connect(process.env.TEST_DB_CONNECTION_URL);
-  });
-
-  afterAll(async () => {
-    await mongoose.connection.close();
-  });
+  useTestDatabase("updatePact");
 
   beforeEach(async () => {
     const user = await generateTestUser();
@@ -35,12 +23,6 @@ describe("PUT /pact", () => {
     await user.save();
 
     await generateTestPact(user);
-  });
-
-  afterEach(async () => {
-    await User.deleteMany({});
-    await Pact.deleteMany({});
-    await University.deleteMany({});
   });
 
   // Helpers

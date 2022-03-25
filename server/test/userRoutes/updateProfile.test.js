@@ -1,28 +1,14 @@
-const mongoose = require("mongoose");
-const dotenv = require("dotenv");
 const supertest = require("supertest");
 const app = require("../../app");
-const User = require("../../models/User");
 const { MESSAGES, USER_MESSAGES} = require("../../helpers/messages");
 const { generateTestUser } = require("../fixtures/generateTestUser");
-const {getDefaultTestUser} = require("../helpers/defaultTestUser");
 const {createToken} = require("../../controllers/authController");
+const useTestDatabase = require("../helpers/useTestDatabase");
 
 jest.mock("../../helpers/emailHandlers");
-dotenv.config();
 
 describe("Update Profile PUT", () => {
-  beforeAll(async () => {
-    await mongoose.connect(process.env.TEST_DB_CONNECTION_URL);
-  });
-
-  afterAll(async () => {
-    await mongoose.connection.close();
-  });
-
-  afterEach(async () => {
-		await User.deleteMany({});
-  });
+  useTestDatabase("updateProfile");
 
   // Generate a user and make it active. Then save it to the test database and return the user.
   async function generateActiveSavedTestUser(name = "pac"){
