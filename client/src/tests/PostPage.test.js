@@ -8,7 +8,7 @@ import { createMemoryHistory } from 'history';
 import { rest } from "msw";
 import { Router, Route } from "react-router-dom";
 
-const post = {
+const post = {message:{
   text: "lorem ispum",
   type: "text",
   _id: 1,
@@ -31,9 +31,9 @@ const post = {
   }],
   createdAt: "5/5/5",
   _id: 1
-};
+}};
 
-describe("CommentBox Tests", () => {
+describe("PostPage Tests", () => {
   const server = setupServer(
 		rest.get(`${process.env.REACT_APP_URL}/me`, (req, res, ctx) => {
 			return res(
@@ -41,7 +41,7 @@ describe("CommentBox Tests", () => {
 			);
 		}),
     rest.get(`${process.env.REACT_APP_URL}/pact/5/post/1`, (req, res, ctx) => {
-			return res();
+			return res(ctx.json(post));
 		}),
 	);
 

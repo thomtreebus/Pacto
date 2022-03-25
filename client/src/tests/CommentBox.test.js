@@ -65,9 +65,6 @@ describe("CommentBox Tests", () => {
 	});
 
   beforeEach(async () => {
-    const success = () => {
-      return;
-    }
 		render(
       <MockComponent>
         <CommentBox post={comment.post} successHandler={mockSuccessHandler} />
