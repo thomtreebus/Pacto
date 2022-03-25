@@ -32,7 +32,7 @@ const comment = {
   votes: 6,
   upvoters: [],
   downvoters: [],
-  childComments: [0,0,0,0],
+  childComments: [],
   parentComment: undefined,
   _id: 1
 }
@@ -48,7 +48,10 @@ describe("CommentBox Tests", () => {
 			return res(
         ctx.status(201),
         ctx.json({
-          message: {},
+          message: {
+            text: req.body.text,
+            parentComment: {_id:comment._id}
+          },
           errors: []
         })
       );
@@ -57,7 +60,7 @@ describe("CommentBox Tests", () => {
 			return res(
         ctx.status(201),
         ctx.json({
-          message: {},
+          message: {text: req.body.text},
           errors: []
         })
       );
@@ -121,7 +124,7 @@ describe("CommentBox Tests", () => {
       fireEvent.change(input, { target: { value: COMMENT_TEXT } });
       fireEvent.click(submit);
       expect(mockSuccessHandler.mock.calls.length).toBe(1);
-      expect(mockSuccessHandler.mock.calls[0].parentComment).toBe(comment);
+      expect(mockSuccessHandler.mock.calls[0].parentComment._id).toBe(comment._id);
     });
   });
 });
