@@ -236,6 +236,16 @@ module.exports.leavePact = async (req, res) => {
 	}
 }
 
+// Helper to delete recursively all comments of comments
+const deleteAllComments = async (comments) => {
+	comments.forEach(async (c) => {
+		if(c.childComments.length !== 0) {
+			deleteAllComments(c.childComments);
+		}
+		await Comment.findByIdAndDelete(c._id);
+	});
+}
+
 module.exports.deletePact = async (req, res) => {
 	try {
 		const user = await User.findById(req.params.userId);
@@ -252,9 +262,7 @@ module.exports.deletePact = async (req, res) => {
 			// Delete all posts and comments
 			pact.posts.forEach(async (p) => {
 				const post = await Post.findById(p._id);
-				post.comments.forEach(async (c) => {
-					await Comment.findByIdAndDelete(c._id);
-				});
+				deleteAllComments(post.comments);
 				await Post.findByIdAndDelete(post._id);
 			});
 			// Delete the pact itself
