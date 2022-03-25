@@ -12,5 +12,5 @@ module.exports.LINKS = [
 	"https://www.nbcnews.com/news/us-news/man-who-ate-120-000-art-banana-said-he-would-n1098391",
 	"https://www.foxnews.com/food-drink/mcdonalds-robber-chicken-nuggets-breakfast-food-because-it-was-still-too-early",
 	"https://thehill.com/changing-america/well-being/prevention-cures/505499-ohio-ice-cream-shop-asks-customers-to-stop",
-	"https://www.youtube.com/watch?v=L_b277qj3P4"
+	"https://www.youtube.com/watch?v=L_b277qj3P4",
 ];
