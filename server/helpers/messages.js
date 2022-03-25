@@ -79,6 +79,11 @@ module.exports.PACT_MESSAGES = {
 	CANT_PROMOTE_NON_MEMBER: "Can't promote a user that isn't a member of the pact",
 	CANT_PROMOTE_MODERATOR: "User is already a moderator of the pact",
 	SUCCESSFUL_PROMOTION: "Member has been promoted to moderator",
+	LEAVE: {
+		SUCCESSFUL: "Successfully left the pact",
+		ONLY_MEMBER: "You are the only member, you must delete the pact",
+		ONLY_MODERATOR: "You are the only moderator, make at least one new moderator to be able to leave",
+	},
 };
 
 module.exports.POST_MESSAGES = {

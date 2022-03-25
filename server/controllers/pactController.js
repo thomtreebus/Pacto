@@ -215,4 +215,37 @@ module.exports.revokeBan = async (req, res) => {
 	}
 }
 
+module.exports.leavePact = async (req, res) => {
+	try {
+		const user = await User.findById(req.user._id);
+		const pact = await Pact.findById(req.params.pactId);
 
+		if(pact.members.length === 1) {
+			res.status(404).json(jsonResponse(null, [jsonError(null, PACT_MESSAGES.LEAVE.ONLY_MEMBER)]));
+		} else if(pact.moderators.length === 1 && pact.moderators[0]._id.toString() === user._id.toString()) {
+			res.status(404).json(jsonResponse(null, [jsonError(null, PACT_MESSAGES.LEAVE.ONLY_MODERATOR)]));
+		} else {
+			// Make the user leave the pact
+			await Pact.findByIdAndUpdate(pact._id, { $pull: { members: user._id, moderators: user._id } });
+			await User.findByIdAndUpdate(user._id, { $pull: { pacts: pact._id } });
+			res.json(jsonResponse(PACT_MESSAGES.LEAVE.SUCCESSFUL, []));
+		}
+	}
+	catch (err) {
+		res.status(404).json(jsonResponse(null, [jsonError(null, err.message)]));
+	}
+}
+
+// Need to be the only mod
+// Delete pact from all users, delete all posts and comments
+module.exports.deletePact = async (req, res) => {
+	try {
+		const user = await User.findById(req.params.userId);
+		const pact = await Pact.findById(req.params.pactId);
+
+		
+	}
+	catch (err) {
+		res.status(404).json(jsonResponse(null, [jsonError(null, err.message)]));
+	}
+}
