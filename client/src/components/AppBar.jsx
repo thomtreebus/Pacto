@@ -80,7 +80,7 @@ export default function PrimarySearchAppBar({ handleDrawerToggle }) {
 			.then(res => {return res.json()})
 			.then((data) => {setNotifications(data.message);});
 			return () => {
-				setNotifications({});
+				setNotifications([]);
 			};
 	},[notificationsAnchorEl]);
 
