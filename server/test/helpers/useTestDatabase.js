@@ -10,14 +10,12 @@ const FriendRequest = require("../../models/FriendRequest");
 
 dotenv.config();
 
-function useTestDatabase(key = "") {
+function useTestDatabase(key="") {
 	beforeAll(async () => {
-		await mongoose.connect(`${process.env.TEST_DB_CONNECTION_URL}${key}`);
-		await clearDatabase();
+		await mongoose.connect(`${process.env.TEST_DB_CONNECTION_URL}`);
 	});
 
 	afterAll(async () => {
-		await clearDatabase();
 		await mongoose.connection.close();
 	});
 

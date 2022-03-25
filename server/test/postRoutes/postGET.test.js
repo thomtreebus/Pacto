@@ -37,7 +37,7 @@ describe("GET /pact/:pactId/post/:postId", () => {
 
   beforeAll(async () => {
     server.listen({ onUnhandledRequest: "bypass" });
-    await mongoose.connect(`${process.env.TEST_DB_CONNECTION_URL}getPost`);
+    await mongoose.connect(`${process.env.TEST_DB_CONNECTION_URL}`);
   });
 
   afterAll(async () => {
