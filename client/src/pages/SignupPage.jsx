@@ -8,7 +8,7 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import Icon from "../assets/pacto-logo.ico";
-import { AlertTitle, Alert, Toolbar } from "@mui/material";
+import { AlertTitle, Alert } from "@mui/material";
 
 export default function SignupPage() {
 	const [passwordConfirmError, setPasswordConfirmError] = useState("");
