@@ -93,5 +93,24 @@ describe("CommentCard Tests", () => {
       fireEvent.click(author);
       expect(window.location.pathname).toBe("/user/1");
     });
+
+    it("should open box for replying to comment when reply is clicked", async () => {
+      const reply = await screen.findByTestId("reply-button");
+      expect(reply.innerHTML).toContain("Reply");
+      fireEvent.click(reply);
+      expect(reply.innerHTML).toContain("Hide");
+      const replyBox = await screen.findByTestId("comment-reply-box");
+      expect(replyBox).toBeDefined();
+    });
+    
+    it("reply box should close when re-pressed", async () => {
+      const reply = await screen.findByTestId("reply-button");
+      fireEvent.click(reply);
+      fireEvent.click(reply);
+
+      expect(reply.innerHTML).toContain("Reply");
+      const replyBox = await screen.queryByTestId("comment-reply-box");
+      expect(replyBox).toBeNull();
+    });
   });
 });
