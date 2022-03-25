@@ -27,10 +27,14 @@ const post = {message:{
       lastName: "Wali",
       _id: 1
     },
-    text: "lorem ipsum stuff"
+    upvoters: [],
+    downvoters: [],
+    votes: 0,
+    createdAt: "5/5/5",
+    text: "lorem ipsum stuff",
+    _id: 1
   }],
   createdAt: "5/5/5",
-  _id: 1
 }};
 
 describe("PostPage Tests", () => {
