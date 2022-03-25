@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { styled, alpha } from "@mui/material/styles";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
@@ -19,7 +19,7 @@ import NotificationsIcon from '@mui/icons-material/Notifications';
 import Badge from '@mui/material/Badge';
 import PactoIcon from "../assets/pacto-logo.png";
 import MenuIcon from "@mui/icons-material/Menu";
-import { Card } from "@mui/material";
+import NotificationsMenu from "./NotificationsMenu"
 
 const Search = styled("div")(({ theme }) => ({
 	position: "relative",
@@ -61,13 +61,6 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 	},
 }));
 
-function NotificationCard({ notification }){
-	return (
-		<Card sx={{ width: '300px', padding: '100', marginTop: '18px'}}>
-			{notification}
-		</Card>
-	)
-}
 
 export default function PrimarySearchAppBar({ handleDrawerToggle }) {
 	const history = useHistory();
@@ -79,16 +72,24 @@ export default function PrimarySearchAppBar({ handleDrawerToggle }) {
 
 	const isProfileMenuOpen = Boolean(profileAnchorEl);
 	const isNotificationsMenuOpen = Boolean(notificationsAnchorEl);
-	
-	function getNotificationCount(user) {
-		if (user.notifications === undefined) {
+
+	const [notifications, setNotifications] = useState(null);
+
+	useEffect(() => {
+		fetch(`${process.env.REACT_APP_URL}/notifications`, {method: "GET", credentials: 'include'})
+			.then(res => {return res.json()})
+			.then((data) => {console.log(data.message); setNotifications(data.message);})
+	},[notificationsAnchorEl]);
+
+	function getNotificationCount(notifications) {
+		if (!notifications) {
 			return 0
 		}
 		else {
-			return user.notifications.length
+			return notifications.length
 		}
 	}
-
+	
 	const handleLogout = async () => {
 		await fetch(`${process.env.REACT_APP_URL}/logout`, {
 			credentials: "include",
@@ -97,10 +98,6 @@ export default function PrimarySearchAppBar({ handleDrawerToggle }) {
 		history.push("login");
 	};
 
-
-	/**
-	 * Profile Menu
-	 */
 	const handleProfileMenuOpen = (event) => {
 		setProfileAnchorEl(event.currentTarget);
 	};
@@ -119,9 +116,6 @@ export default function PrimarySearchAppBar({ handleDrawerToggle }) {
 		handleProfileMenuClose();
 	};
 
-	/**
-	 * Notifications Menu
-	 */
 	const handleNotificationsMenuOpen = (event) => {
 		setNotificationsAnchorEl(event.currentTarget);
 	};
@@ -165,28 +159,6 @@ export default function PrimarySearchAppBar({ handleDrawerToggle }) {
 	);
 
 	const notificationsMenuId = "notifications-menu"
-	const renderNotificationsMenu = (
-		<Menu
-			data-testid={notificationsMenuId}
-			anchorEl={notificationsAnchorEl}
-			anchorOrigin={{
-				vertical: "top",
-				horizontal: "right",
-			}}
-			id={notificationsMenuId}
-			keepMounted
-			transformOrigin={{
-				vertical: "top",
-				horizontal: "right",
-			}}
-			open={isNotificationsMenuOpen}
-			onClose={handleNotificationsMenuClose}
-		>
-			{user.notifications.map((notification) => (
-				<NotificationCard key="{notification}" notification={notification} />
-			))}
-		</Menu>
-	)
 
 	return (
 		<Box sx={{ flexGrow: 1 }}>
@@ -239,9 +211,9 @@ export default function PrimarySearchAppBar({ handleDrawerToggle }) {
 							aria-haspopup="true"
 							onClick={handleNotificationsMenuOpen}
 						>
-							<Badge data-testid="badge" badgeContent={ getNotificationCount(user) } max={99} color="error">
+							{notifications && <Badge data-testid="badge" badgeContent={ getNotificationCount(notifications) } max={99} color="error">
 								<NotificationsIcon />
-							</Badge>
+							</Badge>}
 						</IconButton>
 					<Box>
 						<IconButton
@@ -260,7 +232,13 @@ export default function PrimarySearchAppBar({ handleDrawerToggle }) {
 				</Toolbar>
 			</AppBar>
 			{renderProfileMenu}
-			{renderNotificationsMenu}
+			<NotificationsMenu 
+				notificationsMenuId={notificationsMenuId} 
+				notificationsAnchorEl={notificationsAnchorEl}
+				handleNotificationsMenuClose={handleNotificationsMenuClose}
+				isNotificationsMenuOpen={isNotificationsMenuOpen} 
+				notifications={notifications}
+			/>			
 		</Box>
 	);
 }
