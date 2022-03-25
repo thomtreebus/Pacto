@@ -104,7 +104,8 @@ module.exports.POST_MESSAGES = {
 		BLANK: "Type is 'image', so Image is a required field"
 	},
 	TEXT: {
-		BLANK: "Type is 'text', so Text is a required field"
+		BLANK: "Type is 'text', so Text is a required field",
+		MAX_LENGTH_EXCEEDED: "Text cannot exceed 1000 characters",
 	},
 	LINK: {
 		BLANK: "Type is 'link', so Link is a required field",
