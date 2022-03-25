@@ -44,7 +44,7 @@ describe("PactPage Tests", () => {
   const server = setupServer(
 		rest.get(`${process.env.REACT_APP_URL}/me`, (req, res, ctx) => {
 			return res(
-				ctx.json({ message: { firstName: "pac", lastName: "to", _id: response.message.moderators[0]._id }, errors: [] })
+				ctx.json({ message: { firstName: "pac", lastName: "to", _id: response.message.moderators[0]._id, pacts: [] }, errors: [] })
 			);
 		}),
 		rest.get(`${process.env.REACT_APP_URL}/pact/1`, (req, res, ctx) => {

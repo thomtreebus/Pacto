@@ -17,15 +17,20 @@ import LeaveIcon from "@mui/icons-material/ExitToApp";
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useAuth } from "../providers/AuthProvider";
+import ErrorMessage from "../components/ErrorMessage";
 
 export default function PactPage() {
 	const { pactID } = useParams();
 	const [pact, setPact] = useState(null);
 	const [isLoading, setIsLoading] = useState(true);
 	const [isMod, setIsMod] = useState(false);
+	const [isButtonDisabled, setIsButtonDisabled] = useState(false);
+	const [isError, setIsError] = useState(false);
+	const [errorMessage, setErrorMessage] = useState(false);
 	const history = useHistory();
 	const { user, setUser } = useAuth();
 	const [open, setOpen] = useState(false);
+
 	const theme = useTheme();
 	const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
 
@@ -44,14 +49,29 @@ export default function PactPage() {
 		history.push("/hub");
 	};
 
-	const handleLeavePact = () => {
-		// make request to leave the pact from server
-		removePactLocally();
-	};
+	const handleButtonClicked = async (path) => {
+		setIsButtonDisabled(true);
 
-	const handleDeletePact = () => {
-		// make request to delete the pact from server
+		const response = await fetch(
+			`${process.env.REACT_APP_URL}/pact/${pact._id}/${path}`,
+			{
+				method: "DELETE",
+				credentials: "include",
+			}
+		);
+
+		try {
+			const json = await response.json();
+			if (json.errors.length) throw Error(json.errors[0].message);
+		} catch (err) {
+			setIsError(true);
+			setErrorMessage(err.message);
+			setIsButtonDisabled(false);
+			return;
+		}
+
 		removePactLocally();
+		history.push(`/pact/${pact._id}`);
 	};
 
 	useEffect(() => {
@@ -83,6 +103,11 @@ export default function PactPage() {
 	return (
 		<>
 			{isLoading && <Loading />}
+			<ErrorMessage
+				isOpen={isError}
+				setIsOpen={setIsError}
+				message={errorMessage}
+			/>
 			<Grid container width="100%" justifyContent="center">
 				<Grid item xs={12} lg={8} xl={7}>
 					{pact && <PostList posts={pact.posts} />}
@@ -101,7 +126,7 @@ export default function PactPage() {
 								color="primary"
 								aria-label="add"
 								size="medium"
-								onClick={handleLeavePact}
+								onClick={handleClickOpen}
 							>
 								<AddIcon />
 							</Fab>
@@ -124,7 +149,8 @@ export default function PactPage() {
 									color="secondary"
 									aria-label="add"
 									size="medium"
-									onClick={handleDeletePact}
+									onClick={() => handleButtonClicked("delete")}
+									disabled={isButtonDisabled}
 								>
 									<DeleteIcon />
 								</Fab>
@@ -133,7 +159,8 @@ export default function PactPage() {
 									color="secondary"
 									aria-label="add"
 									size="medium"
-									onClick={handleLeavePact}
+									onClick={() => handleButtonClicked("leave")}
+									disabled={isButtonDisabled}
 								>
 									<LeaveIcon />
 								</Fab>
