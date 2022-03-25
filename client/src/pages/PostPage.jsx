@@ -74,7 +74,7 @@ export default function PostPage() {
             {/* We display only the comments without a parentComment, i.e. top level comments */}
             { post.comments.filter((x) => x.parentComment == null).map((c) => {
               return(
-                <CommentCard post={post} comment={c} postUpdaterFunc={recieveUpdatedPostObj}> </CommentCard>
+                <CommentCard key={post._id} post={post} comment={c} postUpdaterFunc={recieveUpdatedPostObj}> </CommentCard>
               );
             })}
           </Grid>
