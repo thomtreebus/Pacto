@@ -13,8 +13,9 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useTheme } from "@mui/material/styles";
-
+import LeaveIcon from "@mui/icons-material/ExitToApp";
 import AddIcon from "@mui/icons-material/Add";
+import DeleteIcon from "@mui/icons-material/Delete";
 import { useAuth } from "../providers/AuthProvider";
 
 export default function PactPage() {
@@ -23,7 +24,7 @@ export default function PactPage() {
 	const [isLoading, setIsLoading] = useState(true);
 	const [isMod, setIsMod] = useState(false);
 	const history = useHistory();
-	const { user } = useAuth();
+	const { user, setUser } = useAuth();
 	const [open, setOpen] = useState(false);
 	const theme = useTheme();
 	const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
@@ -34,6 +35,23 @@ export default function PactPage() {
 
 	const handleClose = () => {
 		setOpen(false);
+	};
+
+	const removePactLocally = () => {
+		let newUser = Object.assign({}, user);
+		newUser.pacts = newUser.pacts.filter((pact) => pact !== pactID);
+		setUser(newUser);
+		history.push("/hub");
+	};
+
+	const handleLeavePact = () => {
+		// make request to leave the pact from server
+		removePactLocally();
+	};
+
+	const handleDeletePact = () => {
+		// make request to delete the pact from server
+		removePactLocally();
 	};
 
 	useEffect(() => {
@@ -79,6 +97,15 @@ export default function PactPage() {
 						{pact && <AboutPact pact={pact} />}
 
 						<Box position={"absolute"} bottom={-16} right={20}>
+							<Fab
+								color="primary"
+								aria-label="add"
+								size="medium"
+								onClick={handleLeavePact}
+							>
+								<AddIcon />
+							</Fab>
+
 							{isMod && (
 								<Fab
 									onClick={() => {
@@ -91,14 +118,26 @@ export default function PactPage() {
 									<EditIcon color="primary" />
 								</Fab>
 							)}
-							<Fab
-								color="primary"
-								aria-label="add"
-								size="medium"
-								onClick={handleClickOpen}
-							>
-								<AddIcon />
-							</Fab>
+
+							{pact?.moderators.length === 1 && isMod ? (
+								<Fab
+									color="secondary"
+									aria-label="add"
+									size="medium"
+									onClick={handleDeletePact}
+								>
+									<DeleteIcon />
+								</Fab>
+							) : (
+								<Fab
+									color="secondary"
+									aria-label="add"
+									size="medium"
+									onClick={handleLeavePact}
+								>
+									<LeaveIcon />
+								</Fab>
+							)}
 						</Box>
 					</Box>
 				</Grid>
