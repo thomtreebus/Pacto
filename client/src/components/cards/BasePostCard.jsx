@@ -31,7 +31,6 @@ export default function BasePostCard({ children, post, numComments=null }) {
       <CardContent>
         <Box sx={{ overflow: "hidden" }}>
           <Voter 
-          data-testid="voter"
           initThumbUp={post.upvoters.includes(user._id)} 
           initThumbDown={post.downvoters.includes(user._id)} 
           handleLikeEvent={handleLikeEvent}

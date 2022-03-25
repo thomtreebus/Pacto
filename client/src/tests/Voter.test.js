@@ -54,7 +54,7 @@ describe("Voter Tests", () => {
   beforeEach(async () => {
 		render(
       <MockComponent>
-        <Voter initThumbUp={post.upvoters.includes(user._id)} initThumbDown={post.downvoters.includes(user._id)} initLikes={post.votes} />
+        <Voter initThumbUp={post.upvoters.includes(1)} initThumbDown={post.downvoters.includes(1)} initLikes={post.votes} handleLikeEvent={()=>{}}/>
       </MockComponent>
     );
     await waitForElementToBeRemoved(() => screen.getByText("Loading"));

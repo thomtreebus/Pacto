@@ -12,7 +12,7 @@ export default function Voter({initThumbUp, initThumbDown, initLikes, handleLike
   const [likes, setLikes] = useState(initLikes);
 
   return(
-    <Box sx={{ float: "left", paddingRight: "16px", textAlign: "center" }}>
+    <Box data-testid="voter" sx={{ float: "left", paddingRight: "16px", textAlign: "center" }}>
       <IconButton sx={{ paddingRight: 0, paddingLeft: 0, paddingTop: 0 ,paddingBottom: 0 }} onClick={() => {
         if (thumbUp) {
           setLikes(likes - 1);
