@@ -46,14 +46,13 @@ export default function PactPage() {
 		let newUser = Object.assign({}, user);
 		newUser.pacts = newUser.pacts.filter((pact) => pact !== pactID);
 		setUser(newUser);
-		history.push("/hub");
 	};
 
 	const handleButtonClicked = async (path) => {
 		setIsButtonDisabled(true);
 
 		const response = await fetch(
-			`${process.env.REACT_APP_URL}/pact/${pact._id}/${path}`,
+			`${process.env.REACT_APP_URL}/pact/${pactID}/${path}`,
 			{
 				method: "DELETE",
 				credentials: "include",
@@ -71,7 +70,7 @@ export default function PactPage() {
 		}
 
 		removePactLocally();
-		history.push(`/pact/${pact._id}`);
+		history.push(`/hub`);
 	};
 
 	useEffect(() => {
