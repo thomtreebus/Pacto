@@ -6,8 +6,13 @@ import MockComponent from "./utils/MockComponent";
 import { rest } from "msw";
 import { setupServer } from "msw/node";
 import users from "./utils/testUsers";
+import { createMemoryHistory } from 'history';
+import {Route, Router} from "react-router-dom";
+
 
 describe("User Page Tests", () => {
+    let history = undefined;
+
     const server = setupServer(
         rest.get(`${process.env.REACT_APP_URL}/me`, (req, res, ctx) => {
             return res(
@@ -40,9 +45,21 @@ describe("User Page Tests", () => {
     });
 
     const renderWithMock = async () => {
+        history = createMemoryHistory({initialEntries:[`/users`]})
+
         render(
             <MockComponent>
-                <UserPage />
+                <Router history={history}>
+                    <Route exact path="/users">
+                        <UserPage />
+                    </Route>
+                    <Route exact path="/user/:id">
+                        <h1>Redirected to user-profile</h1>
+                    </Route>
+                    <Route exact path="/not-found">
+                        <h1>Redirected to not-found</h1>
+                    </Route>
+                </Router>
             </MockComponent>
         );
         await waitForElementToBeRemoved(() => screen.getByText("Loading"));
@@ -97,4 +114,24 @@ describe("User Page Tests", () => {
             });
         })
     });
+
+    describe("Check miscellaneous behaviour", () => {
+
+        beforeEach(async () => {
+            await renderWithMock();
+        });
+
+        it("redirects to page not found if the user doesnt exist", async () => {
+            server.use(
+                rest.get(`${process.env.REACT_APP_URL}/users`, (req, res, ctx) => {
+                    return res(
+                        ctx.status(404)
+                    );
+                })
+            );
+
+            await renderWithMock();
+            expect(history.location.pathname).toBe("/not-found");
+        })
+    })
 });
