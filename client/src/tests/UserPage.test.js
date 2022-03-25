@@ -9,6 +9,7 @@ import users from "./utils/testUsers";
 import { createMemoryHistory } from 'history';
 import {Route, Router} from "react-router-dom";
 
+const CATEGORIES = ["Same University", "Friends", "Same Course", "Same Location"];
 
 describe("User Page Tests", () => {
     let history = undefined;
@@ -72,9 +73,8 @@ describe("User Page Tests", () => {
         });
 
         it("should render the all the category tags", async () => {
-            const categories = ["All university users", "Friends", "Same Course", "Same Location"];
-            for (let i = 0; i < categories.length; i++) {
-                const tab = await screen.findByText(categories[i]);
+            for (let i = 0; i < CATEGORIES.length; i++) {
+                const tab = await screen.findByText(CATEGORIES[i]);
                 expect(tab).toBeInTheDocument();
             }
         });
@@ -101,8 +101,7 @@ describe("User Page Tests", () => {
 
         describe("Category tab interactions", () => {
             it("only shows the users of a given category when a category is selected", async () => {
-                const categories = ["All university users", "Friends", "Same Course", "Same Location"];
-                const tabs = categories.map((category) => screen.getByText(category));
+                const tabs = CATEGORIES.map((category) => screen.getByText(category));
                 fireEvent.click(tabs[0]);
                 await assertUsersShown(["1"]);
                 fireEvent.click(tabs[1]);
