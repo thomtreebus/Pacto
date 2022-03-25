@@ -137,6 +137,7 @@ describe("PactPage Tests", () => {
         it("redirect to hub page when the delete icon is clicked", async () => {
           const deleteIcon = await screen.findByTestId("DeleteIcon");
           fireEvent.click(deleteIcon);
+          screen.debug();
           await waitFor(() => expect(history.location.pathname).toBe("/hub"));
         })
 
@@ -175,11 +176,11 @@ describe("PactPage Tests", () => {
           expect(deleteIcon).not.toBeInTheDocument();
         })
 
-        it("redirect to hub page when the exit icon is clicked", async () => {
-          const deleteIcon = await screen.findByTestId("ExitToAppIcon");
-          fireEvent.click(deleteIcon);
-          await waitFor(() => expect(history.location.pathname).toBe("/hub"));
-        })
+        // it("redirect to hub page when the exit icon is clicked", async () => {
+        //   const deleteIcon = await screen.findByTestId("ExitToAppIcon");
+        //   fireEvent.click(deleteIcon);
+        //   await waitFor(() => expect(history.location.pathname).toBe("/hub"));
+        // })
       });
 
     })        

@@ -74,9 +74,12 @@ export default function PactPage() {
 	};
 
 	useEffect(() => {
+		const controller = new AbortController();
+
 		fetch(`${process.env.REACT_APP_URL}/pact/${pactID}`, {
 			method: "GET",
 			credentials: "include",
+			signal: controller.signal,
 		})
 			.then((res) => {
 				if (!res.ok) {
@@ -95,13 +98,24 @@ export default function PactPage() {
 				}
 			})
 			.catch((err) => {
-				history.push("/not-found");
+				if (err.message === "Could not fetch pact") {
+					history.push("/not-found");
+				}
 			});
+
+		return () => controller.abort();
 	}, [pactID, history, user]);
+
+	if (isLoading) {
+		return (
+			<>
+				<Loading />
+			</>
+		);
+	}
 
 	return (
 		<>
-			{isLoading && <Loading />}
 			<ErrorMessage
 				isOpen={isError}
 				setIsOpen={setIsError}
