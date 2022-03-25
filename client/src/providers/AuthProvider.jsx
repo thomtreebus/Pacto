@@ -13,6 +13,7 @@ export default function AuthProvider({ children }) {
 	const [error, setError] = useState(null);
 	const [isLoading, setIsLoading] = useState(true);
 	const [isAuthenticated, setIsAuthenticated] = useState(false);
+	const [activePage, setActivePage] = useState("/feed");
 
 	async function fetchUser() {
 		setIsLoading(true);
@@ -58,7 +59,14 @@ export default function AuthProvider({ children }) {
 
 	return (
 		<AuthContext.Provider
-			value={{ user, isAuthenticated, setIsAuthenticated, setUser }}
+			value={{
+				user,
+				isAuthenticated,
+				setIsAuthenticated,
+				setUser,
+				activePage,
+				setActivePage,
+			}}
 		>
 			{children}
 		</AuthContext.Provider>
