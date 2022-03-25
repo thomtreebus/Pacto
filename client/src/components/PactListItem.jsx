@@ -56,7 +56,12 @@ export default function PactListItem({ pact }) {
 		<>
 			<ListItem
 				onClick={handleClick}
-				sx={{ cursor: "pointer" }}
+				sx={{
+					cursor: "pointer",
+					"&:hover": {
+						backgroundColor: "#f5f5f5",
+					},
+				}}
 				data-testid="item"
 			>
 				<ListItemIcon>
