@@ -61,6 +61,10 @@ module.exports.acceptFriendRequest = async (req, res) => {
   
         // Delete the friend request
         await FriendRequest.findByIdAndDelete(id);
+
+        // Notify requestor that recipient has accepted request
+        const notification = await Notification.create({ user: requestor._id, text: `${recipient.firstName} ${recipient.lastName} has accepted your friend request` });
+		    await User.findByIdAndUpdate(requestor._id, { $push: { notifications: notification._id } }); 
   
         res.status(201).json(jsonResponse(null, []));
       } else {
