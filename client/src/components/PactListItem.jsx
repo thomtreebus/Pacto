@@ -57,6 +57,7 @@ export default function PactListItem({ pact }) {
 	return (
 		<>
 			<ListItem
+				button
 				onClick={handleClick}
 				sx={{
 					cursor: "pointer",
