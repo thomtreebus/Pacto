@@ -1,30 +1,37 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 import { waitForElementToBeRemoved } from "@testing-library/react"
-import BasePostCard from "../components/cards/BasePostCard";
+import CommentCard from "../components/cards/CommentCard";
 import "@testing-library/jest-dom";
 import MockComponent from "./utils/MockComponent";
 import { setupServer } from "msw/node";
 import { rest } from "msw";
 
-const post = {
+const COMMENT_TEXT = "amet officia molestias esse!";
+
+const comment = {
   pact: 5,
+  post: {
+    text: "lorem ispum",
+    type: "text",
+    _id: 1,
+    comments: []
+  },
   author: {
     firstName: "Krishi",
     lastName: "Wali",
     _id: 1
   },
   createdAt: "5/5/5",
-  title: "ipsumLorem ipsumLorem ipsumLorem ipsumLorem",
-  text: "amet officia molestias esse!",
-  type: "text",
+  text: COMMENT_TEXT,
   votes: 6,
   upvoters: [],
   downvoters: [],
-  comments: [0,0,0,0],
+  childComments: [0,0,0,0],
+  parentComment: undefined,
   _id: 1
 }
 
-describe("BasePostCard Tests", () => {
+describe("CommentCard Tests", () => {
   const server = setupServer(
 		rest.get(`${process.env.REACT_APP_URL}/me`, (req, res, ctx) => {
 			return res(
@@ -48,7 +55,7 @@ describe("BasePostCard Tests", () => {
   beforeEach(async () => {
 		render(
       <MockComponent>
-        <BasePostCard post={post} />
+        <CommentCard post={comment.post} comment={comment} postUpdaterFunc={()=>{}} />
       </MockComponent>
     );
     await waitForElementToBeRemoved(() => screen.getByText("Loading"));
@@ -59,9 +66,9 @@ describe("BasePostCard Tests", () => {
       await screen.findByTestId("voter");
     });
 
-    it("should render post title", async () => {
-      const title = await screen.findByTestId("title");
-      expect(title.innerHTML).toBe("ipsumLorem ipsumLorem ipsumLorem ipsumLorem");
+    it("should render comment text", async () => {
+      const text = await screen.findByTestId("comment-text");
+      expect(text.innerHTML).toBe(COMMENT_TEXT);
     });
 
     it("should render author text", async () => {
@@ -74,26 +81,9 @@ describe("BasePostCard Tests", () => {
       expect(date.innerHTML).toContain("5/5/5");
     });
 
-    it("should render comments number with plural for greater than 1", async () => {
-      const comments = await screen.findByTestId("comments");
-      expect(comments.innerHTML).toContain("4 Comments");
-    });
-
-    it("should render comments number with singular for 1", async () => {
-      document.body.innerHTML = "";
-      const postCopy = {...post};
-      postCopy.comments = [0];
-      render(
-        <MockComponent>
-          <BasePostCard post={postCopy} />
-        </MockComponent>
-      );
-      const comments = await screen.findByTestId("comments");
-      expect(comments.innerHTML).toContain("1 Comment");
-    });
-
-    it("should render comment icon", async () => {
-      await screen.findByTestId("CommentIcon");
+    it("should render reply button", async () => {
+      const reply = await screen.findByTestId("reply-button");
+      expect(reply.innerHTML).toContain("Reply");
     });
   });
 

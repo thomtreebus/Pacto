@@ -64,11 +64,11 @@ export default function CommentCard({ comment, post, postUpdaterFunc }) {
               Posted by <span onClick={() => history.push(`/user/${comment.author._id}`)} className="link" data-testid="author">{comment.author.firstName + " " + comment.author.lastName}</span> on {comment.createdAt}
             </Typography>
 
-            <Typography variant="body1">
+            <Typography variant="body1" data-testid="comment-text">
               {comment.text}
             </Typography>
 
-            <Typography variant="caption" className="link" onClick={() => {setShowReplyBox(!showReplyBox)}}>
+            <Typography variant="caption" className="link" onClick={() => {setShowReplyBox(!showReplyBox)}} data-testid="reply-button">
               {showReplyBox ? "Hide" : "Reply"}
             </Typography>
           </Box>
@@ -81,7 +81,7 @@ export default function CommentCard({ comment, post, postUpdaterFunc }) {
             </CommentBox>
           </Box>}
 
-          {(comment.childComments.length > 0) && <Box sx = {{ overflow: "hidden"}}>
+          {(comment.childComments.length > 0) && <Box sx = {{ overflow: "hidden"}} data-testid="child-comment-list">
             <Accordion>
               <AccordionSummary
                 expandIcon={<ExpandMoreIcon />}
