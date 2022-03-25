@@ -13,9 +13,7 @@ module.exports.feedGET = async (req, res) => {
       const post = posts[i];
       await post.populate({ path: 'author', model: User });
       if (post.type === "link") {
-        console.log("getting preview...")
 				const preview = await getPreview(post.link);
-        console.log(preview)
 				if (preview !== null) {
 					post.text = preview.text;
 					post.image = preview.image;
