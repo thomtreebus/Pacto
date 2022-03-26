@@ -1,11 +1,6 @@
 import { Box, Card, CardContent, IconButton } from "@mui/material";
 import { Typography } from "@mui/material";
 import { useHistory } from "react-router-dom";
-<<<<<<< HEAD
-=======
-import ThumbUpRoundedIcon from "@mui/icons-material/ThumbUpRounded";
-import ThumbDownRoundedIcon from "@mui/icons-material/ThumbDownRounded";
->>>>>>> main
 import CommentIcon from '@mui/icons-material/Comment';
 
 import { useAuth } from "../../providers/AuthProvider";
@@ -13,7 +8,7 @@ import Voter from "../Voter";
 
 const vagueTime = require("vague-time");
 
-export default function BasePostCard({ children, post }) {
+export default function BasePostCard({ children, post, numComments=null }) {
   const { user } = useAuth();
   const commentCount = (numComments === null ? post.comments.length : numComments);
 
