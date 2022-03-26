@@ -59,6 +59,9 @@ function App() {
 							<PrivateRoute exact path="/users">
 								<UserPage />
 							</PrivateRoute>
+							<PrivateRoute exact path="/users">
+								<UserPage />
+							</PrivateRoute>
 							<PrivateRoute path="*">
 								<NotFound />
 							</PrivateRoute>

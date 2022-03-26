@@ -1,4 +1,4 @@
-import { Box, Grid, Card, CardHeader, Avatar, Typography } from "@mui/material"
+import { Box, Grid, Card, CardHeader, Button, Avatar, CardContent, Typography } from "@mui/material"
 import { useHistory } from "react-router-dom";
 
 export default function UserCard({user}){
@@ -44,6 +44,16 @@ export default function UserCard({user}){
                     />   
                     <Typography variant="h7" 
                         sx={{
+                            // alignItems: "center",
+                            // gap: "5px",
+                            // textAlign: "center",
+                            // borderRadius: "10px",
+                            // justifyContent: "center",
+                            paddingLeft: "25px",
+                        }}
+                    >
+                        {user.firstName} {user.lastName}
+                    </Typography>                                    
                             paddingLeft: "25px",
                         }}
                     >{user.firstName} {user.lastName}</Typography>                                    

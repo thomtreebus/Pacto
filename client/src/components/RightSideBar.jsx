@@ -32,6 +32,9 @@ export default function RightSideBar() {
 					Popular Pacts
 				</Typography>
 				<PopularPactsList numberOfPacts={10} />
+
+
+				{/* Insert content for right side bar here */}
 			</Drawer>
 		</Box>
 	);
