@@ -83,10 +83,10 @@ describe("CommentBox Tests", () => {
     mockSuccessHandler.mockReset();
 	});
 
-  const renderWithMock = async () => {
+  const renderWithMock = async (element) => {
     render(
       <MockComponent>
-        <CommentBox post={comment.post} successHandler={mockSuccessHandler} />
+        { element }
       </MockComponent>
     );
     await waitForElementToBeRemoved(() => screen.getByText("Loading"));
@@ -94,7 +94,7 @@ describe("CommentBox Tests", () => {
 
   describe("Check elements are rendered", () => {
     beforeEach( async() => {
-      await renderWithMock();
+      await renderWithMock(<CommentBox post={comment.post} successHandler={mockSuccessHandler} />);
     })
     it("should render text entry component", async () => {
       await screen.findByTestId("text-entry-field");
@@ -107,7 +107,7 @@ describe("CommentBox Tests", () => {
 
   describe("Check interaction with elements", () => {
     it("should successfully submit comment", async () => {
-      await renderWithMock();
+      await renderWithMock(<CommentBox post={comment.post} successHandler={mockSuccessHandler} />);
       const submit = await screen.findByTestId("submit-button");
       const input = await screen.findByRole("textbox", {
 				name: "Comment",
@@ -119,11 +119,7 @@ describe("CommentBox Tests", () => {
     });
 
     it("should successfully submit reply to comment", async () => {
-      render(
-        <MockComponent>
-          <CommentBox post={comment.post} repliedToComment={comment} successHandler={mockSuccessHandler} />
-        </MockComponent>
-      );
+      await renderWithMock(<CommentBox post={comment.post} repliedToComment={comment} successHandler={mockSuccessHandler} />)
       await waitForElementToBeRemoved(() => screen.getByText("Loading"));
 
       const submit = await screen.findByTestId("submit-button");
