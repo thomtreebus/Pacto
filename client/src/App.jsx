@@ -45,7 +45,6 @@ function App() {
 								<EditPact />
 							</PrivateRoute>
 							<PrivateRoute path="/feed">
-								<h1>Feed</h1>
 								<Feed />
 							</PrivateRoute>
 							<PrivateRoute exact path="/hub">
@@ -56,6 +55,9 @@ function App() {
 							</PrivateRoute>
 							<PrivateRoute exact path="/search/:query">
 								<SearchResults />
+							</PrivateRoute>
+							<PrivateRoute exact path="/users">
+								<UserPage />
 							</PrivateRoute>
 							<PrivateRoute exact path="/users">
 								<UserPage />

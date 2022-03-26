@@ -1,28 +1,15 @@
-const mongoose = require("mongoose");
-const dotenv = require("dotenv");
 const supertest = require("supertest");
-const bcrypt = require("bcrypt");
 const app = require("../../app");
 const { createToken } = require("../../controllers/authController");
 const { generateTestUser, getDefaultTestUserEmail} = require("../fixtures/generateTestUser");
 const { generateTestPact, getTestPactId } = require("../fixtures/generateTestPact");
-const { generateTestPost, getTestPostId } = require("../fixtures/generateTestPost");
-const { jsonResponse } = require("../../helpers/responseHandlers");
 const { MESSAGES, PACT_MESSAGES } = require("../../helpers/messages");
-const University = require('../../models/University');
 const User = require("../../models/User");
 const Pact = require('../../models/Pact');
-
-dotenv.config();
+const useTestDatabase = require("../helpers/useTestDatabase");
 
 describe("promoteMember /pact/:pactId/:userId/promote", () => {
-  beforeAll(async () => {
-    await mongoose.connect(process.env.TEST_DB_CONNECTION_URL);
-  });
-
-  afterAll(async () => {
-    await mongoose.connection.close();
-  });
+  useTestDatabase("promoteMember");
 
   beforeEach(async () => {
     const user = await generateTestUser();
@@ -37,12 +24,6 @@ describe("promoteMember /pact/:pactId/:userId/promote", () => {
     pact.members.push(secondUser._id);
     await secondUser.save();
     await pact.save();
-  });
-
-  afterEach(async () => {
-    await User.deleteMany({});
-    await Pact.deleteMany({});
-    await University.deleteMany({});
   });
 
   it("moderator can promote member of pact", async () => {

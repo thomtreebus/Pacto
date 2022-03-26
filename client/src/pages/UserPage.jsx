@@ -7,6 +7,7 @@ import Loading from "./Loading";
 import UserList from "../components/UserList";
 import Tabs from "@mui/material/Tabs";
 import PropTypes from "prop-types";
+import Container from "@mui/material/Container";
 
 
 function TabPanel(props) {
@@ -22,7 +23,8 @@ function TabPanel(props) {
     >
       {value === index && (
         <Box sx={{ p: 3 }}>
-          <Typography>{children}</Typography>
+//           <Typography>{children}</Typography>
+          <Typography component={'div'}>{children}</Typography>
         </Box>
       )}
     </div>
@@ -48,34 +50,37 @@ export default function UserPage() {
     const [isLoading, setIsLoading] = useState(true);
     const [allUsers, setAllUsers] = useState(null);
     const [allFriends, setAllFriends] = useState(null);
+    const [allSameLocation, setAllSameLocation] = useState(null);
+    const [allSameCourse, setAllSameCourse] = useState(null);
     const history = useHistory();
     const [value, setValue] = useState(0);
 
     useEffect(() => {
-    fetch(`${process.env.REACT_APP_URL}/users`, {
-      method: "GET",
-      credentials: "include"
-    }).then((res) => {
-      if (!res.ok) {
-        throw Error("Could not fetch pact");
-      }
-      return res.json();
-    }).then((data) => {
-      const resAllUsers = data.message
-      setAllUsers(resAllUsers);
-      let myFriends = [];
-      for (let x = 0; x< resAllUsers.length; x++){
-        if(resAllUsers[x].friends.includes(user._id)){
-          myFriends.push(resAllUsers[x]);
+      fetch(`${process.env.REACT_APP_URL}/users`, {
+        method: "GET",
+        credentials: "include"
+      }).then((res) => {
+        if (!res.ok) {
+          throw Error("Could not fetch pact");
         }
-      }
-      console.log(myFriends);
-      setAllFriends(myFriends);
-      setIsLoading(false);
-    }).catch(() => {
-      history.push("/not-found");
+        return res.json();
+      }).then((data) => {
+        const resAllUsers = data.message
+        setAllFriends(
+          resAllUsers.filter(curUser => curUser.friends.includes(user._id))
+        );
+        setAllSameCourse(
+          user.course?.trim() ? resAllUsers.filter(curUser => curUser.course === user.course) : [user]
+        );
+        setAllSameLocation(
+          user.location?.trim() ? resAllUsers.filter(curUser => curUser.location === user.location) : [user]
+        );
+        setAllUsers(resAllUsers);
+        setIsLoading(false);
+      }).catch(() => {
+        history.push("/not-found");
     })
-  }, [])
+    }, [history, user])
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -88,21 +93,30 @@ export default function UserPage() {
   }
 	
 	return (
-
-    <Box sx={{ width: '100%' }}>
-      <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-        <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
-          <Tab label="All university users" {...a11yProps(0)} />
-          <Tab label="Friends" {...a11yProps(1)} />
-        </Tabs>
+    <Container fixed>
+      <Box sx={{ width: '100%' }}>
+        <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+          <Tabs value={value} onChange={handleChange} aria-label="User type tab">
+            <Tab label="Same University" {...a11yProps(0)} />
+            <Tab label="Friends" {...a11yProps(1)} />
+            <Tab label="Same Course" sx={{display : {xs: "none", md: "block"}}} {...a11yProps(2)} />
+            <Tab label="Same Location"  sx={{display : {xs: "none", md: "block"}}}  {...a11yProps(3)} />
+          </Tabs>
+        </Box>
+        <TabPanel value={value} index={0}>
+          <UserList users={allUsers}/>
+        </TabPanel>
+        <TabPanel value={value} index={1}>
+          <UserList users={allFriends}/>
+        </TabPanel>
+        <TabPanel value={value} index={2}>
+          <UserList users={allSameCourse}/>
+        </TabPanel>
+        <TabPanel value={value} index={3}>
+          <UserList users={allSameLocation}/>
+        </TabPanel>
       </Box>
-      <TabPanel value={value} index={0}>
-        <UserList users={allUsers}/>
-      </TabPanel>
-      <TabPanel value={value} index={1}>
-        <UserList users={allFriends}/>
-      </TabPanel>
-    </Box>
-            //<UserPortfolio user = {user}></UserPortfolio>
+    </Container>
+    // <UserPortfolio user = {user}></UserPortfolio>
     )
 }

@@ -17,6 +17,7 @@ export default function UserCard({user}){
         >
             <Grid item xs={12} s={7}>
                 <Card onClick={handleViewButtonClick} 
+                        data-testid="userCard"
                         sx={{
                             display:"flex",
                             padding: "10px",
@@ -53,6 +54,9 @@ export default function UserCard({user}){
                     >
                         {user.firstName} {user.lastName}
                     </Typography>                                    
+                            paddingLeft: "25px",
+                        }}
+                    >{user.firstName} {user.lastName}</Typography>                                    
                 </Card>
             </Grid>
         </Box>		

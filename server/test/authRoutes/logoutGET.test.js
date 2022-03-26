@@ -1,28 +1,13 @@
-const mongoose = require("mongoose");
-const dotenv = require("dotenv");
 const supertest = require("supertest");
 const app = require("../../app");
 const Cookies = require("expect-cookies");
 const { createToken } = require("../../controllers/authController");
-const University = require("../../models/University");
 const User = require("../../models/User");
 const { generateTestUser, getDefaultTestUserEmail } = require('../fixtures/generateTestUser');
-
-dotenv.config();
+const useTestDatabase = require("../helpers/useTestDatabase");
 
 describe("GET /logout", () => {
-  beforeAll(async () => {
-		await mongoose.connect(process.env.TEST_DB_CONNECTION_URL);
-	});
-
-	afterAll(async () => {
-		await mongoose.connection.close();
-	});
-
-	afterEach(async () => {
-		await User.deleteMany({});
-		await University.deleteMany({});
-	});
+  useTestDatabase("logout");
 
   beforeEach(async () => {
     const user = await generateTestUser();
