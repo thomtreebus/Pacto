@@ -81,11 +81,9 @@ module.exports.allUniUsers = async(req, res) => {
   try {
     const university = req.user.university;
 
-    const users = await User.find({university}).populate(
+    const users = await User.find({university, active: true}).populate(
       {path: 'university', model: University}
     );
-
-    // await users.populate({ path: 'users', model: User })
 
     res.status(200).json(jsonResponse(users, []));
 
