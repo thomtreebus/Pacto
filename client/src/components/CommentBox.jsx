@@ -3,6 +3,7 @@ import * as React from "react";
 import { Box, TextField, Button, Grid } from "@mui/material"
 import { useState } from "react";
 
+// Allows the user to add a comment to some post.
 export default function CommentBox({post, successHandler=()=>{}, repliedToComment=null}){
 
   const [apiTextError, setApiTextError] = useState("");
@@ -35,10 +36,11 @@ export default function CommentBox({post, successHandler=()=>{}, repliedToCommen
       url = url + `/${repliedToComment._id}/reply`
     }
 
+    // Extract the data we want from the response
     const response = await sendComment(url, data);
-
     const json = await response.json();
 
+    // Handle errors
 		Object.values(json["errors"]).forEach((err) => {
 			const field = err["field"];
 			const message = err["message"];
@@ -48,7 +50,7 @@ export default function CommentBox({post, successHandler=()=>{}, repliedToCommen
 			}
 		});
 
-		if (response.status !== 201) {
+		if (response.status !== 201) { // i.e. an error has occured
 			setIsButtonDisabled(false);
 			return;
 		}

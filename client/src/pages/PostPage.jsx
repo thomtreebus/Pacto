@@ -44,6 +44,7 @@ export default function PostPage() {
     return <Loading/>
   }
 
+  // This callback function handles a simple addition of a new comment to the post.
   const commentSubmissionHandler = (newComment) => {
     setShowReplyBox(false);
 
@@ -53,6 +54,8 @@ export default function PostPage() {
     setPost(newPostObj);
   }
 
+  // This callback function is used when the change to the post object occurs on a deeper recursive layer
+  // and is thus better handled inside the component.
   const recieveUpdatedPostObj = (newPostObj) => {
     setPost(newPostObj);
   }

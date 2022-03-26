@@ -91,6 +91,8 @@ export default function CommentCard({ comment, post, postUpdaterFunc }) {
               </AccordionSummary>
               <AccordionDetails>
                 <Grid item xs={12} lg={12}>
+                  {/* Here we map each child comment onto its respective document within the post object before display */}
+                  {/* This is to avoid deep recursive population on the server side */}
                 {comment.childComments.map(c => post.comments.filter(p=> p._id===c._id)[0]).map((c) => (<CommentCard key={c._id} post={post} comment={c} postUpdaterFunc={postUpdaterFunc}></CommentCard>))}
                 </Grid>
               </AccordionDetails>
