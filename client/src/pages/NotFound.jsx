@@ -17,7 +17,7 @@ export default function Notfound() {
 			/>
 			<CardContent>
 				<Typography gutterBottom variant="h5" component="div">
-					ERORR 404
+					ERROR 404
 				</Typography>
 				<Typography variant="body2" color="text.secondary">
 					The Page you are looking for was not found!

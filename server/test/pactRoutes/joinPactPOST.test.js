@@ -1,5 +1,3 @@
-const mongoose = require("mongoose");
-const dotenv = require("dotenv");
 const supertest = require("supertest");
 const app = require("../../app");
 const { createToken } = require("../../controllers/authController");
@@ -8,19 +6,10 @@ const { generateTestPact, getTestPactId } = require("../fixtures/generateTestPac
 const { MESSAGES, PACT_MESSAGES } = require("../../helpers/messages");
 const User = require("../../models/User");
 const Pact = require('../../models/Pact');
-const Post = require('../../models/Post');
-const University = require('../../models/University');
-
-dotenv.config();
+const useTestDatabase = require("../helpers/useTestDatabase");
 
 describe("POST /pact/:pactid/join", () => {
-  beforeAll(async () => {
-    await mongoose.connect(process.env.TEST_DB_CONNECTION_URL);
-  });
-
-  afterAll(async () => {
-    await mongoose.connection.close();
-  });
+  useTestDatabase("joinPact");
 
   beforeEach(async () => {
     const user = await generateTestUser();
@@ -29,13 +18,6 @@ describe("POST /pact/:pactid/join", () => {
     // Makes user a member and mod of pact
     const pact = await generateTestPact(user);
     await pact.save();
-  });
-
-  afterEach(async () => {
-    await User.deleteMany({});
-    await Post.deleteMany({});
-    await Pact.deleteMany({});
-    await University.deleteMany({});
   });
 
   it("should not allow not logged in user to join the pact", async () => {

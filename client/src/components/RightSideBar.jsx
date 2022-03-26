@@ -7,7 +7,6 @@ import { Typography, Toolbar, Divider } from "@mui/material";
 const drawerWidth = 240;
 
 export default function RightSideBar() {
-
 	return (
 		<Box sx={{ display: { xs: "none", md: "flex" } }}>
 			<Drawer
@@ -33,9 +32,6 @@ export default function RightSideBar() {
 					Popular Pacts
 				</Typography>
 				<PopularPactsList numberOfPacts={10} />
-
-
-				{/* Insert content for right side bar here */}
 			</Drawer>
 		</Box>
 	);

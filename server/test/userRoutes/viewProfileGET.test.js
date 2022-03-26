@@ -1,29 +1,13 @@
-const mongoose = require("mongoose");
-const dotenv = require("dotenv");
 const supertest = require("supertest");
 const app = require("../../app");
 const { createToken } = require("../../controllers/authController");
-const University = require("../../models/University");
-const User = require("../../models/User");
 const { generateTestUser } = require('../fixtures/generateTestUser');
 const {getDefaultTestUser} = require("../helpers/defaultTestUser");
 const {MESSAGES, USER_MESSAGES} = require("../../helpers/messages");
-
-dotenv.config();
+const useTestDatabase = require("../helpers/useTestDatabase");
 
 describe("GET /users/:id", () => {
-  beforeAll(async () => {
-    await mongoose.connect(process.env.TEST_DB_CONNECTION_URL);
-  });
-
-  afterAll(async () => {
-    await mongoose.connection.close();
-  });
-
-  afterEach(async () => {
-    await User.deleteMany({});
-    await University.deleteMany({});
-  });
+  useTestDatabase("getUsers");
 
   it("logged in user can see their profile data", async () => {
     const user = await generateTestUser();

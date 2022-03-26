@@ -1,13 +1,11 @@
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const supertest = require("supertest");
-const bcrypt = require("bcrypt");
 const app = require("../../app");
 const { createToken } = require("../../controllers/authController");
 const { generateTestUser, getDefaultTestUserEmail} = require("../fixtures/generateTestUser");
-const { generateTestPact, getTestPactId } = require("../fixtures/generateTestPact");
-const { generateTestPost, getTestPostId } = require("../fixtures/generateTestPost");
-const { jsonResponse } = require("../../helpers/responseHandlers");
+const { generateTestPact } = require("../fixtures/generateTestPact");
+const { generateTestPost } = require("../fixtures/generateTestPost");
 const { MESSAGES, PACT_MESSAGES, POST_MESSAGES } = require("../../helpers/messages");
 const User = require("../../models/User");
 const Pact = require('../../models/Pact');
@@ -39,7 +37,7 @@ describe("GET /pact/:pactId/post/:postId", () => {
 
   beforeAll(async () => {
     server.listen({ onUnhandledRequest: "bypass" });
-    await mongoose.connect(process.env.TEST_DB_CONNECTION_URL);
+    await mongoose.connect(`${process.env.TEST_DB_CONNECTION_URL}`);
   });
 
   afterAll(async () => {

@@ -1,8 +1,5 @@
-const mongoose = require("mongoose");
-const dotenv = require("dotenv");
 const supertest = require("supertest");
 const app = require("../../app");
-
 const { checkIsModeratorOfPact } = require("../../middleware/pactMiddleware");
 const { checkAuthenticated } = require("../../middleware/authMiddleware");
 const { createToken } = require("../../controllers/authController");
@@ -12,24 +9,10 @@ const { generateTestUser, getDefaultTestUserEmail} = require("../fixtures/genera
 const { generateTestPact, getTestPactId } = require("../fixtures/generateTestPact");
 const User = require("../../models/User");
 const Pact = require("../../models/Pact");
-const University = require("../../models/University");
-
-dotenv.config();
+const useTestDatabase = require("../helpers/useTestDatabase");
 
 describe("CheckIsModeratorOfPact Middleware", () => {
-  beforeAll(async () => {
-    await mongoose.connect(process.env.TEST_DB_CONNECTION_URL);
-  });
-
-  afterAll(async () => {
-    await mongoose.connection.close();
-  });
-
-  afterEach(async () => {
-    await User.deleteMany({});
-    await University.deleteMany({});
-    await Pact.deleteMany({});
-  });
+  useTestDatabase("checkIsModeratorOfPact");
 
   beforeEach(async () => {
     const user = await generateTestUser();

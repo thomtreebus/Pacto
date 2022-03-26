@@ -1,11 +1,11 @@
-const Pact = require("../../models/Pact");
 const User = require("../../models/User");
-const University = require("../../models/University");
 const Post = require("../../models/Post");
-const Link = require("../../models/Link");
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const supertest = require("supertest");
+const Pact = require('../../models/Pact');
+const University = require('../../models/University');
+const Link = require('../../models/Link');
 const app = require("../../app");
 const { generateTestUser, getDefaultTestUserEmail } = require("../fixtures/generateTestUser");
 const { generateTestPact, getTestPactId } = require("../fixtures/generateTestPact");
@@ -14,6 +14,8 @@ const { createToken } = require("../../controllers/authController");
 const { MESSAGES } = require("../../helpers/messages");
 const { rest } = require("msw");
 const { setupServer } = require("msw/node");
+
+dotenv.config();
 
 describe("GET /feed", () =>{
   const server = setupServer(
@@ -53,7 +55,7 @@ describe("GET /feed", () =>{
     await post2.save();
   });
 
-	afterEach(async () => {
+  afterEach(async () => {
 		await User.deleteMany({});
     await Pact.deleteMany({});
 		await University.deleteMany({});
