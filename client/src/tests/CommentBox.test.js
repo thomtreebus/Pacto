@@ -81,15 +81,21 @@ describe("CommentBox Tests", () => {
 
   beforeEach(async () => {
     mockSuccessHandler.mockReset();
-		render(
+	});
+
+  const renderWithMock = async () => {
+    render(
       <MockComponent>
         <CommentBox post={comment.post} successHandler={mockSuccessHandler} />
       </MockComponent>
     );
     await waitForElementToBeRemoved(() => screen.getByText("Loading"));
-	});
+  }
 
   describe("Check elements are rendered", () => {
+    beforeEach( async() => {
+      await renderWithMock();
+    })
     it("should render text entry component", async () => {
       await screen.findByTestId("text-entry-field");
     });
@@ -101,6 +107,7 @@ describe("CommentBox Tests", () => {
 
   describe("Check interaction with elements", () => {
     it("should successfully submit comment", async () => {
+      await renderWithMock();
       const submit = await screen.findByTestId("submit-button");
       const input = await screen.findByRole("textbox", {
 				name: "Comment",
