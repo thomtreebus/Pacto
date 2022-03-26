@@ -7,10 +7,12 @@ const EmailVerificationCode = require("../../models/EmailVerificationCode");
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const FriendRequest = require("../../models/FriendRequest");
+const Notification = require("../../models/Notification");
+const Link = require("../../models/Link");
 
 dotenv.config();
 
-function useTestDatabase(key="") {
+function useTestDatabase(key = "") {
 	beforeAll(async () => {
 		await mongoose.connect(`${process.env.TEST_DB_CONNECTION_URL}`);
 	});
@@ -31,6 +33,8 @@ function useTestDatabase(key="") {
 		await Comment.deleteMany({});
 		await EmailVerificationCode.deleteMany({});
 		await FriendRequest.deleteMany({});
+		await Notification.deleteMany({});
+		await Link.deleteMany({});
 	}
 }
 
