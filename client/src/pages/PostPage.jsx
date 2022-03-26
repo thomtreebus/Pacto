@@ -5,8 +5,6 @@ import { useParams } from "react-router-dom";
 import Loading from "./Loading";
 import { useHistory } from "react-router-dom";
 import CommentBox from "../components/CommentBox";
-import { Toolbar } from "@mui/material";
-
 import CommentCard from "../components/cards/CommentCard";
 import PostCard from "../components/cards/PostCard";
 

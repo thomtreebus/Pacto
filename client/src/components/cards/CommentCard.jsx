@@ -49,7 +49,7 @@ export default function CommentCard({ comment, post, postUpdaterFunc }) {
   }
 
   return (comment&&
-    <Card sx={{ width: "100%", marginTop : 1, boxShadow: 2  }} data-testid="comment-card" >
+    <Card sx={{ width: "100%", marginTop : 1, boxShadow: 3  }} data-testid="comment-card" >
       <CardContent>
         <Box sx={{ overflow: "hidden" }}>
           <Voter 
