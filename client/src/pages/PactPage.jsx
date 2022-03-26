@@ -41,8 +41,6 @@ export default function PactPage() {
   const handleClose = () => {
     setOpen(false);
   };
-  
-  const {user} = useAuth()
 
 	const removePactLocally = () => {
 		let newUser = Object.assign({}, user);
