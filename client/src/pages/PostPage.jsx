@@ -1,6 +1,6 @@
-import { Fab, Grid, Typography } from "@mui/material";
+import { Grid, Typography } from "@mui/material";
 import { Box } from "@mui/system";
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import Loading from "./Loading";
 import { useHistory } from "react-router-dom";
@@ -74,7 +74,7 @@ export default function PostPage() {
             {/* We display only the comments without a parentComment, i.e. top level comments */}
             { post.comments.filter((x) => x.parentComment == null).map((c) => {
               return(
-                <CommentCard key={post._id} post={post} comment={c} postUpdaterFunc={recieveUpdatedPostObj}> </CommentCard>
+                <CommentCard key={c._id} post={post} comment={c} postUpdaterFunc={recieveUpdatedPostObj}> </CommentCard>
               );
             })}
           </Grid>

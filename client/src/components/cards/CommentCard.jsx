@@ -1,5 +1,5 @@
-import { Box, Card, CardContent, IconButton, Grid } from "@mui/material";
-import { useEffect, useState } from "react";
+import { Box, Card, CardContent, Grid } from "@mui/material";
+import { useState } from "react";
 import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
@@ -19,7 +19,7 @@ export default function CommentCard({ comment, post, postUpdaterFunc }) {
       switch(eventCode) {
         case 0: return `pact/${post.pact._id}/post/${post._id}/comment/${comment._id}/upvote`;
         case 1: return `pact/${post.pact._id}/post/${post._id}/comment/${comment._id}/downvote`;
-        // No default
+        // no default
       }
     })();
     fetch(`${process.env.REACT_APP_URL}/${url}`, {
@@ -91,7 +91,7 @@ export default function CommentCard({ comment, post, postUpdaterFunc }) {
               </AccordionSummary>
               <AccordionDetails>
                 <Grid item xs={12} lg={12}>
-                {comment.childComments.map(c => post.comments.filter(p=> p._id===c._id)[0]).map((c) => (<CommentCard post={post} comment={c} postUpdaterFunc={postUpdaterFunc}></CommentCard>))}
+                {comment.childComments.map(c => post.comments.filter(p=> p._id===c._id)[0]).map((c) => (<CommentCard key ={c._id} post={post} comment={c} postUpdaterFunc={postUpdaterFunc}></CommentCard>))}
                 </Grid>
               </AccordionDetails>
             </Accordion>
