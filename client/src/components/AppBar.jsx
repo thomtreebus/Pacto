@@ -74,7 +74,7 @@ export default function PrimarySearchAppBar({ handleDrawerToggle }) {
 		await fetch(`${process.env.REACT_APP_URL}/logout`, {
 			credentials: "include",
 		});
-		silentUserRefresh();
+		await silentUserRefresh();
 		history.push("login");
 	};
 
