@@ -5,6 +5,7 @@ import { useParams } from "react-router-dom";
 import Loading from "./Loading";
 import { useHistory } from "react-router-dom";
 import CommentBox from "../components/CommentBox";
+import { Toolbar } from "@mui/material";
 
 import CommentCard from "../components/cards/CommentCard";
 import PostCard from "../components/cards/PostCard";
@@ -62,8 +63,8 @@ export default function PostPage() {
 
   return (post&&
     <>
-      <Grid container width={"60vw"}>
-        <Grid item xs={16} lg={14} paddingBottom={4}>
+      <Grid container width="100%" justifyContent="center" sx={{marginTop: 3}}>
+        <Grid item xs={11} paddingBottom={1}>
           <PostCard post={post} numComments={post.comments.length}></PostCard>
           <Typography variant="caption" className="link" onClick={() => {setShowReplyBox(!showReplyBox)}} data-testid="comment-adder">
             {showReplyBox ? "Hide" : "Add comment"}
@@ -72,8 +73,8 @@ export default function PostPage() {
             <CommentBox post={post} successHandler={commentSubmissionHandler}></CommentBox>
           </Box>}
         </Grid>
-        <Box sx={{width: "95%", marginInline: "auto"}}>
-          <Grid item xs={16} lg={14} data-testid="comment-list">
+        <Box sx={{width: "95%", marginInline: "auto", display: "flex"}} justifyContent="center">
+          <Grid item xs={10} data-testid="comment-list">
             {/* We display only the comments without a parentComment, i.e. top level comments */}
             { post.comments.filter((x) => x.parentComment == null).map((c) => {
               return(
