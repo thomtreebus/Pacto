@@ -120,8 +120,6 @@ describe("CommentBox Tests", () => {
 
     it("should successfully submit reply to comment", async () => {
       await renderWithMock(<CommentBox post={comment.post} repliedToComment={comment} successHandler={mockSuccessHandler} />)
-      await waitForElementToBeRemoved(() => screen.getByText("Loading"));
-
       const submit = await screen.findByTestId("submit-button");
       const input = await screen.findByRole("textbox", {
 				name: "Comment",
