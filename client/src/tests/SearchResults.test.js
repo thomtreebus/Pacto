@@ -5,6 +5,8 @@ import "@testing-library/jest-dom";
 import MockComponent from "./utils/MockComponent";
 import { rest } from "msw";
 import { setupServer } from "msw/node";
+import { createMemoryHistory } from 'history';
+import { Router, Route } from 'react-router-dom'
 
 const response = {
   message: {
@@ -58,10 +60,17 @@ describe("SearchResults Tests", () => {
 		server.resetHandlers();
 	});
 
+
 	beforeEach(async () => {
+		const history = createMemoryHistory({ initialEntries: [`/search/e`] });
+
 		render(
 			<MockComponent>
-				<SearchResults />
+				<Router history={history}>
+					<Route exact path="/search/:query">
+						<SearchResults />
+					</Route>
+				</Router>
 			</MockComponent>
 		);
 		await waitForElementToBeRemoved(() => screen.getByText("Loading"));
@@ -70,7 +79,7 @@ describe("SearchResults Tests", () => {
 	describe("Check elements are rendered", () => {
 
     it("should render Typography element", async () => {
-			const typographyElement = await screen.findByTestId(/tp-element/i);
+			const typographyElement = await screen.findByTestId("tp-element");
 		});
 
 	});
