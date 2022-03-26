@@ -96,6 +96,23 @@ describe("PostPage Tests", () => {
   });
 
   describe("Check interaction with elements", () => {
+    it("should open box for adding comment when Add comment is clicked", async () => {
+      const reply = await screen.findByTestId("comment-adder");
+      expect(reply.innerHTML).toContain("Add comment");
+      fireEvent.click(reply);
+      expect(reply.innerHTML).toContain("Hide");
+      const replyBox = await screen.findByTestId("comment-reply-box");
+      expect(replyBox).toBeDefined();
+    });
     
+    it("comment box should close when re-pressed", async () => {
+      const reply = await screen.findByTestId("comment-adder");
+      fireEvent.click(reply);
+      fireEvent.click(reply);
+
+      expect(reply.innerHTML).toContain("Add comment");
+      const replyBox = await screen.queryByTestId("comment-reply-box");
+      expect(replyBox).toBeNull();
+    });
   });
 });
