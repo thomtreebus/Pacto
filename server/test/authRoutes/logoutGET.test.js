@@ -1,28 +1,13 @@
-const mongoose = require("mongoose");
-const dotenv = require("dotenv");
 const supertest = require("supertest");
 const app = require("../../app");
 const Cookies = require("expect-cookies");
 const { createToken } = require("../../controllers/authController");
-const University = require("../../models/University");
 const User = require("../../models/User");
-const { generateTestUser, getTestUserEmail } = require('../fixtures/generateTestUser');
-
-dotenv.config();
+const { generateTestUser, getDefaultTestUserEmail } = require('../fixtures/generateTestUser');
+const useTestDatabase = require("../helpers/useTestDatabase");
 
 describe("GET /logout", () => {
-  beforeAll(async () => {
-		await mongoose.connect(process.env.TEST_DB_CONNECTION_URL);
-	});
-
-	afterAll(async () => {
-		await mongoose.connection.close();
-	});
-
-	afterEach(async () => {
-		await User.deleteMany({});
-		await University.deleteMany({});
-	});
+  useTestDatabase("logout");
 
   beforeEach(async () => {
     const user = await generateTestUser();
@@ -40,7 +25,7 @@ describe("GET /logout", () => {
   });
 
   it("returns OK and cookie with max-age set when user logged in", async () => {
-    const user = await User.findOne({ uniEmail: getTestUserEmail() });
+    const user = await User.findOne({ uniEmail: getDefaultTestUserEmail() });
     const token = createToken(user._id);
     const response = await supertest(app)
       .get("/logout")

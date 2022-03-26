@@ -1,16 +1,11 @@
-const mongoose = require("mongoose");
-const dotenv = require("dotenv");
 const supertest = require("supertest");
 const app = require("../../app");
-const University = require("../../models/University");
-const EmailVerificationCode = require("../../models/EmailVerificationCode");
-const User = require("../../models/User");
 const emailHandler = require('../../helpers/emailHandlers');
 const { MESSAGES } = require("../../helpers/messages");
 const { generateTestUser } = require("../fixtures/generateTestUser");
+const useTestDatabase = require("../helpers/useTestDatabase");
 
 jest.mock("../../helpers/emailHandlers");
-dotenv.config();
 
 // Magic values
 const REAL_UNI_EMAIL = "aaron.monte@kcl.ac.uk";
@@ -19,25 +14,13 @@ const LAST_NAME = "Doe";
 const PASSWORD = "Password123";
 
 describe("POST /signup", () => {
-  beforeAll(async () => {
-		await mongoose.connect(process.env.TEST_DB_CONNECTION_URL);
-	});
-
-	afterAll(async () => {
-		await mongoose.connection.close();
-	});
+  useTestDatabase("signup");
 
   beforeEach(async () => {
     const user = await generateTestUser();
     user.active = true;
     await user.save();
   });
-
-	afterEach(async () => {
-		await User.deleteMany({});
-    await EmailVerificationCode.deleteMany({});
-		await University.deleteMany({});
-	});
 
   // Helpers
   async function isInvalidCredentials(firstName, lastName, uniEmail, password, msg = INCORRECT_CREDENTIALS, field=null) {

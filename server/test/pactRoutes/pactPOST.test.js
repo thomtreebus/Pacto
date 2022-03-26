@@ -1,15 +1,12 @@
 const Pact = require("../../models/Pact");
 const User = require("../../models/User");
 const University = require("../../models/University");
-const mongoose = require("mongoose");
-const dotenv = require("dotenv");
 const supertest = require("supertest");
 const app = require("../../app");
-const { generateTestUser, getTestUserEmail } = require("../fixtures/generateTestUser");
+const { generateTestUser, getDefaultTestUserEmail } = require("../fixtures/generateTestUser");
 const { createToken } = require("../../controllers/authController");
 const { PACT_MESSAGES } = require("../../helpers/messages");
-
-dotenv.config();
+const useTestDatabase = require("../helpers/useTestDatabase");
 
 // Magic values
 const NAME = "My pact";
@@ -20,13 +17,7 @@ const DEFAULT_DESCRIPTION = "A Pact that doesn't know what it wants to be...";
 const DEFAULT_CATEGORY = "other";
 
 describe("POST /pact", () => {
-  beforeAll(async () => {
-		await mongoose.connect(process.env.TEST_DB_CONNECTION_URL);
-	});
-
-	afterAll(async () => {
-		await mongoose.connection.close();
-	});
+  useTestDatabase("createPact");
 
   beforeEach(async () => {
     const user = await generateTestUser();
@@ -34,15 +25,9 @@ describe("POST /pact", () => {
     await user.save();
   });
 
-	afterEach(async () => {
-		await User.deleteMany({});
-    await Pact.deleteMany({});
-		await University.deleteMany({});
-	});
-
   // Helpers
   const isInvalidPact = async (pactObject, expErrField, expErrMsg) => {
-    const user = await User.findOne({ uniEmail: getTestUserEmail() });
+    const user = await User.findOne({ uniEmail: getDefaultTestUserEmail() });
     const token = createToken(user._id);
     const response = await supertest(app)
       .post("/pact")
@@ -56,7 +41,7 @@ describe("POST /pact", () => {
   }
 
   const isValidPact = async (pactObject) => {
-    const user = await User.findOne({ uniEmail: getTestUserEmail() });
+    const user = await User.findOne({ uniEmail: getDefaultTestUserEmail() });
     const token = createToken(user._id);
     const response = await supertest(app)
       .post("/pact")
@@ -72,7 +57,7 @@ describe("POST /pact", () => {
     expect(response.body.message.moderators.length).toBe(1);
     expect(response.body.errors.length).toBe(0);
 
-    const updatedUser = await User.findOne({ uniEmail: getTestUserEmail() });
+    const updatedUser = await User.findOne({ uniEmail: getDefaultTestUserEmail() });
     expect(updatedUser.pacts.length).toBe(1);
     await updatedUser.populate({path: "university", model: University});
     expect(updatedUser.university.pacts.length).toBe(1);

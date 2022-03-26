@@ -1,35 +1,24 @@
 const Pact = require("../../models/Pact");
-const Post = require("../../models/Pact");
 const User = require("../../models/User");
 const Comment = require("../../models/Comment");
-const University = require("../../models/University");
-const mongoose = require("mongoose");
-const dotenv = require("dotenv");
 const supertest = require("supertest");
 const app = require("../../app");
-const { generateTestUser, getTestUserEmail, generateNextTestUser } = require("../fixtures/generateTestUser");
+const { generateTestUser, getDefaultTestUserEmail} = require("../fixtures/generateTestUser");
 const { generateTestPact, getTestPactId } = require("../fixtures/generateTestPact");
 const { generateTestPost, getTestPostId } = require("../fixtures/generateTestPost");
 const { createToken } = require("../../controllers/authController");
-const { PACT_MESSAGES, MESSAGES, COMMENT_MESSAGES, POST_MESSAGES } = require("../../helpers/messages");
+const { COMMENT_MESSAGES, POST_MESSAGES } = require("../../helpers/messages");
 const { checkValidPost, checkValidPostComment } = require("../../middleware/postMiddleware");
 const { checkAuthenticated } = require("../../middleware/authMiddleware");
 const { checkIsMemberOfPact } = require("../../middleware/pactMiddleware");
 const { jsonResponse } = require("../../helpers/responseHandlers");
-
-dotenv.config();
+const useTestDatabase = require("../helpers/useTestDatabase");
 
 const COMMENT_TEXT = "Some random text."
 
 describe("Post/Comment Middlewares", () =>{
+  useTestDatabase("postCommentMiddleWare");
   let commentId = null;
-  beforeAll(async () => {
-		await mongoose.connect(process.env.TEST_DB_CONNECTION_URL);
-	});
-
-	afterAll(async () => {
-		await mongoose.connection.close();
-	});
 
   beforeEach(async () => {
     const user = await generateTestUser();
@@ -50,14 +39,6 @@ describe("Post/Comment Middlewares", () =>{
     await post.save();
   });
 
-	afterEach(async () => {
-		await User.deleteMany({});
-    await Pact.deleteMany({});
-		await University.deleteMany({});
-    await Post.deleteMany({});
-    await Comment.deleteMany({});
-	});
-
   app.get("/mockRoute/:pactId/:postId/:commentId", checkAuthenticated, checkIsMemberOfPact, checkValidPost, checkValidPostComment, function (req, res) {
     res.status(200).json(jsonResponse({post: req.post, comment: req.comment}, []));
   });
@@ -72,7 +53,7 @@ describe("Post/Comment Middlewares", () =>{
   }
 
   it("handles valid post and comment IDs", async () =>{
-    const user = await User.findOne({uniEmail: getTestUserEmail()});
+    const user = await User.findOne({uniEmail: getDefaultTestUserEmail()});
     const token = createToken(user._id);
 
     const postId = getTestPostId();
@@ -85,7 +66,7 @@ describe("Post/Comment Middlewares", () =>{
 
   describe("checkValidPost", () => {
     it("throws 404 error on invalid id", async () =>{
-      const user = await User.findOne({uniEmail: getTestUserEmail()});
+      const user = await User.findOne({uniEmail: getDefaultTestUserEmail()});
       const token = createToken(user._id);
   
       const postId = "some gibberish";
@@ -97,7 +78,7 @@ describe("Post/Comment Middlewares", () =>{
 
   describe("checkValidPostComment", () => {
     it("throws 404 error on invalid id", async () =>{
-      const user = await User.findOne({uniEmail: getTestUserEmail()});
+      const user = await User.findOne({uniEmail: getDefaultTestUserEmail()});
       const token = createToken(user._id);
   
       const postId = getTestPostId();
@@ -108,7 +89,7 @@ describe("Post/Comment Middlewares", () =>{
     });
 
     it("throws 404 error on comment not on given post", async () =>{
-      const user = await User.findOne({uniEmail: getTestUserEmail()});
+      const user = await User.findOne({uniEmail: getDefaultTestUserEmail()});
       const token = createToken(user._id);
 
       const pact = await Pact.findById(getTestPactId());

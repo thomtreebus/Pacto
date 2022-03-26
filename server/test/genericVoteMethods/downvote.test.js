@@ -1,12 +1,7 @@
-const mongoose = require("mongoose");
-const dotenv = require("dotenv");
-const supertest = require("supertest");
-const app = require("../../app");
 const {upvote, downvote} = require("../../helpers/genericVoteMethods");
-const { generateTestUser, getTestUserEmail } = require("../fixtures/generateTestUser");
+const { generateTestUser, getDefaultTestUserEmail} = require("../fixtures/generateTestUser");
 const User = require("../../models/User");
-
-dotenv.config();
+const useTestDatabase = require("../helpers/useTestDatabase");
 
 let obj = {
   upvoters: [],
@@ -15,13 +10,7 @@ let obj = {
   save: () => {}
 }
 describe("Generic downvote", () => {
-  beforeAll(async () => {
-    await mongoose.connect(process.env.TEST_DB_CONNECTION_URL);
-  });
-
-  afterAll(async () => {
-    await mongoose.connection.close();
-  });
+  useTestDatabase("genericDownvote");
 
   beforeEach(async () => {
     const user = await generateTestUser();
@@ -34,12 +23,8 @@ describe("Generic downvote", () => {
     obj.votes = 0;
   });
 
-  afterEach(async () => {
-    await User.deleteMany({});
-  });
-
   it("handles standard downvote", async () => {
-    const user = await User.findOne({ uniEmail: getTestUserEmail() });
+    const user = await User.findOne({ uniEmail: getDefaultTestUserEmail() });
     const oldVotes = obj.votes;
     const oldUpvoterLen = obj.upvoters.length;
     const oldDownvoterLen = obj.downvoters.length;
@@ -51,7 +36,7 @@ describe("Generic downvote", () => {
   });
   
   it("handles double downvote: keeping score the same", async () => {
-    const user = await User.findOne({ uniEmail: getTestUserEmail() });
+    const user = await User.findOne({ uniEmail: getDefaultTestUserEmail() });
     const oldVotes = obj.votes;
     const oldUpvoterLen = obj.upvoters.length;
     const oldDownvoterLen = obj.downvoters.length;
@@ -64,7 +49,7 @@ describe("Generic downvote", () => {
   });
 
   it("handles downvote after upvoting", async () => {
-    const user = await User.findOne({ uniEmail: getTestUserEmail() });
+    const user = await User.findOne({ uniEmail: getDefaultTestUserEmail() });
     const oldVotes = obj.votes;
     const oldUpvoterLen = obj.upvoters.length;
     const oldDownvoterLen = obj.downvoters.length;

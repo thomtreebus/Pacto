@@ -1,42 +1,25 @@
-const mongoose = require("mongoose");
-const dotenv = require("dotenv");
 const supertest = require("supertest");
 const app = require("../../app");
-
 const { checkIsMemberOfPact } = require("../../middleware/pactMiddleware");
 const { checkAuthenticated } = require("../../middleware/authMiddleware");
 const { createToken } = require("../../controllers/authController");
 const {jsonResponse} = require("../../helpers/responseHandlers");
 const { MESSAGES, PACT_MESSAGES } = require("../../helpers/messages");
-const { generateTestUser, getTestUserEmail, generateNextTestUser } = require("../fixtures/generateTestUser");
+const { generateTestUser, getDefaultTestUserEmail } = require("../fixtures/generateTestUser");
 const { generateTestPact, getTestPactId } = require("../fixtures/generateTestPact");
 const User = require("../../models/User");
 const Pact = require("../../models/Pact");
-const University = require("../../models/University");
-
-dotenv.config();
+const useTestDatabase = require("../helpers/useTestDatabase");
 
 describe("CheckIsMemberOfPact Middleware", () => {
-  beforeAll(async () => {
-    await mongoose.connect(process.env.TEST_DB_CONNECTION_URL);
-  });
-
-  afterAll(async () => {
-    await mongoose.connection.close();
-  });
-
-  afterEach(async () => {
-    await User.deleteMany({});
-    await University.deleteMany({});
-    await Pact.deleteMany({});
-  });
+ useTestDatabase("checkIsMemberOfPactMiddleware");
 
   beforeEach(async () => {
     const user = await generateTestUser();
     user.active = true;
     await user.save();
 
-    const foundingUser = await generateNextTestUser("Dave");
+    const foundingUser = await generateTestUser("Dave");
     foundingUser.active = true;
     await foundingUser.save();
 
@@ -48,7 +31,7 @@ describe("CheckIsMemberOfPact Middleware", () => {
   });
 
   const getMock = async (id, expStatus) => {
-    const user = await User.findOne({ uniEmail: getTestUserEmail() });
+    const user = await User.findOne({ uniEmail: getDefaultTestUserEmail() });
     const token = createToken(user._id);
     const response = await supertest(app)
       .get("/mockRoute/" + id)
@@ -75,7 +58,7 @@ describe("CheckIsMemberOfPact Middleware", () => {
       res.status(200).json(jsonResponse(req.pact, []));
     });
     
-    const user = await User.findOne({ uniEmail: getTestUserEmail() });
+    const user = await User.findOne({ uniEmail: getDefaultTestUserEmail() });
     const token = createToken(user._id);
     const res = await supertest(app)
       .get("/badMock/" + getTestPactId())
@@ -87,7 +70,7 @@ describe("CheckIsMemberOfPact Middleware", () => {
   });
 
   it("accepts when user is member of requested pact", async () =>{
-    const user = await User.findOne({ uniEmail: getTestUserEmail() });
+    const user = await User.findOne({ uniEmail: getDefaultTestUserEmail() });
     const pact = await Pact.findById(getTestPactId());
 
     user.pacts.push(pact);

@@ -1,5 +1,5 @@
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
-import { waitForElementToBeRemoved } from "@testing-library/react";
+import { render, screen, fireEvent } from "@testing-library/react";
+import { waitForElementToBeRemoved, waitFor } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import MockComponent from "./utils/MockComponent";
 import { rest } from "msw";
@@ -9,26 +9,29 @@ import EditProfile from "../pages/EditProfile";
 import userEvent from "@testing-library/user-event";
 import {act} from "react-dom/test-utils";
 
+
+const testUser = {
+  firstName: "pac",
+  lastName: "to",
+  friends: [],
+  bio: "hello world",
+  course: 'Digital arts',
+  location: 'London',
+  image: "https://res.cloudinary.com/djlwzi9br/image/upload/v1644581875/man1_qexxnb.jpg",
+  university: { // data structure subject to change
+    name: "King's College London",
+  },
+  _id: 1,
+  instagram: "pactoInsta",
+  linkedin: "pactoLinkedIn",
+  phone: "07999999999",
+}
+
 describe("Edit Profile Page Tests", () => {
   const server = setupServer(
     rest.get(`${process.env.REACT_APP_URL}/me`, (req, res, ctx) => {
       return res(
-        ctx.json({ message: {
-            firstName: "pac",
-            lastName: "to",
-            friends: [],
-            bio: "hello world",
-            course: 'Digital arts',
-            location: 'London',
-            image: "https://res.cloudinary.com/djlwzi9br/image/upload/v1644581875/man1_qexxnb.jpg",
-            university: { // data structure subject to change
-              name: "King's College London",
-            },
-            _id: 1,
-            instagram: "pactoInsta",
-            linkedin: "pactoLinkedIn",
-            phone: "07999999999",
-          }, errors: [] })
+        ctx.json({ message: testUser, errors: [] })
       );
     }),
     rest.post(`https://api.cloudinary.com/v1_1/${process.env.REACT_APP_CLOUDINARY_CLOUD_NAME}/image/upload`, (req, res, ctx) => {
@@ -125,14 +128,6 @@ describe("Edit Profile Page Tests", () => {
       expect(updateProfileButton).toBeInTheDocument();
     });
 
-    /* Not implemented
-    it("should render the user's university", async () => {
-      const universityText = await screen.findByText("King's College London");
-      expect(universityText).toBeInTheDocument();
-      expect(universityText.value).toBe("King's College London");
-    });
-     */
-
     it("should render the user's profile picture", async () => {
       const profilePicture = await screen.findByAltText("Profile Picture");
       expect(profilePicture).toBeInTheDocument();
@@ -202,14 +197,28 @@ describe("Edit Profile Page Tests", () => {
     })
 
     it("uploaded image contents should be saved as a state", async () => {
+      server.use(
+        rest.post(`https://api.cloudinary.com/v1_1/${process.env.REACT_APP_CLOUDINARY_CLOUD_NAME}/image/upload`, (req, res, ctx) => {
+          return res(
+            ctx.status(201),
+            ctx.json({
+              url: "imageUrl",
+              secure_url: "imageUrl",
+            }),
+          );
+        })
+      );
       const image = new File(['testImage'], 'testImage.png', {type: 'image/png'})
       const buttonElement = await screen.findByTestId(
         "image-upload-icon"
       );
       await act(async () => {
-        await userEvent.upload(buttonElement, image);
-        expect(buttonElement.files[0]).toBe(image);
-        expect(buttonElement.files).toHaveLength(1);
+        await waitFor(() => userEvent.upload(buttonElement, image));
+        await waitFor(() => {
+          expect(buttonElement.files[0]).toBe(image);
+          expect(buttonElement.files[0]).toBe(image);
+          expect(buttonElement.files).toHaveLength(1);
+        }); 
       });
     });
 
@@ -236,23 +245,52 @@ describe("Edit Profile Page Tests", () => {
 
 
       await act( async () => {
-        await userEvent.upload(buttonElement, image);
-        // wait 1 second due to some react delays
-        await new Promise(resolve => setTimeout(resolve, 1000));
-
-        const updatedImage = (await screen.findByAltText("Profile Picture")).getAttribute('src');
-        expect(updatedImage).toBe("http://res.cloudinary.com/djlwzi9br/image/upload/v1644796162/qrbhfhmml4hwa5y0dvu9.png");
-        expect(previousImage===updatedImage).toBe(false);
+        await waitFor(() => userEvent.upload(buttonElement, image));
+        await waitFor(() => {
+          const updatedImage = (screen.getByAltText("Profile Picture")).getAttribute('src');
+          expect(updatedImage).toBe(imageUrl);
+          expect(previousImage===updatedImage).toBe(false);
+        }); 
       });
     });
+
+
+    it("error during image upload doesn't update profile image shown", async () => {
+      server.use(
+        rest.post(`https://api.cloudinary.com/v1_1/${process.env.REACT_APP_CLOUDINARY_CLOUD_NAME}/image/upload`, (req, res, ctx) => {
+          return res(
+            ctx.status(404),
+            ctx.json({
+            }),
+          );
+        })
+      );
+
+      const image = new File(['testImage'], 'testImage.png', {type: 'image/png'});
+      const previousImage = (await screen.findByAltText("Profile Picture")).getAttribute('src');
+
+      const buttonElement = await screen.findByTestId(
+        "image-upload-icon"
+      );
+
+
+      await act( async () => {
+        await waitFor(() => userEvent.upload(buttonElement, image));
+        await waitFor(() => {
+          const updatedImage = (screen.getByAltText("Profile Picture")).getAttribute('src');
+          expect(previousImage===updatedImage).toBe(true);
+        });
+      });
+    });
+
 
     it("update profile button sends post request", async () => {
       server.use(
         rest.put(`${process.env.REACT_APP_URL}/users/1`, (req, res, ctx) => {
           return res(
-            ctx.status(201),
+            ctx.status(200),
             ctx.json({
-              message: 'Success',
+              message: testUser,
               errors: [],
             })
           );
@@ -261,8 +299,11 @@ describe("Edit Profile Page Tests", () => {
       const updateProfileButton = await screen.findByRole("button", {
         name: "Update Profile"
       });
-      await userEvent.click(updateProfileButton);
-      // expect(window.location.pathname).toBe("/profile");
+
+      await waitFor(() => userEvent.click(updateProfileButton));
+      await waitFor(() => {
+        expect(window.location.pathname).toBe("/user/1");
+      }); 
     });
   });
 
@@ -288,9 +329,14 @@ describe("Edit Profile Page Tests", () => {
       const updateProfileButton = await screen.findByRole("button", {
         name: "Update Profile"
       });
-      await userEvent.click(updateProfileButton);
-      const screenErrorMessage = await screen.findByText(errMsg);
-      expect(screenErrorMessage).toBeInTheDocument();
+      await act( async () => {
+        await waitFor(() => userEvent.click(updateProfileButton));
+        await waitFor(() => {
+          const screenErrorMessage = screen.getByText(errMsg);
+          expect(screenErrorMessage).toBeInTheDocument();
+        }); 
+      });
+
     });
 
     it("Shows linkedin field error", async () => {
@@ -314,9 +360,13 @@ describe("Edit Profile Page Tests", () => {
       const updateProfileButton = await screen.findByRole("button", {
         name: "Update Profile"
       });
-      await userEvent.click(updateProfileButton);
-      const screenErrorMessage = await screen.findByText(errMsg);
-      expect(screenErrorMessage).toBeInTheDocument();
+      await act( async () => {
+        await waitFor(() => userEvent.click(updateProfileButton));
+        await waitFor(() => {
+          const screenErrorMessage = screen.getByText(errMsg);
+          expect(screenErrorMessage).toBeInTheDocument();
+        }); 
+      });
     });
 
     it("Shows phone field error", async () => {
@@ -340,9 +390,13 @@ describe("Edit Profile Page Tests", () => {
       const updateProfileButton = await screen.findByRole("button", {
         name: "Update Profile"
       });
-      await userEvent.click(updateProfileButton);
-      const screenErrorMessage = await screen.findByText(errMsg);
-      expect(screenErrorMessage).toBeInTheDocument();
+      await act( async () => {
+        await waitFor(() => userEvent.click(updateProfileButton));
+        await waitFor(() => {
+          const screenErrorMessage = screen.getByText(errMsg);
+          expect(screenErrorMessage).toBeInTheDocument();
+        }); 
+      });
     });
 
     it("Shows course field error", async () => {
@@ -366,9 +420,13 @@ describe("Edit Profile Page Tests", () => {
       const updateProfileButton = await screen.findByRole("button", {
         name: "Update Profile"
       });
-      await userEvent.click(updateProfileButton);
-      const screenErrorMessage = await screen.findByText(errMsg);
-      expect(screenErrorMessage).toBeInTheDocument();
+      await act( async () => {
+        await waitFor(() => userEvent.click(updateProfileButton));
+        await waitFor(() => {
+          const screenErrorMessage = screen.getByText(errMsg);
+          expect(screenErrorMessage).toBeInTheDocument();
+        }); 
+      });
     });
 
     it("Shows location field error", async () => {
@@ -392,9 +450,13 @@ describe("Edit Profile Page Tests", () => {
       const updateProfileButton = await screen.findByRole("button", {
         name: "Update Profile"
       });
-      await userEvent.click(updateProfileButton);
-      const screenErrorMessage = await screen.findByText(errMsg);
-      expect(screenErrorMessage).toBeInTheDocument();
+      await act( async () => {
+        await waitFor(() => userEvent.click(updateProfileButton));
+        await waitFor(() => {
+          const screenErrorMessage = screen.getByText(errMsg);
+          expect(screenErrorMessage).toBeInTheDocument();
+        }); 
+      });
     });
 
     it("Shows bio field error", async () => {
@@ -418,9 +480,13 @@ describe("Edit Profile Page Tests", () => {
       const updateProfileButton = await screen.findByRole("button", {
         name: "Update Profile"
       });
-      await userEvent.click(updateProfileButton);
-      const screenErrorMessage = await screen.findByText(errMsg);
-      expect(screenErrorMessage).toBeInTheDocument();
+      await act( async () => {
+        await waitFor(() => userEvent.click(updateProfileButton));
+        await waitFor(() => {
+          const screenErrorMessage = screen.getByText(errMsg);
+          expect(screenErrorMessage).toBeInTheDocument();
+        }); 
+      });
     });
   });
 });

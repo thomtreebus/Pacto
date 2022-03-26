@@ -4,6 +4,8 @@ const Pact = require("../../models/Pact");
 const User = require("../../models/User");
 const Post = require("../../models/Post");
 const Comment = require("../../models/Comment");
+const { LINKS } = require("./postConstants");
+const {createNotification} = require("./notificationHelpers");
 
 
 const chance = new Chance(1234);
@@ -47,7 +49,7 @@ async function generateRandomImagePost(pact) {
 
 async function generateRandomLinkPost(pact) {
 	const title = chance.sentence({ words: 2 });
-	const post = await createPost(pact, getRandomAuthor(pact), title, {  type: "link", link : chance.url()});
+	const post = await createPost(pact, getRandomAuthor(pact), title, {  type: "link", link : getRandomLink()});
 	return post;
 }
 
@@ -108,7 +110,7 @@ async function createComment(post, author, text, options={parentComment: undefin
 		parentComment.childComments.push(comment);
 		await parentComment.save();
 	}
-
+	await createNotification(post.author, "Your post received a new comment")
 	return comment;
 }
 
@@ -138,6 +140,10 @@ async function populateDownvote(obj, member) {
 	obj.downvoters.push(member);
 	obj.votes = obj.votes - 1;
 	await obj.save();
+}
+
+function getRandomLink(title) {
+	return LINKS[chance.integer({ min: 0, max: LINKS.length-1 })];
 }
 
 function getImageLink(title) {

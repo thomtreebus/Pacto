@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useState } from "react";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
@@ -8,14 +8,15 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import Icon from "../assets/pacto-logo.ico";
+import { AlertTitle, Alert } from "@mui/material";
 
 export default function SignupPage() {
-	const [passwordConfirmError, setPasswordConfirmError] = React.useState("");
-	const [apiFirstNameError, setApiFirstNameError] = React.useState("");
-	const [apiLastNameError, setApiLastNameError] = React.useState("");
-	const [apiUniEmailError, setApiUniEmailError] = React.useState("");
-	const [apiPasswordError, setApiPasswordError] = React.useState("");
-	const [isButtonDisabled, setIsButtonDisabled] = React.useState(false);
+	const [passwordConfirmError, setPasswordConfirmError] = useState("");
+	const [apiFirstNameError, setApiFirstNameError] = useState("");
+	const [apiLastNameError, setApiLastNameError] = useState("");
+	const [apiUniEmailError, setApiUniEmailError] = useState("");
+	const [apiPasswordError, setApiPasswordError] = useState("");
+	const [isButtonDisabled, setIsButtonDisabled] = useState(false);
 	const history = useHistory();
 
 	const handleSubmit = async (event) => {
@@ -79,9 +80,14 @@ export default function SignupPage() {
 
 	return (
 		<Container component="main" maxWidth="xs">
+			<Alert severity="info" sx={{ marginTop: 3 }}>
+				<AlertTitle>Use a valid university email!</AlertTitle>
+				You will be sent an email with a link to verify after signing up
+				<strong> remember to check you spam as well!</strong>
+			</Alert>
 			<Box
 				sx={{
-					marginTop: 8,
+					marginTop: 2,
 					display: "flex",
 					flexDirection: "column",
 					alignItems: "center",

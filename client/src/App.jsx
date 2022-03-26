@@ -4,6 +4,7 @@ import Profile from "./pages/Profile";
 import BaseLayout from "./layouts/BaseLayout";
 import Landing from "./pages/LandingPage";
 import Feed from "./pages/Feed";
+import EditPact from "./pages/EditPact"
 import CreatePact from "./pages/CreatePact";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { CssBaseline } from "@mui/material";
@@ -14,6 +15,8 @@ import NotFound from "./pages/NotFound";
 import UniversityHubPage from "./pages/UniversityHubPage";
 import PactPage from "./pages/PactPage";
 import PostPage from "./pages/PostPage";
+import UserPage from "./pages/UserPage";
+
 
 function App() {
 	return (
@@ -39,8 +42,10 @@ function App() {
 							<PrivateRoute path="/user/:id">
 								<Profile />
 							</PrivateRoute>
+							<PrivateRoute path="/pact/:pactId/edit-pact">
+								<EditPact />
+							</PrivateRoute>
 							<PrivateRoute path="/feed">
-								<h1>Feed</h1>
 								<Feed />
 							</PrivateRoute>
 							<PrivateRoute exact path="/hub">
@@ -54,6 +59,9 @@ function App() {
 							</PrivateRoute>
 							<PrivateRoute exact path="/pact/:pactID/post/:postID">
 								<PostPage />
+							</PrivateRoute>
+							<PrivateRoute exact path="/users">
+								<UserPage />
 							</PrivateRoute>
 							<PrivateRoute path="*">
 								<NotFound />

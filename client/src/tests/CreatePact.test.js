@@ -10,7 +10,7 @@ describe("CreatePact Tests", () => {
 	const server = setupServer(
 		rest.get(`${process.env.REACT_APP_URL}/me`, (req, res, ctx) => {
 			return res(
-				ctx.json({ message: { firstName: "pac", lastName: "to" }, errors: [] })
+				ctx.json({ message: { _id: "01", firstName: "pac", lastName: "to", pacts : [] }, errors: [] })
 			);
 		}),
 		rest.post(`${process.env.REACT_APP_URL}/pact`, (req, res, ctx) => {
@@ -75,13 +75,6 @@ describe("CreatePact Tests", () => {
 				name: "Description",
 			});
 			expect(inputElement).toBeInTheDocument();
-		});
-
-		it("should render the Upload Image button", async () => {
-			const buttonElement = await screen.findByRole("button", {
-				name: "Upload Image",
-			});
-			expect(buttonElement).toBeInTheDocument();
 		});
 
 		it("should render the Create Pact button", async () => {

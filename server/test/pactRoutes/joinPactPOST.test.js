@@ -1,26 +1,15 @@
-const mongoose = require("mongoose");
-const dotenv = require("dotenv");
 const supertest = require("supertest");
 const app = require("../../app");
 const { createToken } = require("../../controllers/authController");
-const { generateTestUser, getTestUserEmail, generateNextTestUser } = require("../fixtures/generateTestUser");
+const { generateTestUser, getDefaultTestUserEmail, generateCustomUniTestUser} = require("../fixtures/generateTestUser");
 const { generateTestPact, getTestPactId } = require("../fixtures/generateTestPact");
 const { MESSAGES, PACT_MESSAGES } = require("../../helpers/messages");
 const User = require("../../models/User");
 const Pact = require('../../models/Pact');
-const Post = require('../../models/Post');
-const University = require('../../models/University');
-
-dotenv.config();
+const useTestDatabase = require("../helpers/useTestDatabase");
 
 describe("POST /pact/:pactid/join", () => {
-  beforeAll(async () => {
-    await mongoose.connect(process.env.TEST_DB_CONNECTION_URL);
-  });
-
-  afterAll(async () => {
-    await mongoose.connection.close();
-  });
+  useTestDatabase("joinPact");
 
   beforeEach(async () => {
     const user = await generateTestUser();
@@ -29,13 +18,6 @@ describe("POST /pact/:pactid/join", () => {
     // Makes user a member and mod of pact
     const pact = await generateTestPact(user);
     await pact.save();
-  });
-
-  afterEach(async () => {
-    await User.deleteMany({});
-    await Post.deleteMany({});
-    await Pact.deleteMany({});
-    await University.deleteMany({});
   });
 
   it("should not allow not logged in user to join the pact", async () => {
@@ -57,7 +39,7 @@ describe("POST /pact/:pactid/join", () => {
     const pact = await Pact.findOne({ _id: getTestPactId() });
 
     // Creating the user who is not in the correct uni
-    const user = await generateNextTestUser("User", notkcl=true, "ucl");
+    const user = await generateCustomUniTestUser("User", "ucl");
     user.active = true;
     await user.save();
     const token = createToken(user._id);
@@ -80,7 +62,7 @@ describe("POST /pact/:pactid/join", () => {
     expect(errors.length).toBe(1);
     
     const updatedUser = await User.findOne({_id : user._id});
-    const updatedPact = await Pact.findOne({ id: getTestPactId() });
+    const updatedPact = await Pact.findOne({ _id: getTestPactId() });
     expect(updatedUser.pacts.includes(pact._id)).toBe(false);
     expect(updatedPact.members.includes(user._id)).toBe(false);
     expect(updatedPact.members.length).toBe(1);
@@ -88,7 +70,7 @@ describe("POST /pact/:pactid/join", () => {
   });
 
   it("should not change the amount of members if a joined user rejoins", async () => {
-    const user = await User.findOne({ uniEmail: getTestUserEmail() });
+    const user = await User.findOne({ uniEmail: getDefaultTestUserEmail() });
     const pact = await Pact.findOne({ _id: getTestPactId() });
     const token = createToken(user._id);
 
@@ -117,7 +99,7 @@ describe("POST /pact/:pactid/join", () => {
   });
 
   it("should not allow the joining of a non existing pact", async () => {
-    const user = await User.findOne({ uniEmail: getTestUserEmail() });
+    const user = await User.findOne({ uniEmail: getDefaultTestUserEmail() });
     const pact = await Pact.findOne({ _id: getTestPactId() });
     const token = createToken(user._id);
 
@@ -136,8 +118,8 @@ describe("POST /pact/:pactid/join", () => {
   });
 
   it("allows the user to successfully join a pact", async () => {
-    const pact = await Pact.findOne({ id: getTestPactId() });
-    const user = await generateNextTestUser("User");
+    const pact = await Pact.findOne({ _id: getTestPactId() });
+    const user = await generateTestUser("User");
     user.active = true;
     await user.save();
     const token = createToken(user._id);
@@ -167,10 +149,10 @@ describe("POST /pact/:pactid/join", () => {
   });
 
   it("allows the user to successfully join multiple pacts", async () => {
-    const foundingUser = await User.findOne({ uniEmail: getTestUserEmail() });
-    const pact = await Pact.findOne({ id: getTestPactId() });
+    const foundingUser = await User.findOne({ uniEmail: getDefaultTestUserEmail() });
+    const pact = await Pact.findOne({ _id: getTestPactId() });
     const secondPact = await generateTestPact(foundingUser, "Second pact");
-    const user = await generateNextTestUser("User");
+    const user = await generateTestUser("User");
     user.active = true;
     await user.save();
     const token = createToken(user._id);

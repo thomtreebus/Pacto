@@ -1,30 +1,17 @@
-const Pact = require("../../models/Pact");
-const Post = require("../../models/Pact");
 const User = require("../../models/User");
-const Comment = require("../../models/Comment");
-const University = require("../../models/University");
-const mongoose = require("mongoose");
-const dotenv = require("dotenv");
 const supertest = require("supertest");
 const app = require("../../app");
-const { generateTestUser, getTestUserEmail, generateNextTestUser } = require("../fixtures/generateTestUser");
+const { generateTestUser, getDefaultTestUserEmail} = require("../fixtures/generateTestUser");
 const { generateTestPact, getTestPactId } = require("../fixtures/generateTestPact");
 const { generateTestPost, getTestPostId } = require("../fixtures/generateTestPost");
 const { createToken } = require("../../controllers/authController");
 const { PACT_MESSAGES, MESSAGES, COMMENT_MESSAGES } = require("../../helpers/messages");
-
-dotenv.config();
+const useTestDatabase = require("../helpers/useTestDatabase");
 
 const COMMENT_TEXT = "This is my 1st comment.";
 
 describe("POST /pact/:pactId/post/:postId/comment", () =>{
-  beforeAll(async () => {
-		await mongoose.connect(process.env.TEST_DB_CONNECTION_URL);
-	});
-
-	afterAll(async () => {
-		await mongoose.connection.close();
-	});
+  useTestDatabase("createComment");
 
   beforeEach(async () => {
     const user = await generateTestUser();
@@ -34,14 +21,6 @@ describe("POST /pact/:pactId/post/:postId/comment", () =>{
     const pact = await generateTestPact(user);
     await generateTestPost(user, pact);
   });
-
-	afterEach(async () => {
-		await User.deleteMany({});
-    await Pact.deleteMany({});
-		await University.deleteMany({});
-    await Post.deleteMany({});
-    await Comment.deleteMany({});
-	});
 
   const sendRequest = async (token, text, expStatus) => {
     const response = await supertest(app)
@@ -54,7 +33,7 @@ describe("POST /pact/:pactId/post/:postId/comment", () =>{
   }
 
   it("successfully creates a valid comment", async () =>{
-    const user = await User.findOne({uniEmail: getTestUserEmail()});
+    const user = await User.findOne({uniEmail: getDefaultTestUserEmail()});
     const token = createToken(user._id);
 
     const sentText = COMMENT_TEXT;
@@ -65,7 +44,7 @@ describe("POST /pact/:pactId/post/:postId/comment", () =>{
   });
 
   it("rejects blank comment", async () =>{
-    const user = await User.findOne({uniEmail: getTestUserEmail()});
+    const user = await User.findOne({uniEmail: getDefaultTestUserEmail()});
     const token = createToken(user._id);
 
     const sentText = "";
@@ -76,7 +55,7 @@ describe("POST /pact/:pactId/post/:postId/comment", () =>{
   });
 
   it("accepts 512 char comment", async () =>{
-    const user = await User.findOne({uniEmail: getTestUserEmail()});
+    const user = await User.findOne({uniEmail: getDefaultTestUserEmail()});
     const token = createToken(user._id);
 
     const sentText = "x".repeat(512);
@@ -84,7 +63,7 @@ describe("POST /pact/:pactId/post/:postId/comment", () =>{
   });
 
   it("rejects 513 char comment", async () =>{
-    const user = await User.findOne({uniEmail: getTestUserEmail()});
+    const user = await User.findOne({uniEmail: getDefaultTestUserEmail()});
     const token = createToken(user._id);
 
     const sentText = "x".repeat(513);
@@ -104,7 +83,7 @@ describe("POST /pact/:pactId/post/:postId/comment", () =>{
   });
 
   it("uses checkIsMemberOfPact middleware", async () => {
-    const user = await generateNextTestUser("David");
+    const user = await generateTestUser("David");
     user.active = true;
     await user.save();
 

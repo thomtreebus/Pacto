@@ -1,28 +1,13 @@
-const mongoose = require("mongoose");
-const dotenv = require("dotenv");
 const supertest = require("supertest");
 const app = require("../../app");
 const Cookies = require("expect-cookies");
 const User = require("../../models/User");
-const University = require("../../models/University");
-const { generateTestUser, getTestUserEmail } = require('../fixtures/generateTestUser');
+const { generateTestUser, getDefaultTestUserEmail } = require('../fixtures/generateTestUser');
 const { MESSAGES } = require("../../helpers/messages");
-
-dotenv.config();
+const useTestDatabase = require("../helpers/useTestDatabase");
 
 describe("POST /login", () => {
-  beforeAll(async () => {
-		await mongoose.connect(process.env.TEST_DB_CONNECTION_URL);
-	});
-
-	afterAll(async () => {
-		await mongoose.connection.close();
-	});
-
-	afterEach(async () => {
-		await User.deleteMany({});
-		await University.deleteMany({});
-	});
+  useTestDatabase("login");
 
   beforeEach(async () => {
     const user = await generateTestUser();
@@ -65,7 +50,7 @@ describe("POST /login", () => {
   }
 
   // Tests
-  // Not using getTestUserEmail for invalid inputs
+  // Not using getDefaultTestUserEmail for invalid inputs
   it("rejects invalid email", async () => {
     await isInvalidCredentials("pac.to", "Password123");
   });
@@ -88,7 +73,7 @@ describe("POST /login", () => {
 
   it("rejects inactive user with correct credentials", async () => {
     await User.findOneAndUpdate(
-      { uniEmail: getTestUserEmail() },
+      { uniEmail: getDefaultTestUserEmail() },
       { active: false }
     );
     await isInvalidCredentials(

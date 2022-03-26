@@ -1,33 +1,17 @@
-const mongoose = require("mongoose");
-const dotenv = require("dotenv");
 const EmailVerificationCode = require("../../models/EmailVerificationCode");
 const supertest = require("supertest");
 const app = require("../../app");
-const University = require("../../models/University");
 const User = require("../../models/User");
-const { generateTestUser, getTestUserEmail } = require('../fixtures/generateTestUser');
+const { generateTestUser, getDefaultTestUserEmail } = require('../fixtures/generateTestUser');
 const { MESSAGES } = require("../../helpers/messages");
-
-dotenv.config();
+const useTestDatabase = require("../helpers/useTestDatabase");
 
 // Magic values
 const VERIFICATION_CODE = "kaushik12";
 
 describe("GET /verify", () => {
-  beforeAll(async () => {
-		await mongoose.connect(process.env.TEST_DB_CONNECTION_URL);
-	});
+  useTestDatabase("verification");
 
-	afterAll(async () => {
-		await mongoose.connection.close();
-	});
-
-	afterEach(async () => {
-		await User.deleteMany({});
-    await EmailVerificationCode.deleteMany({});
-		await University.deleteMany({});
-	});
-  
   beforeEach(async () => {
     const user = await generateTestUser();
     await EmailVerificationCode.create({
@@ -59,7 +43,7 @@ describe("GET /verify", () => {
     const response = await getVerifyWithCode(VERIFICATION_CODE);
     isResponseSuccessful(response);
 
-    const user = await User.findOne({ uniEmail: getTestUserEmail() });
+    const user = await User.findOne({ uniEmail: getDefaultTestUserEmail() });
     expect(user.active).toBe(true);
   });
 
@@ -67,7 +51,7 @@ describe("GET /verify", () => {
     const response = await getVerifyWithCode(VERIFICATION_CODE + "gibberish");
     isResponseUnsuccessful(response);
 
-    const user = await User.findOne({ uniEmail: getTestUserEmail() });
+    const user = await User.findOne({ uniEmail: getDefaultTestUserEmail() });
     expect(user.active).toBe(false);
   });
 
@@ -75,14 +59,14 @@ describe("GET /verify", () => {
     const response = await getVerifyWithCode("");
     isResponseUnsuccessful(response, MESSAGES.VERIFICATION.MISSING_CODE);
 
-    const user = await User.findOne({ uniEmail: getTestUserEmail() });
+    const user = await User.findOne({ uniEmail: getDefaultTestUserEmail() });
     expect(user.active).toBe(false);
   });
 
   it("identifies already used code as invalid, with user object not affected", async () => {
     const response = await getVerifyWithCode(VERIFICATION_CODE);
     isResponseSuccessful(response);
-    const user = await User.findOne({ uniEmail: getTestUserEmail() });
+    const user = await User.findOne({ uniEmail: getDefaultTestUserEmail() });
     expect(user.active).toBe(true);
 
     const responseAfterSuccess = await getVerifyWithCode(VERIFICATION_CODE);

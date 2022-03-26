@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Grid, Card, CardHeader, Button, Avatar, Box } from "@mui/material";
 import { CardContent, Typography, CardActions } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
@@ -7,13 +7,15 @@ import PeopleAltRoundedIcon from "@mui/icons-material/PeopleAltRounded";
 import PactChip from "./PactChip";
 import { useHistory } from "react-router-dom";
 import ErrorMessage from "./ErrorMessage";
+import { useAuth } from "../providers/AuthProvider";
 
 export default function PactCard({ pact, joined }) {
+	const { user, setUser } = useAuth();
 	const history = useHistory();
 	const DESCRIPTION_LENGTH = 42;
-	const [isJoinButtonDisabled, setIsJoinButtonDisabled] = React.useState(false);
-	const [isError, setIsError] = React.useState(false);
-	const [errorMessage, setErrorMessage] = React.useState(null);
+	const [isJoinButtonDisabled, setIsJoinButtonDisabled] = useState(false);
+	const [isError, setIsError] = useState(false);
+	const [errorMessage, setErrorMessage] = useState(null);
 
 	function handleViewButtonClick() {
 		history.push(`/pact/${pact._id}`);
@@ -39,6 +41,9 @@ export default function PactCard({ pact, joined }) {
 			return;
 		}
 
+		let newUser = Object.assign({}, user);
+		newUser.pacts.push(pact._id);
+		setUser(newUser);
 		history.push(`/pact/${pact._id}`);
 	}
 

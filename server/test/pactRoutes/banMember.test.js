@@ -1,28 +1,15 @@
-const mongoose = require("mongoose");
-const dotenv = require("dotenv");
 const supertest = require("supertest");
-const bcrypt = require("bcrypt");
 const app = require("../../app");
 const { createToken } = require("../../controllers/authController");
-const { generateTestUser, getTestUserEmail, generateNextTestUser } = require("../fixtures/generateTestUser");
+const { generateTestUser, getDefaultTestUserEmail} = require("../fixtures/generateTestUser");
 const { generateTestPact, getTestPactId } = require("../fixtures/generateTestPact");
-const { generateTestPost, getTestPostId } = require("../fixtures/generateTestPost");
-const { jsonResponse } = require("../../helpers/responseHandlers");
 const { MESSAGES, PACT_MESSAGES } = require("../../helpers/messages");
-const University = require('../../models/University');
 const User = require("../../models/User");
 const Pact = require('../../models/Pact');
-
-dotenv.config();
+const useTestDatabase = require("../helpers/useTestDatabase");
 
 describe("banMember /pact/:pactId/:userId/ban", () => {
-  beforeAll(async () => {
-    await mongoose.connect(process.env.TEST_DB_CONNECTION_URL);
-  });
-
-  afterAll(async () => {
-    await mongoose.connection.close();
-  });
+  useTestDatabase("banMember");
 
   beforeEach(async () => {
     const user = await generateTestUser();
@@ -31,7 +18,7 @@ describe("banMember /pact/:pactId/:userId/ban", () => {
     // Makes user a member and mod of pact
     const pact = await generateTestPact(user);
     //Make other user a member of pact
-    const secondUser = await generateNextTestUser("bob");
+    const secondUser = await generateTestUser("bob");
     secondUser.active = true;
     secondUser.pacts.push(pact._id);
     pact.members.push(secondUser._id);
@@ -39,15 +26,9 @@ describe("banMember /pact/:pactId/:userId/ban", () => {
     await pact.save();
   });
 
-  afterEach(async () => {
-    await User.deleteMany({});
-    await Pact.deleteMany({});
-    await University.deleteMany({});
-  });
-
   it("moderator can ban member of pact", async () => {
-    const user = await User.findOne({ uniEmail: getTestUserEmail() });
-    const pact = await Pact.findOne({ id: getTestPactId() });
+    const user = await User.findOne({ uniEmail: getDefaultTestUserEmail() });
+    const pact = await Pact.findOne({ _id: getTestPactId() });
     const banUser = await User.findOne({ uniEmail: "bob.to@kcl.ac.uk" });
     const token = createToken(user._id);
     const oldMemberCount = pact.members.length;
@@ -61,7 +42,7 @@ describe("banMember /pact/:pactId/:userId/ban", () => {
     expect(response.body.message).toBeDefined();
     expect(response.body.errors.length).toBe(0);
 
-    const responsePact = await Pact.findOne({ id: getTestPactId() });
+    const responsePact = await Pact.findOne({ _id: getTestPactId() });
     const newMemberCount = responsePact.members.length;
     const newBannedUserCount = responsePact.bannedUsers.length;
     expect(newMemberCount).toBe(oldMemberCount - 1);
@@ -73,8 +54,8 @@ describe("banMember /pact/:pactId/:userId/ban", () => {
   });
 
   it("moderator can not ban other moderator", async () => {
-    const user = await User.findOne({ uniEmail: getTestUserEmail() });
-    const pact = await Pact.findOne({ id: getTestPactId() });
+    const user = await User.findOne({ uniEmail: getDefaultTestUserEmail() });
+    const pact = await Pact.findOne({ _id: getTestPactId() });
     const moderator = await User.findOne({ uniEmail: "bob.to@kcl.ac.uk" });
     pact.moderators.push(moderator._id);
     await pact.save();
@@ -91,10 +72,10 @@ describe("banMember /pact/:pactId/:userId/ban", () => {
   });
 
   it("can not ban someone who is not a member", async () => {
-    const user = await User.findOne({ uniEmail: getTestUserEmail() });
-    const otherUser = await generateNextTestUser("joe");
+    const user = await User.findOne({ uniEmail: getDefaultTestUserEmail() });
+    const otherUser = await generateTestUser("joe");
     otherUser.save();
-    const pact = await Pact.findOne({ id: getTestPactId() });
+    const pact = await Pact.findOne({ _id: getTestPactId() });
     const token = createToken(user._id);
 
     const response = await supertest(app)
@@ -108,8 +89,8 @@ describe("banMember /pact/:pactId/:userId/ban", () => {
   });
 
     it("can not ban someone who is already banned", async () => {
-    const user = await User.findOne({ uniEmail: getTestUserEmail() });
-    const pact = await Pact.findOne({ id: getTestPactId() });
+    const user = await User.findOne({ uniEmail: getDefaultTestUserEmail() });
+    const pact = await Pact.findOne({ _id: getTestPactId() });
     const bannedUser = await User.findOne({ uniEmail: "bob.to@kcl.ac.uk" });
     pact.bannedUsers.push(bannedUser._id);
     pact.save();
@@ -127,9 +108,9 @@ describe("banMember /pact/:pactId/:userId/ban", () => {
 
   it("member can not ban other member", async () => {
     const user = await User.findOne({ uniEmail: "bob.to@kcl.ac.uk" });
-    const otherUser = await generateNextTestUser("joe");
+    const otherUser = await generateTestUser("joe");
     otherUser.save();
-    const pact = await Pact.findOne({ id: getTestPactId() });
+    const pact = await Pact.findOne({ _id: getTestPactId() });
     pact.members.push(otherUser._id);
     pact.save();
     const token = createToken(user._id);
@@ -146,7 +127,7 @@ describe("banMember /pact/:pactId/:userId/ban", () => {
 
   it("check uses authMiddleware", async () => {
     const user = await User.findOne({ uniEmail: "bob.to@kcl.ac.uk" });
-    const pact = await Pact.findOne({ id: getTestPactId() });
+    const pact = await Pact.findOne({ _id: getTestPactId() });
 
     const response = await supertest(app)
     .put(`/pact/${ pact._id }/${ user._id }/ban/`)

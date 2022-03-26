@@ -1,36 +1,38 @@
-import * as React from "react";
+import React, { useState } from "react";
 import { Card, Typography } from "@mui/material";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import Box from "@mui/material/Box";
+import Grid from "@mui/material/Grid";
 import Icon from "../assets/pacto-logo.ico";
 import { useHistory } from "react-router-dom";
-import MenuItem from '@mui/material/MenuItem';
+import MenuItem from "@mui/material/MenuItem";
+import { useAuth } from "../providers/AuthProvider";
 
 export default function CreatePactPage() {
-  const [category, setCategory] = React.useState('');
-	const [isButtonDisabled, setIsButtonDisabled] = React.useState(false);
+	const [category, setCategory] = useState("");
+	const [isButtonDisabled, setIsButtonDisabled] = useState(false);
 	const history = useHistory();
 
-	const [apiPactNameError, setApiPactNameError] = React.useState('');
-	const [apiPactCategoryError, setApiPactCategoryError] = React.useState('');
-	const [apiPactDescriptionError, setApiPactDescriptionError] = React.useState('');
+	const [apiPactNameError, setApiPactNameError] = useState("");
+	const [apiPactCategoryError, setApiPactCategoryError] = useState("");
+	const [apiPactDescriptionError, setApiPactDescriptionError] = useState("");
 
+	const { user, setUser } = useAuth();
 
+	const handleCategoryChange = (event) => {
+		setCategory(event.target.value);
+	};
 
-  const handleCategoryChange = (event) => {
-    setCategory(event.target.value);
-  };
-  
 	const handleSubmit = async (event) => {
 		event.preventDefault();
 		const data = new FormData(event.currentTarget);
 		setIsButtonDisabled(true);
 
-		setApiPactNameError('');
-		setApiPactCategoryError('');
-		setApiPactDescriptionError('');
+		setApiPactNameError("");
+		setApiPactCategoryError("");
+		setApiPactDescriptionError("");
 
 		const response = await fetch(`${process.env.REACT_APP_URL}/pact`, {
 			method: "POST",
@@ -41,13 +43,13 @@ export default function CreatePactPage() {
 			body: JSON.stringify({
 				name: data.get("pact-name"),
 				category: data.get("category-select"),
-				description: data.get("description")
+				description: data.get("description"),
 			}),
 		});
 
 		const json = await response.json();
 
-		Object.values(json['errors']).forEach(err => {
+		Object.values(json["errors"]).forEach((err) => {
 			const field = err["field"];
 			const message = err["message"];
 
@@ -61,8 +63,7 @@ export default function CreatePactPage() {
 				case "description":
 					setApiPactDescriptionError(message);
 					break;
-				default:
-					break;
+				// no default
 			}
 			setIsButtonDisabled(false);
 		});
@@ -71,31 +72,63 @@ export default function CreatePactPage() {
 			return;
 		}
 
+		let newUser = Object.assign({}, user);
+		newUser.pacts.push(json.message._id);
+		setUser(newUser);
+
 		history.push(`/pact/${json.message._id}`);
-		
 	};
 
 	return (
 		<>
 			<Card
-			sx={{
-				padding: "40px",
-				margin: "auto",
-			}}
+				sx={{
+					padding: "30px",
+					margin: "auto",
+				}}
 			>
+				<Grid
+					container
+					direction="row"
+					justifyContent="center"
+					alignItems="center"
+				>
+					<Grid
+						container
+						item
+						xs={12}
+						justifyContent="center"
+						alignItems="center"
+					>
+						<Avatar alt="Pacto Icon" src={Icon} />
+					</Grid>
+					<Grid
+						container
+						item
+						xs={12}
+						justifyContent="center"
+						alignItems="center"
+					>
+						<Typography component="h1" variant="h5" sx={{ fontWeight: "bold" }}>
+							Create Pact
+						</Typography>
+					</Grid>
+				</Grid>
+
 				<Box
 					sx={{
 						display: "flex",
 						flexDirection: "column",
 						alignItems: "center",
-						paddingInline: "200px",
+						paddingBottom: "10px",
+					}}
+					lg={{
+						display: "flex",
+						flexDirection: "column",
+						alignItems: "center",
+						paddingInline: "50px",
 					}}
 				>
-					<Avatar alt="Pacto Icon" src={Icon} />
-
-					<Typography component="h1" variant="h5" sx={{ fontWeight: "bold" }}>
-						Create Pact
-					</Typography>
 					<Box
 						component="form"
 						noValidate
@@ -114,8 +147,8 @@ export default function CreatePactPage() {
 							autoFocus
 						/>
 						<TextField
-							data-testid='category-select'
-							alignitems='center'
+							data-testid="category-select"
+							alignitems="center"
 							margin="normal"
 							required
 							fullWidth
@@ -154,17 +187,6 @@ export default function CreatePactPage() {
 							error={apiPactDescriptionError.length !== 0}
 							helperText={apiPactDescriptionError}
 						/>
-						<Button
-							fullWidth
-							label="Upload Image"
-							variant="contained"
-							component="span"
-							sx={{
-								marginTop: 1
-							}}
-							>
-							Upload Image
-						</Button>
 						<Button
 							type="submit"
 							fullWidth

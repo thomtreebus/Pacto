@@ -13,7 +13,7 @@ const post = {
     lastName: "Wali",
     _id: 1
   },
-  createdAt: "5/5/5",
+  createdAt: new Date(Date.now() - (86400000) * 0).toISOString(),
   title: "ipsumLorem ipsumLorem ipsumLorem ipsumLorem",
   text: "amet officia molestias esse!",
   type: "text",
@@ -71,7 +71,7 @@ describe("BasePostCard Tests", () => {
 
     it("should render date text", async () => {
       const date = await screen.findByTestId("author-date-line");
-      expect(date.innerHTML).toContain("5/5/5");
+      expect(date.innerHTML).toContain("just now");
     });
 
     it("should render comments number with plural for greater than 1", async () => {

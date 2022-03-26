@@ -57,6 +57,10 @@ const UserSchema = Schema({
     type: Schema.Types.ObjectId,
     ref: 'Pact'
   }],
+  notifications: [{
+    type: Schema.Types.ObjectId,
+    ref: 'Notification'
+  }],
   image: {
     type: String,
     default: "https://res.cloudinary.com/djlwzi9br/image/upload/v1644582632/pacto-logo_zzeh98.png"
@@ -75,18 +79,24 @@ const UserSchema = Schema({
     required: false,
     default: ""
   },
+  sentRequests: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: 'FriendRequest'
+    }
+  ],
+  receivedRequests: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: 'FriendRequest'
+    }
+  ],
   friends: [
     {
       type: Schema.Types.ObjectId,
       ref: 'User',
       default: []
     },
-  ],
-  pacts: [
-    {
-      type: Schema.Types.ObjectId,
-      ref: 'Pact'
-    }
   ],
   instagram: {
     type: String,

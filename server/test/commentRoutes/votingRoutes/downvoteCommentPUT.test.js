@@ -1,30 +1,19 @@
-const mongoose = require("mongoose");
-const dotenv = require("dotenv");
 const supertest = require("supertest");
 const app = require("../../../app");
 const { createToken } = require("../../../controllers/authController");
-const { generateTestUser, getTestUserEmail, generateNextTestUser } = require("../../fixtures/generateTestUser");
+const { generateTestUser, getDefaultTestUserEmail} = require("../../fixtures/generateTestUser");
 const { generateTestPact, getTestPactId } = require("../../fixtures/generateTestPact");
 const { generateTestPost, getTestPostId } = require("../../fixtures/generateTestPost");
 const { MESSAGES, PACT_MESSAGES, POST_MESSAGES, COMMENT_MESSAGES } = require("../../../helpers/messages");
 const User = require("../../../models/User");
-const Pact = require('../../../models/Pact');
 const Post = require('../../../models/Post');
-const University = require('../../../models/University');
 const Comment = require('../../../models/Comment');
-
-dotenv.config();
+const useTestDatabase = require("../../helpers/useTestDatabase");
 
 const COMMENT_TEXT = "comment here."
 describe("PUT /pact/:pactId/post/:postId/comment/:commentId/downvote", () => {
+  useTestDatabase("downvoteComment")
   let commentId = null;
-  beforeAll(async () => {
-    await mongoose.connect(process.env.TEST_DB_CONNECTION_URL);
-  });
-
-  afterAll(async () => {
-    await mongoose.connection.close();
-  });
 
   beforeEach(async () => {
     const user = await generateTestUser();
@@ -48,14 +37,6 @@ describe("PUT /pact/:pactId/post/:postId/comment/:commentId/downvote", () => {
     await post.save();
   });
 
-  afterEach(async () => {
-    await User.deleteMany({});
-    await Post.deleteMany({});
-    await Pact.deleteMany({});
-    await University.deleteMany({});
-    await Comment.deleteMany({});
-  });
-
   const sendRequest = async (token, expStatus=200, pactId=getTestPactId(), postId=getTestPostId()) => {
     const response = await supertest(app)
     .put(`/pact/${ pactId }/post/${ postId }/comment/${commentId}/downvote`)
@@ -66,7 +47,7 @@ describe("PUT /pact/:pactId/post/:postId/comment/:commentId/downvote", () => {
   }
 
   it("uses generic vote method", async () => {
-    const user = await User.findOne({ uniEmail: getTestUserEmail() });
+    const user = await User.findOne({ uniEmail: getDefaultTestUserEmail() });
     const comment = await Comment.findById(commentId);
     const oldVotes = comment.votes;
 
@@ -90,7 +71,7 @@ describe("PUT /pact/:pactId/post/:postId/comment/:commentId/downvote", () => {
   });
 
   it("uses checkIsMemberOfPact middleware", async () => {
-    const user = await generateNextTestUser("David");
+    const user = await generateTestUser("David");
     user.active = true;
     await user.save();
 
@@ -101,7 +82,7 @@ describe("PUT /pact/:pactId/post/:postId/comment/:commentId/downvote", () => {
   });
 
   it("uses checkValidPost middleware", async () => {
-    const user = await User.findOne({ uniEmail: getTestUserEmail() });
+    const user = await User.findOne({ uniEmail: getDefaultTestUserEmail() });
 
     const token = createToken(user._id);
     const response = await sendRequest(token, 404, getTestPactId(), "some gibberish");
@@ -110,7 +91,7 @@ describe("PUT /pact/:pactId/post/:postId/comment/:commentId/downvote", () => {
   });
 
   it("uses checkValidPostComment middleware", async () => {
-    const user = await User.findOne({ uniEmail: getTestUserEmail() });
+    const user = await User.findOne({ uniEmail: getDefaultTestUserEmail() });
 
     const token = createToken(user._id);
     commentId = "some gibberish";
