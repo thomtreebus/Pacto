@@ -26,7 +26,7 @@ const comment = {
   votes: 6,
   upvoters: [],
   downvoters: [],
-  childComments: [0,0,0,0],
+  childComments: [],
   parentComment: undefined,
   _id: 1
 }
