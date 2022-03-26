@@ -8,6 +8,21 @@ export default function CommentBox({post, successHandler=()=>{}, repliedToCommen
   const [apiTextError, setApiTextError] = useState("");
   const [isButtonDisabled, setIsButtonDisabled] = React.useState(false);
 
+  const sendComment = async (url, data) => {
+    const response = await fetch(url, {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			credentials: "include",
+			body: JSON.stringify({
+				text: data.get("text"),
+			}),
+		});
+
+    return response;
+  }
+
   const handleSubmit = async (event) => {
     event.preventDefault();
 		setIsButtonDisabled(true);
@@ -20,16 +35,7 @@ export default function CommentBox({post, successHandler=()=>{}, repliedToCommen
       url = url + `/${repliedToComment._id}/reply`
     }
 
-    const response = await fetch(url, {
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json",
-			},
-			credentials: "include",
-			body: JSON.stringify({
-				text: data.get("text"),
-			}),
-		});
+    const response = await sendComment(url, data);
 
     const json = await response.json();
 

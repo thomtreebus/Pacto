@@ -8,11 +8,13 @@ import { rest } from "msw";
 
 const COMMENT_TEXT = "amet officia molestias esse!";
 
-const mockSuccessHandler = jest.fn((msg) => {
-  console.log("AH!")
+let mockBeenCalled = false;
+let parameterRecievedByMock = null;
+const mockSuccessHandler = (msg) => {
   expect(msg.text).toEqual(COMMENT_TEXT);
-  return msg;
-});
+  parameterRecievedByMock = msg;
+  mockBeenCalled = true;
+}
 
 const comment = {
   pact: {_id:5},
@@ -81,7 +83,8 @@ describe("CommentBox Tests", () => {
 	});
 
   beforeEach(async () => {
-    mockSuccessHandler.mockReset();
+    parameterRecievedByMock = null
+    mockBeenCalled = false;
 	});
 
   const renderWithMock = async (element) => {
@@ -113,11 +116,14 @@ describe("CommentBox Tests", () => {
       const input = await screen.findByRole("textbox", {
 				name: "Comment",
 			});
+
+      expect(mockBeenCalled).toBe(false);
+
       fireEvent.change(input, { target: { value: COMMENT_TEXT } });
       fireEvent.click(submit);
-      await waitFor(() => expect(mockSuccessHandler).toHaveBeenCalled());
-      expect(mockSuccessHandler.mock.calls.length).toBe(1);
-      expect(mockSuccessHandler.mock.calls[0].parentComment).toBe(undefined);
+
+      await waitFor(() => expect(mockBeenCalled).toBe(true));
+      expect(parameterRecievedByMock.parentComment).toBeUndefined();
     });
 
     it("should successfully submit reply to comment", async () => {
@@ -126,11 +132,14 @@ describe("CommentBox Tests", () => {
       const input = await screen.findByRole("textbox", {
 				name: "Comment",
 			});
+
+      expect(mockBeenCalled).toBe(false);
+
       fireEvent.change(input, { target: { value: COMMENT_TEXT } });
       fireEvent.click(submit);
-      await waitFor(() => expect(mockSuccessHandler).toHaveBeenCalled());
-      expect(mockSuccessHandler.mock.calls.length).toBe(1);
-      expect(mockSuccessHandler.mock.calls[0].parentComment._id).toBe(comment._id);
+
+      await waitFor(() => expect(mockBeenCalled).toBe(true));
+      expect(parameterRecievedByMock.parentComment._id).toBe(comment._id);
     });
   });
 });
