@@ -15,8 +15,10 @@ async function seedPacts(university) {
 async function seedCourses(university) {
 	for (let i = 0; i < userConstants.COURSES.length; i++) {
 		const course = userConstants.COURSES[i];
-		const pact = await createPact(course, "course", chance.sentence(), university);
-		const users = await User.find({course : course});
+		const name = course.name;
+		const image = course.icon;
+		const pact = await createPact(name, "course", chance.sentence(), university, image);
+		const users = await User.find({course : name});
 		await addUsersToPact(users, pact);
 	}
 }
@@ -34,20 +36,23 @@ async function seedModules(university) {
 async function seedHobbies(university) {
 	for (let i = 0; i < userConstants.HOBBIES.length; i++) {
 		const hobby = userConstants.HOBBIES[i];
+		const name = hobby.name;
+		const image = hobby.icon;
 		const possibleCategories = ["society", "other"];
 		const chosenCategory = possibleCategories[chance.integer({ min: 0, max: possibleCategories.length-1 })];
-		const pact = await createPact(hobby, chosenCategory, chance.sentence(), university);
-		const users = await User.find({hobbies : hobby});
+		const pact = await createPact(name, chosenCategory, chance.sentence(), university, image);
+		const users = await User.find({hobbies : name});
 		await addUsersToPact(users, pact);
 	}
 }
 
-async function createPact(name, category, description, university) {
+async function createPact(name, category, description, university, image) {
 	const pact = await Pact.create({
 		name,
 		category,
 		description,
 		university: university,
+		image: image,
 	});
 
 	university.pacts.push(pact);
