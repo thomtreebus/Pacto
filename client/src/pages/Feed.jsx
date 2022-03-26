@@ -9,9 +9,11 @@ export default function Feed() {
   const [posts, setPosts] = useState(null);
 
 	useEffect(() => {
+    const controller = new AbortController();
     fetch(`${process.env.REACT_APP_URL}/feed`, {
       method: "GET",
-      credentials: "include"
+      credentials: "include",
+      signal: controller.signal,
     }).then((res) => {
       return res.json();
     }).then((data) => {
@@ -19,6 +21,7 @@ export default function Feed() {
       setIsLoading(false);
       setError(null);
 		})
+    return () => controller.abort();
 	}, [])
  	
 

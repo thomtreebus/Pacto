@@ -55,9 +55,11 @@ export default function UserPage() {
     const [value, setValue] = useState(0);
 
     useEffect(() => {
+      const controller = new AbortController();
       fetch(`${process.env.REACT_APP_URL}/users`, {
         method: "GET",
-        credentials: "include"
+        credentials: "include",
+        signal: controller.signal,
       }).then((res) => {
         if (!res.ok) {
           throw Error("Could not fetch pact");
@@ -79,6 +81,7 @@ export default function UserPage() {
       }).catch(() => {
         history.push("/not-found");
     })
+    return () => controller.abort();
     }, [history, user])
 
   const handleChange = (event, newValue) => {

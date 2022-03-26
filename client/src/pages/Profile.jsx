@@ -39,11 +39,14 @@ export default function Profile() {
   const [data, setData] = useState(null)
 
   useEffect( () => {
+    const controller = new AbortController();
     if(id){
       fetch(`${process.env.REACT_APP_URL}/users/${id}`, {
-          credentials: "include",
-        }).then((res) => res.json()).then((data) => setData(data))
-      }
+        credentials: "include",
+        signal: controller.signal,
+      }).then((res) => res.json()).then((data) => setData(data))
+    }
+    return () => controller.abort();
   },[id])
 
   useEffect(() => {

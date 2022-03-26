@@ -70,10 +70,12 @@ export default function EditPact() {
 
 
   useEffect(() => {
+    const controller = new AbortController();
     if(pactId !== undefined) {
       fetch(`${process.env.REACT_APP_URL}/pact/${pactId}`, {
         method: "GET",
-        credentials: "include"
+        credentials: "include",
+        signal: controller.signal,
       }).then((res) => {
         if (!res.ok) {
           throw Error("Could not fetch pacts");
@@ -96,6 +98,7 @@ export default function EditPact() {
         return history.push(`/not-found`);
       })
     }
+    return () => controller.abort();
   }, [pactId, user, history])
 
 
