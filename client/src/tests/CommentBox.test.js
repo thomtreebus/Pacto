@@ -1,4 +1,4 @@
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { waitForElementToBeRemoved } from "@testing-library/react"
 import CommentBox from "../components/CommentBox";
 import "@testing-library/jest-dom";
@@ -9,6 +9,7 @@ import { rest } from "msw";
 const COMMENT_TEXT = "amet officia molestias esse!";
 
 const mockSuccessHandler = jest.fn((msg) => {
+  console.log("AH!")
   expect(msg.text).toEqual(COMMENT_TEXT);
   return msg;
 });
@@ -114,6 +115,7 @@ describe("CommentBox Tests", () => {
 			});
       fireEvent.change(input, { target: { value: COMMENT_TEXT } });
       fireEvent.click(submit);
+      await waitFor(() => expect(mockSuccessHandler).toHaveBeenCalled());
       expect(mockSuccessHandler.mock.calls.length).toBe(1);
       expect(mockSuccessHandler.mock.calls[0].parentComment).toBe(undefined);
     });
@@ -126,6 +128,7 @@ describe("CommentBox Tests", () => {
 			});
       fireEvent.change(input, { target: { value: COMMENT_TEXT } });
       fireEvent.click(submit);
+      await waitFor(() => expect(mockSuccessHandler).toHaveBeenCalled());
       expect(mockSuccessHandler.mock.calls.length).toBe(1);
       expect(mockSuccessHandler.mock.calls[0].parentComment._id).toBe(comment._id);
     });
