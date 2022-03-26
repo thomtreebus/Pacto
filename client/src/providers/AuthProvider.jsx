@@ -1,6 +1,6 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useContext, useState, useEffect, useCallback } from "react";
 import Loading from "../pages/Loading";
-import Error from "../pages/Error";
+import ErrorPage from "../pages/Error";
 
 const AuthContext = React.createContext();
 
@@ -15,29 +15,30 @@ export default function AuthProvider({ children }) {
 	const [isAuthenticated, setIsAuthenticated] = useState(false);
 	const [activePage, setActivePage] = useState("/feed");
 
-	async function fetchUser() {
-		setIsLoading(true);
-		try {
-			const response = await fetch(`${process.env.REACT_APP_URL}/me`, {
-				credentials: "include",
-			});
-			const data = await response.json();
-
-			if (data.errors.length) {
-				setUser(null);
-				setIsAuthenticated(false);
-			} else {
-				setError(null);
-				setUser(data.message);
-				setIsAuthenticated(true);
+	const silentRefresh = useCallback(() => {
+		return fetch(`${process.env.REACT_APP_URL}/me`, {
+			credentials: "include",
+		}).then((res) => {
+			if (!res.ok) {
+				throw Error(res.errors);
 			}
-		} catch (err) {
+			return res.json();
+		}).then((data) => {
+			setError(null);
+			setUser(data.message);
+			setIsAuthenticated(true);
+		}).catch((err) => {
 			setError(err.message);
 			setUser(null);
 			setIsAuthenticated(false);
-		}
+		})
+	}, [])
+
+	const fetchUser = useCallback(async () => {
+		setIsLoading(true);
+		await silentRefresh();
 		setIsLoading(false);
-	}
+	}, [silentRefresh])
 
 	useEffect(() => {
 		fetchUser();
@@ -47,14 +48,14 @@ export default function AuthProvider({ children }) {
 			setIsLoading(true); //This might need to be set to false.
 			setIsAuthenticated(false);
 		};
-	}, []);
+	}, [fetchUser]);
 
 	if (isLoading) {
 		return <Loading />;
 	}
 
 	if (error) {
-		return <Error error={error} />;
+		return <ErrorPage error={error} />;
 	}
 
 	return (
@@ -64,6 +65,7 @@ export default function AuthProvider({ children }) {
 				isAuthenticated,
 				setIsAuthenticated,
 				setUser,
+				silentRefresh,
 				activePage,
 				setActivePage,
 			}}
