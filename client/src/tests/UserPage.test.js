@@ -1,5 +1,5 @@
 import UserPage from "../pages/UserPage";
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { render, screen, fireEvent, waitFor, cleanup } from "@testing-library/react";
 import { waitForElementToBeRemoved } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import MockComponent from "./utils/MockComponent";
@@ -90,7 +90,7 @@ describe("User Page Tests", () => {
         async function assertUsersShown(usersToBeShown) {
             for (let i = 0; i < users.length; i++) {
                 if (usersToBeShown.includes(allUsers[i])) {
-                    const user = await screen.findByText(allUsers[i]); U
+                    const user = await screen.findByText(allUsers[i]); 
                     expect(user).toBeInTheDocument();
                 } else {
                     const user = screen.queryByText(allUsers[i]);
@@ -110,6 +110,29 @@ describe("User Page Tests", () => {
                 await assertUsersShown(["3"]);
                 fireEvent.click(tabs[3]);
                 await assertUsersShown(["4"]);
+            });
+        
+            it("does not show users that share the same mutal value if the mutal value is blank", async () => {
+                cleanup();
+                const userCopy = Object.assign({}, users[0]);
+                userCopy.location = ' ';
+                userCopy.course = ' ';
+                server.use(
+                    rest.get(`${process.env.REACT_APP_URL}/me`, (req, res, ctx) => {
+                        return res(
+                            ctx.json({
+                                message: userCopy,
+                                errors: [],
+                            })
+                        );
+                    })
+                );
+                await renderWithMock();
+                const tabs = CATEGORIES.slice(2).map((category) => screen.getByText(category));
+                fireEvent.click(tabs[0]);
+                await assertUsersShown(["0"]);
+                fireEvent.click(tabs[1]);
+                await assertUsersShown(["0"]);
             });
         })
     });

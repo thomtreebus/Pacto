@@ -6,7 +6,7 @@ export default function PactList({ pacts }) {
 	if (!pacts.length) {
 		return (
 			<Typography variant="subtitle1" sx={{ textAlign: "center" }}>
-				You are not in any pacts
+				No more pacts
 			</Typography>
 		);
 	}

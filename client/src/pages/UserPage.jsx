@@ -69,10 +69,10 @@ export default function UserPage() {
           resAllUsers.filter(curUser => curUser.friends.includes(user._id))
         );
         setAllSameCourse(
-          resAllUsers.filter(curUser => curUser.course === user.course)
+          user.course?.trim() ? resAllUsers.filter(curUser => curUser.course === user.course) : [user]
         );
         setAllSameLocation(
-          resAllUsers.filter(curUser => curUser.location === user.location)
+          user.location?.trim() ? resAllUsers.filter(curUser => curUser.location === user.location) : [user]
         );
         setAllUsers(resAllUsers);
         setIsLoading(false);
