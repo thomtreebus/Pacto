@@ -18,7 +18,7 @@ const users = [
         uniEmail: "pac.to@kcl.ac.uk",
         university: "623372b09841b9fb6b85f3de",
 	},
-    {
+        {
         _id: 2,
         active: true,
         bio: "Hello",
