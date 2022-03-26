@@ -10,6 +10,7 @@ describe("AuthRoute Tests", () => {
 	const server = setupServer(
 		rest.get(`${process.env.REACT_APP_URL}/me`, (req, res, ctx) => {
 			return res(
+				ctx.status(200),
 				ctx.json({ message: { firstName: "pac", lastName: "to" }, errors: [] })
 			);
 		})
@@ -47,6 +48,7 @@ describe("AuthRoute Tests", () => {
 		server.use(
 			rest.get(`${process.env.REACT_APP_URL}/me`, (req, res, ctx) => {
 				return res(
+					ctx.status(401),
 					ctx.json({ message: null, errors: ["Invalid credentials"] })
 				);
 			})

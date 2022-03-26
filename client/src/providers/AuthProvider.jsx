@@ -15,7 +15,7 @@ export default function AuthProvider({ children }) {
 	const [isAuthenticated, setIsAuthenticated] = useState(false);
 	const [activePage, setActivePage] = useState("/feed");
 
-	const silentRefresh = useCallback(() => {
+	const silentUserRefresh = useCallback(() => {
 		return fetch(`${process.env.REACT_APP_URL}/me`, {
 			credentials: "include",
 		}).then((res) => {
@@ -36,9 +36,9 @@ export default function AuthProvider({ children }) {
 
 	const fetchUser = useCallback(async () => {
 		setIsLoading(true);
-		await silentRefresh();
+		await silentUserRefresh();
 		setIsLoading(false);
-	}, [silentRefresh])
+	}, [silentUserRefresh])
 
 	useEffect(() => {
 		fetchUser();
@@ -63,9 +63,7 @@ export default function AuthProvider({ children }) {
 			value={{
 				user,
 				isAuthenticated,
-				setIsAuthenticated,
-				setUser,
-				silentRefresh,
+				silentUserRefresh,
 				activePage,
 				setActivePage,
 			}}

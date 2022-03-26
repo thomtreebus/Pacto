@@ -10,7 +10,7 @@ import ErrorMessage from "./ErrorMessage";
 import { useAuth } from "../providers/AuthProvider";
 
 export default function PactCard({ pact, joined }) {
-	const { user, setUser } = useAuth();
+	const { silentUserRefresh } = useAuth();
 	const history = useHistory();
 	const DESCRIPTION_LENGTH = 42;
 	const [isJoinButtonDisabled, setIsJoinButtonDisabled] = useState(false);
@@ -41,9 +41,7 @@ export default function PactCard({ pact, joined }) {
 			return;
 		}
 
-		let newUser = Object.assign({}, user);
-		newUser.pacts.push(pact._id);
-		setUser(newUser);
+		silentUserRefresh()
 		history.push(`/pact/${pact._id}`);
 	}
 

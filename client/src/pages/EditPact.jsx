@@ -24,7 +24,7 @@ const Input = styled("input")({
 
 export default function EditPact() {
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
-  const {user, setUser} = useAuth();
+  const {user, silentUserRefresh} = useAuth();
   const {pactId} = useParams();
   const history = useHistory();
   const defaultData = {
@@ -144,8 +144,7 @@ export default function EditPact() {
 
     if (response.status === 200) {
       history.push(`/pact/${pactId}`);
-      let newUser = Object.assign({}, user);
-      setUser(newUser);
+      silentUserRefresh();
     }
 
   };

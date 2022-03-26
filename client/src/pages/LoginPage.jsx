@@ -13,7 +13,7 @@ import { useAuth } from "../providers/AuthProvider";
 import ErrorMessage from "../components/ErrorMessage";
 
 export default function LoginPage() {
-	const { setIsAuthenticated, setUser } = useAuth();
+	const { silentUserRefresh } = useAuth();
 	const [snackbarOpen, setSnackbarOpen] = useState(false);
 	const [snackbarMessage, setSnackbarMessage] = useState(null);
 	const [isButtonDisabled, setIsButtonDisabled] = useState(false);
@@ -46,9 +46,8 @@ export default function LoginPage() {
 				return;
 			}
 
-			setUser(json.message.user);
+			silentUserRefresh();
 			history.push("/feed");
-			setIsAuthenticated(true);
 		} catch (err) {
 			setSnackbarMessage(err.message);
 			setSnackbarOpen(true);
