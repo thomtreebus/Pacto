@@ -58,6 +58,7 @@ describe("SearchResults Tests", () => {
 
 	beforeEach(async () => {
 		server.resetHandlers();
+		jest.spyOn(console, 'error').mockImplementation(() => { });
 	});
 
 

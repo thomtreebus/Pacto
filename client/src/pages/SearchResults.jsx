@@ -51,14 +51,12 @@ export default function SearchResults() {
       method: "GET",
       credentials: "include"
     }).then((res) => {
-      console.log(res)
       if (!res.ok) {
         throw Error("Could not get results");
       }
       return res.json();
     }).then((data) => {
       setResults(data.message);
-      console.log(data.message);
       setIsLoading(false);
       setError(null);
     }).catch((err) => {
