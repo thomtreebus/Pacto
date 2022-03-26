@@ -5,7 +5,6 @@ import Loading from "./Loading";
 import PostList from "../components/PostList";
 import PactGrid from "../components/PactGrid";
 import { Typography } from '@mui/material';
-import { useHistory } from "react-router-dom";
 import Box from '@mui/material/Box';
 import PropTypes from 'prop-types';
 import Tabs from '@mui/material/Tabs';
@@ -44,7 +43,6 @@ export default function SearchResults() {
   const [error, setError] = useState(null);
   const [results, setResults] = useState(null);
   const [type, setType] = useState(0);
-  const history = useHistory();
 
   useEffect(() => {
     fetch(`${process.env.REACT_APP_URL}/search/${query}`, {
@@ -79,20 +77,20 @@ export default function SearchResults() {
       </Typography>)}
     <Box sx={{ width: '100%'}}>
       <Box sx={{ borderBottom: 1, borderColor: 'divider', bgcolor: 'background.paper' }}>
-        <Tabs value={type} onChange={handleTabChange} centered>
+        <Tabs value={type} onChange={handleTabChange} centered data-testid="tabs-element">
           <Tab label="Pacts" />
           <Tab label="Posts" />
           <Tab label="Users" />
         </Tabs>
       </Box>
-      <TabPanel value={type} index={0}>
+      <TabPanel value={type} index={0} data-testid="pact-grid">
         {results && <PactGrid pacts={results.pacts} />}
       </TabPanel>
-      <TabPanel value={type} index={1}>
-        {results && <PostList posts={results.posts}/>}
+      <TabPanel value={type} index={1} data-testid="post-list">
+        {results && <PostList posts={results.posts} />}
       </TabPanel>
-      <TabPanel value={type} index={2}>
-        {results && <UserList users={results.users}/>}
+      <TabPanel value={type} index={2} data-testid="user-list">
+        {results && <UserList users={results.users} />}
       </TabPanel>
     </Box>
       

@@ -81,6 +81,27 @@ describe("SearchResults Tests", () => {
 
     it("should render Typography element", async () => {
 			const typographyElement = await screen.findByTestId("tp-element");
+			expect(typographyElement).toBeInTheDocument();
+		});
+
+		it("should render Typography element", async () => {
+			const tabsElement = await screen.findByTestId("tabs-element");
+			expect(tabsElement).toBeInTheDocument();
+		});
+
+		it("should render PactGrid element", async () => {
+			const pactGrid = await screen.findByTestId("pact-grid");
+			expect(pactGrid).toBeInTheDocument();
+		});
+
+		it("should render PostList element", async () => {
+			const postList = await screen.findByTestId("post-list");
+			expect(postList).toBeInTheDocument();
+		});
+
+		it("should render UserList element", async () => {
+			const userList = await screen.findByTestId("user-list");
+			expect(userList).toBeInTheDocument();
 		});
 
 	});
