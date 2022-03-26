@@ -3,8 +3,6 @@ const bcrypt = require("bcrypt");
 const userConstants = require("./userConstants");
 const User = require("../../models/User");
 const FriendRequest = require("../../models/FriendRequest");
-const axios = require('axios');
-
 const chance = new Chance(1234);
 const SALT_ROUNDS = 10;
 
