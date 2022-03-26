@@ -44,7 +44,7 @@ describe("Pact List Tests", () => {
 	describe("Check elements are rendered", () => {
 		it("should render a message saying no pacts when the array is empty", async () => {
 			await renderWithMock(<PactList pacts={[]} />);
-			const message = screen.getByText(/not in any pacts/i);
+			const message = screen.getByText(/no more pacts/i);
 			expect(message).toBeInTheDocument();
 		});
 
