@@ -15,23 +15,23 @@ export default function AuthProvider({ children }) {
 	const [isAuthenticated, setIsAuthenticated] = useState(false);
 	const [activePage, setActivePage] = useState("/feed");
 
-	const silentUserRefresh = useCallback(() => {
-		return fetch(`${process.env.REACT_APP_URL}/me`, {
-			credentials: "include",
-		}).then((res) => {
+	const silentUserRefresh = useCallback(async () => {
+		try {
+			const res = await fetch(`${process.env.REACT_APP_URL}/me`, {
+				credentials: "include",
+			});
 			if (!res.ok) {
 				throw Error(res.errors);
 			}
-			return res.json();
-		}).then((data) => {
+			const data = await res.json();
 			setError(null);
 			setUser(data.message);
 			setIsAuthenticated(true);
-		}).catch((err) => {
+		} catch (err) {
 			setError(err.message);
-			setUser(null);
 			setIsAuthenticated(false);
-		})
+			setUser(null);
+		}
 	}, [])
 
 	const fetchUser = useCallback(async () => {

@@ -146,8 +146,8 @@ export default function EditPact() {
 
 
     if (response.status === 200) {
+      await silentUserRefresh();
       history.push(`/pact/${pactId}`);
-      silentUserRefresh();
     }
 
   };

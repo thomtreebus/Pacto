@@ -41,7 +41,7 @@ export default function PactCard({ pact, joined }) {
 			return;
 		}
 
-		silentUserRefresh()
+		await silentUserRefresh()
 		history.push(`/pact/${pact._id}`);
 	}
 

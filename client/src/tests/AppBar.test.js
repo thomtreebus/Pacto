@@ -4,8 +4,9 @@ import "@testing-library/jest-dom";
 import MockComponent from "./utils/MockComponent.jsx";
 import { rest } from "msw";
 import { setupServer } from "msw/node";
-import { Route } from "react-router-dom";
-
+import { Route,Switch} from "react-router-dom";
+import { createMemoryHistory } from 'history';
+import PrivateRoute from "../components/PrivateRoute"
 
 describe("App Bar Tests", () => {
 
@@ -40,21 +41,27 @@ describe("App Bar Tests", () => {
 	});
 
   beforeEach(async () => {
+    history = createMemoryHistory({ initialEntries: [`/feed`] });
     render(
       <MockComponent>
-        <AppBar />
         <Route exact path="/login">
           <h1>Redirected to login</h1>
         </Route>
-        <Route exact path="/feed">
-          <h1>Redirected to feed</h1>
-        </Route>
-        <Route exact path="/edit-profile">
-          <h1>Redirected to edit-profile</h1>
-        </Route>
-        <Route exact path="/user/userid1">
-          <h1>Redirected to profile</h1>
-        </Route>
+
+        <PrivateRoute path="*">
+          <AppBar />
+          <Switch>
+            <PrivateRoute exact path="/feed">
+              <h1>Redirected to feed</h1>
+            </PrivateRoute>
+            <PrivateRoute exact path="/edit-profile">
+              <h1>Redirected to edit-profile</h1>
+            </PrivateRoute>
+            <PrivateRoute exact path="/user/userid1">
+              <h1>Redirected to profile</h1>
+            </PrivateRoute>
+          </Switch>
+        </PrivateRoute>
       </MockComponent>
       );
     await waitForElementToBeRemoved(() => screen.getByText("Loading"));
@@ -115,6 +122,13 @@ describe("App Bar Tests", () => {
 
   describe("Check interaction with elements", () => {
     it("should log out the user when log out is pressed", async () => {
+      server.use(
+				rest.get(`${process.env.REACT_APP_URL}/me`, (req, res, ctx) => {
+          return res(
+            ctx.status(401)
+          );
+        })
+			);
       const logoutItemElement = await screen.findByTestId("logout-item");
       fireEvent.click(logoutItemElement);
       const redirectMessage = await screen.findByText(/Redirected to login/i);

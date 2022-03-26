@@ -47,7 +47,7 @@ export default function PactListItem({ pact }) {
 			return;
 		}
 
-		silentUserRefresh()
+		await silentUserRefresh()
 		setActivePage(`/pact/${pact._id}`);
 		history.push(`/pact/${pact._id}`);
 	}

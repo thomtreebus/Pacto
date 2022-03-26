@@ -72,7 +72,7 @@ export default function CreatePactPage() {
 			return;
 		}
 
-		silentUserRefresh();
+		await silentUserRefresh();
 
 		history.push(`/pact/${json.message._id}`);
 	};

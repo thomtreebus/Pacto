@@ -113,8 +113,7 @@ export default function EditProfile() {
 
 		//redirects user when form is correct
 		if (res.status === 200) {
-			setIsLoading(true);
-			silentUserRefresh();
+			await silentUserRefresh();
 			return history.push("/user/" + user._id);
 		}
 
