@@ -3,7 +3,6 @@ import { useState } from "react";
 import { relativeTime } from "../helpers/timeHandllers";
 import { IconButton } from "@mui/material";
 import MarkChatReadIcon from "@mui/icons-material/MarkChatRead";
-import ErrorMessage from "./ErrorMessage";
 
 function NotificationCard({ notification, notifications, setNotifications }) {
 	const [buttonIsDisabled, setIsButtonDisabled] = useState(false);
@@ -23,11 +22,10 @@ function NotificationCard({ notification, notifications, setNotifications }) {
 
 		try {
 			const json = await response.json();
-			console.log(json);
 			if (json.errors.length) throw Error(json.errors[0].message);
 		} catch (err) {
 			setIsError(true);
-			setErrorMessage(err.message);
+			setErrorMessage(err);
 			setIsButtonDisabled(false);
 			return;
 		}
@@ -35,20 +33,15 @@ function NotificationCard({ notification, notifications, setNotifications }) {
 		const newNotifications = notifications.filter((notificationToBeDeleted) => {
 			return notificationToBeDeleted._id !== notification._id;
 		});
+
 		setNotifications(newNotifications);
 	};
 
 	return (
 		<>
-			<ErrorMessage
-				isOpen={isError}
-				setIsOpen={setIsError}
-				message={errorMessage}
-			/>
-
 			<Card sx={{ maxWidth: "18rem", padding: 2, margin: 1, shadow: 3 }}>
 				<IconButton
-					color="inherit"
+					color={isError ? "secondary" : "primary"}
 					aria-label="open drawer"
 					edge="start"
 					disabled={buttonIsDisabled}
@@ -57,6 +50,11 @@ function NotificationCard({ notification, notifications, setNotifications }) {
 				>
 					<MarkChatReadIcon />
 				</IconButton>
+				{isError && (
+					<Typography variant="body1" color="secondary">
+						{errorMessage}
+					</Typography>
+				)}
 				<Typography>{notification.text}</Typography>
 				<Typography variant="caption">
 					{relativeTime(notification.time)}
