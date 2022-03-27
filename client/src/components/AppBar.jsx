@@ -107,23 +107,7 @@ export default function PrimarySearchAppBar({ handleDrawerToggle }) {
 	};
 
 	const handleSearch = () => {
-		// fetch(`${process.env.REACT_APP_URL}/search`, {
-    //   method: "GET",
-    //   credentials: "include"
-    // }).then((res) => {
-    //   if (!res.ok) {
-    //     throw Error("Could not fetch pact");
-    //   }
-    //   return res.json();
-    // }).then((data) => {
-    //   setPact(data.message);
-    //   setIsLoading(false);
-    //   setError(null);
-    // }).catch((err) => {
-    //   setPact(null);
-    //   setIsLoading(false);
-    //   setError(err);
-    // })
+		if(!search) return; 
 		history.push(`/search/${search}`);
 	}
 

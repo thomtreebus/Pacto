@@ -24,7 +24,7 @@ function TabPanel(props) {
     >
       {value === index && (
         <Box sx={{ p: 3 }}>
-          <Typography>{children}</Typography>
+          {children}
         </Box>
       )}
     </div>
@@ -62,7 +62,7 @@ export default function SearchResults() {
       setIsLoading(false);
       setError(err);
     })
-  }, [query, results])
+  }, [query])
 
   const handleTabChange = (event, newType) => {
     setType(newType);
