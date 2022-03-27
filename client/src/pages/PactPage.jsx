@@ -6,8 +6,9 @@ import { useAuth } from "../providers/AuthProvider";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import PactPageFeedTab from "../components/PactPage/PactPageFeedTab";
-import {a11yProps, TabPanel} from "../components/TabComponents";
+import { a11yProps, TabPanel } from "../components/TabComponents";
 import PactMembersTab from "../components/PactPage/PactMembersTab";
+import { Box } from "@mui/material";
 
 export default function PactPage() {
 	const { pactID } = useParams();
@@ -40,7 +41,7 @@ export default function PactPage() {
 			})
 			.then((data) => {
 				setPact(data.message);
-				setIsLoading(false)
+				setIsLoading(false);
 			})
 			.catch((err) => {
 				if (err.message === "The user aborted a request.") return;
@@ -61,17 +62,23 @@ export default function PactPage() {
 	}
 
 	return (
-		<>
-			<Tabs value={mainPactTabValue} onChange={handleMainPactTabChange} aria-label="User type tab">
-				<Tab label="Pact Posts" {...a11yProps(0)} />
-				<Tab label="Pact Members" {...a11yProps(1)} />
-			</Tabs>
-			<TabPanel value={mainPactTabValue} index={0} >
-				<PactPageFeedTab pact={pact}/>
+		<Box sx={{ width: "100%" }}>
+			<Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+				<Tabs
+					value={mainPactTabValue}
+					onChange={handleMainPactTabChange}
+					aria-label="User type tab"
+				>
+					<Tab label="Pact Posts" {...a11yProps(0)} />
+					<Tab label="Pact Members" {...a11yProps(1)} />
+				</Tabs>
+			</Box>
+			<TabPanel value={mainPactTabValue} index={0}>
+				<PactPageFeedTab pact={pact} />
 			</TabPanel>
 			<TabPanel value={mainPactTabValue} index={1}>
-				<PactMembersTab pact={pact}/>
+				<PactMembersTab pact={pact} />
 			</TabPanel>
-		</>
+		</Box>
 	);
 }
