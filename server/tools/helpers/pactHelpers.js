@@ -18,14 +18,19 @@ async function seedPactoPact(university){
 	const pactoPact = await createPact
 	("PactoPact", "other", "Pacto pact", university, "https://images.unsplash.com/photo-1538481199705-c710c4e965fc?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1265&q=80");
 	await addUsersToPact([], pactoPact) // add default user
-	const randomMembers = await getRandomUsers(10)
-	await addUsersToPact(randomMembers, pactoPact);
-	const pactToPactModerators = await getRandomUsers(4);
-	const bannedUsers = randomMembers.splice(1, 3);
+
+	const randomUsers = await getRandomUsers(50,false)
+	const pactToPactModerators = randomUsers.splice(0,4);
+	const bannedUsers = randomUsers.splice(0, 10);
+
+	// Add banned users
 	await addBannedUsersToPact(bannedUsers, pactoPact);
-	for (let i = 0; i < pactToPactModerators.length; i++) {
-		await addUserToPact(pactToPactModerators[i], pactoPact, true)
-	}
+
+	// Add moderators
+	await addUsersToPact(pactToPactModerators, pactoPact, true)
+
+	// Add users
+	await addUsersToPact(randomUsers, pactoPact);
 }
 
 async function seedCourses(university) {
@@ -84,11 +89,11 @@ async function createPact(name, category, description, university, image) {
 	return pact;
 }
 
-async function addUsersToPact(users, pact) {
+async function addUsersToPact(users, pact, isModerator = false) {
 	if(users.length > 0) {
 		await addUserToPact(users[0], pact, true);
 		for(let i = 1; i < users.length; i ++) {
-			await addUserToPact(users[i], pact);
+			await addUserToPact(users[i], pact, isModerator);
 		}	
 	} else {
 		const preprogrammedUser = await User.findOne({uniEmail : `pac.to@kcl.ac.uk`});
@@ -121,8 +126,15 @@ async function addBannedUserToPact(user, pact) {
 	await pact.save();
 }
 
-async function getRandomUsers(numberOfUsers) {
-	const users = await User.find({});
+async function getRandomUsers(numberOfUsers, includeDefault= true) {
+	let users;
+	if(includeDefault){
+		users = await User.find({}); //random users but default user
+	}
+	else{
+		users = await User.find({uniEmail: {$ne: "pac.to@kcl.ac.uk"}}); //random users but default user
+	}
+
 	const shuffledUsers = users.sort(() => chance.integer() - chance.integer()).slice(0, numberOfUsers);
 	return shuffledUsers;
 }
