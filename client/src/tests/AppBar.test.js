@@ -116,19 +116,6 @@ describe("App Bar Tests", () => {
   });
 
   describe("Check interaction with elements", () => {
-    const server = setupServer(
-      rest.get(`${process.env.REACT_APP_URL}/me`, (req, res, ctx) => {
-        return res(
-          ctx.json({ message: {
-            _id : "userid1",
-            firstName: "pac",
-            lastName: "to",
-            notifications: undefined
-            }, errors: [] })
-        );
-      })
-    )
-
     it("should log out the user when log out is pressed", async () => {
       server.use(
 				rest.get(`${process.env.REACT_APP_URL}/me`, (req, res, ctx) => {
@@ -165,7 +152,7 @@ describe("App Bar Tests", () => {
       const menuElement = screen.getByTestId("primary-search-account-menu");
       await waitFor(() => expect(menuElement).toBeVisible());
     });
-
+  
     it("should close the profile menu when a menu item is pressed", async () => { 
       const iconButtonElement = screen.getByTestId("profile-button");
       fireEvent.click(iconButtonElement);
