@@ -11,5 +11,7 @@ router.put("/pact/:pactId", checkAuthenticated, checkIsMemberOfPact, pactControl
 router.put("/pact/:pactId/:userId/ban", checkAuthenticated, checkIsMemberOfPact, checkIsModeratorOfPact, pactController.banMember);
 router.put("/pact/:pactId/:userId/promote", checkAuthenticated, checkIsMemberOfPact, checkIsModeratorOfPact, pactController.promoteMember);
 router.put("/pact/:pactId/:userId/revokeban", checkAuthenticated, checkIsMemberOfPact, checkIsModeratorOfPact, pactController.revokeBan);
+router.delete("/pact/:pactId/leave", checkAuthenticated, checkIsMemberOfPact, pactController.leavePact);
+router.delete("/pact/:pactId/delete", checkAuthenticated, checkIsMemberOfPact, checkIsModeratorOfPact, pactController.deletePact);
 
 module.exports = router;
