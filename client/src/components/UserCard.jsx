@@ -2,6 +2,8 @@ import { Box, Grid, Card, CardHeader, Avatar, Typography, Button } from "@mui/ma
 import { useState } from "react";
 import { useHistory } from "react-router-dom";
 import { useAuth } from "../providers/AuthProvider";
+import PersonAddIcon from '@mui/icons-material/PersonAdd';
+import EditIcon from '@mui/icons-material/Edit';
 
 export default function UserCard({user}){
 
@@ -114,26 +116,30 @@ export default function UserCard({user}){
 
                     {/* Buttons for interacting as a friend with the displayed user */}
 
-                    {isFriend && <Button onClick={deleteFriend} variant="contained" color="error" data-testid="del-friend-btn">
-                        Delete Friend
-                    </Button>}
+                    <Box sx={{display : "flex", flexDirection: {xs: "column", sm : "row"}, gap: "0.5rem"}}>
 
-                    {hasReceivedRequest && <Button disabled={buttonsDisabled} onClick={acceptFriend} variant="contained" color="success" data-testid="accept-req-btn">
-                        Accept Request
-                    </Button>}
+                        {isFriend && <Button onClick={deleteFriend} variant="contained" color="error" data-testid="del-friend-btn">
+                            Remove Friend
+                        </Button>}
 
-                    {hasReceivedRequest && <Button disabled={buttonsDisabled} onClick={declineFriend} variant="contained" color="error" data-testid="reject-req-btn">
-                        Decline Request
-                    </Button>}          
+                        {hasReceivedRequest && <Button disabled={buttonsDisabled} onClick={acceptFriend} variant="contained" color="success" fullwidth="true" startIcon={<EditIcon />} sx={{ marginTop: "2px" }} data-testid="accept-req-btn">
+                            Accept Friend Request
+                        </Button>}
 
-                    {hasSentRequest && <Button disabled variant="contained" data-testid="sent-req-btn">
-                        Request Sent
-                    </Button>} 
+                        {hasReceivedRequest && <Button disabled={buttonsDisabled} onClick={declineFriend} variant="contained" color="error" fullwidth="true" startIcon={<EditIcon />} sx={{ marginTop: "2px" }} data-testid="reject-req-btn">
+                            Decline Friend Request
+                        </Button>}          
 
-                    {!hasSentRequest && !hasReceivedRequest && !isFriend && 
-                    <Button disabled={buttonsDisabled} onClick={sendFriendRequest} variant="contained" color="success" data-testid="add-friend-btn">
-                        Add Friend
-                    </Button>}                          
+                        {hasSentRequest && <Button disabled={buttonsDisabled} variant="outlined" disabled fullwidth="true" startIcon={<PersonAddIcon />} sx={{marginTop: "4px"}} data-testid="sent-req-btn">
+                            Request Sent
+                        </Button>} 
+
+                        {!hasSentRequest && !hasReceivedRequest && !isFriend && 
+                        <Button disabled={buttonsDisabled} onClick={sendFriendRequest} variant="outlined" fullwidth="true" startIcon={<PersonAddIcon />} sx={{marginTop: "4px"}} data-testid="add-friend-btn">
+                            Add Friend
+                        </Button>}
+
+                    </Box>                          
                 </Card>
             </Grid>
         </Box>		

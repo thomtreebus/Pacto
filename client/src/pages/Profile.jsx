@@ -135,8 +135,8 @@ export default function Profile() {
               <Typography variant="subtitle1" sx={{ color: "#616161", }}>  {displayedUser.location} </Typography>
             </Stack>
             <Box sx={{display : "flex", flexDirection: {xs: "column", sm : "row"}, gap: "0.5rem"}}>
-              {friendStatus === 0 && <Button variant="outlined" disabled={true} fullwidth="true" startIcon={<PersonAddIcon />} sx={{marginTop: "4px"}}>
-                Request Pending...
+              {friendStatus === 0 && <Button variant="outlined" disabled fullwidth="true" startIcon={<PersonAddIcon />} sx={{marginTop: "4px"}}>
+                Request Sent
               </Button>}
               {friendStatus === 1 && <Button variant="contained" color="success" fullwidth="true" startIcon={<EditIcon />} sx={{ marginTop: "2px" }} onClick={() => friendEvent(0)}>
                 Accept Friend Request
@@ -148,7 +148,7 @@ export default function Profile() {
                 Remove Friend
               </Button>}
               {friendStatus === 4 && <Button variant="outlined" fullwidth="true" startIcon={<PersonAddIcon />} sx={{marginTop: "4px"}} onClick={() => friendEvent(3)}>
-                Send Friend Request
+                Add Friend
               </Button>}
               <Button variant="contained" data-testid="edit-profile-button" disabled={!canEditProfile} fullwidth="true" color="error" onClick={() => history.push("/edit-profile")} startIcon={<EditIcon />} sx={{ marginTop: "2px" }}>
                 Edit Profile 

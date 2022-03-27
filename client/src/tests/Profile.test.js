@@ -195,7 +195,7 @@ describe("Profile Page Tests", () => {
       });
 
       it("should not render the send friend request button if on their profile", async () => {
-        const sendFriendRequestButton = screen.queryByText("Send Friend Request");
+        const sendFriendRequestButton = screen.queryByText("Add Friend");
         expect(sendFriendRequestButton).not.toBeInTheDocument();
       });
 
@@ -312,7 +312,7 @@ describe("Profile Page Tests", () => {
     });
 
     it("should render the send friend request button as not disabled if on other profile", async () => {
-      const sendFriendRequestButton = await screen.findByText("Send Friend Request");
+      const sendFriendRequestButton = await screen.findByText("Add Friend");
       expect(sendFriendRequestButton).toBeInTheDocument();
       expect(sendFriendRequestButton.disabled).toBe(false);
     });
