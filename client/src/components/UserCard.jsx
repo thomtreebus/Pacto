@@ -8,8 +8,6 @@ export default function UserCard({user}){
 
     const {user: currentUser} = useAuth();
 
-    console.log(currentUser)
-
     const [isFriend, setIsFriend] = useState(currentUser.friends.includes(user._id));
     const [hasSentRequest, setHasSentRequest] = useState(currentUser.sentRequests && currentUser.sentRequests.some(r => r.recipient === user._id));
     const [hasReceivedRequest, setHasReceivedRequest] = useState(currentUser.receivedRequests && currentUser.receivedRequests.some(r => r.requestor === user._id));

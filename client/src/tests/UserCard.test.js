@@ -24,6 +24,42 @@ describe("UserCard Tests", () => {
             })
 			);
 		}),
+
+        rest.post(`${process.env.REACT_APP_URL}/friends/:4`, (req, res, ctx) => {
+			return res(
+				ctx.json({ 
+                    message: {}, 
+                    errors: [] 
+                })
+			);
+		}), 
+
+        rest.put(`${process.env.REACT_APP_URL}/friends/:3/accept`, (req, res, ctx) => {
+			return res(
+				ctx.json({ 
+                    message: {}, 
+                    errors: [] 
+                })
+			);
+		}), 
+
+        rest.put(`${process.env.REACT_APP_URL}/friends/:3/reject`, (req, res, ctx) => {
+			return res(
+				ctx.json({ 
+                    message: {}, 
+                    errors: [] 
+                })
+			);
+		}), 
+
+        rest.put(`${process.env.REACT_APP_URL}/friends/remove/:1`, (req, res, ctx) => {
+			return res(
+				ctx.json({ 
+                    message: {}, 
+                    errors: [] 
+                })
+			);
+		}), 
 	);
 
     beforeAll(() => {
@@ -73,6 +109,16 @@ describe("UserCard Tests", () => {
             const delFriendBtn = await screen.findByTestId("del-friend-btn");
             expect(delFriendBtn).toBeInTheDocument();
         });
+
+        it("handles delete friend press", async () => {
+            const delFriendBtn = await screen.findByTestId("del-friend-btn");
+            fireEvent.click(delFriendBtn);
+
+            expect(delFriendBtn).not.toBeInTheDocument();
+
+            const addFriendBtn = await screen.findByTestId("add-friend-btn");
+            expect(addFriendBtn).toBeInTheDocument();
+        });
     });
 
     describe("Check element rendering and interaction: request-sent case", () => {
@@ -101,6 +147,26 @@ describe("UserCard Tests", () => {
             const reqRejectBtn = await screen.findByTestId("reject-req-btn");
             expect(reqRejectBtn).toBeInTheDocument();
         });
+
+        it("handles accept friend press", async () => {
+            const accept = await screen.findByTestId("accept-req-btn");
+            fireEvent.click(accept);
+
+            expect(accept).not.toBeInTheDocument();
+
+            const del = await screen.findByTestId("del-friend-btn");
+            expect(del).toBeInTheDocument();
+        });
+
+        it("handles reject friend press", async () => {
+            const reject = await screen.findByTestId("reject-req-btn");
+            reject.click(accept);
+
+            expect(reject).not.toBeInTheDocument();
+
+            const add = await screen.findByTestId("add-friend-btn");
+            expect(add).toBeInTheDocument();
+        });
     });
 
     describe("Check element rendering and interaction: no-relation case", () => {
@@ -111,6 +177,17 @@ describe("UserCard Tests", () => {
         it("should render add friend button", async () => {
             const addFriendBtn = await screen.findByTestId("add-friend-btn");
             expect(addFriendBtn).toBeInTheDocument();
+        });
+
+        it("handles add friend press", async () => {
+            const addFriendBtn = await screen.findByTestId("add-friend-btn");
+            fireEvent.click(addFriendBtn);
+
+            expect(addFriendBtn).not.toBeInTheDocument();
+
+            const reqSentBtn = await screen.findByTestId("sent-req-btn");
+            expect(reqSentBtn).toBeInTheDocument();
+            expect(reqSentBtn).toHaveAttribute("disabled");
         });
     });
 
