@@ -14,7 +14,10 @@ const comment = {
     text: "lorem ispum",
     type: "text",
     _id: 1,
-    comments: []
+    comments: [],
+    pact : {
+      moderators : []
+    }
   },
   author: {
     firstName: "Krishi",
