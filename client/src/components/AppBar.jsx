@@ -64,7 +64,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 export default function PrimarySearchAppBar({ handleDrawerToggle }) {
 	const history = useHistory();
 
-	const { user, setIsAuthenticated } = useAuth();
+	const { user, silentUserRefresh } = useAuth();
 
 	const [profileAnchorEl, setProfileAnchorEl] = useState(null);
 	const [notificationsAnchorEl, setNotificationsAnchorEl] = useState(null);
@@ -96,8 +96,7 @@ export default function PrimarySearchAppBar({ handleDrawerToggle }) {
 		await fetch(`${process.env.REACT_APP_URL}/logout`, {
 			credentials: "include",
 		});
-		setIsAuthenticated(false);
-		history.push("login");
+		silentUserRefresh();
 	};
 
 	const handleProfileMenuOpen = (event) => {

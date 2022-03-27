@@ -25,6 +25,7 @@ describe("AuthProvider Tests", () => {
 	const server = setupServer(
 		rest.get(`${process.env.REACT_APP_URL}/me`, (req, res, ctx) => {
 			return res(
+				ctx.status(200),
 				ctx.json({ message: { firstName: "pac", lastName: "to" }, errors: [] })
 			);
 		})
@@ -61,23 +62,13 @@ describe("AuthProvider Tests", () => {
 		server.use(
 			rest.get(`${process.env.REACT_APP_URL}/me`, (req, res, ctx) => {
 				return res(
+					ctx.status(401),
 					ctx.json({ message: null, errors: ["Invalid credentials"] })
 				);
 			})
 		);
 		await renderComponent();
 		const textElement = screen.getByText("You are not logged in");
-		expect(textElement).toBeInTheDocument();
-	});
-
-	it("displays and error is something went wrong", async () => {
-		server.use(
-			rest.get(`${process.env.REACT_APP_URL}/me`, (req, res, ctx) => {
-				return res(ctx.json({ pacto: ":(" }));
-			})
-		);
-		await renderComponent();
-		const textElement = screen.getByText(/Error:/i);
 		expect(textElement).toBeInTheDocument();
 	});
 });
