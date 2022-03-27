@@ -27,7 +27,6 @@ function capitalizeFirstLetter(string) {
 }
 
 export default function Profile() {
-
   const { user: loggedInUser, silentUserRefresh } = useAuth();
   const [displayedUser, setDisplayedUser] = useState(null);
   const { id } = useParams();
@@ -36,7 +35,7 @@ export default function Profile() {
   const [friendRequest, setFriendRequest] = useState(null);
   const [canEditProfile, setCanEditProfile] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const [data, setData] = useState(null)
+  const [counter, setCounter] = useState(0);
 
   const friendEvent = async (status) => {
     const url = (() => {
@@ -52,30 +51,30 @@ export default function Profile() {
     await fetch(`${process.env.REACT_APP_URL}/${url}`, {
       method: (status === 3) ? "POST" : "PUT",
       credentials: "include",
-    })
-    silentUserRefresh()
+    });
+    setCounter(counter + 1)
   }
 
-  useEffect( () => {
+  useEffect(() => {
+    silentUserRefresh();
     const controller = new AbortController();
-    if(id){
-      fetch(`${process.env.REACT_APP_URL}/users/${id}`, {
-        credentials: "include",
-        signal: controller.signal,
-      }).then((res) => {
-        if (!res.ok) {
-					throw Error("Could not fetch user profile");
-				}
-        return res.json()
-      }).then((data) => {
-        setData(data)
-      }).catch((err) => {
-        if (err.message === "The user aborted a request.") return;
-        if (err.message === "Could not fetch user profile") history.push("/not-found")
-      })
-    }
+    fetch(`${process.env.REACT_APP_URL}/users/${id}`, {
+      credentials: "include",
+      signal: controller.signal,
+    }).then((res) => {
+      if (!res.ok) {
+        throw Error("Could not fetch user profile");
+      }
+      return res.json()
+    }).then((data) => {
+      setDisplayedUser(data.message)
+    }).catch((err) => {
+      if (err.message === "The user aborted a request.") return;
+      if (err.message === "Could not fetch user profile") history.push("/not-found")
+    });
     return () => controller.abort();
-  },[id, history, loggedInUser])
+  }, [id, history, counter, silentUserRefresh])
+
   useEffect(() => {
     if (displayedUser) {
       var request;
@@ -87,21 +86,13 @@ export default function Profile() {
         setFriendRequest(request);
       } else if (displayedUser.friends.includes(loggedInUser._id)) {
         setFriendStatus(2);
-      } else {
+      } else if (displayedUser._id === loggedInUser._id) {
         setFriendStatus(3);
+      } else {
+        setFriendStatus(4);
       }
     }
   }, [displayedUser, loggedInUser])
-
-  useEffect(() => {
-    if (data) {
-      if (data.errors.length) {
-        history.replace("/not-found");
-      }
-      setDisplayedUser(data.message);
-    }
-  }, [data, history]);
-
 
   useEffect(() => {
     if(displayedUser) {
@@ -156,7 +147,7 @@ export default function Profile() {
               {friendStatus === 2 && <Button variant="contained" color="error" fullwidth="true" startIcon={<PersonAddIcon />} sx={{marginTop: "4px"}} onClick={() => friendEvent(2)}>
                 Remove Friend
               </Button>}
-              {friendStatus === 3 && <Button variant="outlined" fullwidth="true" startIcon={<PersonAddIcon />} sx={{marginTop: "4px"}} onClick={() => friendEvent(3)}>
+              {friendStatus === 4 && <Button variant="outlined" fullwidth="true" startIcon={<PersonAddIcon />} sx={{marginTop: "4px"}} onClick={() => friendEvent(3)}>
                 Send Friend Request
               </Button>}
               <Button variant="contained" data-testid="edit-profile-button" disabled={!canEditProfile} fullwidth="true" color="error" onClick={() => history.push("/edit-profile")} startIcon={<EditIcon />} sx={{ marginTop: "2px" }}>
