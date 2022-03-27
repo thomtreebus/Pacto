@@ -15,37 +15,12 @@ export default function PactPage() {
 	const [isLoading, setIsLoading] = useState(true);
 
 	const history = useHistory();
-	const { user, silentUserRefresh } = useAuth();
+	const { user } = useAuth();
 
 	const [mainPactTabValue, setMainPactTabValue] = useState(0);
 
 	const handleMainPactTabChange = (event, newValue) => {
 		setMainPactTabValue(newValue);
-	};
-
-	const handleButtonClicked = async (path) => {
-		setIsButtonDisabled(true);
-
-		const response = await fetch(
-			`${process.env.REACT_APP_URL}/pact/${pactID}/${path}`,
-			{
-				method: "DELETE",
-				credentials: "include",
-			}
-		);
-
-		try {
-			const json = await response.json();
-			if (json.errors.length) throw Error(json.errors[0].message);
-		} catch (err) {
-			setIsError(true);
-			setErrorMessage(err.message);
-			setIsButtonDisabled(false);
-			return;
-		}
-
-		await silentUserRefresh();
-		history.push(`/hub`);
 	};
 
 	useEffect(() => {
