@@ -2,6 +2,7 @@ import {Box} from "@mui/system";
 import {Typography} from "@mui/material";
 import React from "react";
 
+// Altered code from https://mui.com/components/tabs
 export function TabPanel(props) {
   const { children, value, index, ...other } = props;
 
