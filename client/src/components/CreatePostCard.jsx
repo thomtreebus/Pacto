@@ -179,7 +179,7 @@ export default function CreatePostCard({pactID}) {
     <Card sx={{ width: '100%', padding: 1, shadow: 3, marginTop: '18px'}}>
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
         <Tabs value={value} onChange={handleChange} aria-label="tabs" centered>
-          <Tab icon={<TextIcon />} label="Post" {...a11yProps(0)} />
+          <Tab icon={<TextIcon />} data-testid="text-icon" label="Text" {...a11yProps(0)} />
           <Tab icon={<PhotoIcon />} data-testid="image-icon" label="Image" {...a11yProps(1)} />
           <Tab icon={<LinkIcon />} data-testid="link-icon" label="Link"{...a11yProps(2)} />
         </Tabs>
@@ -195,6 +195,7 @@ export default function CreatePostCard({pactID}) {
             id="text"
             fullWidth
             label="Text"
+            data-testid="post-text-field"
             multiline
             name="text"
             rows={4}
