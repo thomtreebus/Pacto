@@ -16,6 +16,7 @@ import UniversityHubPage from "./pages/UniversityHubPage";
 import PactPage from "./pages/PactPage";
 import PostPage from "./pages/PostPage";
 import UserPage from "./pages/UserPage";
+import SearchResults from "./pages/SearchResults";
 
 
 function App() {
@@ -62,6 +63,9 @@ function App() {
 							</PrivateRoute>
 							<PrivateRoute exact path="/users">
 								<UserPage />
+							</PrivateRoute>
+							<PrivateRoute exact path="/search/:query">
+								<SearchResults />
 							</PrivateRoute>
 							<PrivateRoute path="*">
 								<NotFound />
