@@ -128,21 +128,21 @@ export default function UserCardModeration({user, pact, showBannedUsers}) {
           {showPromoteButton &&
             <Tooltip title="Promote">
               <IconButton onClick={() => handleButtonClick("promote")} >
-                <PromoteIcon color="warning" />
+                <PromoteIcon color="warning" fontSize="large" sx={{border: "0.2rem solid", borderRadius: "5px"}} />
               </IconButton>
             </Tooltip>
           }
           {showBanButton &&
             <Tooltip title="Ban">
               <IconButton onClick={() => handleButtonClick("ban")} >
-                <BanIcon color="error" />
+                <BanIcon color="error" fontSize="large"  sx={{border: "0.2rem solid", borderRadius: "5px"}} />
               </IconButton>
             </Tooltip>
           }
           {showUnBanButton &&
             <Tooltip title="Revoke Ban">
               <IconButton onClick={() => handleButtonClick("revokeban")} >
-                <UnBanIcon color="success" />
+                <UnBanIcon color="success" fontSize="large"  sx={{border: "0.2rem solid", borderRadius: "5px"}} />
               </IconButton>
             </Tooltip>
           }
