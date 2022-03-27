@@ -76,7 +76,7 @@ export default function UserPage() {
         );
         setAllUsers(resAllUsers);
         setIsLoading(false);
-      }).catch(() => {
+      }).catch((e) => {
         history.push("/not-found");
     })
     }, [history, user])

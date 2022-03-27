@@ -8,7 +8,7 @@ export default function UserCard({user}){
 
     const {user: currentUser} = useAuth();
 
-    const [isFriend, setIsFriend] = useState(currentUser.friends.includes(user._id));
+    const [isFriend, setIsFriend] = useState(currentUser.friends && currentUser.friends.includes(user._id));
     const [hasSentRequest, setHasSentRequest] = useState(currentUser.sentRequests && currentUser.sentRequests.some(r => r.recipient === user._id));
     const [hasReceivedRequest, setHasReceivedRequest] = useState(currentUser.receivedRequests && currentUser.receivedRequests.some(r => r.requestor === user._id));
     const [buttonsDisabled, setButtonsDisabled] = useState(false);
@@ -35,7 +35,7 @@ export default function UserCard({user}){
     function acceptFriend(){
         setButtonsDisabled(true);
 
-        fetch(`${process.env.REACT_APP_URL}/friends/${user._id}/reject`, {
+        fetch(`${process.env.REACT_APP_URL}/friends/${user._id}/accept`, {
             method: "PUT",
             credentials: "include",
         });
@@ -49,7 +49,7 @@ export default function UserCard({user}){
     function declineFriend(){
         setButtonsDisabled(true);
 
-        fetch(`${process.env.REACT_APP_URL}/friends/${user._id}/accept`, {
+        fetch(`${process.env.REACT_APP_URL}/friends/${user._id}/reject`, {
             method: "PUT",
             credentials: "include",
         });
@@ -62,7 +62,7 @@ export default function UserCard({user}){
     function deleteFriend(){
         setButtonsDisabled(true);
 
-        fetch(`${process.env.REACT_APP_URL}/friends/${user._id}/accept`, {
+        fetch(`${process.env.REACT_APP_URL}/friends/remove/${user._id}`, {
             method: "PUT",
             credentials: "include",
         });
