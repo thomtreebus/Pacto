@@ -153,9 +153,10 @@ export default function EditProfile() {
 				spacing={2}
 				justify="center"
 				justifyContent="center"
+				sx={{ flexDirection: { xs: "column-reverse", lg: "row" } }}
 				alignItems="stretch"
 			>
-				<Grid item container direction="column" xs={4}>
+				<Grid item container direction="column" xs={12} lg={4}>
 					<Image
 						style={{
 							width: "100%",
@@ -190,7 +191,18 @@ export default function EditProfile() {
 							</IconButton>
 						</label>
 					</Stack>
-
+					<Divider sx={{ margin: 1, width: "97%" }} />
+					<Typography
+						variant="subtitle1"
+						sx={{
+							marginTop: 1,
+							marginLeft: 0,
+							color: "#6d7175",
+						}}
+					>
+						{user.friends.length} Friends
+					</Typography>
+					<Divider sx={{ margin: 1, width: "97%" }} />
 					<TextField
 						name="location"
 						label="Location"
@@ -233,17 +245,6 @@ export default function EditProfile() {
 							marginTop: 1,
 						}}
 					/>
-					<Typography
-						variant="subtitle1"
-						sx={{
-							marginTop: 1,
-							marginLeft: 0,
-							color: "#6d7175",
-						}}
-					>
-						{user.friends.length} Friends
-					</Typography>
-					<Divider sx={{ marginTop: 1, width: "97%" }} />
 					<TextField
 						name="linkedin"
 						label="LinkedIn"
@@ -305,7 +306,7 @@ export default function EditProfile() {
 						}}
 					/>
 				</Grid>
-				<Grid item container direction="column" xs={8}>
+				<Grid item container direction="column" xs={12} lg={8}>
 					<Typography variant="h4">
 						{user.firstName} {user.lastName}
 					</Typography>
@@ -330,7 +331,10 @@ export default function EditProfile() {
 					/>
 					<Button
 						label="Update Profile"
-						sx={{ float: "right", marginTop: 30 }}
+						sx={{
+							float: "right",
+							marginTop: { xs: 1, lg: 30 },
+						}}
 						variant="contained"
 						type="submit"
 						disabled={editProfileIsDisabled}
