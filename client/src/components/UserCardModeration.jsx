@@ -53,7 +53,7 @@ export default function UserCardModeration({user, pact, showBannedUsers}) {
       ))
 
     }
-  }, [loggedInUserIsMod, loggedInUser])
+  }, [loggedInUserIsMod, loggedInUser, showBannedUsers, user, userCardIsMod])
 
   useEffect(() => {
     if (pact) {
@@ -69,7 +69,7 @@ export default function UserCardModeration({user, pact, showBannedUsers}) {
         setUserCardIsMod(false);
       }
     }
-  }, [pact, user])
+  }, [pact, user, loggedInUser])
 
   return (
     <>
