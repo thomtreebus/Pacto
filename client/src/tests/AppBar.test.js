@@ -102,8 +102,8 @@ describe("App Bar Tests", () => {
     });
     
     it("should render the notifications icon bell", async () => {
-      const menuElement = screen.getByTestId("NotificationsIcon");
-      await waitFor(() => expect(menuElement).toBeInTheDocument());
+      const menuElement = await waitFor(() => screen.getByTestId("NotificationsIcon"));
+      expect(menuElement).toBeInTheDocument();
     });
   });
 
