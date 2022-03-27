@@ -32,7 +32,7 @@ export default function PactMembersTab({pact}){
       setIsMod(false);
     }
 
-  }, [pact])
+  }, [pact, user])
 
   const handleMembersTabChange = (event, newValue) => {
     setMembersTabValue(newValue);

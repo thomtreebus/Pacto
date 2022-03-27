@@ -75,7 +75,7 @@ export default function PactPageFeedTab({pact}){
       setIsMod(false);
     }
     setIsLoading(false);
-  }, [pact])
+  }, [pact, user])
 
   if(isLoading){
     return(
