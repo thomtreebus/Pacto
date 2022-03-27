@@ -9,7 +9,23 @@ async function seedPacts(university) {
 	await seedCourses(university);
 	await seedModules(university);
 	await seedHobbies(university);
+	await seedPactoPact(university);
+
 	console.log(`Finished seeding pacts`);
+}
+
+async function seedPactoPact(university){
+	const pactoPact = await createPact
+	("PactoPact", "other", "Pacto pact", university, "https://images.unsplash.com/photo-1538481199705-c710c4e965fc?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1265&q=80");
+	await addUsersToPact([], pactoPact) // add default user
+	const randomMembers = await getRandomUsers(10)
+	await addUsersToPact(randomMembers, pactoPact);
+	const pactToPactModerators = await getRandomUsers(4);
+	const bannedUsers = randomMembers.splice(1, 3);
+	await addBannedUsersToPact(bannedUsers, pactoPact);
+	for (let i = 0; i < pactToPactModerators.length; i++) {
+		await addUserToPact(pactToPactModerators[i], pactoPact, true)
+	}
 }
 
 async function seedCourses(university) {
