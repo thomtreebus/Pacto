@@ -15,6 +15,10 @@ describe("UserCard Tests", () => {
                     firstName: "pac", 
                     lastName: "to",
                     image: "https://avatars.dicebear.com/api/identicon/temp.svg",
+                    friends: ["1"], // Logged in user is friends with testUsers[0]
+                    sentRequests: [{recipient: "2"}], // and has sent a request to testUser[1]
+                    receivedRequests: [{requestor: "3"}], // and has received a request from testUser[2]
+                    // User has no relationship with testUseer[3]
                 }, 
                 errors: [] 
             })
@@ -39,12 +43,10 @@ describe("UserCard Tests", () => {
 		await waitForElementToBeRemoved(() => screen.getByText("Loading"));
 	};
 
-    beforeEach(async () => {
-        await renderWithMock(<UserCard user={testUsers[0]} />);
-    });
-
-    describe("Check elements are rendered", () => {
-
+    describe("Check element rendering: general case", () => {
+        beforeEach(async () => {
+            await renderWithMock(<UserCard user={testUsers[0]} />);
+        });
 
         it("should render the user's profile picture", async () => {
             const cardImage = await screen.getByAltText(/image/i);
@@ -62,7 +64,57 @@ describe("UserCard Tests", () => {
         });
     });
 
-    describe("Check interaction with elements", () => {
+    describe("Check element rendering and interaction: is-friend case", () => {
+        beforeEach(async () => {
+            await renderWithMock(<UserCard user={testUsers[0]} />);
+        });
+
+        it("should render delete friend button", async () => {
+            const delFriendBtn = await screen.findByTestId("del-friend-btn");
+            expect(delFriendBtn).toBeInTheDocument();
+        });
+    });
+
+    describe("Check element rendering and interaction: request-sent case", () => {
+        beforeEach(async () => {
+            await renderWithMock(<UserCard user={testUsers[1]} />);
+        });
+
+        it("should render request sent button", async () => {
+            const reqSentBtn = await screen.findByTestId("sent-req-btn");
+            expect(reqSentBtn).toBeInTheDocument();
+            expect(reqSentBtn).toHaveAttribute("disabled");
+        });
+    });
+
+    describe("Check element rendering and interaction: request-received case", () => {
+        beforeEach(async () => {
+            await renderWithMock(<UserCard user={testUsers[2]} />);
+        });
+
+        it("should render accept request button", async () => {
+            const reqAcceptBtn = await screen.findByTestId("accept-req-btn");
+            expect(reqAcceptBtn).toBeInTheDocument();
+        });
+
+        it("should render reject request button", async () => {
+            const reqRejectBtn = await screen.findByTestId("reject-req-btn");
+            expect(reqRejectBtn).toBeInTheDocument();
+        });
+    });
+
+    describe("Check element rendering and interaction: no-relation case", () => {
+        beforeEach(async () => {
+            await renderWithMock(<UserCard user={testUsers[3]} />);
+        });
+
+        it("should render add friend button", async () => {
+            const addFriendBtn = await screen.findByTestId("add-friend-btn");
+            expect(addFriendBtn).toBeInTheDocument();
+        });
+    });
+
+    describe("Check interaction with elements: general case", () => {
 
         it("should redirect to user profile when the user card is pressed", async () => {
             server.use(

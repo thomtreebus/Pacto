@@ -116,22 +116,24 @@ export default function UserCard({user}){
 
                     {/* Buttons for interacting as a friend with the displayed user */}
 
-                    {isFriend && <Button onClick={deleteFriend} variant="contained" color="error">Delete Friend</Button>}
+                    {isFriend && <Button onClick={deleteFriend} variant="contained" color="error" data-testid="del-friend-btn">
+                        Delete Friend
+                    </Button>}
 
-                    {hasReceivedRequest && <Button disabled={buttonsDisabled} onClick={acceptFriend} variant="contained" color="success">
+                    {hasReceivedRequest && <Button disabled={buttonsDisabled} onClick={acceptFriend} variant="contained" color="success" data-testid="accept-req-btn">
                         Accept Request
                     </Button>}
 
-                    {hasReceivedRequest && <Button disabled={buttonsDisabled} onClick={declineFriend} variant="contained" color="error">
+                    {hasReceivedRequest && <Button disabled={buttonsDisabled} onClick={declineFriend} variant="contained" color="error" data-testid="reject-req-btn">
                         Decline Request
                     </Button>}          
 
-                    {hasSentRequest && <Button disabled variant="contained">
+                    {hasSentRequest && <Button disabled variant="contained" data-testid="sent-req-btn">
                         Request Sent
                     </Button>} 
 
                     {!hasSentRequest && !hasReceivedRequest && !isFriend && 
-                    <Button disabled={buttonsDisabled} onClick={sendFriendRequest} variant="contained" color="success">
+                    <Button disabled={buttonsDisabled} onClick={sendFriendRequest} variant="contained" color="success" data-testid="add-friend-btn">
                         Add Friend
                     </Button>}                          
                 </Card>
