@@ -68,8 +68,8 @@ describe("CreatePostCard Tests", () => {
 			expect(tabsElement).toBeInTheDocument();
 		});
 
-		it("should render the Post icon on the tab menu", async () => {
-			const iconElement = await screen.findByLabelText("Post");
+		it("should render the Text icon on the tab menu", async () => {
+			const iconElement = await screen.findByTestId("text-icon");
 			expect(iconElement).toBeInTheDocument();
 		});
 
@@ -89,7 +89,7 @@ describe("CreatePostCard Tests", () => {
 		});
 
 		it("should render the multiline text field in the text post tab", async () => {
-			const inputElement = await screen.findByLabelText("Text");
+			const inputElement = await screen.findByTestId("post-text-field");
 			expect(inputElement).toBeInTheDocument();
 		});
 
@@ -121,9 +121,15 @@ describe("CreatePostCard Tests", () => {
 		});
 
 		it("should be able to type into the multiline text field", async () => {
-			const inputElement = await screen.findByLabelText("Text");
-			fireEvent.change(inputElement, {target: { value: "This is a text field."} });
-			expect(inputElement.value).toBe("This is a text field.");
+			const inputElements = await screen.findAllByLabelText("Text");
+			for (let i = 0; i < inputElements.length; i++) {
+				if (inputElements.value) {
+					count++;
+					const inputElement = inputElements[i];
+					fireEvent.change(inputElement, {target: { value: "This is a text field."} });
+					expect(inputElement.value).toBe("This is a text field.");
+				}
+			}
 		});
 
 		it("should be able to type into the link text field", async () => {

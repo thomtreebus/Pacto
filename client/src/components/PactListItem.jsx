@@ -9,7 +9,7 @@ import { useAuth } from "../providers/AuthProvider";
 import { Button, Divider, Alert } from "@mui/material";
 
 export default function PactListItem({ pact }) {
-	const { user, setUser, activePage, setActivePage } = useAuth();
+	const { user, silentUserRefresh, activePage, setActivePage } = useAuth();
 	const history = useHistory();
 	const [showJoinConfirmation, setShowJoinConfirmation] = useState(false);
 	const [isJoinButtonDisabled, setIsJoinButtonDisabled] = useState(false);
@@ -47,9 +47,7 @@ export default function PactListItem({ pact }) {
 			return;
 		}
 
-		let newUser = Object.assign({}, user);
-		newUser.pacts.push(pact._id);
-		setUser(newUser);
+		await silentUserRefresh()
 		setActivePage(`/pact/${pact._id}`);
 		history.push(`/pact/${pact._id}`);
 	}

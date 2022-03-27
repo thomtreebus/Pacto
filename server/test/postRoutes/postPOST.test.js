@@ -177,7 +177,7 @@ describe("POST /pact/:pactId/post", () => {
     expect(response.body.errors[0].message).toBe(expErrMsg);
   }
 
-  const isValidPost = async (postObject, expectedTitle=TITLE, expectedType=TEXT_TYPE) => {
+  const isValidPost = async (postObject, expectedTitle=TITLE, expectedType=TEXT_TYPE, expectedText=TEXT) => {
     const user = await User.findOne({ uniEmail: getDefaultTestUserEmail() });
     const pact = await Pact.findOne({ _id: getTestPactId() });
     const token = createToken(user._id);
@@ -195,7 +195,7 @@ describe("POST /pact/:pactId/post", () => {
     expect(response.body.message.type).toBe(expectedType);
     switch(expectedType) {
       case TEXT_TYPE:
-        expect(response.body.message.text).toBe(TEXT);
+        expect(response.body.message.text).toBe(expectedText);
         break;
       case IMAGE_TYPE:
         expect(response.body.message.image).toBe(IMAGE);
@@ -264,6 +264,22 @@ describe("POST /pact/:pactId/post", () => {
         title: TITLE,
         type: TEXT_TYPE
       }, "text", POST_MESSAGES.TYPE.TEXT.BLANK);
+    });
+
+    it("accepts text post with 1000 characters", async () => {
+      await isValidPost({
+        title: TITLE,
+        type: TEXT_TYPE,
+        text: "x".repeat(1000)
+      }, undefined, undefined, expectedText="x".repeat(1000));
+    });
+
+    it("rejects text post with 1001 characters", async () => {
+      await isInvalidPost({
+        title: TITLE,
+        type: TEXT_TYPE,
+        text: "x".repeat(1001)
+      }, "text", POST_MESSAGES.TYPE.TEXT.MAX_LENGTH_EXCEEDED);
     });
 
     it("accepts valid image post with no optional attributes", async () =>{

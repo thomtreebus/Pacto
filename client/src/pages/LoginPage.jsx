@@ -3,7 +3,7 @@ import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
-import { Link, useHistory } from "react-router-dom";
+import { Link } from "react-router-dom";
 import Paper from "@mui/material/Paper";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
@@ -13,11 +13,10 @@ import { useAuth } from "../providers/AuthProvider";
 import ErrorMessage from "../components/ErrorMessage";
 
 export default function LoginPage() {
-	const { setIsAuthenticated, setUser } = useAuth();
+	const { silentUserRefresh } = useAuth();
 	const [snackbarOpen, setSnackbarOpen] = useState(false);
 	const [snackbarMessage, setSnackbarMessage] = useState(null);
 	const [isButtonDisabled, setIsButtonDisabled] = useState(false);
-	const history = useHistory();
 
 	const handleSubmit = async (event) => {
 		event.preventDefault();
@@ -46,9 +45,7 @@ export default function LoginPage() {
 				return;
 			}
 
-			setUser(json.message.user);
-			history.push("/feed");
-			setIsAuthenticated(true);
+			silentUserRefresh();
 		} catch (err) {
 			setSnackbarMessage(err.message);
 			setSnackbarOpen(true);
