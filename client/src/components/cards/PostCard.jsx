@@ -3,7 +3,7 @@ import ImagePostCard from "./ImagePostCard";
 import LinkPostCard from "./LinkPostCard";
 import TextPostCard from "./TextPostCard";
 
-export default function PostCard({ post }) {
+export default function PostCard({ post, repliable=false }) {
   const ConcretePostCard = (() => {
     switch(post.type) {
       case "text": return TextPostCard;
@@ -14,7 +14,7 @@ export default function PostCard({ post }) {
   })()
 
   return (
-    <BasePostCard post={post}>
+    <BasePostCard post={post} repliable={repliable}>
       <ConcretePostCard post={post}/>
     </BasePostCard>
   )

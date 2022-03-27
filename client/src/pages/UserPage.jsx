@@ -55,12 +55,14 @@ export default function UserPage() {
     const [value, setValue] = useState(0);
 
     useEffect(() => {
+      const controller = new AbortController();
       fetch(`${process.env.REACT_APP_URL}/users`, {
         method: "GET",
-        credentials: "include"
+        credentials: "include",
+        signal: controller.signal,
       }).then((res) => {
         if (!res.ok) {
-          throw Error("Could not fetch pact");
+          throw Error("Could not fetch users");
         }
         return res.json();
       }).then((data) => {
@@ -69,16 +71,18 @@ export default function UserPage() {
           resAllUsers.filter(curUser => curUser.friends.includes(user._id))
         );
         setAllSameCourse(
-          resAllUsers.filter(curUser => curUser.course === user.course)
+          user.course?.trim() ? resAllUsers.filter(curUser => curUser.course === user.course) : [user]
         );
         setAllSameLocation(
-          resAllUsers.filter(curUser => curUser.location === user.location)
+          user.location?.trim() ? resAllUsers.filter(curUser => curUser.location === user.location) : [user]
         );
         setAllUsers(resAllUsers);
         setIsLoading(false);
-      }).catch(() => {
+      }).catch((err) => {
+        if (err.message === "The user aborted a request.") return;
         history.push("/not-found");
     })
+    return () => controller.abort();
     }, [history, user])
 
   const handleChange = (event, newValue) => {

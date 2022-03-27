@@ -1,18 +1,40 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
+import { waitForElementToBeRemoved } from "@testing-library/react";
 import "@testing-library/jest-dom";
-import { BrowserRouter } from "react-router-dom";
-import PactList from "../components/PactList.jsx";
-import pacts from "./utils/testPacts";
-import pages from "../components/PageList";
 import PageList from "../components/PageList";
+import MockComponent from "./utils/MockComponent";
+import { rest } from "msw";
+import { setupServer } from "msw/node";
 
 describe("Page List Tests", () => {
-	beforeEach(() => {
+	const server = setupServer(
+		rest.get(`${process.env.REACT_APP_URL}/me`, (req, res, ctx) => {
+			return res(
+				ctx.json({ message: { firstName: "pac", lastName: "to" }, errors: [] })
+			);
+		})
+	);
+
+	beforeAll(() => {
+		server.listen();
+	});
+
+	afterAll(() => {
+		server.close();
+	});
+
+	beforeEach(async () => {
+		server.resetHandlers();
+	});
+
+	beforeEach(async () => {
 		render(
-			<BrowserRouter>
+			<MockComponent>
 				<PageList />
-			</BrowserRouter>
+			</MockComponent>
 		);
+
+		await waitForElementToBeRemoved(() => screen.getByText("Loading"));
 	});
 
 	describe("Check elements are rendered", () => {

@@ -19,7 +19,7 @@ export default function CreatePactPage() {
 	const [apiPactCategoryError, setApiPactCategoryError] = useState("");
 	const [apiPactDescriptionError, setApiPactDescriptionError] = useState("");
 
-	const { user, setUser } = useAuth();
+	const { silentUserRefresh } = useAuth();
 
 	const handleCategoryChange = (event) => {
 		setCategory(event.target.value);
@@ -72,9 +72,7 @@ export default function CreatePactPage() {
 			return;
 		}
 
-		let newUser = Object.assign({}, user);
-		newUser.pacts.push(json.message._id);
-		setUser(newUser);
+		await silentUserRefresh();
 
 		history.push(`/pact/${json.message._id}`);
 	};

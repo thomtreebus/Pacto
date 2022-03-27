@@ -26,7 +26,7 @@ const Input = styled("input")({
 });
 
 export default function EditProfile() {
-	const { user, setUser } = useAuth();
+	const { user, silentUserRefresh } = useAuth();
 
 	const history = useHistory();
 
@@ -111,13 +111,10 @@ export default function EditProfile() {
 
 		const resJson = await res.json();
 
-		const updatedUser = resJson.message;
-
 		//redirects user when form is correct
 		if (res.status === 200) {
-			setIsLoading(true);
-			setUser(updatedUser);
-			return history.push("/user/" + updatedUser._id);
+			await silentUserRefresh();
+			return history.push("/user/" + user._id);
 		}
 
 		// Displays errors retrieved from response

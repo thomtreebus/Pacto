@@ -22,6 +22,11 @@ import ForumIcon from '@mui/icons-material/Forum';
 import EditIcon from '@mui/icons-material/Edit';
 import {useAuth} from "../providers/AuthProvider";
 
+function capitalizeFirstLetter(string) {
+  const sanatisedString = string.trim();
+  return sanatisedString.charAt(0).toUpperCase() + sanatisedString.slice(1);
+}
+
 export default function Profile() {
 
   const { user: loggedInUser } = useAuth();
@@ -34,12 +39,25 @@ export default function Profile() {
   const [data, setData] = useState(null)
 
   useEffect( () => {
+    const controller = new AbortController();
     if(id){
       fetch(`${process.env.REACT_APP_URL}/users/${id}`, {
-          credentials: "include",
-        }).then((res) => res.json()).then((data) => setData(data))
-      }
-  },[id])
+        credentials: "include",
+        signal: controller.signal,
+      }).then((res) => {
+        if (!res.ok) {
+					throw Error("Could not fetch user profile");
+				}
+        return res.json()
+      }).then((data) => {
+        setData(data)
+      }).catch((err) => {
+        if (err.message === "The user aborted a request.") return;
+        if (err.message === "Could not fetch user profile") history.push("/not-found")
+      })
+    }
+    return () => controller.abort();
+  },[id, history])
 
   useEffect(() => {
     if (data) {
@@ -90,7 +108,7 @@ export default function Profile() {
             </Image>
             <Stack direction="column" alignItems="left" sx={{}}>
               <Typography variant="h4">{displayedUser.firstName} {displayedUser.lastName}</Typography>
-              <Typography variant="subtitle1" sx={{ color: "#1976d2", marginTop: "2px" }}>  {displayedUser.course} student at {displayedUser.university.name} </Typography>
+              <Typography variant="subtitle1" sx={{ color: "#1976d2", marginTop: "2px" }}>  {capitalizeFirstLetter(`${displayedUser.course} student at ${displayedUser.university.name}`)} </Typography>
               <Typography variant="subtitle1" sx={{ color: "#616161", }}>  {displayedUser.location} </Typography>
             </Stack>
             <Box sx={{display : "flex", flexDirection: {xs: "column", sm : "row"}, gap: "0.5rem"}}>

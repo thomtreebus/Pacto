@@ -15,7 +15,7 @@ export default function PactPage() {
 	const [isLoading, setIsLoading] = useState(true);
 
 	const history = useHistory();
-	const { user } = useAuth();
+	const { user, silentUserRefresh } = useAuth();
 
 	const [mainPactTabValue, setMainPactTabValue] = useState(0);
 
@@ -23,12 +23,40 @@ export default function PactPage() {
 		setMainPactTabValue(newValue);
 	};
 
+	const handleButtonClicked = async (path) => {
+		setIsButtonDisabled(true);
+
+		const response = await fetch(
+			`${process.env.REACT_APP_URL}/pact/${pactID}/${path}`,
+			{
+				method: "DELETE",
+				credentials: "include",
+			}
+		);
+
+		try {
+			const json = await response.json();
+			if (json.errors.length) throw Error(json.errors[0].message);
+		} catch (err) {
+			setIsError(true);
+			setErrorMessage(err.message);
+			setIsButtonDisabled(false);
+			return;
+		}
+
+		await silentUserRefresh();
+		history.push(`/hub`);
+	};
+
 	useEffect(() => {
 		setIsLoading(true);
 		setMainPactTabValue(0);
+		const controller = new AbortController();
+
 		fetch(`${process.env.REACT_APP_URL}/pact/${pactID}`, {
 			method: "GET",
 			credentials: "include",
+			signal: controller.signal,
 		})
 			.then((res) => {
 				if (!res.ok) {
@@ -41,16 +69,21 @@ export default function PactPage() {
 				setIsLoading(false)
 			})
 			.catch((err) => {
-				history.push("/not-found");
-			}).finally(
+				if (err.message === "The user aborted a request.") return;
+				if (err.message === "Could not fetch pact") {
+					history.push("/not-found");
+				}
+			});
 
-			);
+		return () => controller.abort();
 	}, [pactID, history, user]);
 
-	if(isLoading){
-		return(
-			<Loading />
-		)
+	if (isLoading) {
+		return (
+			<>
+				<Loading />
+			</>
+		);
 	}
 
 	return (

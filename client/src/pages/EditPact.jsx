@@ -24,7 +24,7 @@ const Input = styled("input")({
 
 export default function EditPact() {
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
-  const {user, setUser} = useAuth();
+  const {user, silentUserRefresh} = useAuth();
   const {pactId} = useParams();
   const history = useHistory();
   const defaultData = {
@@ -70,13 +70,15 @@ export default function EditPact() {
 
 
   useEffect(() => {
+    const controller = new AbortController();
     if(pactId !== undefined) {
       fetch(`${process.env.REACT_APP_URL}/pact/${pactId}`, {
         method: "GET",
-        credentials: "include"
+        credentials: "include",
+        signal: controller.signal,
       }).then((res) => {
         if (!res.ok) {
-          throw Error("Could not fetch pacts");
+          throw Error("Could not fetch pact");
         }
         return res.json();
       }).then((resData) => {
@@ -91,11 +93,13 @@ export default function EditPact() {
         setImage(data.image)
         setIsLoading(false);
       }).catch((err) => {
+        if (err.message === "The user aborted a request.") return;
         setSnackBarError(err)
         setSnackbarOpen(true)
         return history.push(`/not-found`);
       })
     }
+    return () => controller.abort();
   }, [pactId, user, history])
 
 
@@ -143,9 +147,8 @@ export default function EditPact() {
 
 
     if (response.status === 200) {
+      await silentUserRefresh();
       history.push(`/pact/${pactId}`);
-      let newUser = Object.assign({}, user);
-      setUser(newUser);
     }
 
   };

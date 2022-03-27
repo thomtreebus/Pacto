@@ -1,6 +1,6 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useContext, useState, useEffect, useCallback } from "react";
 import Loading from "../pages/Loading";
-import Error from "../pages/Error";
+import ErrorPage from "../pages/Error";
 
 const AuthContext = React.createContext();
 
@@ -13,30 +13,32 @@ export default function AuthProvider({ children }) {
 	const [error, setError] = useState(null);
 	const [isLoading, setIsLoading] = useState(true);
 	const [isAuthenticated, setIsAuthenticated] = useState(false);
+	const [activePage, setActivePage] = useState("/feed");
 
-	async function fetchUser() {
-		setIsLoading(true);
+	const silentUserRefresh = useCallback(async () => {
 		try {
-			const response = await fetch(`${process.env.REACT_APP_URL}/me`, {
+			const res = await fetch(`${process.env.REACT_APP_URL}/me`, {
 				credentials: "include",
 			});
-			const data = await response.json();
-
-			if (data.errors.length) {
-				setUser(null);
-				setIsAuthenticated(false);
-			} else {
-				setError(null);
-				setUser(data.message);
-				setIsAuthenticated(true);
+			if (!res.ok) {
+				throw Error(res.errors);
 			}
+			const data = await res.json();
+			setError(null);
+			setUser(data.message);
+			setIsAuthenticated(true);
 		} catch (err) {
 			setError(err.message);
-			setUser(null);
 			setIsAuthenticated(false);
+			setUser(null);
 		}
+	}, [])
+
+	const fetchUser = useCallback(async () => {
+		setIsLoading(true);
+		await silentUserRefresh();
 		setIsLoading(false);
-	}
+	}, [silentUserRefresh])
 
 	useEffect(() => {
 		fetchUser();
@@ -46,19 +48,25 @@ export default function AuthProvider({ children }) {
 			setIsLoading(true); //This might need to be set to false.
 			setIsAuthenticated(false);
 		};
-	}, []);
+	}, [fetchUser]);
 
 	if (isLoading) {
 		return <Loading />;
 	}
 
 	if (error) {
-		return <Error error={error} />;
+		return <ErrorPage error={error} />;
 	}
 
 	return (
 		<AuthContext.Provider
-			value={{ user, isAuthenticated, setIsAuthenticated, setUser }}
+			value={{
+				user,
+				isAuthenticated,
+				silentUserRefresh,
+				activePage,
+				setActivePage,
+			}}
 		>
 			{children}
 		</AuthContext.Provider>

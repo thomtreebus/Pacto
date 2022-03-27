@@ -9,7 +9,7 @@ import { useAuth } from "../providers/AuthProvider";
 import { Button, Divider, Alert } from "@mui/material";
 
 export default function PactListItem({ pact }) {
-	const { user, setUser } = useAuth();
+	const { user, silentUserRefresh, activePage, setActivePage } = useAuth();
 	const history = useHistory();
 	const [showJoinConfirmation, setShowJoinConfirmation] = useState(false);
 	const [isJoinButtonDisabled, setIsJoinButtonDisabled] = useState(false);
@@ -21,6 +21,7 @@ export default function PactListItem({ pact }) {
 
 	function handleClick() {
 		if (pact.members.includes(user._id)) {
+			setActivePage(`/pact/${pact._id}`);
 			history.replace(`/pact/${pact._id}`);
 		} else {
 			setShowJoinConfirmation(true);
@@ -46,15 +47,15 @@ export default function PactListItem({ pact }) {
 			return;
 		}
 
-		let newUser = Object.assign({}, user);
-		newUser.pacts.push(pact._id);
-		setUser(newUser);
+		await silentUserRefresh()
+		setActivePage(`/pact/${pact._id}`);
 		history.push(`/pact/${pact._id}`);
 	}
 
 	return (
 		<>
 			<ListItem
+				button
 				onClick={handleClick}
 				sx={{
 					cursor: "pointer",
@@ -62,6 +63,7 @@ export default function PactListItem({ pact }) {
 						backgroundColor: "#f5f5f5",
 					},
 				}}
+				selected={activePage === `/pact/${pact._id}`}
 				data-testid="item"
 			>
 				<ListItemIcon>
