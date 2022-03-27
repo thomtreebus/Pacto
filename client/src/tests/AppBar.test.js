@@ -129,6 +129,21 @@ describe("App Bar Tests", () => {
       })
     )
 
+    it("should log out the user when log out is pressed", async () => {
+      server.use(
+				rest.get(`${process.env.REACT_APP_URL}/me`, (req, res, ctx) => {
+          return res(
+            ctx.status(401)
+          );
+        })
+			);
+      const logoutItemElement = await screen.findByTestId("logout-item");
+      fireEvent.click(logoutItemElement);
+      const redirectMessage = await screen.findByText(/Redirected to login/i);
+			expect(redirectMessage).toBeInTheDocument();
+      expect(window.location.pathname).toBe("/login");
+    });
+
     it("should redirect to home when the Pacto icon is pressed",async () => {
       const buttonElement = screen.getByTestId("home-button");
       fireEvent.click(buttonElement);
@@ -195,5 +210,7 @@ describe("App Bar Tests", () => {
       });
       await waitFor(() => expect(menuElement).not.toBeVisible());
     });
+
+    // it("should ")
   });
 });
