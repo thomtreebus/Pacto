@@ -15,7 +15,7 @@ module.exports.pactPost = async (req, res) => {
     const { name } = req.body;
     const optionalAttributes = ['description', 'category'];
 
-		const newPact = { 
+		const newPact = {
 			name,
 			university:user.university,
 		  members:[user],
@@ -40,9 +40,9 @@ module.exports.pactPost = async (req, res) => {
 		await pact.populate({ path: "members", model: User });
 		await pact.populate({ path: "moderators", model: User });
 		await pact.populate({ path: "posts", model: Post });
-		
+
 		res.status(201).json(jsonResponse(pact, []));
-	} 
+	}
   catch (err) {
 		res.status(400).json(jsonResponse(null, handleFieldErrors(err)));
 	}
@@ -75,11 +75,14 @@ module.exports.pactGet = async (req, res) => {
 		await pact.populate({
 			path: "posts",
 			model: Post,
-			populate: {
+			populate: [{
 				path: "author",
 				model: User,
 				select: ["firstName", "lastName", "course", "university"]
-			}
+			},
+				{
+					path: "pact", model: Pact
+				}]
 		});
 
 		for (let index = 0; index < pact.posts.length; index++) {
@@ -94,7 +97,7 @@ module.exports.pactGet = async (req, res) => {
 		}
 
 		res.status(200).json(jsonResponse(pact, []));
-	} 
+	}
   catch (err) {
 		res.status(400).json(jsonResponse(null, [jsonError(null, err.message)]));
 	}
@@ -145,7 +148,7 @@ module.exports.joinPact = async (req, res) => {
 
 		if(!potentialPacts.length){
 			throw Error(PACT_MESSAGES.NOT_FOUND);
-		}  
+		}
 
 		const targetUser = await User.findById(req.user._id);
 		const targetPact = await Pact.findById(req.params.id);
@@ -157,7 +160,7 @@ module.exports.joinPact = async (req, res) => {
 		if (!targetUser.pacts.includes(targetPact._id) && !targetPact.members.includes(targetUser._id)) {
 			targetUser.pacts.push(targetPact);
 			targetPact.members.push(targetUser);
-			
+
 			await targetPact.save();
 			await targetUser.save();
 		}
@@ -184,7 +187,7 @@ module.exports.banMember = async (req, res) => {
 			throw Error(PACT_MESSAGES.CANT_BAN_MODERATOR);
 		}
 
-		// Can't ban someone who is already banned from a pact 
+		// Can't ban someone who is already banned from a pact
 		if (pact.bannedUsers.includes(user._id)) {
 			throw Error(PACT_MESSAGES.ALREADY_BANNED);
 		}
@@ -192,7 +195,7 @@ module.exports.banMember = async (req, res) => {
 		await User.findByIdAndUpdate(user._id, { $pull: { pacts: pact._id } });
 		await Pact.findByIdAndUpdate(pact._id, { $pull: { members: user._id } });
 		await Pact.findByIdAndUpdate(pact._id, { $push: { bannedUsers: user._id } });
-		
+
 		res.json(jsonResponse(PACT_MESSAGES.SUCCESSFUL_BAN, []));
 	}
 	catch (err) {
