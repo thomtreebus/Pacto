@@ -68,6 +68,11 @@ module.exports.pactGet = async (req, res) => {
 			select: ["firstName", "lastName", "course", "university"]
 		});
 		await pact.populate({
+			path: "bannedUsers",
+			model: User,
+			select: ["firstName", "lastName", "course", "university"]
+		});
+		await pact.populate({
 			path: "posts",
 			model: Post,
 			populate: {
