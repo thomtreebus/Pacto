@@ -79,11 +79,10 @@ export default function UserPage() {
           user.location?.trim() ? resAllUsers.filter(curUser => curUser.location === user.location) : [user]
         );
         setSentRequests(
-          resAllUsers.filter(u => user.sentRequests.some(r => r.recipient===u._id))
+          user.sentRequests && resAllUsers.filter(u => user.sentRequests.some(r => r.recipient===u._id))
         );
-        console.log(sentRequests)
         setReceivedRequests(
-          resAllUsers.filter(u => user.receivedRequests.some(r => r.requestor===u._id))
+          user.recievedRequests && resAllUsers.filter(u => user.receivedRequests.some(r => r.requestor===u._id))
         );
         setAllUsers(resAllUsers);
         setIsLoading(false);
