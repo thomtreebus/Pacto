@@ -2,22 +2,13 @@ import { Box, Card, CardContent } from "@mui/material";
 import { Typography } from "@mui/material";
 import { useHistory } from "react-router-dom";
 import CommentIcon from '@mui/icons-material/Comment';
-
+import { relativeTime } from "../../helpers/timeHandllers";
 import { useAuth } from "../../providers/AuthProvider";
 import Voter from "../Voter";
-
-const vagueTime = require("vague-time");
 
 export default function BasePostCard({ children, post, numComments=null }) {
   const { user } = useAuth();
   const commentCount = (numComments === null ? post.comments.length : numComments);
-
-  const relativeTime = (time) => {
-    return vagueTime.get({
-      from: Date.now(),
-      to: new Date(time)
-    });
-  };
 
   const history = useHistory();
 

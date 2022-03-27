@@ -21,7 +21,7 @@ const comment = {
     lastName: "Wali",
     _id: 1
   },
-  createdAt: "5/5/5",
+  createdAt: Date.now(),
   text: COMMENT_TEXT,
   votes: 6,
   upvoters: [],
@@ -78,7 +78,7 @@ describe("CommentCard Tests", () => {
 
     it("should render date text", async () => {
       const date = await screen.findByTestId("author-date-line");
-      expect(date.innerHTML).toContain("5/5/5");
+      expect(date.innerHTML).toContain("just now");
     });
 
     it("should render reply button", async () => {

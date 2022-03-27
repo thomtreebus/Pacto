@@ -8,6 +8,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';import { useHistory 
 import { useAuth } from "../../providers/AuthProvider";
 import CommentBox from "../CommentBox";
 import Voter from "../Voter";
+import { relativeTime } from "../../helpers/timeHandllers";
 
 export default function CommentCard({ comment, post, postUpdaterFunc }) {
   const { user } = useAuth();
@@ -61,7 +62,7 @@ export default function CommentCard({ comment, post, postUpdaterFunc }) {
 
           <Box sx={{ overflow: "hidden" }}>
             <Typography variant="caption" data-testid="author-date-line">
-              Posted by <span onClick={() => history.push(`/user/${comment.author._id}`)} className="link" data-testid="author">{comment.author.firstName + " " + comment.author.lastName}</span> on {comment.createdAt}
+              Posted by <span onClick={() => history.push(`/user/${comment.author._id}`)} className="link" data-testid="author">{comment.author.firstName + " " + comment.author.lastName}</span> {relativeTime(comment.createdAt)}
             </Typography>
 
             <Typography variant="body1" data-testid="comment-text">
