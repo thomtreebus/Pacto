@@ -51,6 +51,8 @@ export default function UserPage() {
     const [allFriends, setAllFriends] = useState(null);
     const [allSameLocation, setAllSameLocation] = useState(null);
     const [allSameCourse, setAllSameCourse] = useState(null);
+    const [sentRequests, setSentRequests] = useState(null);
+    const [receivedRequests, setReceivedRequests] = useState(null);
     const history = useHistory();
     const [value, setValue] = useState(0);
 
@@ -75,6 +77,12 @@ export default function UserPage() {
         );
         setAllSameLocation(
           user.location?.trim() ? resAllUsers.filter(curUser => curUser.location === user.location) : [user]
+        );
+        setSentRequests(
+          resAllUsers.filter(u => user.sentRequests.some(r => r.recipient===u._id))
+        );
+        setReceivedRequests(
+          resAllUsers.filter(u => user.receivedRequests.some(r => r.requestor===u._id))
         );
         setAllUsers(resAllUsers);
         setIsLoading(false);
@@ -104,6 +112,8 @@ export default function UserPage() {
             <Tab label="Friends" {...a11yProps(1)} />
             <Tab label="Same Course" sx={{display : {xs: "none", md: "block"}}} {...a11yProps(2)} />
             <Tab label="Same Location"  sx={{display : {xs: "none", md: "block"}}}  {...a11yProps(3)} />
+            <Tab label="Received Requests"  sx={{display : {xs: "none", md: "block"}}}  {...a11yProps(3)} />
+            <Tab label="Sent Requests"  sx={{display : {xs: "none", md: "block"}}}  {...a11yProps(3)} />
           </Tabs>
         </Box>
         <TabPanel value={value} index={0}>
@@ -117,6 +127,12 @@ export default function UserPage() {
         </TabPanel>
         <TabPanel value={value} index={3}>
           <UserList users={allSameLocation}/>
+        </TabPanel>
+        <TabPanel value={value} index={3}>
+          <UserList users={receivedRequests}/>
+        </TabPanel>
+        <TabPanel value={value} index={3}>
+          <UserList users={sentRequests}/>
         </TabPanel>
       </Box>
     </Container>
