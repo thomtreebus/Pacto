@@ -269,6 +269,7 @@ module.exports.deletePact = async (req, res) => {
 				}
 				await Post.findByIdAndDelete(actual._id);
 			}
+			await University.findByIdAndUpdate(req.user.university._id, { $pull: { pacts: pact._id } });
 			// Delete the pact itself
 			await Pact.findByIdAndDelete(pact._id);
 			res.status(201).json(jsonResponse(PACT_MESSAGES.DELETE.SUCCESSFUL, []));

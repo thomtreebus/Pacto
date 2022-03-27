@@ -1,5 +1,6 @@
 const Pact = require("../../models/Pact");
 const Post = require("../../models/Post");
+const University = require("../../models/University");
 const User = require("../../models/User");
 const Comment = require("../../models/Comment");
 const supertest = require("supertest");
@@ -48,6 +49,8 @@ describe("DELETE /pact/:pact_id/delete", () => {
     const pact = await Pact.findById(pactId);
     expect(pact.members.length).toBe(1);
     expect(pact.moderators.length).toBe(1);
+    const uni = await University.findOne({});
+    expect(uni.pacts.length).toBe(1);
 
     const token = createToken(founder._id);
     const response = await supertest(app)
@@ -62,6 +65,8 @@ describe("DELETE /pact/:pact_id/delete", () => {
     expect(founder2.pacts.length).toBe(0);
     const deletedPact = await Pact.findById(pactId);
     expect(deletedPact).toBeNull();
+    const newUni = await University.findOne({});
+    expect(newUni.pacts.length).toBe(0);
   });  
 
   it("Multiple members, 1 mod pact can be deleted by the moderator", async () =>{
@@ -82,6 +87,8 @@ describe("DELETE /pact/:pact_id/delete", () => {
     const updatedPact = await Pact.findById(pactId);
     expect(updatedPact.members.length).toBe(4);
     expect(updatedPact.moderators.length).toBe(1);
+    const uni = await University.findOne({});
+    expect(uni.pacts.length).toBe(1);
 
     const token = createToken(founder._id);
     const response = await supertest(app)
@@ -102,6 +109,8 @@ describe("DELETE /pact/:pact_id/delete", () => {
     expect(user3ver2).toBeDefined();
     const deletedPact = await Pact.findById(pactId);
     expect(deletedPact).toBeNull();
+    const newUni = await University.findOne({});
+    expect(newUni.pacts.length).toBe(0);
   }); 
 
   it("Cannot delete if more than 1 mod", async () =>{
@@ -114,6 +123,9 @@ describe("DELETE /pact/:pact_id/delete", () => {
     const updatedPact = await Pact.findById(pactId);
     expect(updatedPact.members.length).toBe(2);
     expect(updatedPact.moderators.length).toBe(2);
+
+    const uni = await University.findOne({});
+    expect(uni.pacts.length).toBe(1);
 
     const token = createToken(founder._id);
     const response = await supertest(app)
@@ -132,6 +144,8 @@ describe("DELETE /pact/:pact_id/delete", () => {
     const unchangedPact = await Pact.findById(pactId);
     expect(unchangedPact.members.length).toBe(2);
     expect(unchangedPact.moderators.length).toBe(2);
+    const newUni = await University.findOne({});
+    expect(newUni.pacts.length).toBe(1);
   }); 
 
   it("deletes posts of the pact", async () =>{
