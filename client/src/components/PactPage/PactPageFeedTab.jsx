@@ -64,17 +64,16 @@ export default function PactPageFeedTab({pact}){
   };
 
   useEffect(() => {
-    if(pact === null){
-      return;
-    }
-    const moderators = pact.moderators.flatMap((user) => user._id);
+    if (pact) {
+      const moderators = pact.moderators.flatMap((user) => user._id);
 
-    if (moderators.includes(user._id)) {
-      setIsMod(true);
-    } else {
-      setIsMod(false);
+      if (moderators.includes(user._id)) {
+        setIsMod(true);
+      } else {
+        setIsMod(false);
+      }
+      setIsLoading(false);
     }
-    setIsLoading(false);
   }, [pact, user])
 
   if(isLoading){
