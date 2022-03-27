@@ -49,9 +49,9 @@ export default function PactMembersTab({ pact }) {
 					onChange={handleMembersTabChange}
 					aria-label="User type tab"
 				>
-					<Tab label="All Members" {...a11yProps(0)} />
+					<Tab label="All" {...a11yProps(0)} />
 					<Tab label="Moderators" {...a11yProps(1)} />
-					{isMod && <Tab label="Banned Users" {...a11yProps(1)} />}
+					{isMod && <Tab label="Banned" {...a11yProps(1)} />}
 				</Tabs>
 			</Box>
 			<TabPanel value={membersTabValue} index={0}>
