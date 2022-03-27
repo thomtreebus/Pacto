@@ -72,9 +72,6 @@ export default function SearchResults() {
     <>
     { isLoading && <Loading /> }
     {error && <ErrorPage />}
-      {results && (<Typography variant="subtitle2" sx={{ fontSize: "1.5rem" }} data-testid="tp-element">
-        Showing {results.pacts.length + results.posts.length + results.users.length} search results for: "{query}"
-      </Typography>)}
     <Box sx={{ width: '100%'}}>
       <Box sx={{ borderBottom: 1, borderColor: 'divider', bgcolor: 'background.paper' }}>
         <Tabs value={type} onChange={handleTabChange} centered data-testid="tabs-element">
@@ -87,13 +84,12 @@ export default function SearchResults() {
         {results && <PactGrid pacts={results.pacts} />}
       </TabPanel>
       <TabPanel value={type} index={1} data-testid="post-list">
-        {results && <PostList posts={results.posts} />}
+        {results && <PostList posts={results.posts} searchable={false} />}
       </TabPanel>
       <TabPanel value={type} index={2} data-testid="user-list">
         {results && <UserList users={results.users} />}
       </TabPanel>
     </Box>
-      
     </>
   );
 }

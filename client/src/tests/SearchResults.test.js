@@ -78,12 +78,6 @@ describe("SearchResults Tests", () => {
 	});
 
 	describe("Check elements are rendered", () => {
-
-    it("should render Typography element", async () => {
-			const typographyElement = await screen.findByTestId("tp-element");
-			expect(typographyElement).toBeInTheDocument();
-		});
-
 		it("should render Typography element", async () => {
 			const tabsElement = await screen.findByTestId("tabs-element");
 			expect(tabsElement).toBeInTheDocument();
