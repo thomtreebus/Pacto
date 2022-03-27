@@ -69,7 +69,7 @@ export default function UserCardModeration({user, pact, showBannedUsers}) {
         setUserCardIsMod(false);
       }
     }
-  }, [pact])
+  }, [pact, user])
 
   return (
     <>
