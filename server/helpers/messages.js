@@ -47,6 +47,7 @@ module.exports.MESSAGES = {
 };
 
 module.exports.PACT_MESSAGES = {
+	IS_BANNED_USER: "You have been banned from this pact cannot join!",
 	NAME: {
 		NOT_UNIQUE: `Name ${UNIQUE_MESSAGE}`,
 		MAX_LENGTH_EXCEEDED: "Name cannot exceed 33 characters",

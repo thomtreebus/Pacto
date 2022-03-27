@@ -150,6 +150,10 @@ module.exports.joinPact = async (req, res) => {
 		const targetUser = await User.findById(req.user._id);
 		const targetPact = await Pact.findById(req.params.id);
 
+		if(targetPact.bannedUsers.includes(targetUser._id)) {
+			throw Error(PACT_MESSAGES.IS_BANNED_USER);
+		}
+
 		if (!targetUser.pacts.includes(targetPact._id) && !targetPact.members.includes(targetUser._id)) {
 			targetUser.pacts.push(targetPact);
 			targetPact.members.push(targetUser);
@@ -161,7 +165,7 @@ module.exports.joinPact = async (req, res) => {
 		res.json(jsonResponse(PACT_MESSAGES.SUCCESSFUL_JOIN, []));
 	}
 	catch (err) {
-		res.status(404).json(jsonResponse(null, [jsonError(null, PACT_MESSAGES.NOT_FOUND)]));
+		res.status(404).json(jsonResponse(null, [jsonError(null, err.message)]));
 	}
 };
 
