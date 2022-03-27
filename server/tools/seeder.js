@@ -3,7 +3,7 @@ const { seedPacts } = require("./helpers/pactHelpers");
 const { seedUsers } = require("./helpers/userHelpers");
 const { seedPosts } = require("./helpers/postHelpers") 
 
-const USER_COUNT = 50;
+const USER_COUNT = 150;
 
 async function seed() {
 	const university = await University.create({name : "King's College London, University of London", domains: ["kcl.ac.uk"]});
