@@ -110,6 +110,10 @@ describe("User Page Tests", () => {
                 await assertUsersShown(["3"]);
                 fireEvent.click(tabs[3]);
                 await assertUsersShown(["4"]);
+                fireEvent.click(tabs[4]);
+                await assertUsersShown(["3"]);
+                fireEvent.click(tabs[5]);
+                await assertUsersShown(["2"]);
             });
         
             it("does not show users that share the same mutal value if the mutal value is blank", async () => {

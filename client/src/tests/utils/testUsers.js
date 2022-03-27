@@ -17,6 +17,8 @@ const users = [
         phone: "07624 780037",
         uniEmail: "pac.to@kcl.ac.uk",
         university: "623372b09841b9fb6b85f3de",
+        sentRequests: [{_id: 1, recipient: 2, requestor: 1}],
+        receivedRequests: [{_id: 2, recipient: 1, requestor: 3}]
 	},
         {
         _id: 2,
@@ -36,6 +38,7 @@ const users = [
         phone: "07624 780037",
         uniEmail: "thom.tree@kcl.ac.uk",
         university: "623372b09841b9fb6b85f3de",
+        receivedRequests: [{_id: 1, recipient: 2, requestor: 1}],
 	},
 	{
         _id: 3,
@@ -55,6 +58,7 @@ const users = [
         phone: "07624 780037",
         uniEmail: "kau.Chin@kcl.ac.uk",
         university: "623372b09841b9fb6b85f3de",
+        sentRequests: [{_id: 2, recipient: 1, requestor: 3}]
 	},
 	{
 		_id: 4,
