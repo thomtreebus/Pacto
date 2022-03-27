@@ -116,6 +116,5 @@ export default function UserPage() {
         </TabPanel>
       </Box>
     </Container>
-    // <UserPortfolio user = {user}></UserPortfolio>
-    )
+  )
 }
