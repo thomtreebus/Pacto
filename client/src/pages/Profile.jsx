@@ -57,7 +57,7 @@ export default function Profile() {
       })
     }
     return () => controller.abort();
-  },[id])
+  },[id, history])
 
   useEffect(() => {
     if (data) {
