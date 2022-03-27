@@ -81,6 +81,7 @@ export default function UserPage() {
         setSentRequests(
           resAllUsers.filter(u => user.sentRequests.some(r => r.recipient===u._id))
         );
+        console.log(sentRequests)
         setReceivedRequests(
           resAllUsers.filter(u => user.receivedRequests.some(r => r.requestor===u._id))
         );
@@ -112,8 +113,8 @@ export default function UserPage() {
             <Tab label="Friends" {...a11yProps(1)} />
             <Tab label="Same Course" sx={{display : {xs: "none", md: "block"}}} {...a11yProps(2)} />
             <Tab label="Same Location"  sx={{display : {xs: "none", md: "block"}}}  {...a11yProps(3)} />
-            <Tab label="Received Requests"  sx={{display : {xs: "none", md: "block"}}}  {...a11yProps(3)} />
-            <Tab label="Sent Requests"  sx={{display : {xs: "none", md: "block"}}}  {...a11yProps(3)} />
+            <Tab label="Received Requests"  sx={{display : {xs: "none", md: "block"}}}  {...a11yProps(4)} />
+            <Tab label="Sent Requests"  sx={{display : {xs: "none", md: "block"}}}  {...a11yProps(5)} />
           </Tabs>
         </Box>
         <TabPanel value={value} index={0}>
@@ -128,10 +129,10 @@ export default function UserPage() {
         <TabPanel value={value} index={3}>
           <UserList users={allSameLocation}/>
         </TabPanel>
-        <TabPanel value={value} index={3}>
+        <TabPanel value={value} index={4}>
           <UserList users={receivedRequests}/>
         </TabPanel>
-        <TabPanel value={value} index={3}>
+        <TabPanel value={value} index={5}>
           <UserList users={sentRequests}/>
         </TabPanel>
       </Box>
