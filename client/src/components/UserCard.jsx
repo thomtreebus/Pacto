@@ -2,7 +2,6 @@ import { Box, Grid, Card, CardHeader, Avatar, Typography, Button } from "@mui/ma
 import { useState } from "react";
 import { useHistory } from "react-router-dom";
 import { useAuth } from "../providers/AuthProvider";
-import { red, green } from '@mui/material/colors';
 
 export default function UserCard({user}){
 
@@ -89,14 +88,11 @@ export default function UserCard({user}){
                             padding: "10px",
                             alignItems: "center",
                             position: "relative",
-                            "&:hover": {
-                                backgroundColor: "#f5f5f5"
-                            }
                         }}
                 >
                     <CardHeader onClick={handleViewButtonClick}
                         avatar={<Avatar src={user.image} alt="user-image" />}
-                        title={user.name}
+                        title={user.name} data-testid="user-image"
                         sx={{ 
                             paddingBlock: 1,
                             padding: "8px",
@@ -109,7 +105,7 @@ export default function UserCard({user}){
                         }}                   
                     />
 
-                    <Typography variant="h7" onClick={handleViewButtonClick}
+                    <Typography variant="h7" onClick={handleViewButtonClick} data-testid="user-name"
                         sx={{
                             paddingLeft: "25px",
                             paddingRight: "25px",

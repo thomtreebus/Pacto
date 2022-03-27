@@ -15,9 +15,9 @@ describe("UserCard Tests", () => {
                     firstName: "pac", 
                     lastName: "to",
                     image: "https://avatars.dicebear.com/api/identicon/temp.svg",
-                    friends: ["1"], // Logged in user is friends with testUsers[0]
-                    sentRequests: [{_id: "1", recipient: "2"}], // and has sent a request to testUser[1]
-                    receivedRequests: [{_id: "2", requestor: "3"}], // and has received a request from testUser[2]
+                    friends: [1], // Logged in user is friends with testUsers[0]
+                    sentRequests: [{_id: 1, recipient: 2}], // and has sent a request to testUser[1]
+                    receivedRequests: [{_id: 2, requestor: 3}], // and has received a request from testUser[2]
                     // User has no relationship with testUseer[3]
                 }, 
                 errors: [] 
@@ -79,9 +79,9 @@ describe("UserCard Tests", () => {
 		await waitForElementToBeRemoved(() => screen.getByText("Loading"));
 	};
 
-    describe("Check element rendering: general case", () => {
-        beforeEach(async () => {
-            await renderWithMock(<UserCard user={testUsers[0]} />);
+    describe("Check element rendering and interaction: general case", () => {
+        beforeEach(async () => {try{
+            await renderWithMock(<UserCard user={testUsers[0]} />);}catch(e){console.log(e.message)}
         });
 
         it("should render the user's profile picture", async () => {
@@ -97,6 +97,40 @@ describe("UserCard Tests", () => {
         it("should render the user's last name", () => {
             const lastName = screen.getByText(/To/i);
             expect(lastName).toBeInTheDocument();
+        });
+
+        it("should redirect to user profile when the user profile picture is pressed", async () => {
+            server.use(
+                rest.post(`${process.env.REACT_APP_URL}/user/:id`, (req, res, ctx) => {
+                    return res(
+                        ctx.status(201),
+                        ctx.json({ 
+                            message: 'Success', 
+                            errors: [], 
+                        })
+                    );
+                })
+            );
+            const buttonElement = await screen.findByTestId("user-image");
+            fireEvent.click(buttonElement);
+            await waitFor(() => expect(window.location.pathname).toBe("/user/1"));	
+        });
+
+        it("should redirect to user profile when the user name is pressed", async () => {
+            server.use(
+                rest.post(`${process.env.REACT_APP_URL}/user/:id`, (req, res, ctx) => {
+                    return res(
+                        ctx.status(201),
+                        ctx.json({ 
+                            message: 'Success', 
+                            errors: [], 
+                        })
+                    );
+                })
+            );
+            const buttonElement = await screen.findByTestId("user-name");
+            fireEvent.click(buttonElement);
+            await waitFor(() => expect(window.location.pathname).toBe("/user/1"));	
         });
     });
 
@@ -160,7 +194,7 @@ describe("UserCard Tests", () => {
 
         it("handles reject friend press", async () => {
             const reject = await screen.findByTestId("reject-req-btn");
-            reject.click(accept);
+            fireEvent.click(reject);
 
             expect(reject).not.toBeInTheDocument();
 
@@ -190,24 +224,4 @@ describe("UserCard Tests", () => {
             expect(reqSentBtn).toHaveAttribute("disabled");
         });
     });
-
-    describe("Check interaction with elements: general case", () => {
-
-        it("should redirect to user profile when the user card is pressed", async () => {
-            server.use(
-                rest.post(`${process.env.REACT_APP_URL}/user/:id`, (req, res, ctx) => {
-                    return res(
-                        ctx.status(201),
-                        ctx.json({ 
-                            message: 'Success', 
-                            errors: [], 
-                        })
-                    );
-                })
-            );
-            const buttonElement = await screen.findByTestId("userCard");
-            fireEvent.click(buttonElement);
-            await waitFor(() => expect(window.location.pathname).toBe("/user/1"));	
-        });
-    });  
 });
