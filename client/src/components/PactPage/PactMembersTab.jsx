@@ -1,10 +1,10 @@
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
-import UserList from "../UserList";
 import {useEffect, useState} from "react";
 import {a11yProps, TabPanel} from "../TabComponents";
 import Loading from "../../pages/Loading";
 import {useAuth} from "../../providers/AuthProvider";
+import UserListModeration from "../UserListModeration";
 
 export default function PactMembersTab({pact}){
 
@@ -45,21 +45,21 @@ export default function PactMembersTab({pact}){
   }
 
   return (
-    <div>
+    <>
       <Tabs value={membersTabValue} onChange={handleMembersTabChange} aria-label="User type tab">
         <Tab label="All Members" {...a11yProps(0)} />
         <Tab label="Moderators" {...a11yProps(1)} />
         {isMod && <Tab label="Banned Users" {...a11yProps(1)} />}
       </Tabs>
       <TabPanel value={membersTabValue} index={0}>
-        <UserList users={allPactMembers}/>
+        <UserListModeration users={allPactMembers} pact={pact} isMod={isMod}/>
       </TabPanel>
       <TabPanel value={membersTabValue} index={1}>
-        <UserList users={allModerators}/>
+        <UserListModeration users={allModerators} pact={pact} isMod={isMod}/>
       </TabPanel>
       {isMod && <TabPanel value={membersTabValue} index={2}>
-        <UserList users={allBannedUsers}/>
+        <UserListModeration users={allBannedUsers} pact={pact} showBannedUsers={true}/>
       </TabPanel>}
-    </div>
+    </>
   )
 }
