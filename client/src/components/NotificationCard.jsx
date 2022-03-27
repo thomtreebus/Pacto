@@ -3,11 +3,12 @@ import { useState } from "react";
 import { relativeTime } from "../helpers/timeHandllers";
 import { IconButton } from "@mui/material";
 import MarkChatReadIcon from "@mui/icons-material/MarkChatRead";
+import ErrorMessage from "./ErrorMessage";
 
 function NotificationCard({ notification, notifications, setNotifications }) {
 	const [buttonIsDisabled, setIsButtonDisabled] = useState(false);
 	const [isError, setIsError] = useState(false);
-	const [errorMessage, setErrorMessage] = useState(false);
+	const [errorMessage, setErrorMessage] = useState("");
 
 	const deleteNotification = async () => {
 		setIsButtonDisabled(true);
@@ -38,22 +39,30 @@ function NotificationCard({ notification, notifications, setNotifications }) {
 	};
 
 	return (
-		<Card sx={{ maxWidth: "18rem", padding: 2, margin: 1, shadow: 3 }}>
-			<IconButton
-				color="inherit"
-				aria-label="open drawer"
-				edge="start"
-				disabled={buttonIsDisabled}
-				onClick={deleteNotification}
-				data-testid="mark-notification-as-read"
-			>
-				<MarkChatReadIcon />
-			</IconButton>
-			<Typography>{notification.text}</Typography>
-			<Typography variant="caption">
-				{relativeTime(notification.time)}
-			</Typography>
-		</Card>
+		<>
+			<ErrorMessage
+				isOpen={isError}
+				setIsOpen={setIsError}
+				message={errorMessage}
+			/>
+
+			<Card sx={{ maxWidth: "18rem", padding: 2, margin: 1, shadow: 3 }}>
+				<IconButton
+					color="inherit"
+					aria-label="open drawer"
+					edge="start"
+					disabled={buttonIsDisabled}
+					onClick={deleteNotification}
+					data-testid="mark-notification-as-read"
+				>
+					<MarkChatReadIcon />
+				</IconButton>
+				<Typography>{notification.text}</Typography>
+				<Typography variant="caption">
+					{relativeTime(notification.time)}
+				</Typography>
+			</Card>
+		</>
 	);
 }
 
