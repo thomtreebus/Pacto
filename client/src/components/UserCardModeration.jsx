@@ -53,7 +53,7 @@ export default function UserCardModeration({user, pact, showBannedUsers}) {
       ))
 
     }
-  }, [loggedInUserIsMod])
+  }, [loggedInUserIsMod, loggedInUser])
 
   useEffect(() => {
     if (pact) {
