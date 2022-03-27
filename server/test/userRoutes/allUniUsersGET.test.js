@@ -55,5 +55,24 @@ describe("GET /users", () => {
     expect(response.status).toBe(401);
   });
 
+  it("Does not return users that are inactive", async () => {
+    const user1 = await generateTestUser("userOne");
+    user1.active = true;
+    user1.save();
+    const inactiveUser = await generateTestUser("userTwo");
+
+    const loggedInUser = await generateTestUser("userThree")
+    loggedInUser.active = true;
+    loggedInUser.save();
+
+    const token = createToken(loggedInUser._id);
+
+    let response = await supertest(app)
+      .get("/users/")
+      .set("Cookie", [`jwt=${token}`]);
+    expect(response.body.errors).toHaveLength(0);
+    expect(response.body.message).toHaveLength(2);
+    expect(response.status).toBe(200);
+  });
 
 });

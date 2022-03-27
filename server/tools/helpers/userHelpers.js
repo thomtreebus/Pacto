@@ -3,7 +3,6 @@ const bcrypt = require("bcrypt");
 const userConstants = require("./userConstants");
 const User = require("../../models/User");
 const FriendRequest = require("../../models/FriendRequest");
-
 const chance = new Chance(1234);
 const SALT_ROUNDS = 10;
 
@@ -50,7 +49,8 @@ function getRandomImage(firstName, lastName) {
 }
 
 function getRandomCourse() {
-	return userConstants.COURSES[chance.integer({ min: 0, max: userConstants.COURSES.length-1 })];
+	const course = userConstants.COURSES[chance.integer({ min: 0, max: userConstants.COURSES.length - 1 })];
+	return course.name;
 }
 
 function getRandomLocation() {
@@ -60,7 +60,7 @@ function getRandomLocation() {
 function getRandomHobbies() {
 	const hobbies = []; 
 	randomHobby = () => chance.integer({ min: 0, max: userConstants.HOBBIES.length-1 })
-	chance.unique(randomHobby, 2).forEach(hobby => hobbies.push(userConstants.HOBBIES[hobby]));
+	chance.unique(randomHobby, 2).forEach(hobby => hobbies.push(userConstants.HOBBIES[hobby].name));
 	return hobbies;
 }
 

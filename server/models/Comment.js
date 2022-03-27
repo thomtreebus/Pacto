@@ -50,7 +50,7 @@ const CommentSchema = mongoose.Schema({
     default: false
   }
 
-});
+}, { timestamps: true });
 
 const Comment = mongoose.model('Comments', CommentSchema);
 

@@ -58,7 +58,7 @@ describe("PUT /pact/:pactId/post/:postId/comment/:commentId/upvote", () => {
     expect(responseComment.author._id.toString()).toBe(user._id.toString());
     expect(responseComment.votes).toBe(oldVotes + 1);
     expect(responseComment.downvoters).toStrictEqual([]);
-    expect(responseComment.upvoters[0]._id).toBe(user._id.toString());
+    expect(responseComment.upvoters[0]).toBe(user._id.toString());
   });
 
   it("uses checkAuthenticated middleware", async () => {

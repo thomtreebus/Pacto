@@ -12,6 +12,7 @@ module.exports.feedGET = async (req, res) => {
     for(let i = 0; i < posts.length; i++) {
       const post = posts[i];
       await post.populate({ path: 'author', model: User });
+      await post.populate({ path: 'pact', model: Pact });
       if (post.type === "link") {
 				const preview = await getPreview(post.link);
 				if (preview !== null) {
