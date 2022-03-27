@@ -27,7 +27,6 @@ const makeComment = async(req, res, parentComment=undefined) => {
     if(parentComment){
       parentComment.childComments.push(comment);
       const user = req.user;
-      console.log(parentComment.author);
       const notification = await Notification.create({ user: parentComment.author, text: `${user.firstName} ${user.lastName} replied to your comment` });
       await User.findByIdAndUpdate(parentComment.author, { $push: { notifications: notification._id } });
       parentComment.save();

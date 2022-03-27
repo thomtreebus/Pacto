@@ -7,8 +7,6 @@ const { MESSAGES, PACT_MESSAGES } = require("../../helpers/messages");
 const User = require("../../models/User");
 const Pact = require('../../models/Pact');
 const Notification = require("../../models/Notification");
-
-dotenv.config();
 const useTestDatabase = require("../helpers/useTestDatabase");
 
 describe("promoteMember /pact/:pactId/:userId/promote", () => {
@@ -27,13 +25,6 @@ describe("promoteMember /pact/:pactId/:userId/promote", () => {
     pact.members.push(secondUser._id);
     await secondUser.save();
     await pact.save();
-  });
-
-  afterEach(async () => {
-    await User.deleteMany({});
-    await Pact.deleteMany({});
-    await University.deleteMany({});
-    await Notification.deleteMany({});
   });
 
   it("moderator can promote member of pact", async () => {

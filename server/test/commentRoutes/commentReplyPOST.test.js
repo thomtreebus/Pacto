@@ -1,9 +1,5 @@
 const User = require("../../models/User");
 const Comment = require("../../models/Comment");
-const University = require("../../models/University");
-const Notification = require("../../models/Notification");
-const mongoose = require("mongoose");
-const dotenv = require("dotenv");
 const supertest = require("supertest");
 const app = require("../../app");
 const { generateTestUser, getDefaultTestUserEmail} = require("../fixtures/generateTestUser");
@@ -37,15 +33,6 @@ describe("POST /pact/:pactId/post/:postId/comment/:commentId/reply", () =>{
     post.comments.push(comment);
     await post.save();
   });
-
-	afterEach(async () => {
-		await User.deleteMany({});
-    await Pact.deleteMany({});
-		await University.deleteMany({});
-    await Post.deleteMany({});
-    await Comment.deleteMany({});
-    await Notification.deleteMany({});
-	});
 
   const sendRequest = async (token, text, expStatus) => {
     const response = await supertest(app)

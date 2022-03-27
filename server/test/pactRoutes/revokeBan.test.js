@@ -7,8 +7,6 @@ const { MESSAGES, PACT_MESSAGES } = require("../../helpers/messages");
 const User = require("../../models/User");
 const Pact = require('../../models/Pact');
 const Notification = require('../../models/Notification');
-
-dotenv.config();
 const useTestDatabase = require("../helpers/useTestDatabase");
 
 describe("POST /post/upvote/:pactid/:id", () => {
@@ -26,13 +24,6 @@ describe("POST /post/upvote/:pactid/:id", () => {
     pact.bannedUsers.push(secondUser._id);
     await secondUser.save();
     await pact.save();
-  });
-
-  afterEach(async () => {
-    await User.deleteMany({});
-    await Pact.deleteMany({});
-    await University.deleteMany({});
-    await Notification.deleteMany({});
   });
 
   it("moderator can revoke ban of banned user", async () => {

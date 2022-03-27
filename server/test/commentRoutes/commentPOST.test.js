@@ -1,9 +1,5 @@
 const User = require("../../models/User");
 const Notification = require("../../models/Notification");
-const Comment = require("../../models/Comment");
-const University = require("../../models/University");
-const mongoose = require("mongoose");
-const dotenv = require("dotenv");
 const supertest = require("supertest");
 const app = require("../../app");
 const { generateTestUser, getDefaultTestUserEmail} = require("../fixtures/generateTestUser");
@@ -12,6 +8,7 @@ const { generateTestPost, getTestPostId } = require("../fixtures/generateTestPos
 const { createToken } = require("../../controllers/authController");
 const { PACT_MESSAGES, MESSAGES, COMMENT_MESSAGES } = require("../../helpers/messages");
 const useTestDatabase = require("../helpers/useTestDatabase");
+const Post = require("../../models/Post");
 
 const COMMENT_TEXT = "This is my 1st comment.";
 
