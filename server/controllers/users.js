@@ -48,10 +48,6 @@ module.exports.viewProfile = async(req, res) => {
     const university = req.user.university;
     const { id } = req.params;
 
-    if (!university){
-			throw Error(USER_MESSAGES.UNIVERSITY_NOT_SET);
-    }
-
     if (!mongoose.Types.ObjectId.isValid(id)) {
       status = 404;
       throw Error(USER_MESSAGES.DOES_NOT_EXIST);
@@ -85,15 +81,9 @@ module.exports.allUniUsers = async(req, res) => {
   try {
     const university = req.user.university;
 
-    if (!university){
-      throw Error("User not authenticated");
-    }
-
-    const users = await User.find({university}).populate(
+    const users = await User.find({university, active: true}).populate(
       {path: 'university', model: University}
     );
-
-    // await users.populate({ path: 'users', model: User })
 
     res.status(200).json(jsonResponse(users, []));
 

@@ -8,6 +8,7 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import Icon from "../assets/pacto-logo.ico";
+import { AlertTitle, Alert } from "@mui/material";
 
 export default function SignupPage() {
 	const [passwordConfirmError, setPasswordConfirmError] = useState("");
@@ -79,9 +80,14 @@ export default function SignupPage() {
 
 	return (
 		<Container component="main" maxWidth="xs">
+			<Alert severity="info" sx={{ marginTop: 3 }}>
+				<AlertTitle>Use a valid university email!</AlertTitle>
+				You will be sent an email with a link to verify after signing up
+				<strong> remember to check you spam as well!</strong>
+			</Alert>
 			<Box
 				sx={{
-					marginTop: 8,
+					marginTop: 2,
 					display: "flex",
 					flexDirection: "column",
 					alignItems: "center",

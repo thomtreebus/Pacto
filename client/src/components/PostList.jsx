@@ -57,7 +57,7 @@ export default function PostList({ posts }) {
           </Card>
         </Grid>
       </Grid>
-      <Grid item maxWidth="100%">
+      <Grid item width="100%">
         <List>
           {
             orderablePosts.map((post) => (

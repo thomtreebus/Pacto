@@ -3,22 +3,27 @@ import List from "@mui/material/List";
 import { useQuery } from "react-query";
 import PactList from "./PactList";
 import { useAuth } from "../providers/AuthProvider";
+import { Typography } from "@mui/material";
 
 export default function MyPactList({ numberOfPacts = 3 }) {
 	const { isLoading, data, refetch } = useQuery("popularpacts", () =>
 		fetch(`${process.env.REACT_APP_URL}/university`, {
 			credentials: "include",
-		}).then((res) => res.json(), {enabled : false})
+		}).then((res) => res.json(), { enabled: false })
 	);
 
 	const { user } = useAuth();
 
 	useEffect(() => {
 		refetch();
-	}, [user, refetch])
+	}, [user, refetch]);
 
 	if (isLoading) {
-		return "Loading Pacts...";
+		return (
+			<Typography variant="subtitle1" sx={{ textAlign: "center" }}>
+				Loading Pacts...
+			</Typography>
+		);
 	}
 
 	return (

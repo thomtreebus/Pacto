@@ -79,6 +79,15 @@ module.exports.PACT_MESSAGES = {
 	CANT_PROMOTE_NON_MEMBER: "Can't promote a user that isn't a member of the pact",
 	CANT_PROMOTE_MODERATOR: "User is already a moderator of the pact",
 	SUCCESSFUL_PROMOTION: "Member has been promoted to moderator",
+	LEAVE: {
+		SUCCESSFUL: "Successfully left the pact",
+		ALONE: "You are alone in the pact, so you must delete it to leave",
+		ONLY_MODERATOR: "You are the only moderator, make at least one new moderator to be able to leave",
+	},
+	DELETE: {
+		SUCCESSFUL: "Successfully deleted the pact",
+		TOO_MANY_MODERATORS: "You cannot delete a pact if you are not the only moderator of it",
+	},
 };
 
 module.exports.POST_MESSAGES = {
@@ -100,7 +109,8 @@ module.exports.POST_MESSAGES = {
 		BLANK: "Type is 'image', so Image is a required field"
 	},
 	TEXT: {
-		BLANK: "Type is 'text', so Text is a required field"
+		BLANK: "Type is 'text', so Text is a required field",
+		MAX_LENGTH_EXCEEDED: "Text cannot exceed 1000 characters",
 	},
 	LINK: {
 		BLANK: "Type is 'link', so Link is a required field",

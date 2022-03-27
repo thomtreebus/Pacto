@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import ErrorPage from "./Error";
 import Loading from "./Loading";
 import PostList from '../components/PostList';
+import { Grid, Box } from '@mui/material';
 
 export default function Feed() {
 	const [isLoading, setIsLoading] = useState(true);
@@ -26,7 +27,11 @@ export default function Feed() {
 		<>
     { isLoading && <Loading /> }
     {error && <ErrorPage />}
-    {posts && <PostList posts={posts}/>}
+    <Box sx={{width: "95%", marginInline: "auto", display: "flex"}} justifyContent="center">
+      <Grid item xs={12} lg={10} data-testid="comment-list">
+        {posts && <PostList posts={posts}/>}
+      </Grid>
+    </Box>
     </>
 	);
 }

@@ -42,11 +42,18 @@ module.exports.postGet = async (req, res) => {
 		}
 
 		try {
-			await post.populate({ path: 'upvoters', model: User });
-			await post.populate({ path: 'downvoters', model: User });
 			await post.populate({ path: 'pact', model: Pact});
 			await post.populate({ path: 'author', model: User});
-			await post.populate({ path: 'comments', model: Comment});
+			await post.populate({ path: 'comments', model: Comment, populate : 
+				[{
+					path: 'author',
+					model: User
+				},{
+					path: 'childComments',
+					model: Comment
+				}] 
+			});
+			
 			res.status(200).json(jsonResponse(post, []));
 		} 
 		catch (err) {
@@ -72,11 +79,18 @@ module.exports.upvotePostPut = async (req, res) => {
 			await Notification.create({ user: post.author, text: `${req.user.firstName} ${req.user.lastName} upvoted your post in ${req.pact.name}` });
 
 			// Populating before returning the post
-			await post.populate({ path: 'upvoters', model: User });
-			await post.populate({ path: 'downvoters', model: User });
 			await post.populate({ path: 'pact', model: Pact});
 			await post.populate({ path: 'author', model: User});
-			await post.populate({ path: 'comments', model: Comment});
+			await post.populate({ path: 'comments', model: Comment, populate : 
+				[{
+					path: 'author',
+					model: User
+				},{
+					path: 'childComments',
+					model: Comment
+				}] 
+			});
+
 			res.status(200).json(jsonResponse(post, []));
 		}
 	} 
@@ -97,11 +111,18 @@ module.exports.downvotePostPut = async (req, res) => {
 			await downvote(post, req.user);
 
 			// Populating before returning the post
-			await post.populate({ path: 'upvoters', model: User });
-			await post.populate({ path: 'downvoters', model: User });
 			await post.populate({ path: 'pact', model: Pact});
 			await post.populate({ path: 'author', model: User});
-			await post.populate({ path: 'comments', model: Comment});
+			await post.populate({ path: 'comments', model: Comment, populate : 
+				[{
+					path: 'author',
+					model: User
+				},{
+					path: 'childComments',
+					model: Comment
+				}] 
+			});
+
 			res.status(200).json(jsonResponse(post, []));
 		}
 	} 

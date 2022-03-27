@@ -241,24 +241,16 @@ export default function EditPact() {
           <Grid item xs={12} lg={6}>
             <Box
               sx={{
-                // height: "calc(100vh - 68.5px)",
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
-                // backgroundColor: "white",
                 paddingInline: "10px",
-                // paddingBlock: "10px",
-                // marginTop: "68.5px"
               }}
               lg={{
-                // height: "calc(100vh - 68.5px)",
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
-                // backgroundColor: "white",
                 paddingInline: "50px",
-                // paddingBlock: "10px",
-                // marginTop: "68.5px"
               }}
             >
 

@@ -1,20 +1,22 @@
 import { render, screen, waitForElementToBeRemoved } from "@testing-library/react";
 import "@testing-library/jest-dom";
-import PactList from "../components/PactList.jsx";
+import UserList from "../components/UserList.jsx";
 import { rest } from "msw";
 import { setupServer } from "msw/node";
-import pacts from "./utils/testPacts";
+import users from "./utils/testUsers";
 import MockComponent from "./utils/MockComponent.jsx";
 
-describe("Pact List Tests", () => {
+describe("User List Tests", () => {
 	const server = setupServer(
 		rest.get(`${process.env.REACT_APP_URL}/me`, (req, res, ctx) => {
 			return res(
 				ctx.json({ message: {
-          _id : "userid1",
-          firstName: "pac",
-          lastName: "to"
-          }, errors: [] })
+                    _id : "1",
+                    firstName: "pac",
+                    lastName: "to"
+                    }, 
+                    errors: [] 
+                })
 			);
 		}),
 	);
@@ -37,22 +39,21 @@ describe("Pact List Tests", () => {
 				{element}
 			</MockComponent>
 		);
-
     await waitForElementToBeRemoved(() => screen.getByText("Loading"));
 	};
 
 	describe("Check elements are rendered", () => {
-		it("should render a message saying no pacts when the array is empty", async () => {
-			await renderWithMock(<PactList pacts={[]} />);
-			const message = screen.getByText(/no more pacts/i);
+		it("should render a message saying no users when the array is empty", async () => {
+			await renderWithMock(<UserList users={[]} />);
+			const message = screen.getByText(/There are no users in this category/i);
 			expect(message).toBeInTheDocument();
 		});
 
-		it("should render a all the pacts when passed in a list of pacts", async () => {
-			await renderWithMock(<PactList pacts={pacts} />);
-			pacts.forEach((pact) => {
-				const nameElement = screen.getByText(pact.name);
-				expect(nameElement).toBeInTheDocument();
+		it("should render all the users when passed in a list of users", async () => {
+			await renderWithMock(<UserList users={users} />);
+			users.forEach((user) => {
+				const userName = screen.getByText(`${user.firstName} ${user.lastName}`);          
+				expect(userName).toBeInTheDocument();				
 			});
 		});
 	});

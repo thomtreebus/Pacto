@@ -11,7 +11,7 @@ import Menu from "@mui/material/Menu";
 import SearchIcon from "@mui/icons-material/Search";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import { Link, useHistory } from "react-router-dom";
-import Button from "@mui/material/Button";
+import { ButtonBase } from "@mui/material";
 import Divider from "@mui/material/Divider";
 import Avatar from "@mui/material/Avatar";
 import { useAuth } from "../providers/AuthProvider";
@@ -188,12 +188,14 @@ export default function PrimarySearchAppBar({ handleDrawerToggle }) {
 						component="div"
 						sx={{ display: { xs: "none", sm: "block" } }}
 					>
-						<Button
+						<ButtonBase
+							sx={{ borderRadius: "50%" }}
 							data-testid="home-button"
 							component={Link}
 							to="/feed"
-							startIcon={<Avatar src={PactoIcon} alt="Pacto Icon" />}
-						/>
+						>
+							<Avatar src={PactoIcon} alt="Pacto Icon" />
+						</ButtonBase>
 					</Typography>
 					<Search data-testid="search-bar">
 						<SearchIconWrapper>

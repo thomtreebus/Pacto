@@ -69,8 +69,6 @@ module.exports.commentDelete = async (req, res) => {
 
     await req.comment.save();
 
-    await req.comment.populate({ path: 'upvoters', model: User });
-		await req.comment.populate({ path: 'downvoters', model: User });
     await req.comment.populate({path: "author", model: User});
 
     res.status(200).json(jsonResponse(req.comment, []));
@@ -82,8 +80,6 @@ module.exports.commentDelete = async (req, res) => {
 module.exports.commentGet = async (req, res) => {
   try {
     const comment = req.comment;
-    await comment.populate({ path: 'upvoters', model: User });
-		await comment.populate({ path: 'downvoters', model: User });
     await comment.populate({path: "author", model: User});
     res.status(200).json(jsonResponse(comment, []));
   } catch(err){
@@ -95,8 +91,6 @@ module.exports.commentUpvotePut = async (req, res) => {
   try {
     const comment = req.comment;
     await upvote(comment, req.user);
-    await comment.populate({ path: 'upvoters', model: User });
-		await comment.populate({ path: 'downvoters', model: User });
     await comment.populate({path: "author", model: User});
 
     res.status(200).json(jsonResponse(comment, []));
@@ -109,8 +103,6 @@ module.exports.commentDownvotePut = async (req, res) => {
   try {
     const comment = req.comment;
     await downvote(comment, req.user);
-    await comment.populate({ path: 'upvoters', model: User });
-		await comment.populate({ path: 'downvoters', model: User });
     await comment.populate({path: "author", model: User});
 
     res.status(200).json(jsonResponse(comment, []));
