@@ -46,7 +46,7 @@ export default function UserCardModeration({user, pact, showBannedUsers}) {
         loggedInUserIsMod && user._id !== loggedInUser._id && !userCardIsMod && !showBannedUsers
       );
       setShowBanButton(
-        loggedInUserIsMod && user._id !== loggedInUser._id && !showBannedUsers
+        loggedInUserIsMod && user._id !== loggedInUser._id && !userCardIsMod && !showBannedUsers
       )
       setShowUnBanButton((
         showBannedUsers
