@@ -33,6 +33,7 @@ export default function NotificationsMenu({
 				.slice(0, limit < notifications.length ? limit : notifications.length)
 				.map((notification) => (
 					<NotificationCard
+						data-testid="notification-card"
 						key={notification._id}
 						notification={notification}
 						notifications={notifications}

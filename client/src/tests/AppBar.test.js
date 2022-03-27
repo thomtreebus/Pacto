@@ -17,8 +17,7 @@ describe("App Bar Tests", () => {
 				ctx.json({ message: {
           _id : "userid1",
           firstName: "pac",
-          lastName: "to",
-          notifications: []
+          lastName: "to"
           }, errors: [] })
 			);
 		}),
@@ -184,10 +183,10 @@ describe("App Bar Tests", () => {
       fireEvent.click(buttonElement);
       const menuElement = screen.getByTestId("notifications-menu");
       await waitFor(() => expect(menuElement).toBeVisible());
-    })
+    });
 
     it("should close the profile menu when the user presses escape", async () => { 
-      const iconButtonElement = screen.getByTestId("notification-button");
+      const iconButtonElement = await waitFor(() => screen.getByTestId("notification-button"));
       fireEvent.click(iconButtonElement);
       const menuElement = screen.getByTestId("notifications-menu");
       expect(menuElement).toBeInTheDocument();
@@ -198,6 +197,22 @@ describe("App Bar Tests", () => {
       await waitFor(() => expect(menuElement).not.toBeVisible());
     });
 
-    // it("should ")
+    it("should filter notifications to only display ones that are unread", async () => {
+      server.use(
+				rest.get(`${process.env.REACT_APP_URL}/notifications`, (req, res, ctx) => {
+          return res(
+            ctx.json({
+              errors: [], 
+              message: [
+                { __v: 0, _id: "1", text: "Your post received a new comment", read: true, time: "2022-03-25T10:02:42.545Z" },
+                { __v: 0, _id: "2", text: "Your post received a new comment", read: false, time: "2022-03-25T10:02:42.545Z" }
+              ] })
+          );
+        })
+      );
+      const iconButtonElement = screen.getByTestId("notification-button");
+      fireEvent.click(iconButtonElement);
+      const menuElement = screen.getByTestId("notification-card");
+    });
   });
 });
