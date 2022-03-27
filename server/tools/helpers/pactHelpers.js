@@ -94,7 +94,6 @@ async function addUserToPact(user, pact, moderator=false) {
 
 async function addBannedUsersToPact(users, pact) {
 	if(users.length > 0) {
-		await addBannedUserToPact(users[0], pact);
 		for(let i = 1; i < users.length; i ++) {
 			await addBannedUserToPact(users[i], pact);
 		}
