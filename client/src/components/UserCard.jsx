@@ -35,7 +35,9 @@ export default function UserCard({user}){
     function acceptFriend(){
         setButtonsDisabled(true);
 
-        fetch(`${process.env.REACT_APP_URL}/friends/${user._id}/accept`, {
+        const friendRequestId = currentUser.receivedRequests.filter(r => r.requestor===user._id)[0]._id;
+
+        fetch(`${process.env.REACT_APP_URL}/friends/${friendRequestId}/accept`, {
             method: "PUT",
             credentials: "include",
         });
@@ -49,7 +51,9 @@ export default function UserCard({user}){
     function declineFriend(){
         setButtonsDisabled(true);
 
-        fetch(`${process.env.REACT_APP_URL}/friends/${user._id}/reject`, {
+        const friendRequestId = currentUser.receivedRequests.filter(r => r.requestor===user._id)[0]._id;
+
+        fetch(`${process.env.REACT_APP_URL}/friends/${friendRequestId}/reject`, {
             method: "PUT",
             credentials: "include",
         });

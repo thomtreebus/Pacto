@@ -16,8 +16,8 @@ describe("UserCard Tests", () => {
                     lastName: "to",
                     image: "https://avatars.dicebear.com/api/identicon/temp.svg",
                     friends: ["1"], // Logged in user is friends with testUsers[0]
-                    sentRequests: [{recipient: "2"}], // and has sent a request to testUser[1]
-                    receivedRequests: [{requestor: "3"}], // and has received a request from testUser[2]
+                    sentRequests: [{_id: "1", recipient: "2"}], // and has sent a request to testUser[1]
+                    receivedRequests: [{_id: "2", requestor: "3"}], // and has received a request from testUser[2]
                     // User has no relationship with testUseer[3]
                 }, 
                 errors: [] 
@@ -34,7 +34,7 @@ describe("UserCard Tests", () => {
 			);
 		}), 
 
-        rest.put(`${process.env.REACT_APP_URL}/friends/:3/accept`, (req, res, ctx) => {
+        rest.put(`${process.env.REACT_APP_URL}/friends/:2/accept`, (req, res, ctx) => {
 			return res(
 				ctx.json({ 
                     message: {}, 
@@ -43,7 +43,7 @@ describe("UserCard Tests", () => {
 			);
 		}), 
 
-        rest.put(`${process.env.REACT_APP_URL}/friends/:3/reject`, (req, res, ctx) => {
+        rest.put(`${process.env.REACT_APP_URL}/friends/:2/reject`, (req, res, ctx) => {
 			return res(
 				ctx.json({ 
                     message: {}, 
