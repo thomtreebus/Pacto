@@ -1,20 +1,43 @@
 import {Box, Grid, Card, CardHeader, Avatar, Typography, Button} from "@mui/material"
 import {useHistory} from "react-router-dom";
 import {useAuth} from "../providers/AuthProvider";
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
+import ErrorMessage from "./ErrorMessage";
 
 export default function UserCardModeration({user, pact, showBannedUsers}) {
 
   const history = useHistory();
-  const {user: loggedInUser} = useAuth();
+  const {user: loggedInUser, silentUserRefresh} = useAuth();
   const [showPromoteButton, setShowPromoteButton] = useState(false);
   const [showUnBanButton, setShowUnBanButton] = useState(false);
   const [showBanButton, setShowBanButton] = useState(false);
   const [loggedInUserIsMod, setLoggedInUserIsMod] = useState(false);
   const [userCardIsMod, setUserCardIsMod] = useState(false);
+  const [isError, setIsError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(null);
 
   function handleViewButtonClick() {
     history.push(`/user/${user._id}`);
+  }
+
+  async function handleButtonClick(type) {
+    const response = await fetch(`${process.env.REACT_APP_URL}/pact/${pact._id}/${user._id}/${type}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify({
+      }),
+    });
+    const json = await response.json()
+    if(response.status === 200){
+      await silentUserRefresh();
+    }
+    else{
+      setErrorMessage(json.errors[0]['message'])
+      setIsError(true);
+    }
   }
 
   useEffect(() => {
@@ -49,13 +72,14 @@ export default function UserCardModeration({user, pact, showBannedUsers}) {
   }, [pact])
 
   return (
+    <>
     <Box sx={{
       width: '100%',
       padding: "6px",
     }}
     >
       <Grid item xs={12} s={7}>
-        <Card onClick={handleViewButtonClick}
+        <Card
               data-testid="userCard"
               sx={{
                 display: "flex",
@@ -72,6 +96,7 @@ export default function UserCardModeration({user, pact, showBannedUsers}) {
               <Avatar
                 src={user.image}
                 alt="user-image"
+                onClick={handleViewButtonClick}
                 style={{
                   outline: userCardIsMod ? '3px solid gold' : ''
                 }}
@@ -95,11 +120,22 @@ export default function UserCardModeration({user, pact, showBannedUsers}) {
                       }}
           >{user.firstName} {user.lastName}</Typography>
           {showPromoteButton &&
-            <Button size="small" variant="contained">Promote</Button>}
-          {showBanButton && <Button size="small" color="error" variant="contained">Ban</Button>}
-          {showUnBanButton && <Button size="small" color="success " variant="contained"> Unban</Button>}
+            <Button size="small" variant="contained"
+                    onClick={() => handleButtonClick("promote")}>Promote</Button>}
+          {showBanButton &&
+            <Button size="small" color="error" variant="contained"
+                    onClick={() => handleButtonClick("ban")}>Ban</Button>}
+          {showUnBanButton &&
+            <Button size="small" color="success" variant="contained"
+                    onClick={() => handleButtonClick("revokeban")}> Unban</Button>}
         </Card>
       </Grid>
     </Box>
+      <ErrorMessage
+        isOpen={isError}
+        setIsOpen={setIsError}
+        message={errorMessage}
+      />
+    </>
   );
 }

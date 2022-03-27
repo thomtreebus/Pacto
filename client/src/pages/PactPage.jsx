@@ -25,7 +25,6 @@ export default function PactPage() {
 
 	useEffect(() => {
 		setIsLoading(true);
-		setMainPactTabValue(0);
 		const controller = new AbortController();
 
 		fetch(`${process.env.REACT_APP_URL}/pact/${pactID}`, {
