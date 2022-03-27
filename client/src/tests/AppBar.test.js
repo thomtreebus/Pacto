@@ -129,21 +129,6 @@ describe("App Bar Tests", () => {
       })
     )
 
-    it("should log out the user when log out is pressed", async () => {
-      server.use(
-				rest.get(`${process.env.REACT_APP_URL}/me`, (req, res, ctx) => {
-          return res(
-            ctx.status(401)
-          );
-        })
-			);
-      const logoutItemElement = await screen.findByTestId("logout-item");
-      fireEvent.click(logoutItemElement);
-      const redirectMessage = await screen.findByText(/Redirected to login/i);
-			expect(redirectMessage).toBeInTheDocument();
-      expect(window.location.pathname).toBe("/login");
-    });
-
     it("should redirect to home when the Pacto icon is pressed",async () => {
       const buttonElement = screen.getByTestId("home-button");
       fireEvent.click(buttonElement);
@@ -190,6 +175,25 @@ describe("App Bar Tests", () => {
       const redirectMessage = await screen.findByText(/Redirected to profile/i);
       expect(redirectMessage).toBeInTheDocument();
       expect(window.location.pathname).toBe("/user/userid1");
+    });
+
+    it("should open the notifications menu when the notification bell is pressed", async () => {
+      const buttonElement = await waitFor(() => screen.getByTestId("notification-button"));
+      fireEvent.click(buttonElement);
+      const menuElement = screen.getByTestId("notifications-menu");
+      await waitFor(() => expect(menuElement).toBeVisible());
+    })
+
+    it("should close the profile menu when the user presses escape", async () => { 
+      const iconButtonElement = screen.getByTestId("notification-button");
+      fireEvent.click(iconButtonElement);
+      const menuElement = screen.getByTestId("notifications-menu");
+      expect(menuElement).toBeInTheDocument();
+      fireEvent.keyDown(menuElement, {
+        key: 'Escape',
+        code: 'Escape'
+      });
+      await waitFor(() => expect(menuElement).not.toBeVisible());
     });
   });
 });
