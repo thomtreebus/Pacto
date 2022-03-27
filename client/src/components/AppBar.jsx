@@ -15,11 +15,11 @@ import { ButtonBase } from "@mui/material";
 import Divider from "@mui/material/Divider";
 import Avatar from "@mui/material/Avatar";
 import { useAuth } from "../providers/AuthProvider";
-import NotificationsIcon from '@mui/icons-material/Notifications';
-import Badge from '@mui/material/Badge';
+import NotificationsIcon from "@mui/icons-material/Notifications";
+import Badge from "@mui/material/Badge";
 import PactoIcon from "../assets/pacto-logo.png";
 import MenuIcon from "@mui/icons-material/Menu";
-import NotificationsMenu from "./NotificationsMenu"
+import NotificationsMenu from "./NotificationsMenu";
 
 const Search = styled("div")(({ theme }) => ({
 	position: "relative",
@@ -61,7 +61,6 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 	},
 }));
 
-
 export default function PrimarySearchAppBar({ handleDrawerToggle }) {
 	const history = useHistory();
 
@@ -73,26 +72,26 @@ export default function PrimarySearchAppBar({ handleDrawerToggle }) {
 	const isProfileMenuOpen = Boolean(profileAnchorEl);
 	const isNotificationsMenuOpen = Boolean(notificationsAnchorEl);
 
-	const [notifications, setNotifications] = useState(null);
+	const [notifications, setNotifications] = useState([]);
 
 	useEffect(() => {
-		fetch(`${process.env.REACT_APP_URL}/notifications`, {method: "GET", credentials: 'include'})
-			.then(res => {return res.json()})
-			.then((data) => {setNotifications(data.message.filter((notification) => !notification.read));});
-			return () => {
-				setNotifications([]);
-			};
-	},[notificationsAnchorEl]);
+		fetch(`${process.env.REACT_APP_URL}/notifications`, {
+			method: "GET",
+			credentials: "include",
+		})
+			.then((res) => {
+				return res.json();
+			})
+			.then((data) => {
+				setNotifications(
+					data.message.filter((notification) => !notification.read)
+				);
+			});
+		return () => {
+			setNotifications([]);
+		};
+	}, [notificationsAnchorEl]);
 
-	function getNotificationCount(notifications) {
-		if (!notifications) {
-			return 0
-		}
-		else {
-			return notifications.length
-		}
-	}
-	
 	const handleLogout = async () => {
 		await fetch(`${process.env.REACT_APP_URL}/logout`, {
 			credentials: "include",
@@ -125,7 +124,7 @@ export default function PrimarySearchAppBar({ handleDrawerToggle }) {
 
 	const handleNotificationsMenuClose = () => {
 		setNotificationsAnchorEl(null);
-	}
+	};
 
 	const profileMenuId = "primary-search-account-menu";
 	const renderProfileMenu = (
@@ -161,7 +160,7 @@ export default function PrimarySearchAppBar({ handleDrawerToggle }) {
 		</Menu>
 	);
 
-	const notificationsMenuId = "notifications-menu"
+	const notificationsMenuId = "notifications-menu";
 
 	return (
 		<Box sx={{ flexGrow: 1 }}>
@@ -207,19 +206,26 @@ export default function PrimarySearchAppBar({ handleDrawerToggle }) {
 						/>
 					</Search>
 					<Box sx={{ flexGrow: 1 }} />
-						<IconButton
-							size="large"
-							edge="end"
-							aria-label="notifications"
-							color="inherit"
-							aria-controls={notificationsMenuId}
-							aria-haspopup="true"
-							onClick={handleNotificationsMenuOpen}
-						>
-							{notifications && <Badge data-testid="badge" badgeContent={ getNotificationCount(notifications) } max={99} color="error">
+					<IconButton
+						size="large"
+						edge="end"
+						aria-label="notifications"
+						color="inherit"
+						aria-controls={notificationsMenuId}
+						aria-haspopup="true"
+						onClick={handleNotificationsMenuOpen}
+					>
+						{notifications && (
+							<Badge
+								data-testid="badge"
+								badgeContent={notifications.length}
+								max={99}
+								color="error"
+							>
 								<NotificationsIcon />
-							</Badge>}
-						</IconButton>
+							</Badge>
+						)}
+					</IconButton>
 					<Box>
 						<IconButton
 							data-testid="profile-button"
@@ -237,13 +243,14 @@ export default function PrimarySearchAppBar({ handleDrawerToggle }) {
 				</Toolbar>
 			</AppBar>
 			{renderProfileMenu}
-			<NotificationsMenu 
-				notificationsMenuId={notificationsMenuId} 
+			<NotificationsMenu
+				notificationsMenuId={notificationsMenuId}
 				notificationsAnchorEl={notificationsAnchorEl}
 				handleNotificationsMenuClose={handleNotificationsMenuClose}
-				isNotificationsMenuOpen={isNotificationsMenuOpen} 
+				isNotificationsMenuOpen={isNotificationsMenuOpen}
 				notifications={notifications}
-			/>			
+				setNotifications={setNotifications}
+			/>
 		</Box>
 	);
 }

@@ -1,16 +1,60 @@
 import { Card, Typography } from "@mui/material";
+import { useState } from "react";
+import { relativeTime } from "../helpers/timeHandllers";
+import { IconButton } from "@mui/material";
+import MarkChatReadIcon from "@mui/icons-material/MarkChatRead";
 
-const vagueTime = require("vague-time");
+function NotificationCard({ notification, notifications, setNotifications }) {
+	const [buttonIsDisabled, setIsButtonDisabled] = useState(false);
+	const [isError, setIsError] = useState(false);
+	const [errorMessage, setErrorMessage] = useState(false);
 
-export default function NotificationCard({ notification }){
+	const deleteNotification = async () => {
+		setIsButtonDisabled(true);
+
+		const response = await fetch(
+			`${process.env.REACT_APP_URL}/notifications/${notification._id}/update`,
+			{
+				method: "PUT",
+				credentials: "include",
+			}
+		);
+
+		try {
+			const json = await response.json();
+			console.log(json);
+			if (json.errors.length) throw Error(json.errors[0].message);
+		} catch (err) {
+			setIsError(true);
+			setErrorMessage(err.message);
+			setIsButtonDisabled(false);
+			return;
+		}
+
+		const newNotifications = notifications.filter((notificationToBeDeleted) => {
+			return notificationToBeDeleted._id !== notification._id;
+		});
+		setNotifications(newNotifications);
+	};
+
 	return (
-		<Card sx={{ width: '300px', padding: '20px', marginTop: '2px'}}>
-			<Typography>
-				{notification.text}
-			</Typography>
+		<Card sx={{ maxWidth: "18rem", padding: 2, margin: 1, shadow: 3 }}>
+			<IconButton
+				color="inherit"
+				aria-label="open drawer"
+				edge="start"
+				disabled={buttonIsDisabled}
+				onClick={deleteNotification}
+				data-testid="mark-notification-as-read"
+			>
+				<MarkChatReadIcon />
+			</IconButton>
+			<Typography>{notification.text}</Typography>
 			<Typography variant="caption">
-				{vagueTime.get({from: Date.now(), to: new Date(notification.time)})}
+				{relativeTime(notification.time)}
 			</Typography>
 		</Card>
-	)
+	);
 }
+
+export default NotificationCard;
