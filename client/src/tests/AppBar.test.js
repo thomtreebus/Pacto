@@ -6,7 +6,8 @@ import { rest } from "msw";
 import { setupServer } from "msw/node";
 import { Route,Switch} from "react-router-dom";
 import { createMemoryHistory } from 'history';
-import PrivateRoute from "../components/PrivateRoute"
+import PrivateRoute from "../components/PrivateRoute";
+import AuthRoute from "../components/AuthRoute";
 
 describe("App Bar Tests", () => {
 
@@ -44,9 +45,9 @@ describe("App Bar Tests", () => {
     history = createMemoryHistory({ initialEntries: [`/feed`] });
     render(
       <MockComponent>
-        <Route exact path="/login">
+        <AuthRoute exact path="/login">
           <h1>Redirected to login</h1>
-        </Route>
+        </AuthRoute>
 
         <PrivateRoute path="*">
           <AppBar />

@@ -78,7 +78,7 @@ export default function EditPact() {
         signal: controller.signal,
       }).then((res) => {
         if (!res.ok) {
-          throw Error("Could not fetch pacts");
+          throw Error("Could not fetch pact");
         }
         return res.json();
       }).then((resData) => {
@@ -93,6 +93,7 @@ export default function EditPact() {
         setImage(data.image)
         setIsLoading(false);
       }).catch((err) => {
+        if (err.message === "The user aborted a request.") return;
         setSnackBarError(err)
         setSnackbarOpen(true)
         return history.push(`/not-found`);

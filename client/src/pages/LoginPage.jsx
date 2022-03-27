@@ -46,8 +46,7 @@ export default function LoginPage() {
 				return;
 			}
 
-			await silentUserRefresh();
-			history.push("/feed");
+			silentUserRefresh();
 		} catch (err) {
 			setSnackbarMessage(err.message);
 			setSnackbarOpen(true);

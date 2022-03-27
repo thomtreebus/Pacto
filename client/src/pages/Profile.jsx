@@ -44,7 +44,17 @@ export default function Profile() {
       fetch(`${process.env.REACT_APP_URL}/users/${id}`, {
         credentials: "include",
         signal: controller.signal,
-      }).then((res) => res.json()).then((data) => setData(data))
+      }).then((res) => {
+        if (!res.ok) {
+					throw Error("Could not fetch user profile");
+				}
+        return res.json()
+      }).then((data) => {
+        setData(data)
+      }).catch((err) => {
+        if (err.message === "The user aborted a request.") return;
+        if (err.message === "Could not fetch user profile") history.push("/not-found")
+      })
     }
     return () => controller.abort();
   },[id])

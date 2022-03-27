@@ -15,12 +15,17 @@ export default function Feed() {
       credentials: "include",
       signal: controller.signal,
     }).then((res) => {
+      if (!res.ok) {
+        throw Error("Could not fetch feed");
+      }
       return res.json();
     }).then((data) => {
       setPosts(data.message);
       setIsLoading(false);
       setError(null);
-		})
+		}).catch((err) => {
+      if (err.message === "The user aborted a request.") return;
+    })
     return () => controller.abort();
 	}, [])
  	

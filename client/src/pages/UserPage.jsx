@@ -62,7 +62,7 @@ export default function UserPage() {
         signal: controller.signal,
       }).then((res) => {
         if (!res.ok) {
-          throw Error("Could not fetch pact");
+          throw Error("Could not fetch users");
         }
         return res.json();
       }).then((data) => {
@@ -78,7 +78,8 @@ export default function UserPage() {
         );
         setAllUsers(resAllUsers);
         setIsLoading(false);
-      }).catch(() => {
+      }).catch((err) => {
+        if (err.message === "The user aborted a request.") return;
         history.push("/not-found");
     })
     return () => controller.abort();
