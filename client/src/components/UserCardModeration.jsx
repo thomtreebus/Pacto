@@ -3,6 +3,11 @@ import {useHistory} from "react-router-dom";
 import {useAuth} from "../providers/AuthProvider";
 import React, {useEffect, useState} from "react";
 import ErrorMessage from "./ErrorMessage";
+import BanIcon from '@mui/icons-material/DoNotDisturbOn';
+import UnBanIcon from '@mui/icons-material/DoDisturbOff';
+import PromoteIcon from '@mui/icons-material/Star';
+import { Tooltip } from "@mui/material";
+import { IconButton } from "@mui/material";
 
 export default function UserCardModeration({user, pact, showBannedUsers}) {
 
@@ -117,17 +122,30 @@ export default function UserCardModeration({user, pact, showBannedUsers}) {
           <Typography variant="h7"
                       sx={{
                         paddingLeft: "25px",
+                        marginRight: "auto"
                       }}
           >{user.firstName} {user.lastName}</Typography>
           {showPromoteButton &&
-            <Button size="small" variant="contained"
-                    onClick={() => handleButtonClick("promote")}>Promote</Button>}
+            <Tooltip title="Promote">
+              <IconButton onClick={() => handleButtonClick("promote")} >
+                <PromoteIcon color="warning" />
+              </IconButton>
+            </Tooltip>
+          }
           {showBanButton &&
-            <Button size="small" color="error" variant="contained"
-                    onClick={() => handleButtonClick("ban")}>Ban</Button>}
+            <Tooltip title="Ban">
+              <IconButton onClick={() => handleButtonClick("ban")} >
+                <BanIcon color="error" />
+              </IconButton>
+            </Tooltip>
+          }
           {showUnBanButton &&
-            <Button size="small" color="success" variant="contained"
-                    onClick={() => handleButtonClick("revokeban")}> Unban</Button>}
+            <Tooltip title="Revoke Ban">
+              <IconButton onClick={() => handleButtonClick("revokeban")} >
+                <UnBanIcon color="success" />
+              </IconButton>
+            </Tooltip>
+          }
         </Card>
       </Grid>
     </Box>
