@@ -113,7 +113,8 @@ export default function BasePostCard({ children, post, numComments = null }) {
 							</Typography>
 						</Box>
 					</Box>
-					{post.author._id === user._id && (
+					{(post.author._id === user._id ||
+						post.pact.moderators.includes(user._id)) && (
 						<Box sx={{ display: "flex", justifyContent: "flex-end" }}>
 							<IconButton
 								color="error"

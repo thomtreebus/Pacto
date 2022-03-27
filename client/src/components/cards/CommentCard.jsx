@@ -9,6 +9,9 @@ import { useAuth } from "../../providers/AuthProvider";
 import CommentBox from "../CommentBox";
 import Voter from "../Voter";
 import { relativeTime } from "../../helpers/timeHandllers";
+import DeleteIcon from "@mui/icons-material/Delete";
+import { IconButton } from "@mui/material";
+import ErrorMessage from "../ErrorMessage";
 
 export default function CommentCard({ comment, post, postUpdaterFunc }) {
   const { user } = useAuth();
