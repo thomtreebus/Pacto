@@ -12,8 +12,7 @@ import ErrorMessage from "../ErrorMessage";
 
 export default function BasePostCard({ children, post, numComments = null }) {
 	const { user, silentUserRefresh } = useAuth();
-	const commentCount =
-		numComments === null ? post.comments.length : numComments;
+	const commentCount = numComments === null ? post.comments.length : numComments;
 	const [isButtonDisabled, setIsButtonDisabled] = useState(false);
 	const [isError, setIsError] = useState(false);
 	const [errorMessage, setErrorMessage] = useState("");
