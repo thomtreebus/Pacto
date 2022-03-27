@@ -5,7 +5,10 @@ import "@testing-library/jest-dom";
 import MockComponent from "./utils/MockComponent";
 import { rest } from "msw";
 import { setupServer } from "msw/node";
-import { Route } from "react-router-dom";
+import AuthRoute from "../components/AuthRoute";
+import PrivateRoute from "../components/PrivateRoute";
+import { createMemoryHistory } from 'history';
+import { Route,Switch} from "react-router-dom";
 
 describe("LoginPage Tests", () => {
 	const server = setupServer(
@@ -38,12 +41,20 @@ describe("LoginPage Tests", () => {
 	});
 
 	beforeEach(async () => {
+		history = createMemoryHistory({ initialEntries: [`/login`] });
 		render(
 			<MockComponent>
 				<Login />
-				<Route exact path="/feed">
+				<AuthRoute exact path="/login">
 					<h1>Redirected to feed</h1>
-				</Route>
+				</AuthRoute>
+				<PrivateRoute path="*">
+          <Switch>
+            <PrivateRoute exact path="/feed">
+              <h1>Redirected to feed</h1>
+            </PrivateRoute>
+          </Switch>
+        </PrivateRoute>
 			</MockComponent>
 		);
 		await waitForElementToBeRemoved(() => screen.getByText("Loading"));
