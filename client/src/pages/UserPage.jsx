@@ -55,12 +55,14 @@ export default function UserPage() {
     const [value, setValue] = useState(0);
 
     useEffect(() => {
+      const controller = new AbortController();
       fetch(`${process.env.REACT_APP_URL}/users`, {
         method: "GET",
-        credentials: "include"
+        credentials: "include",
+        signal: controller.signal,
       }).then((res) => {
         if (!res.ok) {
-          throw Error("Could not fetch pact");
+          throw Error("Could not fetch users");
         }
         return res.json();
       }).then((data) => {
@@ -76,9 +78,11 @@ export default function UserPage() {
         );
         setAllUsers(resAllUsers);
         setIsLoading(false);
-      }).catch((e) => {
+      }).catch((err) => {
+        if (err.message === "The user aborted a request.") return;
         history.push("/not-found");
     })
+    return () => controller.abort();
     }, [history, user])
 
   const handleChange = (event, newValue) => {
@@ -116,6 +120,5 @@ export default function UserPage() {
         </TabPanel>
       </Box>
     </Container>
-    // <UserPortfolio user = {user}></UserPortfolio>
-    )
+  )
 }

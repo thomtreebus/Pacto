@@ -1,4 +1,4 @@
-# Team *Kekw* Major Group project
+# Team *Kekw* Major Group project - Pacto
 
 ## Team members
 
@@ -17,11 +17,23 @@ The members of the team are:
 
 ## Project structure
 
-The project consists of two applications. A React app that the client interacts with, and a server app that handles the backend.
+The project consists of two applications. A React app that the client interacts with, and a Node.js server app that handles the backend/API.
 
 ## Deployed version of the application
 
 The deployed version of the application can be found at [URL]().
+
+## Access credentials for viewing different roles
+
+The application has certain features that can only be viewed by users with a moderator role, use the following access credentials to view the application as a moderator:
+
+**email**:
+**password**:
+
+A regular user account can be accessed with the following credentials:
+
+**email**:
+**password**:
 
 ## Installation instructions
 

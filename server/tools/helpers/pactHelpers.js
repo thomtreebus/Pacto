@@ -18,7 +18,11 @@ async function seedCourses(university) {
 		const name = course.name;
 		const image = course.icon;
 		const pact = await createPact(name, "course", chance.sentence(), university, image);
-		const users = await User.find({course : name});
+		const users = await User.find({ course: name });
+		if (users.length > 8) {
+			const bannedUsers = users.splice(1, 3);
+			await addBannedUsersToPact(bannedUsers, pact);
+		}
 		await addUsersToPact(users, pact);
 	}
 }
@@ -41,7 +45,11 @@ async function seedHobbies(university) {
 		const possibleCategories = ["society", "other"];
 		const chosenCategory = possibleCategories[chance.integer({ min: 0, max: possibleCategories.length-1 })];
 		const pact = await createPact(name, chosenCategory, chance.sentence(), university, image);
-		const users = await User.find({hobbies : name});
+		const users = await User.find({ hobbies: name });
+		if (users.length > 8) {
+			const bannedUsers = users.splice(1, 3);
+			await addBannedUsersToPact(bannedUsers, pact);
+		}
 		await addUsersToPact(users, pact);
 	}
 }
@@ -81,6 +89,19 @@ async function addUserToPact(user, pact, moderator=false) {
 	}
 
 	await user.save();
+	await pact.save();
+}
+
+async function addBannedUsersToPact(users, pact) {
+	if(users.length > 0) {
+		for(let i = 0; i < users.length; i ++) {
+			await addBannedUserToPact(users[i], pact);
+		}
+	}
+}
+
+async function addBannedUserToPact(user, pact) {
+	pact.bannedUsers.push(user);
 	await pact.save();
 }
 

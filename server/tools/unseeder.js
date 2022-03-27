@@ -14,6 +14,7 @@ async function unseed() {
 	await Comment.deleteMany({});
 	await EmailVerificationCode.deleteMany({});
 	await FriendRequest.deleteMany({});
+	await Notification.deleteMany({});
 	console.log("Finished unseeding");
 }
 

@@ -31,6 +31,8 @@ const user = {
         "@kcl.ac.uk"
       ],
     },
+    receivedRequests: [],
+    sentRequests: [],
     _id: "UserID1",
     hobbies: [
       "Studying",
@@ -51,9 +53,9 @@ describe("Profile Page Tests", () => {
     rest.get(`${process.env.REACT_APP_URL}/me`, (req, res, ctx) => {
       return res(
         ctx.json({
-            message: user,
+          message: user,
           errors: []
-          })
+        })
       );
     }),
 
@@ -192,10 +194,9 @@ describe("Profile Page Tests", () => {
         expect(editProfileButton.disabled).toBe(false)
       });
 
-      it("should render the send friend request button as disabled if on their profile", async () => {
-        const sendFriendRequestButton = await screen.findByText("Send Friend Request");
-        expect(sendFriendRequestButton).toBeInTheDocument();
-        expect(sendFriendRequestButton.disabled).toBe(true)
+      it("should not render the send friend request button if on their profile", async () => {
+        const sendFriendRequestButton = screen.queryByText("Send Friend Request");
+        expect(sendFriendRequestButton).not.toBeInTheDocument();
       });
 
     });
@@ -262,16 +263,9 @@ describe("Profile Page Tests", () => {
   describe("Redirects to not-found if error received", () => {
     it("Redirects to not found if error received", async () => {
       server.use(
-        rest.get(`${process.env.REACT_APP_URL}/me`, (req, res, ctx) => {
-          return res(
-            ctx.json({
-              message: user,
-              errors: [1]
-            })
-          );
-        }),
         rest.get(`${process.env.REACT_APP_URL}/users/:id`, (req, res, ctx) => {
           return res(
+            ctx.status(401),
             ctx.json({
               message: user,
               errors: [1]

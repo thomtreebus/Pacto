@@ -1,7 +1,7 @@
 import { Fab, Grid } from "@mui/material";
 import { Box } from "@mui/system";
 import EditIcon from "@mui/icons-material/Edit";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import AboutPact from "../components/AboutPact";
 import PostList from "../components/PostList";
@@ -28,7 +28,7 @@ export default function PactPage() {
 	const [isError, setIsError] = useState(false);
 	const [errorMessage, setErrorMessage] = useState(false);
 	const history = useHistory();
-	const { user, setUser } = useAuth();
+	const { user, silentUserRefresh } = useAuth();
 	const [open, setOpen] = useState(false);
 
 	const theme = useTheme();
@@ -38,15 +38,9 @@ export default function PactPage() {
 		setOpen(true);
 	};
 
-	const handleClose = () => {
-		setOpen(false);
-	};
-
-	const removePactLocally = () => {
-		let newUser = Object.assign({}, user);
-		newUser.pacts = newUser.pacts.filter((pact) => pact !== pactID);
-		setUser(newUser);
-	};
+  const handleClose = () => {
+    setOpen(false);
+  };
 
 	const handleButtonClicked = async (path) => {
 		setIsButtonDisabled(true);
@@ -69,7 +63,7 @@ export default function PactPage() {
 			return;
 		}
 
-		removePactLocally();
+		await silentUserRefresh();
 		history.push(`/hub`);
 	};
 
@@ -98,6 +92,7 @@ export default function PactPage() {
 				}
 			})
 			.catch((err) => {
+				if (err.message === "The user aborted a request.") return;
 				if (err.message === "Could not fetch pact") {
 					history.push("/not-found");
 				}
