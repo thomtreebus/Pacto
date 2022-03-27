@@ -2,6 +2,7 @@ import { Box, Grid, Card, CardHeader, Avatar, Typography, Button } from "@mui/ma
 import { useState } from "react";
 import { useHistory } from "react-router-dom";
 import { useAuth } from "../providers/AuthProvider";
+import { red, green } from '@mui/material/colors';
 
 export default function UserCard({user}){
 
@@ -106,7 +107,7 @@ export default function UserCard({user}){
                         }}                   
                     />
 
-                    <Typography variant="h7" 
+                    <Typography variant="h7" onClick={handleViewButtonClick}
                         sx={{
                             paddingLeft: "25px",
                             paddingRight: "25px",
@@ -115,13 +116,13 @@ export default function UserCard({user}){
 
                     {/* Buttons for interacting as a friend with the displayed user */}
 
-                    {isFriend && <Button onClick={deleteFriend} variant="contained" color="secondary">Delete Friend</Button>}
+                    {isFriend && <Button onClick={deleteFriend} variant="contained" color="error">Delete Friend</Button>}
 
-                    {hasReceivedRequest && <Button disabled={buttonsDisabled} onClick={acceptFriend} variant="contained" color="secondary">
+                    {hasReceivedRequest && <Button disabled={buttonsDisabled} onClick={acceptFriend} variant="contained" color="success">
                         Accept Request
                     </Button>}
 
-                    {hasReceivedRequest && <Button disabled={buttonsDisabled} onClick={declineFriend} variant="contained" color="secondary">
+                    {hasReceivedRequest && <Button disabled={buttonsDisabled} onClick={declineFriend} variant="contained" color="error">
                         Decline Request
                     </Button>}          
 
@@ -130,7 +131,7 @@ export default function UserCard({user}){
                     </Button>} 
 
                     {!hasSentRequest && !hasReceivedRequest && !isFriend && 
-                    <Button disabled={buttonsDisabled} onClick={sendFriendRequest} variant="contained">
+                    <Button disabled={buttonsDisabled} onClick={sendFriendRequest} variant="contained" color="success">
                         Add Friend
                     </Button>}                          
                 </Card>
