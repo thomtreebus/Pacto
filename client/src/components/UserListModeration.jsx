@@ -14,7 +14,7 @@ export default function UserListModeration({ users, pact, showBannedUsers }) {
 	return (
 		<>
 			{users.map((user) => (
-				<UserCardModeration user={user} pact={pact} showBannedUsers={showBannedUsers} />
+				<UserCardModeration key={user._id} user={user} pact={pact} showBannedUsers={showBannedUsers} />
 			))}
 		</>
 	);
