@@ -1,7 +1,11 @@
 import { Box, Grid, Card, CardHeader, Avatar, Typography } from "@mui/material"
 import { useHistory } from "react-router-dom";
+import { useAuth } from "../providers/AuthProvider";
+import FriendButtons from "./FriendButtons";
 
 export default function UserCard({user}){
+
+    const {user: currentUser} = useAuth();
 
 	const history = useHistory();
 
@@ -16,21 +20,17 @@ export default function UserCard({user}){
             }}
         >
             <Grid item xs={12} s={7}>
-                <Card onClick={handleViewButtonClick} 
-                        data-testid="userCard"
+                <Card   data-testid="userCard"
                         sx={{
                             display:"flex",
                             padding: "10px",
                             alignItems: "center",
                             position: "relative",
-                            "&:hover": {
-                                backgroundColor: "#f5f5f5"
-                            }
                         }}
                 >
-                    <CardHeader
+                    <CardHeader onClick={handleViewButtonClick}
                         avatar={<Avatar src={user.image} alt="user-image" />}
-                        title={user.name}
+                        title={user.name} data-testid="user-image"
                         sx={{ 
                             paddingBlock: 1,
                             padding: "8px",
@@ -41,12 +41,16 @@ export default function UserCard({user}){
                             position: "center",
                             borderColor: "inherit",
                         }}                   
-                    />   
-                    <Typography variant="h7" 
+                    />
+
+                    <Typography variant="h7" onClick={handleViewButtonClick} data-testid="user-name"
                         sx={{
                             paddingLeft: "25px",
+                            paddingRight: "25px",
                         }}
-                    >{user.firstName} {user.lastName}</Typography>                                    
+                    >{user.firstName} {user.lastName}</Typography>
+
+                    <FriendButtons currentUser={currentUser} user={user} />                    
                 </Card>
             </Grid>
         </Box>		

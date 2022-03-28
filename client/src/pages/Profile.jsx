@@ -16,10 +16,10 @@ import InstagramIcon from '@mui/icons-material/Instagram';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import WhatsAppIcon from '@mui/icons-material/WhatsApp';
 import GroupIcon from '@mui/icons-material/Group';
-import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import ForumIcon from '@mui/icons-material/Forum';
 import EditIcon from '@mui/icons-material/Edit';
 import {useAuth} from "../providers/AuthProvider";
+import FriendButtons from '../components/FriendButtons';
 
 function capitalizeFirstLetter(string) {
   const sanatisedString = string.trim();
@@ -31,29 +31,8 @@ export default function Profile() {
   const [displayedUser, setDisplayedUser] = useState(null);
   const { id } = useParams();
   const history = useHistory();
-  const [friendStatus, setFriendStatus] = useState(null);
-  const [friendRequest, setFriendRequest] = useState(null);
   const [canEditProfile, setCanEditProfile] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const [counter, setCounter] = useState(0);
-
-  const friendEvent = async (status) => {
-    const url = (() => {
-      switch(status) {
-        case 0: return `friends/${friendRequest}/accept`;
-        case 1: return `friends/${friendRequest}/reject`;
-        case 2: return `friends/remove/${displayedUser._id}`;
-        case 3: return `friends/${displayedUser._id}`;
-        // no default
-      }
-    })()
-
-    await fetch(`${process.env.REACT_APP_URL}/${url}`, {
-      method: (status === 3) ? "POST" : "PUT",
-      credentials: "include",
-    });
-    setCounter(counter + 1)
-  }
 
   useEffect(() => {
     silentUserRefresh();
@@ -73,26 +52,7 @@ export default function Profile() {
       if (err.message === "Could not fetch user profile") history.push("/not-found")
     });
     return () => controller.abort();
-  }, [id, history, counter, silentUserRefresh])
-
-  useEffect(() => {
-    if (displayedUser) {
-      var request;
-      if ((request = displayedUser.receivedRequests.find((a) => loggedInUser.sentRequests.some((b) => b._id === a)))) {
-        setFriendStatus(0);
-        setFriendRequest(request);
-      } else if ((request = displayedUser.sentRequests.find((a) => loggedInUser.receivedRequests.some((b) => b._id === a)))) {
-        setFriendStatus(1);
-        setFriendRequest(request);
-      } else if (displayedUser.friends.includes(loggedInUser._id)) {
-        setFriendStatus(2);
-      } else if (displayedUser._id === loggedInUser._id) {
-        setFriendStatus(3);
-      } else {
-        setFriendStatus(4);
-      }
-    }
-  }, [displayedUser, loggedInUser])
+  }, [id, history, silentUserRefresh])
 
   useEffect(() => {
     if(displayedUser) {
@@ -134,26 +94,18 @@ export default function Profile() {
               <Typography variant="subtitle1" sx={{ color: "#1976d2", marginTop: "2px" }}>  {capitalizeFirstLetter(`${displayedUser.course} student at ${displayedUser.university.name}`)} </Typography>
               <Typography variant="subtitle1" sx={{ color: "#616161", }}>  {displayedUser.location} </Typography>
             </Stack>
-            <Box sx={{display : "flex", flexDirection: {xs: "column", sm : "row"}, gap: "0.5rem"}}>
-              {friendStatus === 0 && <Button variant="outlined" disabled={true} fullwidth="true" startIcon={<PersonAddIcon />} sx={{marginTop: "4px"}}>
-                Request Pending...
-              </Button>}
-              {friendStatus === 1 && <Button variant="contained" color="success" fullwidth="true" startIcon={<EditIcon />} sx={{ marginTop: "2px" }} onClick={() => friendEvent(0)}>
-                Accept Friend Request
-              </Button>}
-              {friendStatus === 1 && <Button variant="contained" color="error" fullwidth="true" startIcon={<EditIcon />} sx={{ marginTop: "2px" }} onClick={() => friendEvent(1)}>
-                Reject Friend Request
-              </Button>}
-              {friendStatus === 2 && <Button variant="contained" color="error" fullwidth="true" startIcon={<PersonAddIcon />} sx={{marginTop: "4px"}} onClick={() => friendEvent(2)}>
-                Remove Friend
-              </Button>}
-              {friendStatus === 4 && <Button variant="outlined" fullwidth="true" startIcon={<PersonAddIcon />} sx={{marginTop: "4px"}} onClick={() => friendEvent(3)}>
-                Send Friend Request
-              </Button>}
-              <Button variant="contained" data-testid="edit-profile-button" disabled={!canEditProfile} fullwidth="true" color="error" onClick={() => history.push("/edit-profile")} startIcon={<EditIcon />} sx={{ marginTop: "2px" }}>
-                Edit Profile 
-              </Button>
-            </Box>              
+            <Box sx={{
+            width: '100%',
+            padding: "0px",
+            }}
+            >
+              <FriendButtons currentUser={loggedInUser} user={displayedUser}/>     
+              { canEditProfile && 
+                <Button variant="contained" data-testid="edit-profile-button" fullwidth="true" color="error" onClick={() => history.push("/edit-profile")} startIcon={<EditIcon />} sx={{ marginTop: "2px" }}>
+                  Edit Profile 
+                </Button>   
+              }
+            </Box>
         </Box>
         <Divider sx={{ marginTop: "10px", marginBottom: "10px" }}></Divider>
         <Box sx={{flexWrap : "wrap", marginTop: "2px", display: "flex", gap: "1rem"}} alignItems="center"> 

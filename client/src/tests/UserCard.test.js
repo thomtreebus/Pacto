@@ -15,11 +15,15 @@ describe("UserCard Tests", () => {
                     firstName: "pac", 
                     lastName: "to",
                     image: "https://avatars.dicebear.com/api/identicon/temp.svg",
+                    friends: [1], // Logged in user is friends with testUsers[0]
+                    sentRequests: [{_id: 1, recipient: 2}], // and has sent a request to testUser[1]
+                    receivedRequests: [{_id: 2, requestor: 3}], // and has received a request from testUser[2]
+                    // User has no relationship with testUseer[3]
                 }, 
                 errors: [] 
             })
 			);
-		}),
+		}), 
 	);
 
     beforeAll(() => {
@@ -40,31 +44,28 @@ describe("UserCard Tests", () => {
 	};
 
     beforeEach(async () => {
-        await renderWithMock(<UserCard user={testUsers[0]} />);
+        await renderWithMock(<UserCard user={testUsers[1]} />);
     });
 
-    describe("Check elements are rendered", () => {
-
-
+    describe("Check element rendering", () => {
         it("should render the user's profile picture", async () => {
             const cardImage = await screen.getByAltText(/image/i);
             expect(cardImage).toBeInTheDocument();
         });
 
-        it("should render the user's first name", () => {
-            const firstName = screen.getByText(/Pac/i);
+        it("should render the user's name", async () => {
+            const firstName = await screen.findByTestId("user-name");
             expect(firstName).toBeInTheDocument();
         });
 
-        it("should render the user's last name", () => {
-            const lastName = screen.getByText(/To/i);
-            expect(lastName).toBeInTheDocument();
+        it("should render friend buttons", async () => {
+            const friendButtons = await screen.findByTestId("friend-buttons");
+            expect(friendButtons).toBeInTheDocument();
         });
     });
 
-    describe("Check interaction with elements", () => {
-
-        it("should redirect to user profile when the user card is pressed", async () => {
+    describe("Check element interaction", () => {
+        it("should redirect to user profile when the user profile picture is pressed", async () => {
             server.use(
                 rest.post(`${process.env.REACT_APP_URL}/user/:id`, (req, res, ctx) => {
                     return res(
@@ -76,9 +77,26 @@ describe("UserCard Tests", () => {
                     );
                 })
             );
-            const buttonElement = await screen.findByTestId("userCard");
+            const buttonElement = await screen.findByTestId("user-image");
             fireEvent.click(buttonElement);
-            await waitFor(() => expect(window.location.pathname).toBe("/user/1"));	
+            await waitFor(() => expect(window.location.pathname).toBe("/user/2"));	
         });
-    });  
+
+        it("should redirect to user profile when the user name is pressed", async () => {
+            server.use(
+                rest.post(`${process.env.REACT_APP_URL}/user/:id`, (req, res, ctx) => {
+                    return res(
+                        ctx.status(201),
+                        ctx.json({ 
+                            message: 'Success', 
+                            errors: [], 
+                        })
+                    );
+                })
+            );
+            const buttonElement = await screen.findByTestId("user-name");
+            fireEvent.click(buttonElement);
+            await waitFor(() => expect(window.location.pathname).toBe("/user/2"));	
+        });
+    })
 });

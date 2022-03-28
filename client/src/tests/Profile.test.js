@@ -194,9 +194,9 @@ describe("Profile Page Tests", () => {
         expect(editProfileButton.disabled).toBe(false)
       });
 
-      it("should not render the send friend request button if on their profile", async () => {
-        const sendFriendRequestButton = screen.queryByText("Send Friend Request");
-        expect(sendFriendRequestButton).not.toBeInTheDocument();
+      it("should not render the friend buttons if on their own profile", async () => {
+        const friendButtons = await screen.queryByTestId("friend-buttons");
+        expect(friendButtons).not.toBeInTheDocument();
       });
 
     });
@@ -305,16 +305,14 @@ describe("Profile Page Tests", () => {
       await renderWithMock();
     });
 
-    it("should render the editProfile button as  disabled if on other profile", async () => {
-      const editProfileButton = await screen.findByText("Edit Profile");
-      expect(editProfileButton).toBeInTheDocument();
-      expect(editProfileButton.disabled).toBe(true);
+    it("should not render the editProfile button if on other profile", async () => {
+      const editProfileButton = screen.queryByText("Edit Profile");
+      expect(editProfileButton).not.toBeInTheDocument();
     });
 
-    it("should render the send friend request button as not disabled if on other profile", async () => {
-      const sendFriendRequestButton = await screen.findByText("Send Friend Request");
-      expect(sendFriendRequestButton).toBeInTheDocument();
-      expect(sendFriendRequestButton.disabled).toBe(false);
+    it("should render the friend buttons if own another profile", async () => {
+      const friendButtons = await screen.findByTestId("friend-buttons");
+      expect(friendButtons).toBeInTheDocument();
     });
   })
 
