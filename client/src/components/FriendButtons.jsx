@@ -18,70 +18,55 @@ export default function FriendButtons({user}){ // logged in user and user to be 
     return null;
   }
 
-  async function sendFriendRequest() {
+  const FRIEND_EVENT_STATUS_CODES = {
+    ACCEPT_REQ: 0,
+    REJECT_REQ: 1,
+    REMOVE_FRIEND: 2,
+    ADD_FRIEND: 3
+  }
+
+  const friendEvent = async (status) => {
     setButtonsDisabled(true);
 
-    await fetch(`${process.env.REACT_APP_URL}/friends/${user._id}`, {
-        method: "POST",
-        credentials: "include",
-    });
+    // Forward request to backend
+    const url = (() => {
+      switch(status) {
+        case FRIEND_EVENT_STATUS_CODES.ACCEPT_REQ: return `friends/${friendRequest}/accept`;
+        case FRIEND_EVENT_STATUS_CODES.REJECT_REQ: return `friends/${friendRequest}/reject`;
+        case FRIEND_EVENT_STATUS_CODES.REMOVE_FRIEND: return `friends/remove/${displayedUser._id}`;
+        case FRIEND_EVENT_STATUS_CODES.ADD_FRIEND: return `friends/${displayedUser._id}`;
+        // no default
+      }
+    })()
 
-    setHasSentRequest(true);
+    const response = await fetch(`${process.env.REACT_APP_URL}/${url}`, {
+      method: (status === 3) ? "POST" : "PUT",
+      credentials: "include",
+    });
+    
+    // Update state on success
+    if(response.ok){
+      switch(status) {
+        case FRIEND_EVENT_STATUS_CODES.ACCEPT_REQ: { // Accepting request
+          setHasReceivedRequest(false);
+          setIsFriend(true);
+        }
+        case FRIEND_EVENT_STATUS_CODES.REJECT_REQ: { // Declining request
+          setHasReceivedRequest(false);
+        }
+        case FRIEND_EVENT_STATUS_CODES.REMOVE_FRIEND: { // Removing friend
+          setIsFriend(false);
+        };
+        case FRIEND_EVENT_STATUS_CODES.ADD_FRIEND: { // Sending request
+          setHasSentRequest(true);
+        };
+        // no default
+      }
+    }
 
     setButtonsDisabled(false);
-
     await silentUserRefresh();
-}
-
-async function acceptFriend(){
-    setButtonsDisabled(true);
-
-    const friendRequestId = currentUser.receivedRequests.filter(r => r.requestor===user._id)[0]._id;
-
-    await fetch(`${process.env.REACT_APP_URL}/friends/${friendRequestId}/accept`, {
-        method: "PUT",
-        credentials: "include",
-    });
-
-    setHasReceivedRequest(false);
-    setIsFriend(true);
-
-    setButtonsDisabled(false);
-
-    await silentUserRefresh();
-}
-
-async function declineFriend(){
-    setButtonsDisabled(true);
-
-    const friendRequestId = currentUser.receivedRequests.filter(r => r.requestor===user._id)[0]._id;
-
-    await fetch(`${process.env.REACT_APP_URL}/friends/${friendRequestId}/reject`, {
-        method: "PUT",
-        credentials: "include",
-    });
-
-    setHasReceivedRequest(false);
-
-    setButtonsDisabled(false);
-
-    await silentUserRefresh();
-}
-
-async function deleteFriend(){
-    setButtonsDisabled(true);
-
-    await fetch(`${process.env.REACT_APP_URL}/friends/remove/${user._id}`, {
-        method: "PUT",
-        credentials: "include",
-    });
-
-    setIsFriend(false);
-
-    setButtonsDisabled(false);
-
-    await silentUserRefresh();
-}
+  }
 
   return (
     <Box sx={{marginLeft : "auto"}}>
@@ -89,7 +74,7 @@ async function deleteFriend(){
         {isFriend && 
         <Tooltip title="Remove Friend">
             <span>
-              <IconButton data-testid="del-friend-btn" disabled={buttonsDisabled}  onClick={deleteFriend} >
+              <IconButton data-testid="del-friend-btn" disabled={buttonsDisabled}  onClick={()=>friendEvent(FRIEND_EVENT_STATUS_CODES.REMOVE_FRIEND)} >
                 <RemoveFriendIcon color="error" fontSize="large" sx={{border: "0.2rem solid", borderRadius: "5px"}} />
               </IconButton>
             </span>
@@ -99,7 +84,7 @@ async function deleteFriend(){
         {hasReceivedRequest && 
           <Tooltip title="Accept Friend Request">
             <span>
-              <IconButton data-testid="accept-req-btn" disabled={buttonsDisabled}  onClick={acceptFriend} >
+              <IconButton data-testid="accept-req-btn" disabled={buttonsDisabled}  onClick={()=>friendEvent(FRIEND_EVENT_STATUS_CODES.ACCEPT_REQ)} >
                 <AcceptIcon color="success" fontSize="large" sx={{border: "0.2rem solid", borderRadius: "5px"}} />
               </IconButton>
             </span>
@@ -109,7 +94,7 @@ async function deleteFriend(){
         {hasReceivedRequest &&
           <Tooltip title="Decline Friend Request">
             <span>
-              <IconButton  data-testid="reject-req-btn" disabled={buttonsDisabled}  onClick={declineFriend} >
+              <IconButton  data-testid="reject-req-btn" disabled={buttonsDisabled}  onClick={()=>friendEvent(FRIEND_EVENT_STATUS_CODES.REJECT_REQ)} >
                 <RejectIcon color="error" fontSize="large" sx={{border: "0.2rem solid", borderRadius: "5px"}} />
               </IconButton>
             </span>
@@ -119,7 +104,7 @@ async function deleteFriend(){
         {hasSentRequest &&
           <Tooltip title="Request Sent">
             <span>
-              <IconButton  data-testid="sent-req-btn" disabled  onClick={declineFriend} >
+              <IconButton  data-testid="sent-req-btn" disabled >
                 <AddFriendIcon color="diabled" fontSize="large" sx={{border: "0.2rem solid", borderRadius: "5px"}} />
               </IconButton>
             </span>
@@ -129,7 +114,7 @@ async function deleteFriend(){
         {!hasSentRequest && !hasReceivedRequest && !isFriend &&           
           <Tooltip title="Add Friend">
             <span>
-              <IconButton data-testid="add-friend-btn" disabled={buttonsDisabled}  onClick={sendFriendRequest} >
+              <IconButton data-testid="add-friend-btn" disabled={buttonsDisabled}  onClick={()=>friendEvent(FRIEND_EVENT_STATUS_CODES.ADD_FRIEND)} >
                 <AddFriendIcon color="primary" fontSize="large" sx={{border: "0.2rem solid", borderRadius: "5px"}} />
               </IconButton>
             </span>
