@@ -39,7 +39,7 @@ const PostSchema = mongoose.Schema({
 
   title: {
     type: String,
-    maxLength: [50, POST_MESSAGES.TITLE.MAX_LENGTH_EXCEEDED],
+    maxLength: [200, POST_MESSAGES.TITLE.MAX_LENGTH_EXCEEDED],
     required: [true, POST_MESSAGES.TITLE.BLANK],
   },
 

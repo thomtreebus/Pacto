@@ -96,7 +96,7 @@ module.exports.POST_MESSAGES = {
   NO_PACT: "Post is a required field",
   TITLE: {
 		BLANK: "Title is a required field",
-		MAX_LENGTH_EXCEEDED: "Title cannot exceed 50 characters",
+		MAX_LENGTH_EXCEEDED: "Title cannot exceed 200 characters",
 	},
   TYPE: {
     BLANK: "Type is a required field",

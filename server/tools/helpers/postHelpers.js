@@ -1,5 +1,5 @@
 const Chance = require("chance");
-const userConstants = require("./userConstants");
+const { randQuote, randParagraph } = require("@ngneat/falso");
 const Pact = require("../../models/Pact");
 const User = require("../../models/User");
 const Post = require("../../models/Post");
@@ -36,19 +36,20 @@ async function generateRandomPosts(pact, numberOfPosts) {
 }
 
 async function generateRandomTextPost(pact) {
-	const title = chance.sentence({ words: 2 });
-	const post  = await createPost(pact, getRandomAuthor(pact), title, {text : chance.sentence({ words: 30 })});
+	// const title = chance.sentence({ words: 2 });
+	const title = randQuote().substring(0,200);
+	const post  = await createPost(pact, getRandomAuthor(pact), title, {text : randParagraph()});
 	return post;
 }
 
 async function generateRandomImagePost(pact) {
-	const title = chance.sentence({ words: 2 });
+	const title = randQuote().substring(0,200);
 	const post = await createPost(pact, getRandomAuthor(pact), title, {  type: "image", image : getImageLink(title)});
 	return post;
 }
 
 async function generateRandomLinkPost(pact) {
-	const title = chance.sentence({ words: 2 });
+	const title = randQuote().substring(0,200);
 	const post = await createPost(pact, getRandomAuthor(pact), title, {  type: "link", link : getRandomLink()});
 	return post;
 }
