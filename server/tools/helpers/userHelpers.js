@@ -22,6 +22,10 @@ async function createUser(firstName, lastName, university) {
 	const salt = await bcrypt.genSalt(SALT_ROUNDS);
 	const hashedPassword = await bcrypt.hash("Password123", salt);
 
+	const course = getRandomCourse();
+	const location = getRandomLocation();
+	const hobbies = getRandomHobbies();
+
 	const user = await User.create({
 		firstName,
 		lastName,
@@ -29,14 +33,14 @@ async function createUser(firstName, lastName, university) {
 		password: hashedPassword,
 		active: true,
 		university: university,
-		course: getRandomCourse(),
-		location: getRandomLocation(),
+		course: course,
+		location: location,
 		image: getRandomImage(firstName, lastName),
-		bio: chance.paragraph(),
-		hobbies: getRandomHobbies(),
+		bio: `Hi! My name is ${firstName} ${lastName}. I'm from ${location} and I'm currently studying ${course} at ${university.name}. I'm really into ${hobbies[0]} and have recently started to become interested in ${hobbies[1]} as well! Feel free to send me a friend request or follow me on one of my other social media accounts.`,
+		hobbies: hobbies,
 		friends: [],
 		instagram: `${firstName}.${lastName}`,
-		linkedin: `${firstName}.${lastName}`,
+		linkedin: `${firstName} ${lastName}`,
 		phone: chance.phone({ country: 'uk', mobile: true })
 	});
 
