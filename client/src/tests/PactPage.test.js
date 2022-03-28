@@ -16,7 +16,10 @@ const response = {
     members: [0,0,0],
     posts: [
       {
-        pact: 5,
+        pact: {
+          _id : 5,
+          moderators : []
+        },
         author: {
           firstName: "Krishi",
           lastName: "Wali",
