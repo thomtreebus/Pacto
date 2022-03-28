@@ -41,6 +41,12 @@ module.exports.search = async (req, res) => {
 			title: { $regex: new RegExp(searchQuery, "i") },
 		});
 
+		// Populate pact in posts
+		for (let i = 0; i < posts.length; i++) {
+			const post = posts[i];
+			await post.populate({ path: 'pact', model: Pact});
+			await post.populate({ path: 'author', model: User});
+		}
 		const results = {
 			pacts: pacts,
 			users: users,
