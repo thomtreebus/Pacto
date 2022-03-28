@@ -227,22 +227,34 @@ describe("App Bar Tests", () => {
       expect(menuElement.length).toBe(1);
     });
 
-    it("should set the mark as read button as disabled if pressed", async () => {
+    it("should remove the notification if the mark as read button is pressed", async () => {
       const buttonElement = await screen.findByTestId("mark-notification-as-read");
       await act(async () => {
         await waitFor(() => fireEvent.click(buttonElement));
       });
       expect(buttonElement).toBeDisabled();
-      const noElement = await waitFor(() => screen.findAllByTestId("notification-card"));
-      await waitFor(() => expect(noElement.length).toBe(0));
+      const noElement = await waitFor(() => screen.findByTestId("notification-card"));
+      waitForElementToBeRemoved(noElement);
     });
 
-    // it("should remove the notification card if the mark as read button is pressed", async () => {
-    //   const buttonElement = await screen.findByTestId("mark-notification-as-read");
-    //   await act (async () => {
-    //     await waitFor(() => fireEvent.click(buttonElement)); 
-    //   });
-      
-    // });
+    it("should display the error with marking a notification as read", async () => {
+      server.use(
+        rest.put(`${process.env.REACT_APP_URL}/notifications/2/update`, (req, res, ctx) => {
+          return res(
+            ctx.status(401),
+            ctx.json({
+              errors: [{field: "update", message: "There was an error marking as read"}], 
+              message: null })
+          );
+        })
+      );
+      const buttonElement = await screen.findByTestId("mark-notification-as-read");
+      await act(async () => {
+        await waitFor(() => fireEvent.click(buttonElement));
+      });
+      screen.debug()
+      const snackbarElement = await screen.findByTestId("error-message");
+			expect(snackbarElement).toBeInTheDocument();
+    })
   });
 });

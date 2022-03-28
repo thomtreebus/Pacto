@@ -34,7 +34,7 @@ function NotificationCard({ notification, notifications, setNotifications }) {
 			return notificationToBeDeleted._id !== notification._id;
 		});
 
-		await setNotifications(newNotifications);
+		setNotifications(newNotifications);
 	};
 
 	return (
@@ -51,7 +51,7 @@ function NotificationCard({ notification, notifications, setNotifications }) {
 					<MarkChatReadIcon />
 				</IconButton>
 				{isError && (
-					<Typography variant="body1" color="secondary">
+					<Typography data-testid="error-message" variant="body1" color="secondary">
 						{errorMessage}
 					</Typography>
 				)}
