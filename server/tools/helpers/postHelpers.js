@@ -38,7 +38,7 @@ async function generateRandomPosts(pact, numberOfPosts) {
 async function generateRandomTextPost(pact) {
 	// const title = chance.sentence({ words: 2 });
 	const title = randQuote().substring(0,200);
-	const post  = await createPost(pact, getRandomAuthor(pact), title, {text : randQuote()});
+	const post  = await createPost(pact, getRandomAuthor(pact), title, {text : randQuote() + " " + randQuote()});
 	return post;
 }
 
