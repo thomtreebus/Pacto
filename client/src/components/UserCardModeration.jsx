@@ -36,7 +36,7 @@ export default function UserCardModeration({user, pact, showBannedUsers}) {
       }),
     });
     const json = await response.json()
-    if(response.status === 200){
+    if(response.ok){
       await silentUserRefresh();
     }
     else{
@@ -127,21 +127,21 @@ export default function UserCardModeration({user, pact, showBannedUsers}) {
           >{user.firstName} {user.lastName}</Typography>
           {showPromoteButton &&
             <Tooltip title="Promote">
-              <IconButton onClick={() => handleButtonClick("promote")} >
+              <IconButton data-testid={"promote-button"} onClick={() => handleButtonClick("promote")} >
                 <PromoteIcon color="warning" fontSize="large" sx={{border: "0.2rem solid", borderRadius: "5px"}} />
               </IconButton>
             </Tooltip>
           }
           {showBanButton &&
             <Tooltip title="Ban">
-              <IconButton onClick={() => handleButtonClick("ban")} >
+              <IconButton data-testid={"ban-button"} onClick={() => handleButtonClick("ban")} >
                 <BanIcon color="error" fontSize="large"  sx={{border: "0.2rem solid", borderRadius: "5px"}} />
               </IconButton>
             </Tooltip>
           }
           {showUnBanButton &&
             <Tooltip title="Revoke Ban">
-              <IconButton onClick={() => handleButtonClick("revokeban")} >
+              <IconButton data-testid={"unban-button"} onClick={() => handleButtonClick("revokeban")} >
                 <UnBanIcon color="success" fontSize="large"  sx={{border: "0.2rem solid", borderRadius: "5px"}} />
               </IconButton>
             </Tooltip>

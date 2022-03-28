@@ -1,6 +1,5 @@
 import { render, screen, waitForElementToBeRemoved } from "@testing-library/react";
 import "@testing-library/jest-dom";
-import UserList from "../components/UserList.jsx";
 import { rest } from "msw";
 import { setupServer } from "msw/node";
 import users from "./utils/testUsers";
