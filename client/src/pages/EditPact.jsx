@@ -70,11 +70,6 @@ export default function EditPact() {
     setUploadImageIsDisabled(false);
   }
 
-  const handleCategoryChange = (event) => {
-		setCategory(event.target.value);
-	};
-
-
   useEffect(() => {
     if (pactId !== undefined) {
       fetch(`${process.env.REACT_APP_URL}/pact/${pactId}`, {
