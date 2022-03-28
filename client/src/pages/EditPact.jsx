@@ -26,7 +26,7 @@ const Input = styled("input")({
 
 export default function EditPact() {
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
-  const { user, setUser, silentUserRefresh } = useAuth();
+  const { user, silentUserRefresh } = useAuth();
   const { pactId } = useParams();
   const history = useHistory();
   const defaultData = {
