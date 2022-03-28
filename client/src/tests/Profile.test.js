@@ -305,10 +305,9 @@ describe("Profile Page Tests", () => {
       await renderWithMock();
     });
 
-    it("should render the editProfile button as  disabled if on other profile", async () => {
-      const editProfileButton = await screen.findByText("Edit Profile");
-      expect(editProfileButton).toBeInTheDocument();
-      expect(editProfileButton.disabled).toBe(true);
+    it("should not render the editProfile button if on other profile", async () => {
+      const editProfileButton = screen.queryByText("Edit Profile");
+      expect(editProfileButton).not.toBeInTheDocument();
     });
 
     it("should render the friend buttons if own another profile", async () => {

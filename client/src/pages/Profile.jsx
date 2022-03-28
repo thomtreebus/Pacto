@@ -100,9 +100,11 @@ export default function Profile() {
             }}
             >
               <FriendButtons currentUser={loggedInUser} user={displayedUser}/>     
-              <Button variant="contained" data-testid="edit-profile-button" disabled={!canEditProfile} fullwidth="true" color="error" onClick={() => history.push("/edit-profile")} startIcon={<EditIcon />} sx={{ marginTop: "2px" }}>
-                Edit Profile 
-              </Button>   
+              { canEditProfile && 
+                <Button variant="contained" data-testid="edit-profile-button" fullwidth="true" color="error" onClick={() => history.push("/edit-profile")} startIcon={<EditIcon />} sx={{ marginTop: "2px" }}>
+                  Edit Profile 
+                </Button>   
+              }
             </Box>
         </Box>
         <Divider sx={{ marginTop: "10px", marginBottom: "10px" }}></Divider>
