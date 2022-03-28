@@ -1,7 +1,10 @@
-import { Box, Button } from "@mui/material"
+import { Box } from "@mui/material"
 import { useState } from "react";
-import PersonAddIcon from '@mui/icons-material/PersonAdd';
-import EditIcon from '@mui/icons-material/Edit';
+import AddFriendIcon from '@mui/icons-material/PersonAdd';
+import RemoveFriendIcon from '@mui/icons-material/PersonRemove';
+import AcceptIcon from '@mui/icons-material/Check';
+import RejectIcon from '@mui/icons-material/Close';
+import { Tooltip, IconButton } from "@mui/material";
 import { useAuth } from "../providers/AuthProvider";
 
 export default function FriendButtons({user}){ // logged in user and user to be interacted with
@@ -81,29 +84,58 @@ async function deleteFriend(){
 }
 
   return (
-    <Box sx={{display : "flex", flexDirection: {xs: "column", sm : "row"}, gap: "0.5rem"}} data-testid="friend-buttons">
+    <Box sx={{marginLeft : "auto"}}>
+      <Box sx={{display : "flex", flexDirection: {xs: "column", sm : "row"}, gap: "0.5rem"}} data-testid="friend-buttons">
+        {isFriend && 
+        <Tooltip title="Remove Friend">
+            <span>
+              <IconButton data-testid="del-friend-btn" disabled={buttonsDisabled}  onClick={deleteFriend} >
+                <RemoveFriendIcon color="error" fontSize="large" sx={{border: "0.2rem solid", borderRadius: "5px"}} />
+              </IconButton>
+            </span>
+          </Tooltip>
+        }
 
-      {isFriend && <Button disabled={buttonsDisabled} onClick={deleteFriend} variant="contained" color="error" data-testid="del-friend-btn">
-          Remove Friend
-      </Button>}
+        {hasReceivedRequest && 
+          <Tooltip title="Accept Friend Request">
+            <span>
+              <IconButton data-testid="accept-req-btn" disabled={buttonsDisabled}  onClick={acceptFriend} >
+                <AcceptIcon color="success" fontSize="large" sx={{border: "0.2rem solid", borderRadius: "5px"}} />
+              </IconButton>
+            </span>
+          </Tooltip>
+        }
 
-      {hasReceivedRequest && <Button disabled={buttonsDisabled} onClick={acceptFriend} variant="contained" color="success" fullwidth="true" startIcon={<EditIcon />} sx={{ marginTop: "2px" }} data-testid="accept-req-btn">
-          Accept Friend Request
-      </Button>}
+        {hasReceivedRequest &&
+          <Tooltip title="Decline Friend Request">
+            <span>
+              <IconButton  data-testid="reject-req-btn" disabled={buttonsDisabled}  onClick={declineFriend} >
+                <RejectIcon color="error" fontSize="large" sx={{border: "0.2rem solid", borderRadius: "5px"}} />
+              </IconButton>
+            </span>
+          </Tooltip>   
+        }          
 
-      {hasReceivedRequest && <Button disabled={buttonsDisabled} onClick={declineFriend} variant="contained" color="error" fullwidth="true" startIcon={<EditIcon />} sx={{ marginTop: "2px" }} data-testid="reject-req-btn">
-          Decline Friend Request
-      </Button>}          
+        {hasSentRequest &&
+          <Tooltip title="Request Sent">
+            <span>
+              <IconButton  data-testid="sent-req-btn" disabled  onClick={declineFriend} >
+                <AddFriendIcon color="diabled" fontSize="large" sx={{border: "0.2rem solid", borderRadius: "5px"}} />
+              </IconButton>
+            </span>
+          </Tooltip>   
+        } 
 
-      {hasSentRequest && <Button variant="outlined" disabled fullwidth="true" startIcon={<PersonAddIcon />} sx={{marginTop: "4px"}} data-testid="sent-req-btn">
-          Request Sent
-      </Button>} 
-
-      {!hasSentRequest && !hasReceivedRequest && !isFriend && 
-      <Button disabled={buttonsDisabled} onClick={sendFriendRequest} variant="outlined" fullwidth="true" startIcon={<PersonAddIcon />} sx={{marginTop: "4px"}} data-testid="add-friend-btn">
-          Add Friend
-      </Button>}
-
-  </Box>        
+        {!hasSentRequest && !hasReceivedRequest && !isFriend &&           
+          <Tooltip title="Add Friend">
+            <span>
+              <IconButton data-testid="add-friend-btn" disabled={buttonsDisabled}  onClick={sendFriendRequest} >
+                <AddFriendIcon color="primary" fontSize="large" sx={{border: "0.2rem solid", borderRadius: "5px"}} />
+              </IconButton>
+            </span>
+          </Tooltip>   
+        }
+      </Box>        
+    </Box>
   );
 }
