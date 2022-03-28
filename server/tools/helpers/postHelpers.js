@@ -38,7 +38,7 @@ async function generateRandomPosts(pact, numberOfPosts) {
 async function generateRandomTextPost(pact) {
 	// const title = chance.sentence({ words: 2 });
 	const title = randQuote().substring(0,200);
-	const post  = await createPost(pact, getRandomAuthor(pact), title, {text : randParagraph()});
+	const post  = await createPost(pact, getRandomAuthor(pact), title, {text : randQuote()});
 	return post;
 }
 
@@ -92,7 +92,7 @@ async function generateRandomComments(pact, post, numberOfComments, options={par
 }
 
 async function createRandomComment(pact, post, options={parentComment: undefined}) {
-	const comment = await createComment(post, getRandomAuthor(pact), chance.sentence({ words: 15 }), options);
+	const comment = await createComment(post, getRandomAuthor(pact), randQuote().substring(0,150), options);
 	return comment;
 }
 
