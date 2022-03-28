@@ -79,8 +79,8 @@ export default function PrimarySearchAppBar({ handleDrawerToggle }) {
 	const notificationsMenuId = "notifications-menu";
 
 
-	useEffect(async () => {
-		await fetch(`${process.env.REACT_APP_URL}/notifications`, {
+	useEffect( () => {
+		 fetch(`${process.env.REACT_APP_URL}/notifications`, {
 			method: "GET",
 			credentials: "include",
 		})
