@@ -227,7 +227,6 @@ describe("UserCard Tests", () => {
         await waitFor(() => expect(called).toBe(true));
         await waitFor(async () => {
           const errorMessage = await screen.findByText("You may not do that")
-          console.log(errorMessage)
           expect(errorMessage).toBeInTheDocument();
         })
       });
