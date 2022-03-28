@@ -47,6 +47,7 @@ module.exports.MESSAGES = {
 };
 
 module.exports.PACT_MESSAGES = {
+	IS_BANNED_USER: "You have been banned from this pact cannot join!",
 	NAME: {
 		NOT_UNIQUE: `Name ${UNIQUE_MESSAGE}`,
 		MAX_LENGTH_EXCEEDED: "Name cannot exceed 33 characters",
@@ -79,6 +80,15 @@ module.exports.PACT_MESSAGES = {
 	CANT_PROMOTE_NON_MEMBER: "Can't promote a user that isn't a member of the pact",
 	CANT_PROMOTE_MODERATOR: "User is already a moderator of the pact",
 	SUCCESSFUL_PROMOTION: "Member has been promoted to moderator",
+	LEAVE: {
+		SUCCESSFUL: "Successfully left the pact",
+		ALONE: "You are alone in the pact, so you must delete it to leave",
+		ONLY_MODERATOR: "You are the only moderator, make at least one new moderator to be able to leave",
+	},
+	DELETE: {
+		SUCCESSFUL: "Successfully deleted the pact",
+		TOO_MANY_MODERATORS: "You cannot delete a pact if you are not the only moderator of it",
+	},
 };
 
 module.exports.POST_MESSAGES = {
@@ -95,7 +105,8 @@ module.exports.POST_MESSAGES = {
 		BLANK: "Type is 'image', so Image is a required field"
 	},
 	TEXT: {
-		BLANK: "Type is 'text', so Text is a required field"
+		BLANK: "Type is 'text', so Text is a required field",
+		MAX_LENGTH_EXCEEDED: "Text cannot exceed 1000 characters",
 	},
 	LINK: {
 		BLANK: "Type is 'link', so Link is a required field",
@@ -111,6 +122,24 @@ module.exports.POST_MESSAGES = {
     NOT_AUTHOR: "User is not the author of the post"
   }
 }
+
+module.exports.FRIEND_MESSAGES = {
+	NOT_FOUND: "The user is not found",
+	NOT_FRIEND: "The user exists but is not a friend",
+	ALREADY_FRIEND: "The user is already a friend",
+	REQUEST: {
+		NOT_FOUND: "Friend request not found",
+		NOT_AUTHORISED: {
+			ACCEPT: "Cannot accept friend request for somebody else",
+			REJECT: "Cannot reject friend request for somebody else",
+		},
+		ALREADY: {
+			SENT: "Friend request already sent to this person",
+			RECEIVED: "Already received a friend request from this person"
+		},
+		SELF: "Cannot send friend request to yourself"
+	}
+};
 
 module.exports.COMMENT_MESSAGES = {
   NOT_FOUND: "Comment not found",

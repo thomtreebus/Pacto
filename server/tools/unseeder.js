@@ -4,6 +4,8 @@ const Comment = require("../models/Comment");
 const University = require("../models/University");
 const Post = require("../models/Post");
 const EmailVerificationCode = require("../models/EmailVerificationCode");
+const FriendRequest = require("../models/FriendRequest");
+const Notification = require("../models/Notification");
 
 async function unseed() {
 	await User.deleteMany({});
@@ -12,6 +14,8 @@ async function unseed() {
 	await Post.deleteMany({});
 	await Comment.deleteMany({});
 	await EmailVerificationCode.deleteMany({});
+	await FriendRequest.deleteMany({});
+	await Notification.deleteMany({});
 	console.log("Finished unseeding");
 }
 

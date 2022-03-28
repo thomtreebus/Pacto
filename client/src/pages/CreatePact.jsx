@@ -4,6 +4,7 @@ import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import Box from "@mui/material/Box";
+import Grid from "@mui/material/Grid";
 import Icon from "../assets/pacto-logo.ico";
 import { useHistory } from "react-router-dom";
 import MenuItem from "@mui/material/MenuItem";
@@ -18,7 +19,7 @@ export default function CreatePactPage() {
 	const [apiPactCategoryError, setApiPactCategoryError] = useState("");
 	const [apiPactDescriptionError, setApiPactDescriptionError] = useState("");
 
-	const { user, setUser } = useAuth();
+	const { silentUserRefresh } = useAuth();
 
 	const handleCategoryChange = (event) => {
 		setCategory(event.target.value);
@@ -71,9 +72,7 @@ export default function CreatePactPage() {
 			return;
 		}
 
-		let newUser = Object.assign({}, user);
-		newUser.pacts.push(json.message._id);
-		setUser(newUser);
+		await silentUserRefresh();
 
 		history.push(`/pact/${json.message._id}`);
 	};
@@ -82,23 +81,52 @@ export default function CreatePactPage() {
 		<>
 			<Card
 				sx={{
-					padding: "40px",
+					padding: "30px",
 					margin: "auto",
 				}}
 			>
+				<Grid
+					container
+					direction="row"
+					justifyContent="center"
+					alignItems="center"
+				>
+					<Grid
+						container
+						item
+						xs={12}
+						justifyContent="center"
+						alignItems="center"
+					>
+						<Avatar alt="Pacto Icon" src={Icon} />
+					</Grid>
+					<Grid
+						container
+						item
+						xs={12}
+						justifyContent="center"
+						alignItems="center"
+					>
+						<Typography component="h1" variant="h5" sx={{ fontWeight: "bold" }}>
+							Create Pact
+						</Typography>
+					</Grid>
+				</Grid>
+
 				<Box
 					sx={{
 						display: "flex",
 						flexDirection: "column",
 						alignItems: "center",
-						paddingInline: "200px",
+						paddingBottom: "10px",
+					}}
+					lg={{
+						display: "flex",
+						flexDirection: "column",
+						alignItems: "center",
+						paddingInline: "50px",
 					}}
 				>
-					<Avatar alt="Pacto Icon" src={Icon} />
-
-					<Typography component="h1" variant="h5" sx={{ fontWeight: "bold" }}>
-						Create Pact
-					</Typography>
 					<Box
 						component="form"
 						noValidate

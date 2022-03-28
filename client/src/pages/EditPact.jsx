@@ -26,7 +26,7 @@ const Input = styled("input")({
 
 export default function EditPact() {
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
-  const { user, setUser } = useAuth();
+  const { user, setUser, silentUserRefresh } = useAuth();
   const { pactId } = useParams();
   const history = useHistory();
   const defaultData = {
@@ -71,13 +71,15 @@ export default function EditPact() {
   }
 
   useEffect(() => {
-    if (pactId !== undefined) {
+    const controller = new AbortController();
+    if(pactId !== undefined) {
       fetch(`${process.env.REACT_APP_URL}/pact/${pactId}`, {
         method: "GET",
-        credentials: "include"
+        credentials: "include",
+        signal: controller.signal,
       }).then((res) => {
         if (!res.ok) {
-          throw Error("Could not fetch pacts");
+          throw Error("Could not fetch pact");
         }
         return res.json();
       }).then((resData) => {
@@ -92,11 +94,13 @@ export default function EditPact() {
         setImage(data.image)
         setIsLoading(false);
       }).catch((err) => {
+        if (err.message === "The user aborted a request.") return;
         setSnackBarError(err)
         setSnackbarOpen(true)
         return history.push(`/not-found`);
       })
     }
+    return () => controller.abort();
   }, [pactId, user, history])
 
 
@@ -144,9 +148,8 @@ export default function EditPact() {
 
 
     if (response.status === 200) {
+      await silentUserRefresh();
       history.push(`/pact/${pactId}`);
-      let newUser = Object.assign({}, user);
-      setUser(newUser);
     }
 
   };
@@ -242,24 +245,16 @@ export default function EditPact() {
           <Grid item xs={12} lg={6}>
             <Box
               sx={{
-                // height: "calc(100vh - 68.5px)",
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
-                // backgroundColor: "white",
                 paddingInline: "10px",
-                // paddingBlock: "10px",
-                // marginTop: "68.5px"
               }}
               lg={{
-                // height: "calc(100vh - 68.5px)",
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
-                // backgroundColor: "white",
                 paddingInline: "50px",
-                // paddingBlock: "10px",
-                // marginTop: "68.5px"
               }}
             >
 

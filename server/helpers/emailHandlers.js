@@ -7,12 +7,12 @@ dotenv.config();
 const createTransporter = async () => { 
 
   return nodemailer.createTransport({
-    host: "smtp.gmail.com",
+    host: `${process.env.SMTP_HOST}`,
     port: 465,
     secure: true,
     auth: {
-      user: process.env.GMAIL_USER, 
-      pass: process.env.GMAIL_PASS
+      user: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_PASS
     },
   });
 }
@@ -20,10 +20,10 @@ const createTransporter = async () => {
 module.exports.handleVerification = async (email, id) => {
   const transporter = await createTransporter();
   const code = await cryptoRandomString.async({length: 63, type: 'url-safe'});
-  const url = "localhost:8000/verify?code="+code;
-  
+  const url = `${process.env.DEPLOYED_URL}/verify?code=${code}`;
+    
   const mail = await transporter.sendMail({
-    from: 'pacto.noreply@gmail.com', // sender address
+    from: `${process.env.EMAIL_AUTHOR}`, // sender address
     to: email, // list of receivers
     subject: "Verify your email ✔", // Subject line
     text: url, // plain text body

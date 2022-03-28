@@ -3,9 +3,10 @@ import PostCard from "./cards/PostCard"
 import SearchIcon from "@mui/icons-material/Search";
 import CloseIcon from "@mui/icons-material/Close";
 import { useState } from "react";
+import { Typography } from "@mui/material";
 import { useEffect } from "react";
 
-export default function PostList({ posts }) {
+export default function PostList({ posts, searchable=true }) {
   const [orderablePosts, setPosts] = useState(posts);
 	const [search, setSearch] = useState("");
 
@@ -24,41 +25,52 @@ export default function PostList({ posts }) {
   return (
     <Grid container sx={{ paddingTop: "8px" }}>
       <Grid container sx={{ paddingLeft: "16px", paddingRight: "16px" }}>
-        <Grid item sx={{ minWidth: "100%" }}>
-          <Card
-            data-testid="search-box"
-            sx={{
-              p: "2px 4px",
-              marginBlock: "10px",
-              display: "flex",
-              alignItems: "center",
-              width: "100%",
-            }}
-          >
-            <InputBase
-              sx={{ ml: 1, flex: 1 }}
-              placeholder="Search Posts"
-              value={search}
-              onChange={(e) => setSearch(e.target.value.toLowerCase())}
-            />
-            <IconButton
-              sx={{ p: "10px" }}
-              disabled={!search}
-              color="primary"
-              onClick={() => setSearch("")}
-              data-testid="search-button"
+        { searchable && (
+          <Grid item sx={{ minWidth: "100%" }}>
+            <Card
+              data-testid="search-box"
+              sx={{
+                p: "2px 4px",
+                marginBlock: "10px",
+                display: "flex",
+                alignItems: "center",
+                width: "100%",
+              }}
             >
-              {search ? (
-                <CloseIcon data-testid="clear-icon" />
-              ) : (
-                <SearchIcon data-testid="search-icon" />
-              )}
-            </IconButton>
-          </Card>
-        </Grid>
+              <InputBase
+                sx={{ ml: 1, flex: 1 }}
+                placeholder="Search Posts"
+                value={search}
+                onChange={(e) => setSearch(e.target.value.toLowerCase())}
+              />
+              <IconButton
+                sx={{ p: "10px" }}
+                disabled={!search}
+                color="primary"
+                onClick={() => setSearch("")}
+                data-testid="search-button"
+              >
+                {search ? (
+                  <CloseIcon data-testid="clear-icon" />
+                ) : (
+                  <SearchIcon data-testid="search-icon" />
+                )}
+              </IconButton>
+            </Card>
+          </Grid>
+        )}
       </Grid>
-      <Grid item maxWidth="100%">
-        <List>
+      <Grid item width="100%">
+
+        {!orderablePosts.length ? 
+          (
+            <Typography variant="subtitle1" sx={{ textAlign: "center" }}>
+              There are no posts avaliable
+            </Typography>
+          )
+        :
+         (
+          <List>
           {
             orderablePosts.map((post) => (
               <ListItem key={post._id}>
@@ -66,7 +78,9 @@ export default function PostList({ posts }) {
               </ListItem>
             ))
           }
-        </List>
+          </List>
+         )
+        }
       </Grid>
     </Grid>
   )

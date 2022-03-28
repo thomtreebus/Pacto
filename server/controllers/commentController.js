@@ -55,14 +55,9 @@ module.exports.commentDelete = async (req, res) => {
     // Checks already done in middleware. This is safe.
     req.comment.deleted = true;
     req.comment.text = COMMENT_MESSAGES.DELETED_COMMENT_TEXT;
-    // req.comment.votes = 0;
-    // req.comment.upvoters = [];
-    // req.comment.downvoters = [];
 
     await req.comment.save();
 
-    await req.comment.populate({ path: 'upvoters', model: User });
-		await req.comment.populate({ path: 'downvoters', model: User });
     await req.comment.populate({path: "author", model: User});
 
     res.status(200).json(jsonResponse(req.comment, []));
@@ -74,8 +69,6 @@ module.exports.commentDelete = async (req, res) => {
 module.exports.commentGet = async (req, res) => {
   try {
     const comment = req.comment;
-    await comment.populate({ path: 'upvoters', model: User });
-		await comment.populate({ path: 'downvoters', model: User });
     await comment.populate({path: "author", model: User});
     res.status(200).json(jsonResponse(comment, []));
   } catch(err){
@@ -87,8 +80,6 @@ module.exports.commentUpvotePut = async (req, res) => {
   try {
     const comment = req.comment;
     await upvote(comment, req.user);
-    await comment.populate({ path: 'upvoters', model: User });
-		await comment.populate({ path: 'downvoters', model: User });
     await comment.populate({path: "author", model: User});
 
     res.status(200).json(jsonResponse(comment, []));
@@ -101,8 +92,6 @@ module.exports.commentDownvotePut = async (req, res) => {
   try {
     const comment = req.comment;
     await downvote(comment, req.user);
-    await comment.populate({ path: 'upvoters', model: User });
-		await comment.populate({ path: 'downvoters', model: User });
     await comment.populate({path: "author", model: User});
 
     res.status(200).json(jsonResponse(comment, []));

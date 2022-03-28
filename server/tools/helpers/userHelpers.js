@@ -2,7 +2,7 @@ const Chance = require("chance");
 const bcrypt = require("bcrypt");
 const userConstants = require("./userConstants");
 const User = require("../../models/User");
-
+const FriendRequest = require("../../models/FriendRequest");
 const chance = new Chance(1234);
 const SALT_ROUNDS = 10;
 
@@ -13,7 +13,7 @@ async function seedUsers(university, USER_COUNT) {
 		await createUser(names[i].split(" ")[0], names[i].split(" ")[1], university);
 	}
 
-	await createUser("pac", "to", university);
+	await createUser("Pac", "To", university);
 	await generateFriends();
 	console.log(`Finished seeding ${USER_COUNT} users`);
 }
@@ -49,7 +49,8 @@ function getRandomImage(firstName, lastName) {
 }
 
 function getRandomCourse() {
-	return userConstants.COURSES[chance.integer({ min: 0, max: userConstants.COURSES.length-1 })];
+	const course = userConstants.COURSES[chance.integer({ min: 0, max: userConstants.COURSES.length - 1 })];
+	return course.name;
 }
 
 function getRandomLocation() {
@@ -59,7 +60,7 @@ function getRandomLocation() {
 function getRandomHobbies() {
 	const hobbies = []; 
 	randomHobby = () => chance.integer({ min: 0, max: userConstants.HOBBIES.length-1 })
-	chance.unique(randomHobby, 2).forEach(hobby => hobbies.push(userConstants.HOBBIES[hobby]));
+	chance.unique(randomHobby, 2).forEach(hobby => hobbies.push(userConstants.HOBBIES[hobby].name));
 	return hobbies;
 }
 
@@ -67,10 +68,12 @@ async function generateFriends() {
 	const users = await User.find({});
 	for (let i = 0; i < users.length; i++) {
 		for (let j = 0; j < users.length; j++) {
-			if(i !== j && !areUsersFriends(users[i], users[j])) {
-				const randomNumber = chance.integer({ min: 1, max: 10 })
+			if(i !== j && canGenerateFriendship(users[i], users[j])) {
+				const randomNumber = chance.integer({ min: 1, max: 10 });
 				if(randomNumber < 4) {
-					await generateFriend(users[i], users[j]);
+					const friendshipGenerators = [generateFriend, generateFriendRequest];
+					const friendshipGenerator = friendshipGenerators[chance.integer({ min: 0, max: friendshipGenerators.length - 1 })];
+					await friendshipGenerator(users[i], users[j]);
 				}
 			}
 		}
@@ -84,8 +87,33 @@ async function generateFriend(user1, user2) {
 	await user2.save();
 }
 
+async function generateFriendRequest(user1, user2) {
+	const shuffledUsers = [user1, user2].sort(() => chance.integer() - chance.integer());
+	const request = await FriendRequest.create({requestor : shuffledUsers[0], recipient : shuffledUsers[1]})
+	shuffledUsers[0].sentRequests.push(request);
+	shuffledUsers[1].receivedRequests.push(request);
+	await shuffledUsers[0].save();
+	await shuffledUsers[1].save();
+}
+
+function canGenerateFriendship(user1, user2) {
+	return !areUsersFriends(user1, user2) && !doUsershavePendingRequest(user1, user2);
+}
+
 function areUsersFriends(user1, user2) {
-	return user1.friends.includes(user2._id) || user2.friends.includes(user1._id)
+	return isFriendOf(user1, user2) || isFriendOf(user2, user1)
+}
+
+function isFriendOf(user1, user2) {
+	return user1.friends.includes(user2._id);
+}
+
+function doUsershavePendingRequest(user1, user2) {
+	return hasPendingRequestFrom(user1, user2) || hasPendingRequestFrom(user2, user1);
+}
+
+function hasPendingRequestFrom(user1, user2) {
+	return user1.sentRequests.filter((request) => user2.receivedRequests.includes(request)).length > 0;
 }
 
 module.exports.seedUsers = seedUsers;

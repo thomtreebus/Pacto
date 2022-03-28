@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { styled, alpha } from "@mui/material/styles";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
@@ -12,7 +12,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import MoreIcon from "@mui/icons-material/MoreVert";
 import { Link, useHistory } from "react-router-dom";
-import Button from "@mui/material/Button";
+import { ButtonBase } from "@mui/material";
 import Divider from "@mui/material/Divider";
 import Avatar from "@mui/material/Avatar";
 import { useAuth } from "../providers/AuthProvider";
@@ -62,10 +62,11 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 export default function PrimarySearchAppBar({ handleDrawerToggle }) {
 	const history = useHistory();
 
-	const { user, setIsAuthenticated } = useAuth();
+	const { user, silentUserRefresh } = useAuth();
 
-	const [anchorEl, setAnchorEl] = useState(null);
-	const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState(null);
+	const [anchorEl, setAnchorEl] = React.useState(null);
+	const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
+	const [search, setSearch] = React.useState("");
 
 	const isMenuOpen = Boolean(anchorEl);
 	const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
@@ -74,8 +75,7 @@ export default function PrimarySearchAppBar({ handleDrawerToggle }) {
 		await fetch(`${process.env.REACT_APP_URL}/logout`, {
 			credentials: "include",
 		});
-		setIsAuthenticated(false);
-		history.push("login");
+		silentUserRefresh();
 	};
 
 	const handleProfileMenuOpen = (event) => {
@@ -104,6 +104,17 @@ export default function PrimarySearchAppBar({ handleDrawerToggle }) {
 		history.push("/user/" + user._id);
 		handleMenuClose();
 	};
+
+	const handleSearch = () => {
+		if(!search) return; 
+		history.push(`/search/${search}`);
+	}
+
+	const keyPress = (e) => {
+		if (e.keyCode === 13) {
+			handleSearch();
+		}
+	}
 
 	const menuId = "primary-search-account-menu";
 	const renderMenu = (
@@ -204,12 +215,14 @@ export default function PrimarySearchAppBar({ handleDrawerToggle }) {
 						component="div"
 						sx={{ display: { xs: "none", sm: "block" } }}
 					>
-						<Button
+						<ButtonBase
+							sx={{ borderRadius: "50%" }}
 							data-testid="home-button"
 							component={Link}
 							to="/feed"
-							startIcon={<Avatar src={PactoIcon} alt="Pacto Icon" />}
-						/>
+						>
+							<Avatar src={PactoIcon} alt="Pacto Icon" />
+						</ButtonBase>
 					</Typography>
 					<Search data-testid="search-bar">
 						<SearchIconWrapper>
@@ -217,7 +230,10 @@ export default function PrimarySearchAppBar({ handleDrawerToggle }) {
 						</SearchIconWrapper>
 						<StyledInputBase
 							placeholder="Search…"
+							value={search}
+							onChange={(e) => setSearch(e.target.value)}
 							inputProps={{ "aria-label": "search" }}
+							onKeyDown={keyPress}
 						/>
 					</Search>
 					<Box sx={{ flexGrow: 1 }} />

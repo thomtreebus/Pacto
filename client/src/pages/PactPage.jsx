@@ -1,45 +1,37 @@
-import { Fab, Grid } from "@mui/material";
-import { Box } from "@mui/system";
-import EditIcon from "@mui/icons-material/Edit";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import AboutPact from "../components/AboutPact";
-import PostList from "../components/PostList";
 import Loading from "./Loading";
 import { useHistory } from "react-router-dom";
-import CreatePostCard from "../components/CreatePostCard";
-import Dialog from "@mui/material/Dialog";
-import DialogContent from "@mui/material/DialogContent";
-import DialogTitle from "@mui/material/DialogTitle";
-import useMediaQuery from "@mui/material/useMediaQuery";
-import { useTheme } from "@mui/material/styles";
-
-import AddIcon from "@mui/icons-material/Add";
 import { useAuth } from "../providers/AuthProvider";
+import Tabs from "@mui/material/Tabs";
+import Tab from "@mui/material/Tab";
+import PactPageFeedTab from "../components/PactPage/PactPageFeedTab";
+import { a11yProps, TabPanel } from "../components/TabComponents";
+import PactMembersTab from "../components/PactPage/PactMembersTab";
+import { Box } from "@mui/material";
 
 export default function PactPage() {
 	const { pactID } = useParams();
 	const [pact, setPact] = useState(null);
 	const [isLoading, setIsLoading] = useState(true);
-	const [isMod, setIsMod] = useState(false);
+
 	const history = useHistory();
 	const { user } = useAuth();
-	const [open, setOpen] = useState(false);
-	const theme = useTheme();
-	const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
 
-	const handleClickOpen = () => {
-		setOpen(true);
-	};
+	const [mainPactTabValue, setMainPactTabValue] = useState(0);
 
-	const handleClose = () => {
-		setOpen(false);
+	const handleMainPactTabChange = (event, newValue) => {
+		setMainPactTabValue(newValue);
 	};
 
 	useEffect(() => {
+		setIsLoading(true);
+		const controller = new AbortController();
+
 		fetch(`${process.env.REACT_APP_URL}/pact/${pactID}`, {
 			method: "GET",
 			credentials: "include",
+			signal: controller.signal,
 		})
 			.then((res) => {
 				if (!res.ok) {
@@ -50,77 +42,43 @@ export default function PactPage() {
 			.then((data) => {
 				setPact(data.message);
 				setIsLoading(false);
-				const moderators = data.message.moderators.flatMap((user) => user._id);
-				if (moderators.includes(user._id)) {
-					setIsMod(true);
-				} else {
-					setIsMod(false);
-				}
 			})
 			.catch((err) => {
-				history.push("/not-found");
+				if (err.message === "The user aborted a request.") return;
+				if (err.message === "Could not fetch pact") {
+					history.push("/not-found");
+				}
 			});
+
+		return () => controller.abort();
 	}, [pactID, history, user]);
 
-	return (
-		<>
-			{isLoading && <Loading />}
-			<Grid container width="100%" justifyContent="center">
-				<Grid item xs={12} lg={8} xl={7}>
-					{pact && <PostList posts={pact.posts} />}
-				</Grid>
-				<Grid item lg={4} xl={3}>
-					<Box
-						sx={{ paddingTop: "16px", paddingRight: "16px" }}
-						display={{ xs: "none", lg: "block" }}
-						position={"sticky"}
-						top={65}
-					>
-						{pact && <AboutPact pact={pact} />}
+	if (isLoading) {
+		return (
+			<>
+				<Loading />
+			</>
+		);
+	}
 
-						<Box position={"absolute"} bottom={-16} right={20}>
-							{isMod && (
-								<Fab
-									onClick={() => {
-										history.push(`/pact/${pactID}/edit-pact`);
-									}}
-									size="medium"
-									padding="0 8px"
-									data-testid="edit-pact-button"
-								>
-									<EditIcon color="primary" />
-								</Fab>
-							)}
-							<Fab
-								color="primary"
-								aria-label="add"
-								size="medium"
-								onClick={handleClickOpen}
-							>
-								<AddIcon />
-							</Fab>
-						</Box>
-					</Box>
-				</Grid>
-			</Grid>
-			<Box position={"fixed"} bottom={50} right={300}>
-				<Dialog
-					fullScreen={fullScreen}
-					open={open}
-					onClose={handleClose}
-					aria-labelledby="responsive-dialog-title"
-					fullWidth
-					maxWidth="sm"
-					data-testid="dialog"
+	return (
+		<Box sx={{ width: "100%" }}>
+			<Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+				<Tabs
+					value={mainPactTabValue}
+					onChange={handleMainPactTabChange}
+					aria-label="User type tab"
 				>
-					<DialogTitle id="responsive-dialog-title">
-						{"Create Post"}
-					</DialogTitle>
-					<DialogContent>
-						<CreatePostCard pactID={pactID} />
-					</DialogContent>
-				</Dialog>
+					<Tab label="Pact Posts" {...a11yProps(0)} />
+					<Tab label="Pact Members" {...a11yProps(1)} />
+				</Tabs>
 			</Box>
-		</>
+			<TabPanel value={mainPactTabValue} index={0}>
+				<PactPageFeedTab pact={pact} />
+			</TabPanel>
+			<TabPanel value={mainPactTabValue} index={1}>
+				<PactMembersTab pact={pact} />
+			</TabPanel>
+		</Box>
 	);
 }

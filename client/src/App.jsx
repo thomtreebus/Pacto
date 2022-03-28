@@ -14,6 +14,9 @@ import AuthRoute from "./components/AuthRoute";
 import NotFound from "./pages/NotFound";
 import UniversityHubPage from "./pages/UniversityHubPage";
 import PactPage from "./pages/PactPage";
+import PostPage from "./pages/PostPage";
+import UserPage from "./pages/UserPage";
+import SearchResults from "./pages/SearchResults";
 
 
 function App() {
@@ -44,7 +47,6 @@ function App() {
 								<EditPact />
 							</PrivateRoute>
 							<PrivateRoute path="/feed">
-								<h1>Feed</h1>
 								<Feed />
 							</PrivateRoute>
 							<PrivateRoute exact path="/hub">
@@ -55,6 +57,15 @@ function App() {
 							</PrivateRoute>
 							<PrivateRoute exact path="/pact/:pactID">
 								<PactPage />
+							</PrivateRoute>
+							<PrivateRoute exact path="/pact/:pactID/post/:postID">
+								<PostPage />
+							</PrivateRoute>
+							<PrivateRoute exact path="/users">
+								<UserPage />
+							</PrivateRoute>
+							<PrivateRoute exact path="/search/:query">
+								<SearchResults />
 							</PrivateRoute>
 							<PrivateRoute path="*">
 								<NotFound />

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
@@ -63,16 +63,19 @@ export default function CreatePostCard({pactID}) {
   const [value, setValue] = React.useState(0);
   const history = useHistory();
 
-  const [apiPostTitleError, setApiPostTitleError] = React.useState('');
-  const [apiPostTextError, setApiPostTextError] = React.useState('');
-  const [apiPostImageError, setApiPostImageError] = React.useState('');
-  const [apiPostLinkError, setApiPostLinkError] = React.useState('');
+  const [apiPostTitleError, setApiPostTitleError] = useState('');
+  const [apiPostTextError, setApiPostTextError] = useState('');
+  const [apiPostImageError, setApiPostImageError] = useState('');
+  const [apiPostLinkError, setApiPostLinkError] = useState('');
+  const [isUploadButtonDisabled, setIsUploadButtonDisabled] = useState(false);
 
   const [image, setImage] = React.useState(null);
 
   const [open, setOpen] = React.useState(false);
 
   const uploadImage = async (newImage) => {
+    setIsUploadButtonDisabled(true);
+
     const data = new FormData();
 
     data.append("api_key", process.env.REACT_APP_CLOUDINARY_KEY);
@@ -82,8 +85,10 @@ export default function CreatePostCard({pactID}) {
     try {
       const res = await Axios.post(`https://api.cloudinary.com/v1_1/${process.env.REACT_APP_CLOUDINARY_CLOUD_NAME}/image/upload`, data)
       setImage(res.data.url);
+      setIsUploadButtonDisabled(false);
     } catch (err) {
       setApiPostImageError(err.message);
+      setIsUploadButtonDisabled(false);
       setOpen(true);
     }
   }
@@ -171,10 +176,10 @@ export default function CreatePostCard({pactID}) {
   };
 
   return (
-    <Card sx={{ width: '100%', padding: '100', marginTop: '18px'}}>
+    <Card sx={{ width: '100%', padding: 1, shadow: 3, marginTop: '18px'}}>
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
         <Tabs value={value} onChange={handleChange} aria-label="tabs" centered>
-          <Tab icon={<TextIcon />} label="Post" {...a11yProps(0)} />
+          <Tab icon={<TextIcon />} data-testid="text-icon" label="Text" {...a11yProps(0)} />
           <Tab icon={<PhotoIcon />} data-testid="image-icon" label="Image" {...a11yProps(1)} />
           <Tab icon={<LinkIcon />} data-testid="link-icon" label="Link"{...a11yProps(2)} />
         </Tabs>
@@ -190,6 +195,7 @@ export default function CreatePostCard({pactID}) {
             id="text"
             fullWidth
             label="Text"
+            data-testid="post-text-field"
             multiline
             name="text"
             rows={4}
@@ -206,8 +212,10 @@ export default function CreatePostCard({pactID}) {
               id="contained-button-file"
               data-testid="image-upload-icon"
               type="file"
-              onChange={(e) => { uploadImage(e.target.files[0])}} />
-            <IconButton color="primary" component="span">
+              onChange={(e) => { uploadImage(e.target.files[0])}} 
+              disabled={isUploadButtonDisabled}
+            />
+            <IconButton color="primary" component="span" disabled={isUploadButtonDisabled}>
               <PhotoCameraIcon />
             </IconButton>
             {image && <Image
@@ -232,7 +240,7 @@ export default function CreatePostCard({pactID}) {
             helperText={apiPostLinkError}
           />
         </TabPanel>
-        <Button variant="contained" sx={{marginTop: '8px'}} type="submit" fullWidth>Post</Button>
+        <Button variant="contained" sx={{marginTop: '8px'}} type="submit" fullWidth disabled={isUploadButtonDisabled}>Post</Button>
       </Box>
     </Card>
   );
