@@ -177,7 +177,10 @@ export default function PrimarySearchAppBar({ handleDrawerToggle }) {
 						</SearchIconWrapper>
 						<StyledInputBase
 							placeholder="Search…"
+							value={search}
+							onChange={(e) => setSearch(e.target.value)}
 							inputProps={{ "aria-label": "search" }}
+							onKeyDown={keyPress}
 						/>
 					</Search>
 					<Box sx={{ flexGrow: 1 }} />
