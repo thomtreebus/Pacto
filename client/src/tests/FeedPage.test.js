@@ -10,7 +10,10 @@ import { createMemoryHistory } from 'history';
 const response = {
   message: [
       {
-        pact: 5,
+        pact: {
+          _id : 5,
+          moderators: []
+        },
         author: {
           firstName: "Krishi",
           lastName: "Wali",

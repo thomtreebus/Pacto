@@ -1,4 +1,4 @@
-import { findByText, fireEvent, render, screen, waitFor, waitForElementToBeRemoved } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor, waitForElementToBeRemoved } from "@testing-library/react";
 import PactPage from "../pages/PactPage";
 import "@testing-library/jest-dom";
 import { rest } from "msw";
@@ -16,7 +16,10 @@ const response = {
     members: [0,0,0],
     posts: [
       {
-        pact: 5,
+        pact: {
+          _id : 5,
+          moderators : []
+        },
         author: {
           firstName: "Krishi",
           lastName: "Wali",
@@ -255,4 +258,36 @@ describe("PactPage Tests", () => {
     })
 
   })
+
+  describe("Pact page tab behaviour", () => {
+    beforeEach(async () => {
+      await renderWithMock();
+    });
+
+    describe("Displays ui elements", () => {
+      it("Displays the pact posts tab", async  () => {
+        const button = await screen.findByText("Pact Posts")
+        expect(button).toBeInTheDocument();
+      });
+
+      it("Displays the pact members tab", async  () => {
+        const button = await screen.findByText("Pact Members")
+        expect(button).toBeInTheDocument();
+      });
+    });
+
+    describe("Ui Interations", () => {
+      it("Switches to pact posts tab when click on pactPosts ", async () => {
+        const button = await screen.findByText("Pact Posts")
+        userEvent.click(button);
+        expect(button).toHaveAttribute("aria-selected", "true")
+      });
+
+      it("Switches to pact posts tab when click on pact members ", async () => {
+        const button = await screen.findByText("Pact Members")
+        userEvent.click(button);
+        expect(button).toHaveAttribute("aria-selected", "true")
+      });
+    })
+  });
 })
