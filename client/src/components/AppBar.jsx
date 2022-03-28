@@ -18,6 +18,7 @@ import PactoIcon from "../assets/pacto-logo.png";
 import MenuIcon from "@mui/icons-material/Menu";
 import NotificationsMenu from "./NotificationsMenu";
 import ProfileMenu from "./ProfileMenu";
+import Loading from "../pages/Loading";
 
 const Search = styled("div")(({ theme }) => ({
 	position: "relative",
@@ -63,6 +64,7 @@ export default function PrimarySearchAppBar({ handleDrawerToggle }) {
 	const history = useHistory();
 
 	const { user, silentUserRefresh } = useAuth();
+	const [isLoading, setIsLoading] = useState(true);
 
 	const [profileAnchorEl, setProfileAnchorEl] = useState(null);
 	const [notificationsAnchorEl, setNotificationsAnchorEl] = useState(null);
@@ -76,8 +78,9 @@ export default function PrimarySearchAppBar({ handleDrawerToggle }) {
 	const profileMenuId = "primary-search-account-menu";
 	const notificationsMenuId = "notifications-menu";
 
-	useEffect(() => {
-		fetch(`${process.env.REACT_APP_URL}/notifications`, {
+
+	useEffect(async () => {
+		await fetch(`${process.env.REACT_APP_URL}/notifications`, {
 			method: "GET",
 			credentials: "include",
 		})
@@ -86,12 +89,10 @@ export default function PrimarySearchAppBar({ handleDrawerToggle }) {
 			})
 			.then((data) => {
 				setNotifications(
-					data.message.filter((notification) => !notification.read)
+					data.message
 				);
+				setIsLoading(false)
 			});
-		return () => {
-			setNotifications([]);
-		};
 	}, []);
 
 	const handleLogout = async () => {
@@ -135,6 +136,10 @@ export default function PrimarySearchAppBar({ handleDrawerToggle }) {
 		if (e.keyCode === 13) {
 			handleSearch();
 		}
+	}
+
+	if(isLoading){
+		return (<Loading data-testid="loading-app-bar"></Loading>)
 	}
 
 	return (

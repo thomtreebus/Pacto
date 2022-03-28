@@ -129,12 +129,12 @@ describe("App Bar Tests", () => {
     });
 
     it("should render the notification card", async () => {
-      const menuElement = await screen.findByTestId("notification-card");
+      const menuElement = await screen.findByTestId("notification-card-1");
       expect(menuElement).toBeInTheDocument();
     });
 
     it("should render the mark as read button on the notification card", async () => {
-      const buttonElement = await screen.findByTestId("mark-notification-as-read");
+      const buttonElement = await screen.findByTestId("mark-notification-as-read-1");
       expect(buttonElement).toBeInTheDocument();
     });
   });
@@ -223,17 +223,18 @@ describe("App Bar Tests", () => {
     });
 
     it("should filter notifications to only display ones that are unread", async () => {
-      const menuElement = await screen.findAllByTestId("notification-card");
+      const menuElement = await screen.findAllByTestId("notification-card-1");
       expect(menuElement.length).toBe(1);
     });
 
     it("should remove the notification if the mark as read button is pressed", async () => {
-      const buttonElement = await screen.findByTestId("mark-notification-as-read");
+      const buttonElement = await screen.findByTestId("mark-notification-as-read-2");
       await act(async () => {
         await waitFor(() => fireEvent.click(buttonElement));
         await expect(buttonElement).toBeDisabled();
-        const noElement = await waitFor(() => screen.findByTestId("notification-card"));
-        await waitForElementToBeRemoved(noElement);
+        await waitFor(async () =>{
+          expect(await screen.queryByTestId("notification-card-2")).not.toBeInTheDocument()
+        });
       });
     });
 
@@ -249,7 +250,7 @@ describe("App Bar Tests", () => {
         })
       );
       await act(async () => {
-        const buttonElement = await screen.findByTestId("mark-notification-as-read");
+        const buttonElement = await screen.findByTestId("mark-notification-as-read-2");
         fireEvent.click(buttonElement);
       })
     });

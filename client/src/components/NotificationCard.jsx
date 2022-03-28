@@ -12,46 +12,43 @@ function NotificationCard({ notification, notifications, setNotifications }) {
 	const deleteNotification = async () => {
 		setIsButtonDisabled(true);
 
-		const response = await fetch(
-			`${process.env.REACT_APP_URL}/notifications/${notification._id}/update`,
-			{
-				method: "PUT",
-				credentials: "include",
-			}
-		);
-
 		try {
+			const response = await fetch(
+				`${process.env.REACT_APP_URL}/notifications/${notification._id}/update`,
+				{
+					method: "PUT",
+					credentials: "include",
+				}
+			);
 			const json = await response.json();
 			if (json.errors.length) throw Error(json.errors[0].message);
+
+			const newNotifications = notifications.filter((notificationToBeDeleted) => {
+				return notificationToBeDeleted._id !== notification._id;
+			});
+			setNotifications(newNotifications);
 		} catch (err) {
 			setIsError(true);
-			setErrorMessage(err);
+			setErrorMessage(err.message);
 			setIsButtonDisabled(false);
-			return;
 		}
-
-		const newNotifications = notifications.filter((notificationToBeDeleted) => {
-			return notificationToBeDeleted._id !== notification._id;
-		});
-
-		setNotifications(newNotifications);
 	};
 
 	return (
 		<>
-			<Card data-testid="notification-card" sx={{ maxWidth: "18rem", padding: 2, margin: 1, shadow: 3 }}>
+			<Card data-testid={`notification-card-${notification._id}`} sx={{ maxWidth: "18rem", padding: 2, margin: 1, shadow: 3 }}>
 				<IconButton
 					color={isError ? "secondary" : "primary"}
 					aria-label="open drawer"
 					edge="start"
 					disabled={buttonIsDisabled}
 					onClick={deleteNotification}
-					data-testid="mark-notification-as-read"
+					data-testid={`mark-notification-as-read-${notification._id}`}
 				>
 					<MarkChatReadIcon />
 				</IconButton>
 				{isError && (
-					<Typography data-testid="error-message" variant="body1" color="secondary">
+					<Typography data-testid={`error-message-${notifications._id}`} variant="body1" color="secondary">
 						{errorMessage}
 					</Typography>
 				)}
