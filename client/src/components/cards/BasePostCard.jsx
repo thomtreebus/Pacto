@@ -91,7 +91,9 @@ export default function BasePostCard({ children, post, numComments = null }) {
 								{relativeTime(post.createdAt)}
 							</Typography>
 
-							<Typography variant="h6" data-testid="title">
+							<Typography variant="h6" data-testid="title" className="link" onClick={() => {
+									history.push(`/pact/${post.pact._id}/post/${post._id}`);
+								}}>
 								{post.title}
 							</Typography>
 

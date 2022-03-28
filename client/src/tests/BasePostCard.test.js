@@ -106,5 +106,17 @@ describe("BasePostCard Tests", () => {
       fireEvent.click(author);
       expect(window.location.pathname).toBe("/user/1");
     });
+
+    it("should redirect to post page when title text is clicked", async () => {
+      const title = await screen.findByTestId("title");
+      fireEvent.click(title);
+      expect(window.location.pathname).toBe("/pact/5/post/1");
+    });
+
+    it("should redirect to post page when comments text is clicked", async () => {
+      const comments = await screen.findByTestId("comments");
+      fireEvent.click(comments);
+      expect(window.location.pathname).toBe("/pact/5/post/1");
+    });
   });
 });
