@@ -218,20 +218,20 @@ describe("POST /pact/:pactId/post", () => {
 
   // Validation tests
   describe("Title validation", () => {
-    it("rejects when title exceeds 50 characters", async () => {
+    it("rejects when title exceeds 200 characters", async () => {
       await isInvalidPost({
-        title: "x".repeat(51),
+        title: "x".repeat(201),
         type: TEXT_TYPE,
         text: TEXT
       }, "title", POST_MESSAGES.TITLE.MAX_LENGTH_EXCEEDED);
     });
 
-    it("accepts when title is exactly 50 characters", async () => {
+    it("accepts when title is exactly 200 characters", async () => {
       await isValidPost({
-        title: "x".repeat(50),
+        title: "x".repeat(200),
         type: TEXT_TYPE,
         text: TEXT
-      }, expectedTitle="x".repeat(50));
+      }, expectedTitle="x".repeat(200));
     });
 
     it("rejects when title is blank", async () => {
