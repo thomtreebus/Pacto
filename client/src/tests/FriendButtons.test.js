@@ -7,7 +7,7 @@ import { setupServer } from "msw/node";
 import FriendButtons from "../components/FriendButtons"
 import testUsers from "./utils/testUsers"
 
-const loggedInUser = { message: { 
+const loggedInUser = {
   firstName: "pac", 
   lastName: "to",
   image: "https://avatars.dicebear.com/api/identicon/temp.svg",
@@ -16,10 +16,17 @@ const loggedInUser = { message: {
   receivedRequests: [{_id: 2, requestor: 3}], // and has received a request from testUser[2]
   // User has no relationship with testUseer[3]
 }
-}
 
 describe("FriendButton Tests", () => {
 	const server = setupServer(
+    rest.get(`${process.env.REACT_APP_URL}/me`, (req, res, ctx) => {
+			return res(
+				ctx.json({ 
+          message: {loggedInUser}, 
+          errors: [] 
+        })
+			)
+		}),
 
     rest.post(`${process.env.REACT_APP_URL}/friends/:4`, (req, res, ctx) => {
 			return res(
