@@ -117,6 +117,11 @@ describe("App Bar Tests", () => {
       const menuElement = await waitFor(() => screen.getByTestId("NotificationsIcon"));
       expect(menuElement).toBeInTheDocument();
     });
+
+    it("should render the notification card", async () => {
+      const menuElement = await screen.findByTestId("notification-card");
+      expect(menuElement).toBeInTheDocument();
+    })
   });
 
   describe("Check interaction with elements", () => {
@@ -203,9 +208,8 @@ describe("App Bar Tests", () => {
     });
 
     it("should filter notifications to only display ones that are unread", async () => {
-      const iconButtonElement = await waitFor(() => screen.getByTestId("notification-button"));
-      fireEvent.click(iconButtonElement);
-      const menuElement = await screen.findByTestId("notification-card");
+      const menuElement = await screen.findAllByTestId("notification-card");
+      expect(menuElement.length).toBe(1);
     });
   });
 });
