@@ -266,19 +266,19 @@ describe("POST /pact/:pactId/post", () => {
       }, "text", POST_MESSAGES.TYPE.TEXT.BLANK);
     });
 
-    it("accepts text post with 1000 characters", async () => {
+    it("accepts text post with 3000 characters", async () => {
       await isValidPost({
         title: TITLE,
         type: TEXT_TYPE,
-        text: "x".repeat(1000)
-      }, undefined, undefined, expectedText="x".repeat(1000));
+        text: "x".repeat(3000)
+      }, undefined, undefined, expectedText="x".repeat(3000));
     });
 
-    it("rejects text post with 1001 characters", async () => {
+    it("rejects text post with 3001 characters", async () => {
       await isInvalidPost({
         title: TITLE,
         type: TEXT_TYPE,
-        text: "x".repeat(1001)
+        text: "x".repeat(3001)
       }, "text", POST_MESSAGES.TYPE.TEXT.MAX_LENGTH_EXCEEDED);
     });
 

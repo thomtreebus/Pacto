@@ -61,7 +61,7 @@ const PostSchema = mongoose.Schema({
 
   text: {
     type: String,
-    maxLength: [1000, POST_MESSAGES.TYPE.TEXT.MAX_LENGTH_EXCEEDED],
+    maxLength: [3000, POST_MESSAGES.TYPE.TEXT.MAX_LENGTH_EXCEEDED],
     required: [
       function() { return this.type === 'text' },
       POST_MESSAGES.TYPE.TEXT.BLANK
