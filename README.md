@@ -21,7 +21,7 @@ The project consists of two applications. A React app that the client interacts 
 
 ## Deployed version of the application
 
-The deployed version of the application can be found at [URL]().
+The deployed version of the application can be found at [pacto.co.uk](http://pacto.co.uk:3000).
 
 ## Access credentials for viewing different roles
 
@@ -45,7 +45,7 @@ $ virtualenv venv
 $ source venv/bin/activate
 ```
 
-In both the client and server direcotires, install the required packaged:
+In both the client and server directories , install the required packages:
 
 ```
 $ npm install
@@ -57,3 +57,7 @@ The packages used by the two applications are specified in `package.json`
 
 ## Note
 
+## Credits
+
+There have been some code used from [Material UI Documentation](https://mui.com). 
+These have been labelled accordingly in the files where they were directly used.
