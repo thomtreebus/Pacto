@@ -5,33 +5,10 @@ import { rest } from "msw";
 import { setupServer } from "msw/node";
 import users from "./utils/testUsers";
 import MockComponent from "./utils/MockComponent.jsx";
+import { useMockServer } from "./utils/useMockServer.js";
 
 describe("User List Tests", () => {
-	const server = setupServer(
-		rest.get(`${process.env.REACT_APP_URL}/me`, (req, res, ctx) => {
-			return res(
-				ctx.json({ message: {
-                    _id : "1",
-                    firstName: "pac",
-                    lastName: "to"
-                    }, 
-                    errors: [] 
-                })
-			);
-		}),
-	);
-
-	beforeAll(() => {
-		server.listen();
-	});
-
-	afterAll(() => {
-		server.close();
-	});
-
-	beforeEach(async () => {
-		server.resetHandlers();
-	});
+	const { server } = useMockServer();
 
 	const renderWithMock = async (element) => {
 		render(

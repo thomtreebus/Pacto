@@ -5,6 +5,7 @@ import MockComponent from "./utils/MockComponent";
 import { setupServer } from "msw/node";
 import { rest } from "msw";
 import Voter from "../components/Voter";
+import { useMockServer } from "./utils/useMockServer";
 
 const post = {
   pact: 5,
@@ -25,32 +26,8 @@ const post = {
 }
 
 describe("Voter Tests", () => {
-  const server = setupServer(
-		rest.get(`${process.env.REACT_APP_URL}/me`, (req, res, ctx) => {
-			return res(
-				ctx.json({ message: { firstName: "pac", lastName: "to", _id: "5" }, errors: [] })
-			);
-		}),
-    rest.put(`${process.env.REACT_APP_URL}/pact/5/post/upvote/1`, (req, res, ctx) => {
-			return res();
-		}),
-    rest.put(`${process.env.REACT_APP_URL}/pact/5/post/downvote/1`, (req, res, ctx) => {
-			return res();
-		}),
-	);
-
-  beforeAll(() => {
-		server.listen();
-	});
-
-	afterAll(() => {
-		server.close();
-	});
-
-	beforeEach(async () => {
-		server.resetHandlers();
-	});
-
+  const {server} = useMockServer();
+  
   beforeEach(async () => {
 		render(
       <MockComponent>
