@@ -1,10 +1,10 @@
-import { render, screen, fireEvent, waitFor, waitForElementToBeRemoved } from "@testing-library/react"
+import { render, screen, fireEvent, waitFor, waitForElementToBeRemoved, act } from "@testing-library/react"
 import AppBar from "../components/AppBar.jsx";
 import "@testing-library/jest-dom";
 import MockComponent from "./utils/MockComponent.jsx";
 import { rest } from "msw";
 import { setupServer } from "msw/node";
-import { Route,Switch} from "react-router-dom";
+import { Switch } from "react-router-dom";
 import { createMemoryHistory } from 'history';
 import PrivateRoute from "../components/PrivateRoute";
 import AuthRoute from "../components/AuthRoute";
@@ -28,7 +28,12 @@ describe("App Bar Tests", () => {
 		}),
     rest.get(`${process.env.REACT_APP_URL}/notifications`, (req, res, ctx) => {
       return res(
-        ctx.json({ message: [], errors: [] })
+        ctx.json({
+          errors: [], 
+          message: [
+            { __v: 0, _id: "1", text: "Your post received a new comment", read: true, time: "2022-03-25T10:02:42.545Z" },
+            { __v: 0, _id: "2", text: "Your post received a new comment", read: false, time: "2022-03-25T10:02:42.545Z" }
+          ] })
       );
     })
 	);
@@ -124,7 +129,7 @@ describe("App Bar Tests", () => {
         })
 			);
       const logoutItemElement = await screen.findByTestId("logout-item");
-      fireEvent.click(logoutItemElement);
+      await act(async () => await waitFor( () => fireEvent.click(logoutItemElement)))
       const redirectMessage = await screen.findByText(/Redirected to login/i);
 			expect(redirectMessage).toBeInTheDocument();
       expect(window.location.pathname).toBe("/login");
@@ -198,21 +203,9 @@ describe("App Bar Tests", () => {
     });
 
     it("should filter notifications to only display ones that are unread", async () => {
-      server.use(
-				rest.get(`${process.env.REACT_APP_URL}/notifications`, (req, res, ctx) => {
-          return res(
-            ctx.json({
-              errors: [], 
-              message: [
-                { __v: 0, _id: "1", text: "Your post received a new comment", read: true, time: "2022-03-25T10:02:42.545Z" },
-                { __v: 0, _id: "2", text: "Your post received a new comment", read: false, time: "2022-03-25T10:02:42.545Z" }
-              ] })
-          );
-        })
-      );
-      const iconButtonElement = screen.getByTestId("notification-button");
+      const iconButtonElement = await waitFor(() => screen.getByTestId("notification-button"));
       fireEvent.click(iconButtonElement);
-      const menuElement = screen.getByTestId("notification-card");
+      const menuElement = await screen.findByTestId("notification-card");
     });
   });
 });

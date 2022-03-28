@@ -39,7 +39,7 @@ function NotificationCard({ notification, notifications, setNotifications }) {
 
 	return (
 		<>
-			<Card sx={{ maxWidth: "18rem", padding: 2, margin: 1, shadow: 3 }}>
+			<Card data-testid="notification-card" sx={{ maxWidth: "18rem", padding: 2, margin: 1, shadow: 3 }}>
 				<IconButton
 					color={isError ? "secondary" : "primary"}
 					aria-label="open drawer"
