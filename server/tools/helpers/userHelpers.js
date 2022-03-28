@@ -5,7 +5,7 @@ const User = require("../../models/User");
 const FriendRequest = require("../../models/FriendRequest");
 const chance = new Chance(1234);
 const SALT_ROUNDS = 10;
-const {createNotification} = require("./notificationHelpers");
+const { createNotification } = require("./notificationHelpers");
 
 async function seedUsers(university, USER_COUNT) {
 	const names = chance.unique(chance.name, USER_COUNT);
@@ -13,11 +13,23 @@ async function seedUsers(university, USER_COUNT) {
 	for (let i = 0; i < names.length; i++) {
 		await createUser(names[i].split(" ")[0], names[i].split(" ")[1], university);
 	}
-
-	await createUser("Pac", "To", university);
+	
+	await seedPacToUser(university);
 	await generateFriends();
 	console.log(`Finished seeding ${USER_COUNT} users`);
 }
+
+async function seedPacToUser(university) {
+	await createUser("Pac", "To", university);
+	const user = await User.findOne({ firstName: "Pac" });
+	// Seed notifications for the user used to view the application
+	await createNotification(user, "Welcome to Pacto!");
+	await createNotification(user, "Your post received a new comment!");
+	await createNotification(user, "You have an incoming friend request");
+	await createNotification(user, "Jane Doe has accepted your friend request");
+	await createNotification(user, "You have been promoted to moderator in the PactoPact");
+	await createNotification(user, "You are no longer banned from the Bird Watching pact");
+};
 
 async function createUser(firstName, lastName, university) {
 	const salt = await bcrypt.genSalt(SALT_ROUNDS);

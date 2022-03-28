@@ -3,6 +3,7 @@ const { randQuote } = require("@ngneat/falso");
 const userConstants = require("./userConstants");
 const Pact = require("../../models/Pact");
 const User = require("../../models/User");
+const {createNotification} = require("./notificationHelpers");
 
 const chance = new Chance(1234);
 
@@ -118,6 +119,7 @@ async function addBannedUsersToPact(users, pact) {
 	if(users.length > 0) {
 		for(let i = 0; i < users.length; i ++) {
 			await addBannedUserToPact(users[i], pact);
+			await createNotification(users[i], `You have been banned from ${pact.name}`)
 		}
 	}
 }

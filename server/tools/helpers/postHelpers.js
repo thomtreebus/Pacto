@@ -5,8 +5,6 @@ const User = require("../../models/User");
 const Post = require("../../models/Post");
 const Comment = require("../../models/Comment");
 const { LINKS } = require("./postConstants");
-const {createNotification} = require("./notificationHelpers");
-
 
 const chance = new Chance(1234);
 
