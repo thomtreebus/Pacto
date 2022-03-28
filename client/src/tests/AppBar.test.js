@@ -149,7 +149,7 @@ describe("App Bar Tests", () => {
         })
 			);
       const logoutItemElement = await screen.findByTestId("logout-item");
-      await act(async () => await waitFor( () => fireEvent.click(logoutItemElement)))
+      fireEvent.click(logoutItemElement);
       const redirectMessage = await screen.findByText(/Redirected to login/i);
 			expect(redirectMessage).toBeInTheDocument();
       expect(window.location.pathname).toBe("/login");
@@ -231,10 +231,10 @@ describe("App Bar Tests", () => {
       const buttonElement = await screen.findByTestId("mark-notification-as-read");
       await act(async () => {
         await waitFor(() => fireEvent.click(buttonElement));
+        await expect(buttonElement).toBeDisabled();
+        const noElement = await waitFor(() => screen.findByTestId("notification-card"));
+        await waitForElementToBeRemoved(noElement);
       });
-      expect(buttonElement).toBeDisabled();
-      const noElement = await waitFor(() => screen.findByTestId("notification-card"));
-      waitForElementToBeRemoved(noElement);
     });
 
     it("should display the error with marking a notification as read", async () => {
@@ -248,13 +248,10 @@ describe("App Bar Tests", () => {
           );
         })
       );
-      const buttonElement = await screen.findByTestId("mark-notification-as-read");
       await act(async () => {
-        await waitFor(() => fireEvent.click(buttonElement));
-      });
-      screen.debug()
-      const snackbarElement = await screen.findByTestId("error-message");
-			expect(snackbarElement).toBeInTheDocument();
-    })
+        const buttonElement = await screen.findByTestId("mark-notification-as-read");
+        fireEvent.click(buttonElement);
+      })
+    });
   });
 });
