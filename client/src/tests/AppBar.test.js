@@ -35,6 +35,16 @@ describe("App Bar Tests", () => {
             { __v: 0, _id: "2", text: "Your post received a new comment", read: false, time: "2022-03-25T10:02:42.545Z" }
           ] })
       );
+    }),
+    rest.put(`${process.env.REACT_APP_URL}/notifications/2/update`, (req, res, ctx) => {
+      return res(
+        ctx.json({
+          errors: [], 
+          message: [
+            { __v: 0, _id: "1", text: "Your post received a new comment", read: true, time: "2022-03-25T10:02:42.545Z" },
+            { __v: 0, _id: "2", text: "Your post received a new comment", read: true, time: "2022-03-25T10:02:42.545Z" }
+          ] })
+      );
     })
 	);
 
@@ -121,7 +131,12 @@ describe("App Bar Tests", () => {
     it("should render the notification card", async () => {
       const menuElement = await screen.findByTestId("notification-card");
       expect(menuElement).toBeInTheDocument();
-    })
+    });
+
+    it("should render the mark as read button on the notification card", async () => {
+      const buttonElement = await screen.findByTestId("mark-notification-as-read");
+      expect(buttonElement).toBeInTheDocument();
+    });
   });
 
   describe("Check interaction with elements", () => {
@@ -211,5 +226,23 @@ describe("App Bar Tests", () => {
       const menuElement = await screen.findAllByTestId("notification-card");
       expect(menuElement.length).toBe(1);
     });
+
+    it("should set the mark as read button as disabled if pressed", async () => {
+      const buttonElement = await screen.findByTestId("mark-notification-as-read");
+      await act(async () => {
+        await waitFor(() => fireEvent.click(buttonElement));
+      });
+      expect(buttonElement).toBeDisabled();
+      const noElement = await waitFor(() => screen.findAllByTestId("notification-card"));
+      await waitFor(() => expect(noElement.length).toBe(0));
+    });
+
+    // it("should remove the notification card if the mark as read button is pressed", async () => {
+    //   const buttonElement = await screen.findByTestId("mark-notification-as-read");
+    //   await act (async () => {
+    //     await waitFor(() => fireEvent.click(buttonElement)); 
+    //   });
+      
+    // });
   });
 });

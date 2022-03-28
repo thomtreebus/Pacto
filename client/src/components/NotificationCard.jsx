@@ -34,7 +34,7 @@ function NotificationCard({ notification, notifications, setNotifications }) {
 			return notificationToBeDeleted._id !== notification._id;
 		});
 
-		setNotifications(newNotifications);
+		await setNotifications(newNotifications);
 	};
 
 	return (
