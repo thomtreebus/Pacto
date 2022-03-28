@@ -25,15 +25,10 @@ The deployed version of the application can be found at [pacto.co.uk](http://pac
 
 ## Access credentials for viewing different roles
 
-The application has certain features that can only be viewed by users with a moderator role, use the following access credentials to view the application as a moderator:
+The application has certain features that can only be viewed by users with a moderator role. The following credentials can be used to view the application as a user that is a moderator for one of the pacts (named the PactoPact):
 
-**email**:
-**password**:
-
-A regular user account can be accessed with the following credentials:
-
-**email**:
-**password**:
+**email**: pac.to@kcl.ac.uk
+**password**: Password123
 
 ## Installation instructions
 
