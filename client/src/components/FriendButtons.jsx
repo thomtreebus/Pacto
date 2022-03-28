@@ -2,23 +2,23 @@ import { Box, Button } from "@mui/material"
 import { useState } from "react";
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import EditIcon from '@mui/icons-material/Edit';
+import { useAuth } from "../providers/AuthProvider";
 
-export default function FriendButtons({currentUser, user}){ // logged in user and user to be interacted with
-
+export default function FriendButtons({user}){ // logged in user and user to be interacted with
+  const {user : currentUser, silentUserRefresh} = useAuth();
   const [isFriend, setIsFriend] = useState(currentUser.friends && currentUser.friends.includes(user._id));
   const [hasSentRequest, setHasSentRequest] = useState(currentUser.sentRequests && currentUser.sentRequests.some(r => r.recipient === user._id));
   const [hasReceivedRequest, setHasReceivedRequest] = useState(currentUser.receivedRequests && currentUser.receivedRequests.some(r => r.requestor === user._id));
   const [buttonsDisabled, setButtonsDisabled] = useState(false);
-
   // A user cannot send requests to themselves!!
   if(currentUser._id === user._id){
     return null;
   }
 
-  function sendFriendRequest() {
+  async function sendFriendRequest() {
     setButtonsDisabled(true);
 
-    fetch(`${process.env.REACT_APP_URL}/friends/${user._id}`, {
+    await fetch(`${process.env.REACT_APP_URL}/friends/${user._id}`, {
         method: "POST",
         credentials: "include",
     });
@@ -26,14 +26,16 @@ export default function FriendButtons({currentUser, user}){ // logged in user an
     setHasSentRequest(true);
 
     setButtonsDisabled(false);
+
+    await silentUserRefresh();
 }
 
-function acceptFriend(){
+async function acceptFriend(){
     setButtonsDisabled(true);
 
     const friendRequestId = currentUser.receivedRequests.filter(r => r.requestor===user._id)[0]._id;
 
-    fetch(`${process.env.REACT_APP_URL}/friends/${friendRequestId}/accept`, {
+    await fetch(`${process.env.REACT_APP_URL}/friends/${friendRequestId}/accept`, {
         method: "PUT",
         credentials: "include",
     });
@@ -42,14 +44,16 @@ function acceptFriend(){
     setIsFriend(true);
 
     setButtonsDisabled(false);
+
+    await silentUserRefresh();
 }
 
-function declineFriend(){
+async function declineFriend(){
     setButtonsDisabled(true);
 
     const friendRequestId = currentUser.receivedRequests.filter(r => r.requestor===user._id)[0]._id;
 
-    fetch(`${process.env.REACT_APP_URL}/friends/${friendRequestId}/reject`, {
+    await fetch(`${process.env.REACT_APP_URL}/friends/${friendRequestId}/reject`, {
         method: "PUT",
         credentials: "include",
     });
@@ -57,12 +61,14 @@ function declineFriend(){
     setHasReceivedRequest(false);
 
     setButtonsDisabled(false);
+
+    await silentUserRefresh();
 }
 
-function deleteFriend(){
+async function deleteFriend(){
     setButtonsDisabled(true);
 
-    fetch(`${process.env.REACT_APP_URL}/friends/remove/${user._id}`, {
+    await fetch(`${process.env.REACT_APP_URL}/friends/remove/${user._id}`, {
         method: "PUT",
         credentials: "include",
     });
@@ -70,6 +76,8 @@ function deleteFriend(){
     setIsFriend(false);
 
     setButtonsDisabled(false);
+
+    await silentUserRefresh();
 }
 
   return (

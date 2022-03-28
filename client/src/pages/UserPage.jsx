@@ -49,7 +49,6 @@ export default function UserPage() {
     const [isLoading, setIsLoading] = useState(true);
     const [allUsers, setAllUsers] = useState(null);
     const [allFriends, setAllFriends] = useState(null);
-    const [allSameLocation, setAllSameLocation] = useState(null);
     const [allSameCourse, setAllSameCourse] = useState(null);
     const [sentRequests, setSentRequests] = useState(null);
     const [receivedRequests, setReceivedRequests] = useState(null);
