@@ -5,6 +5,7 @@ const University = require("../models/University");
 const Post = require("../models/Post");
 const EmailVerificationCode = require("../models/EmailVerificationCode");
 const FriendRequest = require("../models/FriendRequest");
+const Notification = require("../models/Notification");
 
 async function unseed() {
 	await User.deleteMany({});
