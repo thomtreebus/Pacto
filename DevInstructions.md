@@ -37,3 +37,6 @@ The client application relies on a few environment variables. Create a file call
 ### Setup Server Application
 #### Environment Variables
 
+## Development
+### SOLID Principles
+
