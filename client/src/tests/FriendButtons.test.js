@@ -106,6 +106,7 @@ describe("FriendButton Tests", () => {
 		it("handles delete friend press", async () => {
 			const delFriendBtn = await screen.findByTestId("del-friend-btn");
 			fireEvent.click(delFriendBtn);
+			
 			const addFriendBtn = await screen.findByTestId("add-friend-btn");
 			expect(addFriendBtn).toBeInTheDocument();
 			expect(delFriendBtn).not.toBeInTheDocument();

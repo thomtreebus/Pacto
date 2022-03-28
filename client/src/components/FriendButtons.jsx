@@ -28,19 +28,21 @@ export default function FriendButtons({user}){ // logged in user and user to be 
   const friendEvent = async (status) => {
     setButtonsDisabled(true);
 
+    const friendRequest = currentUser.receivedRequests && currentUser.receivedRequests.filter(r => r.requestor === user._id)[0];
+
     // Forward request to backend
     const url = (() => {
       switch(status) {
-        case FRIEND_EVENT_STATUS_CODES.ACCEPT_REQ: return `friends/${friendRequest}/accept`;
-        case FRIEND_EVENT_STATUS_CODES.REJECT_REQ: return `friends/${friendRequest}/reject`;
-        case FRIEND_EVENT_STATUS_CODES.REMOVE_FRIEND: return `friends/remove/${displayedUser._id}`;
-        case FRIEND_EVENT_STATUS_CODES.ADD_FRIEND: return `friends/${displayedUser._id}`;
+        case FRIEND_EVENT_STATUS_CODES.ACCEPT_REQ: return `friends/${friendRequest._id}/accept`;
+        case FRIEND_EVENT_STATUS_CODES.REJECT_REQ: return `friends/${friendRequest._id}/reject`;
+        case FRIEND_EVENT_STATUS_CODES.REMOVE_FRIEND: return `friends/remove/${user._id}`;
+        case FRIEND_EVENT_STATUS_CODES.ADD_FRIEND: return `friends/${user._id}`;
         // no default
       }
     })()
 
     const response = await fetch(`${process.env.REACT_APP_URL}/${url}`, {
-      method: (status === 3) ? "POST" : "PUT",
+      method: (status === FRIEND_EVENT_STATUS_CODES.ADD_FRIEND) ? "POST" : "PUT",
       credentials: "include",
     });
     
