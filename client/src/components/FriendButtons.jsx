@@ -52,15 +52,19 @@ export default function FriendButtons({user}){ // logged in user and user to be 
         case FRIEND_EVENT_STATUS_CODES.ACCEPT_REQ: { // Accepting request
           setHasReceivedRequest(false);
           setIsFriend(true);
-        }
+          return;
+        };
         case FRIEND_EVENT_STATUS_CODES.REJECT_REQ: { // Declining request
           setHasReceivedRequest(false);
-        }
+          return;
+        };
         case FRIEND_EVENT_STATUS_CODES.REMOVE_FRIEND: { // Removing friend
           setIsFriend(false);
+          return;
         };
         case FRIEND_EVENT_STATUS_CODES.ADD_FRIEND: { // Sending request
           setHasSentRequest(true);
+          return;
         };
         // no default
       }
