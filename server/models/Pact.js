@@ -6,7 +6,7 @@ let PactSchema = mongoose.Schema({
   name: {
     type: String,
     required: [true, PACT_MESSAGES.NAME.BLANK],
-    maxLength: [33, PACT_MESSAGES.NAME.MAX_LENGTH_EXCEEDED],
+    maxLength: [50, PACT_MESSAGES.NAME.MAX_LENGTH_EXCEEDED],
     minLength: [2, PACT_MESSAGES.NAME.MIN_LENGTH_NOT_MET]
   },
 
