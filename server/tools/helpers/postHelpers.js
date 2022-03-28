@@ -112,7 +112,6 @@ async function createComment(post, author, text, options={parentComment: undefin
 		parentComment.childComments.push(comment);
 		await parentComment.save();
 	}
-	await createNotification(post.author, "Your post received a new comment")
 	return comment;
 }
 

@@ -5,6 +5,7 @@ const User = require("../../models/User");
 const FriendRequest = require("../../models/FriendRequest");
 const chance = new Chance(1234);
 const SALT_ROUNDS = 10;
+const {createNotification} = require("./notificationHelpers");
 
 async function seedUsers(university, USER_COUNT) {
 	const names = chance.unique(chance.name, USER_COUNT);
@@ -96,6 +97,7 @@ async function generateFriendRequest(user1, user2) {
 	const request = await FriendRequest.create({requestor : shuffledUsers[0], recipient : shuffledUsers[1]})
 	shuffledUsers[0].sentRequests.push(request);
 	shuffledUsers[1].receivedRequests.push(request);
+	await createNotification(shuffledUsers[0], `${shuffledUsers[0].firstName} ${shuffledUsers[0].lastName} has sent you a friend request`)
 	await shuffledUsers[0].save();
 	await shuffledUsers[1].save();
 }
