@@ -75,14 +75,11 @@ export default function UserPage() {
         setAllSameCourse(
           user.course?.trim() ? resAllUsers.filter(curUser => curUser.course === user.course) : [user]
         );
-        setAllSameLocation(
-          user.location?.trim() ? resAllUsers.filter(curUser => curUser.location === user.location) : [user]
-        );
         setSentRequests(
           user.sentRequests && resAllUsers.filter(u => user.sentRequests.some(r => r.recipient===u._id))
         );
         setReceivedRequests(
-          user.recievedRequests && resAllUsers.filter(u => user.receivedRequests.some(r => r.requestor===u._id))
+          user.receivedRequests && resAllUsers.filter(u => user.receivedRequests.some(r => r.requestor===u._id))
         );
         setAllUsers(resAllUsers);
         setIsLoading(false);
@@ -108,12 +105,11 @@ export default function UserPage() {
       <Box sx={{ width: '100%' }}>
         <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
           <Tabs value={value} onChange={handleChange} aria-label="User type tab">
-            <Tab label="Same University" {...a11yProps(0)} />
+            <Tab label="All" {...a11yProps(0)} />
             <Tab label="Friends" {...a11yProps(1)} />
             <Tab label="Same Course" sx={{display : {xs: "none", md: "block"}}} {...a11yProps(2)} />
-            <Tab label="Same Location"  sx={{display : {xs: "none", md: "block"}}}  {...a11yProps(3)} />
-            <Tab label="Received Requests"  sx={{display : {xs: "none", md: "block"}}}  {...a11yProps(4)} />
-            <Tab label="Sent Requests"  sx={{display : {xs: "none", md: "block"}}}  {...a11yProps(5)} />
+            <Tab label="Received Requests"  sx={{display : {xs: "none", md: "block"}}}  {...a11yProps(3)} />
+            <Tab label="Sent Requests"  sx={{display : {xs: "none", md: "block"}}}  {...a11yProps(4)} />
           </Tabs>
         </Box>
         <TabPanel value={value} index={0}>
@@ -126,12 +122,9 @@ export default function UserPage() {
           <UserList users={allSameCourse}/>
         </TabPanel>
         <TabPanel value={value} index={3}>
-          <UserList users={allSameLocation}/>
-        </TabPanel>
-        <TabPanel value={value} index={4}>
           <UserList users={receivedRequests}/>
         </TabPanel>
-        <TabPanel value={value} index={5}>
+        <TabPanel value={value} index={4}>
           <UserList users={sentRequests}/>
         </TabPanel>
       </Box>
