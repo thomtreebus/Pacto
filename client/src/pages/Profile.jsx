@@ -96,7 +96,16 @@ export default function Profile() {
               <Typography variant="subtitle1" sx={{ color: "#1976d2", marginTop: "2px" }}>  {capitalizeFirstLetter(`${displayedUser.course} student at ${displayedUser.university.name}`)} </Typography>
               <Typography variant="subtitle1" sx={{ color: "#616161", }}>  {displayedUser.location} </Typography>
             </Stack>
-            <FriendButtons currentUser={loggedInUser} user={displayedUser}/>        
+            <Box sx={{
+            width: '100%',
+            padding: "0px",
+            }}
+            >
+              <FriendButtons currentUser={loggedInUser} user={displayedUser}/>     
+              <Button variant="contained" data-testid="edit-profile-button" disabled={!canEditProfile} fullwidth="true" color="error" onClick={() => history.push("/edit-profile")} startIcon={<EditIcon />} sx={{ marginTop: "2px" }}>
+                Edit Profile 
+              </Button>   
+            </Box>
         </Box>
         <Divider sx={{ marginTop: "10px", marginBottom: "10px" }}></Divider>
         <Box sx={{flexWrap : "wrap", marginTop: "2px", display: "flex", gap: "1rem"}} alignItems="center"> 

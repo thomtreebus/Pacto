@@ -3,11 +3,17 @@ import { useState } from "react";
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import EditIcon from '@mui/icons-material/Edit';
 
-export default function FriendButtons({currentUser, user}){
+export default function FriendButtons({currentUser, user}){ // logged in user and user to be interacted with
+
   const [isFriend, setIsFriend] = useState(currentUser.friends && currentUser.friends.includes(user._id));
   const [hasSentRequest, setHasSentRequest] = useState(currentUser.sentRequests && currentUser.sentRequests.some(r => r.recipient === user._id));
   const [hasReceivedRequest, setHasReceivedRequest] = useState(currentUser.receivedRequests && currentUser.receivedRequests.some(r => r.requestor === user._id));
   const [buttonsDisabled, setButtonsDisabled] = useState(false);
+
+  // A user cannot send requests to themselves!!
+  if(currentUser._id === user._id){
+    return null;
+  }
 
   function sendFriendRequest() {
     setButtonsDisabled(true);
