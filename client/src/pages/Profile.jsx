@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useState } from "react";
 import { Image } from 'cloudinary-react';
@@ -17,10 +16,10 @@ import InstagramIcon from '@mui/icons-material/Instagram';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import WhatsAppIcon from '@mui/icons-material/WhatsApp';
 import GroupIcon from '@mui/icons-material/Group';
-import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import ForumIcon from '@mui/icons-material/Forum';
 import EditIcon from '@mui/icons-material/Edit';
 import {useAuth} from "../providers/AuthProvider";
+import FriendButtons from '../components/FriendButtons';
 
 function capitalizeFirstLetter(string) {
   const sanatisedString = string.trim();
@@ -28,55 +27,39 @@ function capitalizeFirstLetter(string) {
 }
 
 export default function Profile() {
-
-  const { user: loggedInUser } = useAuth();
+  const { user: loggedInUser, silentUserRefresh } = useAuth();
   const [displayedUser, setDisplayedUser] = useState(null);
   const { id } = useParams();
   const history = useHistory();
-  const [canFriend, setCanFriend] = useState(false);
   const [canEditProfile, setCanEditProfile] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const [data, setData] = useState(null)
-
-  useEffect( () => {
-    const controller = new AbortController();
-    if(id){
-      fetch(`${process.env.REACT_APP_URL}/users/${id}`, {
-        credentials: "include",
-        signal: controller.signal,
-      }).then((res) => {
-        if (!res.ok) {
-					throw Error("Could not fetch user profile");
-				}
-        return res.json()
-      }).then((data) => {
-        setData(data)
-      }).catch((err) => {
-        if (err.message === "The user aborted a request.") return;
-        if (err.message === "Could not fetch user profile") history.push("/not-found")
-      })
-    }
-    return () => controller.abort();
-  },[id, history])
 
   useEffect(() => {
-    if (data) {
-      if (data.errors.length) {
-        history.replace("/not-found");
+    silentUserRefresh();
+    const controller = new AbortController();
+    fetch(`${process.env.REACT_APP_URL}/users/${id}`, {
+      credentials: "include",
+      signal: controller.signal,
+    }).then((res) => {
+      if (!res.ok) {
+        throw Error("Could not fetch user profile");
       }
-      setDisplayedUser(data.message);
-    }
-  }, [data, history]);
-
+      return res.json()
+    }).then((data) => {
+      setDisplayedUser(data.message)
+    }).catch((err) => {
+      if (err.message === "The user aborted a request.") return;
+      if (err.message === "Could not fetch user profile") history.push("/not-found")
+    });
+    return () => controller.abort();
+  }, [id, history, silentUserRefresh])
 
   useEffect(() => {
     if(displayedUser) {
       if (loggedInUser._id === displayedUser._id) {
         setCanEditProfile(true);
-        setCanFriend(false);
       } else {
         setCanEditProfile(false);
-        setCanFriend(true);
       }
       setIsLoading(false);
     }
@@ -111,14 +94,18 @@ export default function Profile() {
               <Typography variant="subtitle1" sx={{ color: "#1976d2", marginTop: "2px" }}>  {capitalizeFirstLetter(`${displayedUser.course} student at ${displayedUser.university.name}`)} </Typography>
               <Typography variant="subtitle1" sx={{ color: "#616161", }}>  {displayedUser.location} </Typography>
             </Stack>
-            <Box sx={{display : "flex", flexDirection: {xs: "column", sm : "row"}, gap: "0.5rem"}}>
-              <Button variant="outlined" fullwidth="true" disabled={!canFriend} startIcon={<PersonAddIcon />} sx={{marginTop: "4px"}}>
-                Send Friend Request
-              </Button>
-              <Button variant="contained" data-testid="edit-profile-button" disabled={!canEditProfile} fullwidth="true" color="error" onClick={() => history.push("/edit-profile")} startIcon={<EditIcon />} sx={{ marginTop: "2px" }}>
-                Edit Profile 
-              </Button>
-            </Box>              
+            <Box sx={{
+            width: '100%',
+            padding: "0px",
+            }}
+            >
+              <FriendButtons currentUser={loggedInUser} user={displayedUser}/>     
+              { canEditProfile && 
+                <Button variant="contained" data-testid="edit-profile-button" fullwidth="true" color="error" onClick={() => history.push("/edit-profile")} startIcon={<EditIcon />} sx={{ marginTop: "2px" }}>
+                  Edit Profile 
+                </Button>   
+              }
+            </Box>
         </Box>
         <Divider sx={{ marginTop: "10px", marginBottom: "10px" }}></Divider>
         <Box sx={{flexWrap : "wrap", marginTop: "2px", display: "flex", gap: "1rem"}} alignItems="center"> 

@@ -4,12 +4,11 @@ import ErrorPage from "./Error";
 import Loading from "./Loading";
 import PostList from "../components/PostList";
 import PactGrid from "../components/PactGrid";
-import { Typography } from '@mui/material';
-import { useHistory } from "react-router-dom";
 import Box from '@mui/material/Box';
 import PropTypes from 'prop-types';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
+import UserList from '../components/UserList';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -24,7 +23,7 @@ function TabPanel(props) {
     >
       {value === index && (
         <Box sx={{ p: 3 }}>
-          <Typography>{children}</Typography>
+          {children}
         </Box>
       )}
     </div>
@@ -37,23 +36,13 @@ TabPanel.propTypes = {
   value: PropTypes.number.isRequired,
 };
 
-function a11yProps(index) {
-  return {
-    id: `simple-tab-${index}`,
-    'aria-controls': `simple-tabpanel-${index}`,
-  };
-}
-
-
 export default function SearchResults() {
   const { query } = useParams();
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [results, setResults] = useState(null);
   const [type, setType] = useState(0);
-  const [data, setData] = useState([]);
-  const history = useHistory();
-  
+
   useEffect(() => {
     fetch(`${process.env.REACT_APP_URL}/search/${query}`, {
       method: "GET",
@@ -74,16 +63,6 @@ export default function SearchResults() {
     })
   }, [query])
 
-  useEffect(() => {
-    if (results) {
-      let data = []
-      if (type === 0) data = results.pacts;
-      if (type === 1) data = results.posts;
-      if (type == 2) data = results.users;
-      setData()
-    }
-  }, [results, type])
-
   const handleTabChange = (event, newType) => {
     setType(newType);
   };
@@ -92,28 +71,24 @@ export default function SearchResults() {
     <>
     { isLoading && <Loading /> }
     {error && <ErrorPage />}
-      <Typography variant="subtitle2" sx={{ fontSize: "1.5rem" }}>
-        Showing { results.pacts.length + results.posts.length + results.users.length } search results for: "{ query }"
-			</Typography>
-      <Box sx={{ width: '100%'}}>
-        <Box sx={{ borderBottom: 1, borderColor: 'divider', bgcolor: 'background.paper' }}>
-          <Tabs value={type} onChange={handleTabChange} centered>
-            <Tab label="Pacts" />
-            <Tab label="Posts" />
-            <Tab label="Users" />
-          </Tabs>
-        </Box>
-        <TabPanel value={type} index={0}>
-          {results && <PactGrid pacts={results.pacts} />}
-        </TabPanel>
-        <TabPanel value={type} index={1}>
-          {results && <PostList posts={results.posts}/>}
-        </TabPanel>
-        <TabPanel value={type} index={2}>
-          Users
-        </TabPanel>
+    <Box sx={{ width: '100%'}}>
+      <Box sx={{ borderBottom: 1, borderColor: 'divider', bgcolor: 'background.paper' }}>
+        <Tabs value={type} onChange={handleTabChange} centered data-testid="tabs-element">
+          <Tab label="Pacts" />
+          <Tab label="Posts" />
+          <Tab label="Users" />
+        </Tabs>
       </Box>
-      
+      <TabPanel value={type} index={0} data-testid="pact-grid">
+        {results && <PactGrid pacts={results.pacts} />}
+      </TabPanel>
+      <TabPanel value={type} index={1} data-testid="post-list">
+        {results && <PostList posts={results.posts} searchable={false} />}
+      </TabPanel>
+      <TabPanel value={type} index={2} data-testid="user-list">
+        {results && <UserList users={results.users} />}
+      </TabPanel>
+    </Box>
     </>
   );
 }

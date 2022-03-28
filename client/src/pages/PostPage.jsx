@@ -7,8 +7,10 @@ import { useHistory } from "react-router-dom";
 import CommentBox from "../components/CommentBox";
 import CommentCard from "../components/cards/CommentCard";
 import PostCard from "../components/cards/PostCard";
-
+import { useAuth } from "../providers/AuthProvider";
+;
 export default function PostPage() {
+  const { user } = useAuth()
   const { pactID, postID } = useParams();
   const [post, setPost] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -37,7 +39,7 @@ export default function PostPage() {
       setIsLoading(false);
       history.push("/not-found");
     });
-  }, [pactID, postID, history]);
+  }, [pactID, postID, history, user]);
 
   if(isLoading){
     return <Loading/>

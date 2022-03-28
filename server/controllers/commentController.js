@@ -62,9 +62,6 @@ module.exports.commentDelete = async (req, res) => {
     // Checks already done in middleware. This is safe.
     req.comment.deleted = true;
     req.comment.text = COMMENT_MESSAGES.DELETED_COMMENT_TEXT;
-    // req.comment.votes = 0;
-    // req.comment.upvoters = [];
-    // req.comment.downvoters = [];
 
     await req.comment.save();
 

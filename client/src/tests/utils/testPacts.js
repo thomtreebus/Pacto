@@ -6,6 +6,7 @@ const pacts = [
 		category: "course",
 		image: "https://avatars.dicebear.com/api/identicon/temp.svg",
 		members: ["01"],
+		moderators: [],
 	},
 	{
 		_id: 2,
@@ -14,6 +15,7 @@ const pacts = [
 		category: "module",
 		image: "https://avatars.dicebear.com/api/identicon/temp.svg",
 		members: [],
+		moderators: [],
 	},
 	{
 		_id: 3,
@@ -22,6 +24,7 @@ const pacts = [
 		category: "society",
 		image: "https://avatars.dicebear.com/api/identicon/temp.svg",
 		members: ["01", "02"],
+		moderators: [],
 	},
 	{
 		_id: 4,
@@ -30,6 +33,7 @@ const pacts = [
 		category: "other",
 		image: "https://avatars.dicebear.com/api/identicon/temp.svg",
 		members: ["02"],
+		moderators: [],
 	},
 ];
 

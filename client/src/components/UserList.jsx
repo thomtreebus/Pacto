@@ -3,10 +3,10 @@ import { Typography } from "@mui/material";
 import UserCard from "./UserCard";
 
 export default function UserList({ users }) {
-	if (!users.length) {
+	if (!users || !users.length) {
 		return (
 			<Typography variant="subtitle1" sx={{ textAlign: "center" }}>
-				There are no users in this category.
+				There are no users in this category
 			</Typography>
 		);
 	}

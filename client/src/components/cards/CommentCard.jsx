@@ -9,11 +9,44 @@ import { useAuth } from "../../providers/AuthProvider";
 import CommentBox from "../CommentBox";
 import Voter from "../Voter";
 import { relativeTime } from "../../helpers/timeHandllers";
+import DeleteIcon from "@mui/icons-material/Delete";
+import { IconButton } from "@mui/material";
+import ErrorMessage from "../ErrorMessage";
 
 export default function CommentCard({ comment, post, postUpdaterFunc }) {
-  const { user } = useAuth();
+  const { user, silentUserRefresh } = useAuth();
   const [showReplyBox, setShowReplyBox] = useState(false);
   const history = useHistory();
+  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
+	const [isError, setIsError] = useState(false);
+	const [errorMessage, setErrorMessage] = useState("");
+
+  const handleDelete = async () => {
+    setIsButtonDisabled(true);
+
+    const response = await fetch(
+      `${process.env.REACT_APP_URL}/pact/${post.pact._id}/post/${post._id}/comment/${comment._id}`,
+      {
+        method: "DELETE",
+        credentials: "include",
+      }
+    );
+
+    try {
+      if (response.status !== 200) {
+        const json = await response.json();
+        if (json.errors.length) throw Error(json.errors[0].message);
+      }
+    } catch (err) {
+      setIsError(true);
+      setErrorMessage(err.message);
+      setIsButtonDisabled(false);
+      return;
+    }
+
+    await silentUserRefresh();
+    history.push(`/pact/${post.pact._id}/post/${post._id}`);
+  };
 
   const handleLikeEvent = async (eventCode) => {
     const url = (() => {
@@ -50,6 +83,12 @@ export default function CommentCard({ comment, post, postUpdaterFunc }) {
   }
 
   return (comment&&
+    <>
+    <ErrorMessage
+      isOpen={isError}
+      setIsOpen={setIsError}
+      message={errorMessage}
+    />
     <Card sx={{ width: "100%", marginTop : 1, boxShadow: 3  }} data-testid="comment-card" >
       <CardContent>
         <Box sx={{ overflow: "hidden" }}>
@@ -65,13 +104,14 @@ export default function CommentCard({ comment, post, postUpdaterFunc }) {
               Posted by <span onClick={() => history.push(`/user/${comment.author._id}`)} className="link" data-testid="author">{comment.author.firstName + " " + comment.author.lastName}</span> {relativeTime(comment.createdAt)}
             </Typography>
 
-            <Typography variant="body1" data-testid="comment-text">
+            <Typography variant="body1" color={`${comment.deleted ? 'error' : 'inherit'}`} data-testid="comment-text">
               {comment.text}
             </Typography>
 
-            <Typography variant="caption" className="link" onClick={() => {setShowReplyBox(!showReplyBox)}} data-testid="reply-button">
+            { !comment.deleted && <Typography variant="caption" className="link" onClick={() => {setShowReplyBox(!showReplyBox)}} data-testid="reply-button">
               {showReplyBox ? "Hide" : "Reply"}
-            </Typography>
+              </Typography>
+            }
           </Box>
 
           {showReplyBox && <Box>
@@ -100,7 +140,20 @@ export default function CommentCard({ comment, post, postUpdaterFunc }) {
             </Accordion>
           </Box>}
         </Box>
+        {((comment.author._id === user._id ||
+						post.pact.moderators.includes(user._id)) && !comment.deleted) && (
+						<Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+							<IconButton
+								color="error"
+								onClick={handleDelete}
+								disabled={isButtonDisabled}
+							>
+								<DeleteIcon fontSize="medium" />
+							</IconButton>
+						</Box>
+					)}
       </CardContent>
     </Card>
+    </>
   )
 }

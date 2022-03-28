@@ -16,7 +16,7 @@ module.exports.pactPost = async (req, res) => {
     const { name } = req.body;
     const optionalAttributes = ['description', 'category'];
 
-		const newPact = { 
+		const newPact = {
 			name,
 			university:user.university,
 		  members:[user],
@@ -41,9 +41,9 @@ module.exports.pactPost = async (req, res) => {
 		await pact.populate({ path: "members", model: User });
 		await pact.populate({ path: "moderators", model: User });
 		await pact.populate({ path: "posts", model: Post });
-		
+
 		res.status(201).json(jsonResponse(pact, []));
-	} 
+	}
   catch (err) {
 		res.status(400).json(jsonResponse(null, handleFieldErrors(err)));
 	}
@@ -53,10 +53,38 @@ module.exports.pactPost = async (req, res) => {
 module.exports.pactGet = async (req, res) => {
 	try {
 		const pact = req.pact;
-		await pact.populate({ path: 'university', model: University });
-		await pact.populate({ path: "members", model: User });
-		await pact.populate({ path: "moderators", model: User });
-		await pact.populate({ path: "posts", model: Post, populate: [{path: "author", model: User}, {path: "pact", model: Pact}] });
+		await pact.populate({
+			path: 'university',
+			model: University,
+			select: ["name"]
+		});
+		await pact.populate({
+			path: "members",
+			model: User,
+			select: ["firstName", "lastName", "course", "university", "image"]
+		});
+		await pact.populate({
+			path: "moderators",
+			model: User,
+			select: ["firstName", "lastName", "course", "university", "image"]
+		});
+		await pact.populate({
+			path: "bannedUsers",
+			model: User,
+			select: ["firstName", "lastName", "course", "university", "image"]
+		});
+		await pact.populate({
+			path: "posts",
+			model: Post,
+			populate: [{
+				path: "author",
+				model: User,
+				select: ["firstName", "lastName", "course", "university"]
+			},
+				{
+					path: "pact", model: Pact
+				}]
+		});
 
 		for (let index = 0; index < pact.posts.length; index++) {
 			const post = pact.posts[index];
@@ -70,7 +98,7 @@ module.exports.pactGet = async (req, res) => {
 		}
 
 		res.status(200).json(jsonResponse(pact, []));
-	} 
+	}
   catch (err) {
 		res.status(400).json(jsonResponse(null, [jsonError(null, err.message)]));
 	}
@@ -121,15 +149,19 @@ module.exports.joinPact = async (req, res) => {
 
 		if(!potentialPacts.length){
 			throw Error(PACT_MESSAGES.NOT_FOUND);
-		}  
+		}
 
 		const targetUser = await User.findById(req.user._id);
 		const targetPact = await Pact.findById(req.params.id);
 
+		if(targetPact.bannedUsers.includes(targetUser._id)) {
+			throw Error(PACT_MESSAGES.IS_BANNED_USER);
+		}
+
 		if (!targetUser.pacts.includes(targetPact._id) && !targetPact.members.includes(targetUser._id)) {
 			targetUser.pacts.push(targetPact);
 			targetPact.members.push(targetUser);
-			
+
 			await targetPact.save();
 			await targetUser.save();
 		}
@@ -137,7 +169,7 @@ module.exports.joinPact = async (req, res) => {
 		res.json(jsonResponse(PACT_MESSAGES.SUCCESSFUL_JOIN, []));
 	}
 	catch (err) {
-		res.status(404).json(jsonResponse(null, [jsonError(null, PACT_MESSAGES.NOT_FOUND)]));
+		res.status(404).json(jsonResponse(null, [jsonError(null, err.message)]));
 	}
 };
 
@@ -156,7 +188,7 @@ module.exports.banMember = async (req, res) => {
 			throw Error(PACT_MESSAGES.CANT_BAN_MODERATOR);
 		}
 
-		// Can't ban someone who is already banned from a pact 
+		// Can't ban someone who is already banned from a pact
 		if (pact.bannedUsers.includes(user._id)) {
 			throw Error(PACT_MESSAGES.ALREADY_BANNED);
 		}
@@ -261,7 +293,7 @@ async function deleteAllComments(comments) {
 module.exports.deletePact = async (req, res) => {
 	try {
 		const pact = await Pact.findById(req.params.pactId);
-		
+
 		// Already checked via middleware that the user is a mod
 		if(pact.moderators.length !== 1) {
 			res.status(401).json(jsonResponse(null, [jsonError(null, PACT_MESSAGES.DELETE.TOO_MANY_MODERATORS)]));

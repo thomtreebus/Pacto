@@ -12,7 +12,7 @@ const post = {message:{
   text: "lorem ispum",
   type: "text",
   _id: 1,
-  pact: {_id:5},
+  pact: {_id:5, moderators : []},
   author: {
     firstName: "Krishi",
     lastName: "Wali",

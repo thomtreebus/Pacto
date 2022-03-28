@@ -117,6 +117,28 @@ describe("POST /pact/:pactid/join", () => {
     expect(errors.length).toBe(1);
   });
 
+  
+  it("should not allow a banned user to join a pact", async () => {
+    const user = await User.findOne({ uniEmail: getDefaultTestUserEmail() });
+    const pact = await Pact.findOne({ _id: getTestPactId() });
+    pact.bannedUsers.push(user);
+    await pact.save();
+    const token = createToken(user._id);
+
+    const response = await supertest(app)
+    .post(`/pact/${pact._id}/join`)
+    .set("Cookie", [`jwt=${ token }`])
+    .expect(404);
+
+    const {message, errors} = response.body;
+
+    expect(message).toBeDefined();
+    expect(message).toBe(null);
+    expect(errors[0].field).toBe(null);
+    expect(errors[0].message).toBe(PACT_MESSAGES.IS_BANNED_USER);
+    expect(errors.length).toBe(1);
+  });
+
   it("allows the user to successfully join a pact", async () => {
     const pact = await Pact.findOne({ _id: getTestPactId() });
     const user = await generateTestUser("User");

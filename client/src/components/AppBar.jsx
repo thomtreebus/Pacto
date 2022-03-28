@@ -66,6 +66,7 @@ export default function PrimarySearchAppBar({ handleDrawerToggle }) {
 
 	const [profileAnchorEl, setProfileAnchorEl] = useState(null);
 	const [notificationsAnchorEl, setNotificationsAnchorEl] = useState(null);
+	const [search, setSearch] = React.useState("");
 
 	const isProfileMenuOpen = Boolean(profileAnchorEl);
 	const isNotificationsMenuOpen = Boolean(notificationsAnchorEl);
@@ -125,6 +126,16 @@ export default function PrimarySearchAppBar({ handleDrawerToggle }) {
 	const handleNotificationsMenuClose = () => {
 		setNotificationsAnchorEl(null);
 	};
+	const handleSearch = () => {
+		if(!search) return; 
+		history.push(`/search/${search}`);
+	}
+
+	const keyPress = (e) => {
+		if (e.keyCode === 13) {
+			handleSearch();
+		}
+	}
 
 	return (
 		<Box sx={{ flexGrow: 1 }}>

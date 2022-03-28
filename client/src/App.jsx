@@ -1,7 +1,6 @@
 import Login from "./pages/LoginPage";
 import SignUp from "./pages/SignupPage";
 import Profile from "./pages/Profile";
-import SearchResults from "./pages/SearchResults";
 import BaseLayout from "./layouts/BaseLayout";
 import Landing from "./pages/LandingPage";
 import Feed from "./pages/Feed";
@@ -17,6 +16,7 @@ import UniversityHubPage from "./pages/UniversityHubPage";
 import PactPage from "./pages/PactPage";
 import PostPage from "./pages/PostPage";
 import UserPage from "./pages/UserPage";
+import SearchResults from "./pages/SearchResults";
 
 
 function App() {
@@ -55,8 +55,8 @@ function App() {
 							<PrivateRoute exact path="/create-pact">
 								<CreatePact />
 							</PrivateRoute>
-							<PrivateRoute exact path="/search/:query">
-								<SearchResults />
+							<PrivateRoute exact path="/pact/:pactID">
+								<PactPage />
 							</PrivateRoute>
 							<PrivateRoute exact path="/pact/:pactID/">
 								<PactPage />
@@ -66,6 +66,9 @@ function App() {
 							</PrivateRoute>
 							<PrivateRoute exact path="/users">
 								<UserPage />
+							</PrivateRoute>
+							<PrivateRoute exact path="/search/:query">
+								<SearchResults />
 							</PrivateRoute>
 							<PrivateRoute path="*">
 								<NotFound />
