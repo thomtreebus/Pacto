@@ -17,6 +17,7 @@ async function seedPosts(university) {
 }
 
 async function populatePacts(pacts) {
+	// Generate 20 random posts for each pact
 	for (let i = 0; i < pacts.length; i++) {
 		await generateRandomPosts(pacts[i], 20);
 		const posts = await Post.find({ pact: pacts[i] });
@@ -27,7 +28,7 @@ async function populatePacts(pacts) {
 async function generateRandomPosts(pact, numberOfPosts) {
 
 	const generators = [generateRandomTextPost, generateRandomImagePost, generateRandomLinkPost];
-
+	// For each post, randomly pick a post type, either text, image, or link.
 	for (let i = 0; i < numberOfPosts; i++) {
 		const randomGenerator = generators[chance.integer({ min: 0, max: generators.length-1 })];
 		const post =  await randomGenerator(pact);
@@ -123,7 +124,7 @@ async function populateVotes(obj, pact) {
 	const { members } = pact;
 	
 	const voteOptions = [populateUpvote, populateDownvote, async (obj, member) => {}]
-	
+	// For each member of a pact, either have them upvote or downvote a post
 	for (let i = 0; i < members.length; i++) {
 		const member = members[i];
 		const voteFunction = voteOptions[chance.integer({ min: 0, max: voteOptions.length-1 })];
