@@ -129,12 +129,12 @@ describe("App Bar Tests", () => {
     });
 
     it("should render the notification card", async () => {
-      const menuElement = await screen.findByTestId("notification-card-1");
+      const menuElement = await screen.findByTestId("notification-card-2");
       expect(menuElement).toBeInTheDocument();
     });
 
     it("should render the mark as read button on the notification card", async () => {
-      const buttonElement = await screen.findByTestId("mark-notification-as-read-1");
+      const buttonElement = await screen.findByTestId("mark-notification-as-read-2");
       expect(buttonElement).toBeInTheDocument();
     });
   });
@@ -223,7 +223,7 @@ describe("App Bar Tests", () => {
     });
 
     it("should filter notifications to only display ones that are unread", async () => {
-      const menuElement = await screen.findAllByTestId("notification-card-1");
+      const menuElement = await screen.findAllByTestId("notification-card-2");
       expect(menuElement.length).toBe(1);
     });
 
