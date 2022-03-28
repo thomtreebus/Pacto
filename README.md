@@ -68,6 +68,6 @@ The following APIs are used in the project in both the client and server applica
 - [Cloudinary](https://cloudinary.com/) - Cloud based image hosting where all the images are stored (post images, avatars, etc.)
 - [Dicebar Avatars](https://avatars.dicebear.com/) - The seeder uses Dicebar to generate avatars for the seeded users.
 - [University API](http://universities.hipolabs.com/search?country=United%20Kingdom) - A list of all universities in the UK that includes their name and domains.
-- [Link Preview] (https://www.linkpreview.net/) - Returns website information including a title, description, and thumbnail from any given URL, in JSON format.
+- [Link Preview](https://www.linkpreview.net/) - Returns website information including a title, description, and thumbnail from any given URL, in JSON format.
 
 ## Note
