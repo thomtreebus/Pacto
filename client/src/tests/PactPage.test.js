@@ -13,7 +13,7 @@ const response = {
     _id : "1",
     name: "PactName",
     description: "PactDescription",
-    members: [0,0,0],
+    members: [{_id : '0'}, {_id : '2'}, {_id : '3'}],
     posts: [
       {
         pact: {
@@ -161,7 +161,7 @@ describe("PactPage Tests", () => {
       describe("When the user is there is more than one moderator", () => {
         beforeAll(() => {
           const responseCopy = Object.assign({}, response);
-          responseCopy.message.moderators.push("anotherModerator");
+          responseCopy.message.moderators.push({_id : '6'});
           server.use(
             rest.get(`${process.env.REACT_APP_URL}/pact/1`, (req, res, ctx) => {
               return res(
