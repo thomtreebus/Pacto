@@ -51,13 +51,23 @@ In both the client and server directories , install the required packages:
 $ npm install
 ```
 
-## Sources
+## Credits/Sources
+
+### Packages 
 
 The packages used by the two applications are specified in `package.json`
 
+### MUI (Material UI)
+
+The majority of components and elements used in the client application were created using [MUI](https://mui.com/), a React library that uses [Material Design](https://material.io/design). These components are labelled accordingly in the files where they are directly used. Additionaly, some code that is shown in the [MUI documentation](https://mui.com/getting-started/installation/) has been used, this is also labelled in the files.
+
+### APIs 
+
+The following APIs are used in the project in both the client and server application:
+
+- [Cloudinary](https://cloudinary.com/) - Cloud based image hosting where all the images are stored (post images, avatars, etc.)
+- [Dicebar Avatars](https://avatars.dicebear.com/) - The seeder uses Dicebar to generate avatars for the seeded users.
+- [University API](http://universities.hipolabs.com/search?country=United%20Kingdom) - A list of all universities in the UK that includes their name and domains.
+- [Link Preview] (https://www.linkpreview.net/) - Returns website information including a title, description, and thumbnail from any given URL, in JSON format.
+
 ## Note
-
-## Credits
-
-There have been some code used from [Material UI Documentation](https://mui.com). 
-These have been labelled accordingly in the files where they were directly used.
