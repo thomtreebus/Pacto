@@ -16,7 +16,6 @@ import InstagramIcon from '@mui/icons-material/Instagram';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import WhatsAppIcon from '@mui/icons-material/WhatsApp';
 import GroupIcon from '@mui/icons-material/Group';
-import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import ForumIcon from '@mui/icons-material/Forum';
 import EditIcon from '@mui/icons-material/Edit';
 import {useAuth} from "../providers/AuthProvider";
@@ -34,7 +33,6 @@ export default function Profile() {
   const history = useHistory();
   const [canEditProfile, setCanEditProfile] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const [counter, setCounter] = useState(0);
 
   useEffect(() => {
     silentUserRefresh();
@@ -54,7 +52,7 @@ export default function Profile() {
       if (err.message === "Could not fetch user profile") history.push("/not-found")
     });
     return () => controller.abort();
-  }, [id, history, counter, silentUserRefresh])
+  }, [id, history, silentUserRefresh])
 
   useEffect(() => {
     if(displayedUser) {

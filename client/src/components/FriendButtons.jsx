@@ -75,7 +75,7 @@ function deleteFriend(){
   return (
     <Box sx={{display : "flex", flexDirection: {xs: "column", sm : "row"}, gap: "0.5rem"}} data-testid="friend-buttons">
 
-      {isFriend && <Button onClick={deleteFriend} variant="contained" color="error" data-testid="del-friend-btn">
+      {isFriend && <Button disabled={buttonsDisabled} onClick={deleteFriend} variant="contained" color="error" data-testid="del-friend-btn">
           Remove Friend
       </Button>}
 
@@ -87,7 +87,7 @@ function deleteFriend(){
           Decline Friend Request
       </Button>}          
 
-      {hasSentRequest && <Button disabled={buttonsDisabled} variant="outlined" disabled fullwidth="true" startIcon={<PersonAddIcon />} sx={{marginTop: "4px"}} data-testid="sent-req-btn">
+      {hasSentRequest && <Button variant="outlined" disabled fullwidth="true" startIcon={<PersonAddIcon />} sx={{marginTop: "4px"}} data-testid="sent-req-btn">
           Request Sent
       </Button>} 
 
