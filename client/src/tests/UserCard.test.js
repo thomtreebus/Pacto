@@ -23,42 +23,6 @@ describe("UserCard Tests", () => {
                 errors: [] 
             })
 			);
-		}),
-
-        rest.post(`${process.env.REACT_APP_URL}/friends/:4`, (req, res, ctx) => {
-			return res(
-				ctx.json({ 
-                    message: {}, 
-                    errors: [] 
-                })
-			);
-		}), 
-
-        rest.put(`${process.env.REACT_APP_URL}/friends/:2/accept`, (req, res, ctx) => {
-			return res(
-				ctx.json({ 
-                    message: {}, 
-                    errors: [] 
-                })
-			);
-		}), 
-
-        rest.put(`${process.env.REACT_APP_URL}/friends/:2/reject`, (req, res, ctx) => {
-			return res(
-				ctx.json({ 
-                    message: {}, 
-                    errors: [] 
-                })
-			);
-		}), 
-
-        rest.put(`${process.env.REACT_APP_URL}/friends/remove/:1`, (req, res, ctx) => {
-			return res(
-				ctx.json({ 
-                    message: {}, 
-                    errors: [] 
-                })
-			);
 		}), 
 	);
 
@@ -79,24 +43,24 @@ describe("UserCard Tests", () => {
 		await waitForElementToBeRemoved(() => screen.getByText("Loading"));
 	};
 
-    describe("Check element rendering", () => {
-        beforeEach(async () => {
-            await renderWithMock(<UserCard user={testUsers[0]} />);
-        });
+    beforeEach(async () => {
+        await renderWithMock(<UserCard user={testUsers[1]} />);
+    });
 
+    describe("Check element rendering", () => {
         it("should render the user's profile picture", async () => {
             const cardImage = await screen.getByAltText(/image/i);
             expect(cardImage).toBeInTheDocument();
         });
 
-        it("should render the user's first name", () => {
-            const firstName = screen.getByText(/Pac/i);
+        it("should render the user's name", async () => {
+            const firstName = await screen.findByTestId("user-name");
             expect(firstName).toBeInTheDocument();
         });
 
-        it("should render the user's last name", () => {
-            const lastName = screen.getByText(/To/i);
-            expect(lastName).toBeInTheDocument();
+        it("should render friend buttons", async () => {
+            const friendButtons = await screen.findByTestId("friend-buttons");
+            expect(friendButtons).toBeInTheDocument();
         });
     });
 
@@ -115,7 +79,7 @@ describe("UserCard Tests", () => {
             );
             const buttonElement = await screen.findByTestId("user-image");
             fireEvent.click(buttonElement);
-            await waitFor(() => expect(window.location.pathname).toBe("/user/1"));	
+            await waitFor(() => expect(window.location.pathname).toBe("/user/2"));	
         });
 
         it("should redirect to user profile when the user name is pressed", async () => {
@@ -132,7 +96,7 @@ describe("UserCard Tests", () => {
             );
             const buttonElement = await screen.findByTestId("user-name");
             fireEvent.click(buttonElement);
-            await waitFor(() => expect(window.location.pathname).toBe("/user/1"));	
+            await waitFor(() => expect(window.location.pathname).toBe("/user/2"));	
         });
     })
 });

@@ -1,9 +1,6 @@
 import { Box, Grid, Card, CardHeader, Avatar, Typography, Button } from "@mui/material"
-import { useState } from "react";
 import { useHistory } from "react-router-dom";
 import { useAuth } from "../providers/AuthProvider";
-import PersonAddIcon from '@mui/icons-material/PersonAdd';
-import EditIcon from '@mui/icons-material/Edit';
 import FriendButtons from "./FriendButtons";
 
 export default function UserCard({user}){
