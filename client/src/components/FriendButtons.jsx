@@ -49,23 +49,19 @@ export default function FriendButtons({user}){ // logged in user and user to be 
     // Update state on success
     if(response.ok){
       switch(status) {
-        case FRIEND_EVENT_STATUS_CODES.ACCEPT_REQ: { // Accepting request
+        case FRIEND_EVENT_STATUS_CODES.ACCEPT_REQ:
           setHasReceivedRequest(false);
           setIsFriend(true);
-          return;
-        };
-        case FRIEND_EVENT_STATUS_CODES.REJECT_REQ: { // Declining request
+          break;
+        case FRIEND_EVENT_STATUS_CODES.REJECT_REQ:
           setHasReceivedRequest(false);
-          return;
-        };
-        case FRIEND_EVENT_STATUS_CODES.REMOVE_FRIEND: { // Removing friend
+          break;
+        case FRIEND_EVENT_STATUS_CODES.REMOVE_FRIEND: 
           setIsFriend(false);
-          return;
-        };
-        case FRIEND_EVENT_STATUS_CODES.ADD_FRIEND: { // Sending request
+          break;
+        case FRIEND_EVENT_STATUS_CODES.ADD_FRIEND:
           setHasSentRequest(true);
-          return;
-        };
+          break;
         // no default
       }
     }
