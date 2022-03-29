@@ -26,7 +26,7 @@ const post = {
 }
 
 describe("Voter Tests", () => {
-  const {server} = useMockServer();
+  const server = useMockServer();
   
   beforeEach(async () => {
 		render(

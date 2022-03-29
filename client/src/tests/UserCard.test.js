@@ -9,7 +9,7 @@ import testUsers from "./utils/testUsers"
 import { useMockServer } from "./utils/useMockServer";
 
 describe("UserCard Tests", () => {
-    const {server} = useMockServer();
+    const server = useMockServer();
 
 	const renderWithMock = async (children) => {
 		render(<MockComponent>{children}</MockComponent>);

@@ -11,7 +11,7 @@ import { useMockServer } from "./utils/useMockServer";
 // TODO These tests are effectively duplicates of the UserList tests. Remember to combine the tests if possible.
 
 describe("User List Tests", () => {
-	const { server } = useMockServer();
+	const server = useMockServer();
 
 	const renderWithMock = async (element) => {
 		render(

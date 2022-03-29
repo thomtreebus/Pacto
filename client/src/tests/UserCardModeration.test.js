@@ -58,7 +58,7 @@ const pactResponse = {
 }
 
 describe("UserCard Tests", () => {
-  const {server} = useMockServer();
+  const server = useMockServer();
 
   beforeEach(async () => {
     server.use(

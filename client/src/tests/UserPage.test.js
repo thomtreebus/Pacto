@@ -14,7 +14,7 @@ const CATEGORIES = ["All", "Friends", "Same Course", "Received Requests", "Sent 
 describe("User Page Tests", () => {
     let history = undefined;
 
-    const { server } = useMockServer();
+    const server = useMockServer();
 
     beforeEach(async () => {
         server.use(

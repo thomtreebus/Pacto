@@ -8,7 +8,7 @@ import MockComponent from "./utils/MockComponent.jsx";
 import { useMockServer } from "./utils/useMockServer.js";
 
 describe("User List Tests", () => {
-	const { server } = useMockServer();
+	const server = useMockServer();
 
 	const renderWithMock = async (element) => {
 		render(

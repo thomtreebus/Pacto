@@ -24,5 +24,5 @@ export const useMockServer = () => {
 		server.resetHandlers();
 	});
 
-	return { server };
+	return server;
 };
