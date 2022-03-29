@@ -1,5 +1,6 @@
 const User = require("../../../models/User");
 const FriendRequest = require("../../../models/FriendRequest");
+const Notification = require("../../../models/Notification");
 const mongoose = require("mongoose");
 const app = require("../../../app");
 const supertest = require("supertest");
@@ -55,6 +56,38 @@ describe("acceptFriendRequest /friends", () => {
     expect(updatedRecipient.receivedRequests.length).toBe(0);
   });
 
+  it("notifies requestor that the recipient has accepted their friend request", async () => {
+    await Notification.deleteMany({});
+    const recipientUser = await generateCustomUniTestUser("User", "ucl");
+    recipientUser.active = true;
+    recipientUser.save();
+
+    const user = await User.findOne({ uniEmail: getDefaultTestUserEmail() });
+    const oldCount = user.notifications.length;
+    const token = createToken(user._id);
+    const res = await supertest(app)
+    .post(`/friends/${ recipientUser._id }`)
+    .set("Cookie", [`jwt=${ token }`])
+    .expect(201);
+    const request = res.body.message;
+
+    const recipientToken = createToken(recipientUser._id);
+    const response = await supertest(app)
+    .put(`/friends/${ request._id }/accept`)
+    .set("Cookie", [`jwt=${ recipientToken }`])
+    .expect(201);
+    expect(response.body.message).toBeDefined();
+    expect(response.body.errors.length).toBe(0);
+
+    const updatedUser = await User.findOne({ uniEmail: getDefaultTestUserEmail() });
+    const newCount = updatedUser.notifications.length;
+    expect(newCount).toBe(oldCount + 1);
+    const notification = await Notification.findOne({ user: user._id });
+    expect(notification).toBeDefined();
+    expect(notification.user._id.toString()).toBe(updatedUser._id.toString());
+    expect(notification.text).toBe(`${recipientUser.firstName} ${recipientUser.lastName} has accepted your friend request`);
+  });
+  
   it("can't accept a request received by someone else", async () => {
     const recipientUser = await generateCustomUniTestUser("User", "ucl");
     recipientUser.active = true;

@@ -41,6 +41,9 @@ app.use("/users", userRoutes)
 const friendRoutes = require("./routes/friends");
 app.use("/", friendRoutes);
 
+const notificationRoute = require("./routes/notifications");
+app.use("/", notificationRoute)
+
 app.get("/ping", (req, res) => {
 	res.json({ ping: "pong" });
 });
