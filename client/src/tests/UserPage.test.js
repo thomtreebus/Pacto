@@ -1,48 +1,32 @@
 import UserPage from "../pages/UserPage";
-import { render, screen, fireEvent, waitFor, cleanup } from "@testing-library/react";
+import { render, screen, fireEvent, cleanup } from "@testing-library/react";
 import { waitForElementToBeRemoved } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import MockComponent from "./utils/MockComponent";
 import { rest } from "msw";
-import { setupServer } from "msw/node";
 import users from "./utils/testUsers";
 import { createMemoryHistory } from 'history';
 import {Route, Router} from "react-router-dom";
+import { useMockServer } from "./utils/useMockServer";
 
 const CATEGORIES = ["All", "Friends", "Same Course", "Received Requests", "Sent Requests"];
 
 describe("User Page Tests", () => {
     let history = undefined;
 
-    const server = setupServer(
-        rest.get(`${process.env.REACT_APP_URL}/me`, (req, res, ctx) => {
-            return res(
-                ctx.json({
-                    message: users[1],
-                    errors: [],
-                })
-            );
-        }),
-        rest.get(`${process.env.REACT_APP_URL}/users`, (req, res, ctx) => {
-            return res(
-                ctx.json({
-                    message: users,
-                    errors: [],
-                })
-            );
-        })
-    );
-
-    beforeAll(() => {
-        server.listen();
-    });
-
-    afterAll(() => {
-        server.close();
-    });
+    const server = useMockServer();
 
     beforeEach(async () => {
-        server.resetHandlers();
+        server.use(
+            rest.get(`${process.env.REACT_APP_URL}/users`, (req, res, ctx) => {
+                return res(
+                    ctx.json({
+                        message: users,
+                        errors: [],
+                    })
+                );
+            })
+        )
     });
 
     const renderWithMock = async () => {
