@@ -1,4 +1,19 @@
 # Developer Instructions
+## Table of Contents
+- [Developer Instructions](#developer-instructions)
+  - [Table of Contents](#table-of-contents)
+  - [Software Installation](#software-installation)
+    - [1. Prerequisites](#1-prerequisites)
+    - [2. Register for APIs](#2-register-for-apis)
+      - [**Cloudinary**](#cloudinary)
+      - [**Link Preview**](#link-preview)
+      - [**University API**](#university-api)
+    - [3. Setup Client Application](#3-setup-client-application)
+      - [Environment Variables](#environment-variables)
+    - [4. Setup Server Application](#4-setup-server-application)
+      - [Environment Variables](#environment-variables-1)
+  - [Development](#development)
+    - [SOLID Principles](#solid-principles)
 ## Software Installation
 Unzip the .zip folder and open a new terminal window inside the project directory.
 ### 1. Prerequisites
