@@ -23,33 +23,6 @@ export default function CommentCard({ comment, post, postUpdaterFunc }) {
 
   const DELETED_COMMENT_MESSAGE = "This comment has been deleted.";
 
-  const handleDelete = async () => {
-    setIsButtonDisabled(true);
-
-    const response = await fetch(
-      `${process.env.REACT_APP_URL}/pact/${post.pact._id}/post/${post._id}/comment/${comment._id}`,
-      {
-        method: "DELETE",
-        credentials: "include",
-      }
-    );
-
-    try {
-      if (response.status !== 200) {
-        const json = await response.json();
-        if (json.errors.length) throw Error(json.errors[0].message);
-      }
-    } catch (err) {
-      setIsError(true);
-      setErrorMessage(err.message);
-      setIsButtonDisabled(false);
-      return;
-    }
-
-    await silentUserRefresh();
-    history.push(`/pact/${post.pact._id}/post/${post._id}`);
-  };
-
   const handleLikeEvent = async (eventCode) => {
     const url = (() => {
       switch(eventCode) {
@@ -64,20 +37,56 @@ export default function CommentCard({ comment, post, postUpdaterFunc }) {
     });
 	};
 
+  const updateComment = (updatedComment, replies=[]) => {
+    const newPostObj = JSON.parse(JSON.stringify(post)); // Deep clone the post so it can be modified and resaved
+
+    const indexOfCommentToUpdate = post.comments.indexOf(comment);
+    newPostObj.comments = newPostObj.comments.filter(c => c._id !== comment._id); // Remove comment from post
+    newPostObj.comments.splice(indexOfCommentToUpdate, 0, updatedComment); // Add updated comment to post in its place
+
+    replies.forEach((reply) => {
+      updatedComment.childComments.unshift(reply); // Add reply of comment to its children
+      newPostObj.comments.unshift(reply); // Add reply of comment to overall list of comments (for rendering)
+    })
+    
+    postUpdaterFunc(newPostObj); // Send updated post object to parent
+  }
+
+  const handleDelete = async () => {
+    setIsButtonDisabled(true);
+
+    const response = await fetch(
+      `${process.env.REACT_APP_URL}/pact/${post.pact._id}/post/${post._id}/comment/${comment._id}`,
+      {
+        method: "DELETE",
+        credentials: "include",
+      }
+    );
+
+    try {
+      const json = await response.json();
+
+      if (response.status !== 200) {
+        if (json.errors.length) throw Error(json.errors[0].message);
+      }
+      
+      const newComment = json.message;
+      updateComment(newComment);
+  
+    } 
+    catch (err) {
+      setIsError(true);
+      setErrorMessage(err.message);
+      setIsButtonDisabled(false);
+      return;
+    }
+  };
+
   const replySubmissionHandler = (newComment) => {
     setShowReplyBox(false);
-    const indexOfCommentToUpdate = post.comments.indexOf(comment);
-
-    const newPostObj = JSON.parse(JSON.stringify(post)); // Deep clone the post so it can be modified and resaved
     const newRepliedToCommentObj = JSON.parse(JSON.stringify(comment)); // Deep clone the replied-tocomment so it can be modified and resaved
     
-    newRepliedToCommentObj.childComments.unshift(newComment); // Add reply of comment to its children
-    newPostObj.comments.unshift(newComment); // Add reply of comment to overall list of comments (for rendering)
-
-    newPostObj.comments = newPostObj.comments.filter(c => c._id !== comment._id); // Remove replied-to comment from post
-    newPostObj.comments.splice(indexOfCommentToUpdate, 0, newRepliedToCommentObj); // Add updated replied-to comment
-
-    postUpdaterFunc(newPostObj); // Send updated post object to parent
+    updateComment(newRepliedToCommentObj, [newComment]);
   }
 
   if(!comment){
