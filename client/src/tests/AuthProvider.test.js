@@ -6,6 +6,7 @@ import AuthRoute from "../components/AuthRoute";
 import { rest } from "msw";
 import { setupServer } from "msw/node";
 import { useAuth } from "../providers/AuthProvider";
+import { useMockServer } from "./utils/useMockServer";
 
 const MockAuthProviderUser = () => {
 	const { user, isAuthenticated } = useAuth();
@@ -22,26 +23,7 @@ const MockAuthProviderUser = () => {
 };
 
 describe("AuthProvider Tests", () => {
-	const server = setupServer(
-		rest.get(`${process.env.REACT_APP_URL}/me`, (req, res, ctx) => {
-			return res(
-				ctx.status(200),
-				ctx.json({ message: { firstName: "pac", lastName: "to" }, errors: [] })
-			);
-		})
-	);
-
-	beforeAll(() => {
-		server.listen();
-	});
-
-	afterAll(() => {
-		server.close();
-	});
-
-	beforeEach(async () => {
-		server.resetHandlers();
-	});
+	const server = useMockServer();
 
 	async function renderComponent() {
 		render(
@@ -54,7 +36,7 @@ describe("AuthProvider Tests", () => {
 
 	it("isAuthenticated is true and user is defined when user is logged in", async () => {
 		await renderComponent();
-		const textElement = screen.getByText("pac");
+		const textElement = screen.getByText(/pac/i);
 		expect(textElement).toBeInTheDocument();
 	});
 

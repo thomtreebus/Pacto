@@ -6,6 +6,7 @@ import { rest } from "msw";
 import { setupServer } from "msw/node";
 import FriendButtons from "../components/FriendButtons";
 import testUsers from "./utils/testUsers";
+import { useMockServer } from "./utils/useMockServer";
 
 const loggedInUser = {
 	firstName: "pac",
@@ -18,72 +19,60 @@ const loggedInUser = {
 };
 
 describe("FriendButton Tests", () => {
-	const server = setupServer(
-		rest.get(`${process.env.REACT_APP_URL}/me`, (req, res, ctx) => {
-			return res(
-				ctx.json({
-					message: loggedInUser,
-					errors: [],
-				})
-			);
-		}),
-
-		rest.post(`${process.env.REACT_APP_URL}/friends/:4`, (req, res, ctx) => {
-			return res(
-				ctx.json({
-					message: {},
-					errors: [],
-				})
-			);
-		}),
-
-		rest.put(
-			`${process.env.REACT_APP_URL}/friends/:2/accept`,
-			(req, res, ctx) => {
-				return res(
-					ctx.json({
-						message: {},
-						errors: [],
-					})
-				);
-			}
-		),
-
-		rest.put(
-			`${process.env.REACT_APP_URL}/friends/:2/reject`,
-			(req, res, ctx) => {
-				return res(
-					ctx.json({
-						message: {},
-						errors: [],
-					})
-				);
-			}
-		),
-
-		rest.put(
-			`${process.env.REACT_APP_URL}/friends/remove/:1`,
-			(req, res, ctx) => {
-				return res(
-					ctx.json({
-						message: {},
-						errors: [],
-					})
-				);
-			}
-		)
-	);
-
-	beforeAll(() => {
-		server.listen();
-	});
-
-	afterAll(() => {
-		server.close();
-	});
+	const server = useMockServer();
 
 	beforeEach(async () => {
-		server.resetHandlers();
+		server.use(
+			rest.get(`${process.env.REACT_APP_URL}/me`, (req, res, ctx) => {
+				return res(
+					ctx.json({
+						message: loggedInUser,
+						errors: [],
+					})
+				);
+			}),
+			rest.post(`${process.env.REACT_APP_URL}/friends/:4`, (req, res, ctx) => {
+				return res(
+					ctx.json({
+						message: {},
+						errors: [],
+					})
+				);
+			}),
+			rest.put(
+				`${process.env.REACT_APP_URL}/friends/:2/accept`,
+				(req, res, ctx) => {
+					return res(
+						ctx.json({
+							message: {},
+							errors: [],
+						})
+					);
+				}
+			),
+			rest.put(
+				`${process.env.REACT_APP_URL}/friends/:2/reject`,
+				(req, res, ctx) => {
+					return res(
+						ctx.json({
+							message: {},
+							errors: [],
+						})
+					);
+				}
+			),
+			rest.put(
+				`${process.env.REACT_APP_URL}/friends/remove/:1`,
+				(req, res, ctx) => {
+					return res(
+						ctx.json({
+							message: {},
+							errors: [],
+						})
+					);
+				}
+			)
+		);
 	});
 
 	const renderWithMock = async (children) => {

@@ -7,6 +7,8 @@ import { rest } from "msw";
 import { setupServer } from "msw/node";
 import userEvent from "@testing-library/user-event";
 import {act} from "react-dom/test-utils";
+import users from "./utils/testUsers";
+import { useMockServer } from "./utils/useMockServer";
 
 const pactId = 1;
 
@@ -32,25 +34,7 @@ function serverPostRequest(server, type){
 }
 
 describe("CreatePostCard Tests", () => {
-	const server = setupServer(
-		rest.get(`${process.env.REACT_APP_URL}/me`, (req, res, ctx) => {
-			return res(
-				ctx.json({ message: { firstName: "pac", lastName: "to", _id: "5" }, errors: [] })
-			);
-		})
-	);
-
-	beforeAll(() => {
-		server.listen();
-	});
-
-	afterAll(() => {
-		server.close();
-	});
-
-	beforeEach(async () => {
-		server.resetHandlers();
-	});
+	const server = useMockServer();
 
 	beforeEach(async () => {
 
