@@ -54,13 +54,10 @@ export default function CommentBox({
 			}
 		});
 
-		if (response.status !== 201) {
-			// i.e. an error has occured
-			setIsButtonDisabled(false);
-			return;
-		}
-
-		successHandler(json["message"]);
+		if (response.ok) {
+			successHandler(json["message"]);
+		} 
+		setIsButtonDisabled(false);
 	};
 
 	return (
