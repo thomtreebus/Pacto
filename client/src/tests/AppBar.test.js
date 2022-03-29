@@ -60,7 +60,7 @@ describe("App Bar Tests", () => {
 		server.resetHandlers();
 	});
 
-  beforeEach(async () => {
+  const renderWithMock = async (element) => {
     history = createMemoryHistory({ initialEntries: [`/feed`] });
     render(
       <MockComponent>
@@ -83,11 +83,16 @@ describe("App Bar Tests", () => {
           </Switch>
         </PrivateRoute>
       </MockComponent>
-      );
+    );
     await waitForElementToBeRemoved(() => screen.getByText("Loading"));
-  });
+  }
 
   describe("Check elements are rendered", () => {
+
+    beforeEach( async () => {
+      await renderWithMock();
+    })
+
     it("should render the app bar element", () => {
       const appBarElement = screen.getByTestId("app-bar");
       expect(appBarElement).toBeInTheDocument();
@@ -140,6 +145,11 @@ describe("App Bar Tests", () => {
   });
 
   describe("Check interaction with elements", () => {
+
+    beforeEach( async () => {
+      await renderWithMock();
+    })
+
     it("should log out the user when log out is pressed", async () => {
       server.use(
 				rest.get(`${process.env.REACT_APP_URL}/me`, (req, res, ctx) => {
@@ -232,28 +242,29 @@ describe("App Bar Tests", () => {
         });
       });
     });
+  });
 
+  describe("Other tests", () => {
     it("should display the error with marking a notification as read", async () => {
       server.use(
         rest.put(`${process.env.REACT_APP_URL}/notifications/2/update`, (req, res, ctx) => {
           return res(
             ctx.status(400),
             ctx.json({
-              errors: [{field: null, message: "There was an error marking as read"}], 
+              errors: [{field: null, message: "There was an error marking as read"}],
               message: null })
           );
         })
       );
+      await renderWithMock();
+      const buttonElement = await screen.findByTestId("mark-notification-as-read-2");
       await act(async () => {
-        const buttonElement = await screen.findByTestId("mark-notification-as-read-2");
         fireEvent.click(buttonElement);
-        await waitFor(async () =>{
-          expect(await screen.queryByTestId("notification-card-2")).toBeInTheDocument();
-          expect(buttonElement).not.toBeDisabled();
-          expect(await screen.queryByTestId("error-message-2")).toBeInTheDocument();
-          
         });
-      });
+      expect(await screen.findByTestId("notification-card-2")).toBeInTheDocument();
+      expect(await screen.findByText("There was an error marking as read")).toBeInTheDocument();
+      expect(await screen.findByTestId("error-message-2")).toBeInTheDocument();
+      expect(buttonElement).not.toBeDisabled();
     });
-  });
+  })
 });
