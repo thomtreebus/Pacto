@@ -5,6 +5,15 @@ const University = require('../models/University');
 const { MESSAGES } = require("../helpers/messages");
 const FriendRequest = require('../models/FriendRequest');
 
+/**
+ * Middleware to check that the user is authenticated.
+ * Adds the user field to the request if the user is authenticated.
+ * Returns an error if the user is inactive or is not logged in.
+ * @param {Request} req - The request
+ * @param {Response} res - The response to the request
+ * @param {*} next - The next function to be executed
+ * @async
+ */
 const checkAuthenticated = async (req, res, next) => {
   const token = req.cookies.jwt;
 

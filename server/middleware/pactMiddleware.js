@@ -5,7 +5,18 @@ const University = require('../models/University');
 const { MESSAGES, PACT_MESSAGES } = require("../helpers/messages");
 const Pact = require("../models/Pact");
 
-// checkAuthenticated must be run first, or error will throw
+/**
+ * IMPORTANT: checkAuthenticated must be run first.
+ * 
+ * Middleware to check that the user is a member of a pact.
+ * The pact's id is given in the parameters of the request.
+ * It adds the pact field to the request if the user is a member of the pact.
+ * Returns an error if checkAuthenticated is not run first, or the pact is not found.
+ * @param {Request} req - The request
+ * @param {Response} res - The response to the request
+ * @param {*} next - The next function to be executed
+ * @async
+ */
 const checkIsMemberOfPact = async (req, res, next) => {
   let status = 400;
   try {
@@ -42,6 +53,18 @@ const checkIsMemberOfPact = async (req, res, next) => {
   }
 };
 
+/**
+ * IMPORTANT: checkAuthenticated must be run first.
+ * 
+ * Middleware to check that the user is a moderator of a pact.
+ * The pact's id is given in the parameters of the request.
+ * It adds the pact field to the request if the user is a moderator of the pact.
+ * Returns an error if checkAuthenticated is not run first, or the pact is not found.
+ * @param {Request} req - The request
+ * @param {Response} res - The response to the request
+ * @param {*} next - The next function to be executed
+ * @async
+ */
 const checkIsModeratorOfPact = async (req, res, next) => {
   let status = 400;
   try {

@@ -3,7 +3,11 @@ const Schema = mongoose.Schema;
 const { isEmail } = require('validator');
 const { MESSAGES } = require('../helpers/messages')
 
-// function returns true if it contains no numbers
+/**
+ * Check if the given string does not contain numbers
+ * @param {String} str - The given type name
+ * @returns true if the given string does not contain numbers
+ */
 const containsNoNumbers = (str) => {
   const regex = /^[^0-9]+$/;
   return regex.test(str);

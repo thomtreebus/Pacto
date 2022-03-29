@@ -3,7 +3,15 @@ const User = require("../models/User");
 const { jsonResponse, jsonError } = require("../helpers/responseHandlers");
 const { MESSAGES } = require("../helpers/messages");
 
-const checkNotAuthenticated = (req, res, next) => {
+/**
+ * Middleware to check that the user is NOT authenticated.
+ * Returns an error if the user is logged in.
+ * @param {Request} req - The request
+ * @param {Response} res - The response to the request
+ * @param {*} next - The next function to be executed
+ * @async
+ */
+const checkNotAuthenticated = async (req, res, next) => {
   const token = req.cookies.jwt;
 
   if (token) {
