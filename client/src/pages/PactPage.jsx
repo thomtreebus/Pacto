@@ -44,7 +44,7 @@ export default function PactPage() {
 				setIsLoading(false);
 			})
 			.catch((err) => {
-				if (err.message === "The user aborted a request.") return;
+				if (err.name === "AbortError") return;
 				if (err.message === "Could not fetch pact") {
 					history.push("/not-found");
 				}

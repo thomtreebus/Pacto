@@ -25,7 +25,7 @@
 ## Software Installation
 Unzip the .zip folder and open a new terminal window inside the project directory.
 ### 1. Prerequisites
-In order to run the application, you must have the latest stable release version of [Node.js](https://nodejs.org/en/), [npm](https://www.npmjs.com/), [Docker](https://www.docker.com/), and [docker-compose](https://docs.docker.com/compose/). To check whether you have these  installed, run the following commands:
+In order to run the application, you must have the latest stable release version (note: future versions might not work with the versions that were used during development) of [Node.js](https://nodejs.org/en/), [npm](https://www.npmjs.com/), [Docker](https://www.docker.com/), and [docker-compose](https://docs.docker.com/compose/). To check whether you have these  installed, run the following commands:
 ```
 $ node -v
 $ npm -v
@@ -59,6 +59,20 @@ You will need to add this API key as an environment variable in a later step.
 #### **University API**
 The [University API](http://universities.hipolabs.com/search?country=United%20Kingdom) is a simple API that returns a university's name and domain name for any given UK university. It is used in the server application for email verification to determine if a user has a valid university email adress. There is no registration required to use this API.
 
+#### **SendGrid SMTP Server**
+
+> Please note, this approach requires you to own a domain. 
+
+We are using [Sendgrid](https://signup.sendgrid.com/) for our deployed version. Once signed up select `Authenticate a domain instead` and follow the steps provided. This will give you all the variables required below for `Email handler variables`. 
+
+#### **Gmail SMTP Server**
+
+If you do not have a domain, our application supports other smtp services like GMail. 
+Sign up for a new gmail account with only an email and password and pass those into the `Email handler variables` below. 
+
+Make sure the email author the same as the email and use the smtp link: `smtp.gmail.com`  
+
+
 ### 3. Setup Server Application
 
 #### **Environment Variables**
@@ -77,7 +91,13 @@ The client application relies on a few environment variables. Some variables wil
   CORS_URL=http://localhost:3000
   ```
 
-- EMAIL STUFF
+- Email handler variables - We are currently using sendgrid in our application but, it may be substituted for any other smtp service that uses https and port 465.
+  ```
+  EMAIL_USER=*insert username* (usually email or an api key)
+  EMAIL_PASS=*insert password/secret key*
+  EMAIL_AUTHOR=*insert author to be displayed when a user receives an emaill*
+  SMTP_HOST=*insert the smtp link*
+  ```
 - [Cloudinary](https://cloudinary.com/) variables - add the Cloudinary values that you got when registering for an account
   ```
   CLOUDINARY_CLOUD_NAME= *insert your cloud name*

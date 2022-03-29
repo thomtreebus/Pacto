@@ -4,39 +4,23 @@ import { waitForElementToBeRemoved } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import MockComponent from "./utils/MockComponent";
 import { rest } from "msw";
-import { setupServer } from "msw/node";
 import pacts from "./utils/testPacts";
+import { useMockServer } from "./utils/useMockServer";
 
 describe("University Hub Tests", () => {
-	const server = setupServer(
-		rest.get(`${process.env.REACT_APP_URL}/me`, (req, res, ctx) => {
-			return res(
-				ctx.json({
-					message: { firstName: "pac", lastName: "to", _id: "01" },
-					errors: [],
-				})
-			);
-		}),
-		rest.get(`${process.env.REACT_APP_URL}/university`, (req, res, ctx) => {
-			return res(
-				ctx.json({
-					message: { pacts: pacts },
-					errors: [],
-				})
-			);
-		})
-	);
-
-	beforeAll(() => {
-		server.listen();
-	});
-
-	afterAll(() => {
-		server.close();
-	});
+	const server = useMockServer();
 
 	beforeEach(async () => {
-		server.resetHandlers();
+		server.use(
+			rest.get(`${process.env.REACT_APP_URL}/university`, (req, res, ctx) => {
+				return res(
+					ctx.json({
+						message: { pacts: pacts },
+						errors: [],
+					})
+				);
+			})
+		);
 	});
 
 	beforeEach(async () => {
