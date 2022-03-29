@@ -7,18 +7,29 @@ const chance = new Chance(1234);
 const SALT_ROUNDS = 10;
 const { createNotification } = require("./notificationHelpers");
 
+/**
+ * Seed a given number of users for a university
+ * 
+ * @param university - university the user is part of 
+ * @param USER_COUNT - number of users to seed 
+ */
 async function seedUsers(university, USER_COUNT) {
 	const names = chance.unique(chance.name, USER_COUNT);
 
 	for (let i = 0; i < names.length; i++) {
 		await createUser(names[i].split(" ")[0], names[i].split(" ")[1], university);
 	}
-	
+	// Seed the special 'Pac To' user used to view certain features as a demo
 	await seedPacToUser(university);
 	await generateFriends();
 	console.log(`Finished seeding ${USER_COUNT} users`);
 }
 
+/**
+ * Seed a special user named 'Pac To' that can be used by people to view certain features
+ * of the application such as notifications
+ * @param university - University to add the 'Pac To' user to
+ */
 async function seedPacToUser(university) {
 	await createUser("Pac", "To", university);
 	const user = await User.findOne({ firstName: "Pac" });
@@ -31,6 +42,13 @@ async function seedPacToUser(university) {
 	await createNotification(user, "You are no longer banned from the Bird Watching pact");
 };
 
+/**
+ * Creat a new user
+ * 
+ * @param firstName - user's first name
+ * @param lastName - user's last name
+ * @param university - University a user attends
+ */
 async function createUser(firstName, lastName, university) {
 	const salt = await bcrypt.genSalt(SALT_ROUNDS);
 	const hashedPassword = await bcrypt.hash("Password123", salt);
@@ -61,19 +79,41 @@ async function createUser(firstName, lastName, university) {
 	await university.save();
 }
 
+/**
+ * Use Dicebar Avatars to generate an avatar image for a user
+ * @param firstName - user's first name
+ * @param lastName - user's last name
+ * @returns the random avatar image
+ */
 function getRandomImage(firstName, lastName) {
-	return `https://avatars.dicebear.com/api/personas/${firstName.toLowerCase()}${lastName.toLowerCase()}.svg`;
+	const image = `https://avatars.dicebear.com/api/personas/${firstName.toLowerCase()}${lastName.toLowerCase()}.svg`;
+	return image;
 }
 
+/**
+ * Return a random course that a user can study
+ * 
+ * @returns a course from the list of courses in userConstants.js
+ */
 function getRandomCourse() {
 	const course = userConstants.COURSES[chance.integer({ min: 0, max: userConstants.COURSES.length - 1 })];
 	return course.name;
 }
 
+/**
+ * Return a random location a user is from
+ * 
+ * @returns a location from the list of locations in userConstants.js
+ */
 function getRandomLocation() {
 	return userConstants.CITIES[chance.integer({ min: 0, max: userConstants.CITIES.length-1 })]
 }
 
+/**
+ * Return 2 random hobbies a user has
+ * 
+ * @returns hobbies from the list of hobbies in userConstants.js
+ */
 function getRandomHobbies() {
 	const hobbies = []; 
 	randomHobby = () => chance.integer({ min: 0, max: userConstants.HOBBIES.length-1 })
@@ -81,6 +121,9 @@ function getRandomHobbies() {
 	return hobbies;
 }
 
+/**
+ * Generate a list of friends for each seeded user
+ */
 async function generateFriends() {
 	const users = await User.find({});
 	for (let i = 0; i < users.length; i++) {
@@ -97,6 +140,12 @@ async function generateFriends() {
 	}
 }
 
+/**
+ * Add two given users to each other's list of friends
+ * 
+ * @param user1 - first user
+ * @param user2 - second user
+ */
 async function generateFriend(user1, user2) {
 	user1.friends.push(user2);
 	user2.friends.push(user1);
@@ -104,32 +153,76 @@ async function generateFriend(user1, user2) {
 	await user2.save();
 }
 
+/**
+ * Generate a friend request from one user to another.
+ * The person requesting and the person receiving the request is randomized
+ * 
+ * @param user1 - first user
+ * @param user2 - second user
+ */
 async function generateFriendRequest(user1, user2) {
 	const shuffledUsers = [user1, user2].sort(() => chance.integer() - chance.integer());
+	// Creat a new friend request and randomly choose which user is requestor and recipient
 	const request = await FriendRequest.create({requestor : shuffledUsers[0], recipient : shuffledUsers[1]})
 	shuffledUsers[0].sentRequests.push(request);
 	shuffledUsers[1].receivedRequests.push(request);
+
+	// Notify the recipient that they have received a new friend request
 	await createNotification(shuffledUsers[0], `${shuffledUsers[0].firstName} ${shuffledUsers[0].lastName} has sent you a friend request`)
 	await shuffledUsers[0].save();
 	await shuffledUsers[1].save();
 }
 
+/**
+ * Return true if two given users aren't already friends and neither of them have
+ * sent each other a friend request
+ * 
+ * @param user1 - first user
+ * @param user2 - second user
+ */
 function canGenerateFriendship(user1, user2) {
 	return !areUsersFriends(user1, user2) && !doUsershavePendingRequest(user1, user2);
 }
 
+/**
+ * Return true if users are already friends with each other
+ * 
+ * @param user1 - first user
+ * @param user2 - second user
+ * @returns true if users are friends
+ */
 function areUsersFriends(user1, user2) {
 	return isFriendOf(user1, user2) || isFriendOf(user2, user1)
 }
 
+/**
+ * Return true if the second given user is a friend of the first given user
+ * @param user1 - first user
+ * @param user2 - user to check if friend of first user
+ * @returns true if user2 is friend of user 1
+ */
 function isFriendOf(user1, user2) {
 	return user1.friends.includes(user2._id);
 }
 
+/**
+ * Return true if either users have a pending request from each other
+ * 
+ * @param user1 - first user
+ * @param user2 - second user
+ * @returns true if either user has pending request from the other one
+ */
 function doUsershavePendingRequest(user1, user2) {
 	return hasPendingRequestFrom(user1, user2) || hasPendingRequestFrom(user2, user1);
 }
 
+/**
+ * Return true if a given user has sent a friend request to another user 
+ * 
+ * @param user1 - user to check if they sent friend request to user2
+ * @param user2 - user2
+ * @returns true if user1 has sent a friend request to user2
+ */
 function hasPendingRequestFrom(user1, user2) {
 	return user1.sentRequests.filter((request) => user2.receivedRequests.includes(request)).length > 0;
 }
