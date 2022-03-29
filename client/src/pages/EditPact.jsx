@@ -95,7 +95,7 @@ export default function EditPact() {
         setIsLoading(false);
       }).catch((err) => {
         console.log(err.name)
-        if (err.name == "AbortError") return;
+        if (err.name === "AbortError") return;
         setSnackBarError(err)
         setSnackbarOpen(true)
         return history.push(`/not-found`);
