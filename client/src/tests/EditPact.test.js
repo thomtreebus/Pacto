@@ -21,7 +21,7 @@ const testUser = {
 const testPact = {
   _id : "1",
   name: "pactname",
-  category: "pactcategory",
+  category: "other",
   description: "pactdescription",
   moderators: [
     {
