@@ -222,11 +222,6 @@ describe("App Bar Tests", () => {
       await waitFor(() => expect(menuElement).not.toBeVisible());
     });
 
-    it("should filter notifications to only display ones that are unread", async () => {
-      const menuElement = await screen.findAllByTestId("notification-card-2");
-      expect(menuElement.length).toBe(1);
-    });
-
     it("should remove the notification if the mark as read button is pressed", async () => {
       const buttonElement = await screen.findByTestId("mark-notification-as-read-2");
       await act(async () => {
@@ -242,9 +237,9 @@ describe("App Bar Tests", () => {
       server.use(
         rest.put(`${process.env.REACT_APP_URL}/notifications/2/update`, (req, res, ctx) => {
           return res(
-            ctx.status(401),
+            ctx.status(400),
             ctx.json({
-              errors: [{field: "update", message: "There was an error marking as read"}], 
+              errors: [{field: null, message: "There was an error marking as read"}], 
               message: null })
           );
         })
@@ -252,7 +247,13 @@ describe("App Bar Tests", () => {
       await act(async () => {
         const buttonElement = await screen.findByTestId("mark-notification-as-read-2");
         fireEvent.click(buttonElement);
-      })
+        await waitFor(async () =>{
+          expect(await screen.queryByTestId("notification-card-2")).toBeInTheDocument();
+          expect(buttonElement).not.toBeDisabled();
+          expect(await screen.queryByTestId("error-message-2")).toBeInTheDocument();
+          
+        });
+      });
     });
   });
 });
