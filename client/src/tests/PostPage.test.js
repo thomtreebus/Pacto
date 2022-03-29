@@ -1,4 +1,4 @@
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { waitForElementToBeRemoved } from "@testing-library/react"
 import PostPage from "../pages/PostPage";
 import "@testing-library/jest-dom";
@@ -12,7 +12,7 @@ const post = {message:{
   text: "lorem ispum",
   type: "text",
   _id: 1,
-  pact: {_id:5, moderators : []},
+  pact: {_id:1, moderators : []},
   author: {
     firstName: "Krishi",
     lastName: "Wali",
@@ -23,9 +23,9 @@ const post = {message:{
   downvoters: [],
   comments: [{
     author: {
-      firstName: "Krishi",
-      lastName: "Wali",
-      _id: 1
+      firstName: "pac",
+      lastName: "to",
+      _id: 5
     },
     upvoters: [],
     downvoters: [],
@@ -42,12 +42,19 @@ describe("PostPage Tests", () => {
   const server = setupServer(
 		rest.get(`${process.env.REACT_APP_URL}/me`, (req, res, ctx) => {
 			return res(
-				ctx.json({ message: { firstName: "pac", lastName: "to", _id: "5" }, errors: [] })
+				ctx.json({ message: { firstName: "pac", lastName: "to", _id: 5 }, errors: [] })
 			);
 		}),
     rest.get(`${process.env.REACT_APP_URL}/pact/5/post/1`, (req, res, ctx) => {
 			return res(ctx.json(post));
 		}),
+    rest.delete(`${process.env.REACT_APP_URL}/pact/5/post/1/comment/1`, (req, res, ctx) => {
+      const newComment = JSON.parse(JSON.stringify(post.comments[0]));
+      newComment.deleted = true;
+			return res(
+				ctx.json({ message: newComment, errors: [] })
+			);
+		})
 	);
 
   beforeAll(() => {

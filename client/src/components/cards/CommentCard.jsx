@@ -13,6 +13,8 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { IconButton } from "@mui/material";
 import ErrorMessage from "../ErrorMessage";
 
+export const DELETED_COMMENT_MESSAGE = "This comment has been deleted.";
+
 export default function CommentCard({ comment, post, postUpdaterFunc }) {
   const { user } = useAuth();
   const [showReplyBox, setShowReplyBox] = useState(false);
@@ -20,8 +22,6 @@ export default function CommentCard({ comment, post, postUpdaterFunc }) {
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
 	const [isError, setIsError] = useState(false);
 	const [errorMessage, setErrorMessage] = useState("");
-
-  const DELETED_COMMENT_MESSAGE = "This comment has been deleted.";
 
   const handleLikeEvent = async (eventCode) => {
     const url = (() => {
@@ -49,7 +49,7 @@ export default function CommentCard({ comment, post, postUpdaterFunc }) {
       newPostObj.comments.unshift(reply); // Add reply of comment to overall list of comments (for rendering)
     })
     
-    postUpdaterFunc(newPostObj); // Send updated post object to parent
+    postUpdaterFunc(newPostObj); // Send LOCALLY updated post object to parent. Server side updates itself. We are avoiding refresh
   }
 
   const handleDelete = async () => {
@@ -71,8 +71,7 @@ export default function CommentCard({ comment, post, postUpdaterFunc }) {
       }
       
       const newComment = json.message;
-      updateComment(newComment);
-  
+      updateComment(newComment);  
     } 
     catch (err) {
       setIsError(true);
@@ -159,6 +158,7 @@ export default function CommentCard({ comment, post, postUpdaterFunc }) {
 								color="error"
 								onClick={handleDelete}
 								disabled={isButtonDisabled}
+                data-testid="delete-button"
 							>
 								<DeleteIcon fontSize="medium" />
 							</IconButton>

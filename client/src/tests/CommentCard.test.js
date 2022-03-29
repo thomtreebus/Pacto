@@ -1,6 +1,6 @@
 import { render, screen, fireEvent } from "@testing-library/react";
-import { waitForElementToBeRemoved } from "@testing-library/react"
-import CommentCard from "../components/cards/CommentCard";
+import { waitForElementToBeRemoved, waitFor } from "@testing-library/react"
+import CommentCard, { DELETED_COMMENT_MESSAGE } from "../components/cards/CommentCard";
 import "@testing-library/jest-dom";
 import MockComponent from "./utils/MockComponent";
 import { setupServer } from "msw/node";
@@ -8,21 +8,24 @@ import { rest } from "msw";
 
 const COMMENT_TEXT = "amet officia molestias esse!";
 
+let mockBeenCalled = false;
+const mockSuccessHandler = () => {
+  mockBeenCalled = true;
+}
+
+
 const comment = {
-  pact: 5,
   post: {
     text: "lorem ispum",
     type: "text",
     _id: 1,
     comments: [],
-    pact : {
-      moderators : []
-    }
+    pact : { _id: 5}
   },
   author: {
-    firstName: "Krishi",
-    lastName: "Wali",
-    _id: 1
+    firstName: "pac",
+    lastName: "to",
+    _id: 5
   },
   createdAt: Date.now(),
   text: COMMENT_TEXT,
@@ -38,9 +41,16 @@ describe("CommentCard Tests", () => {
   const server = setupServer(
 		rest.get(`${process.env.REACT_APP_URL}/me`, (req, res, ctx) => {
 			return res(
-				ctx.json({ message: { firstName: "pac", lastName: "to", _id: "5" }, errors: [] })
+				ctx.json({ message: { firstName: "pac", lastName: "to", _id: 5 }, errors: [] })
 			);
 		}),
+    rest.delete(`${process.env.REACT_APP_URL}/pact/5/post/1/comment/1`, (req, res, ctx) => {
+      const newComment = JSON.parse(JSON.stringify(comment));
+      newComment.deleted = true;
+			return res(
+				ctx.json({ message: newComment, errors: [] })
+			);
+		})
 	);
 
   beforeAll(() => {
@@ -58,7 +68,7 @@ describe("CommentCard Tests", () => {
   beforeEach(async () => {
 		render(
       <MockComponent>
-        <CommentCard post={comment.post} comment={comment} postUpdaterFunc={()=>{}} />
+        <CommentCard post={comment.post} comment={comment} postUpdaterFunc={mockSuccessHandler} />
       </MockComponent>
     );
     await waitForElementToBeRemoved(() => screen.getByText("Loading"));
@@ -76,7 +86,7 @@ describe("CommentCard Tests", () => {
 
     it("should render author text", async () => {
       const author = await screen.findByTestId("author");
-      expect(author.innerHTML).toBe("Krishi Wali");
+      expect(author.innerHTML).toBe("pac to");
     });
 
     it("should render date text", async () => {
@@ -88,13 +98,30 @@ describe("CommentCard Tests", () => {
       const reply = await screen.findByTestId("reply-button");
       expect(reply.innerHTML).toContain("Reply");
     });
+
+    it("should render delete button", async () => {
+      const del = await screen.findByTestId("delete-button");
+      expect(del).toBeInTheDocument();
+    });
+
+    it("should not render delete button if not author or mod", async () => {
+      server.use(
+        rest.get(`${process.env.REACT_APP_URL}/me`, (req, res, ctx) => {
+          return res(
+            ctx.json({ message: { firstName: "pac", lastName: "to", _id: 3 }, errors: [] })
+          );
+        }),
+      );
+      const del = await screen.findByTestId("delete-button");
+      expect(del).toBeInTheDocument();
+    });
   });
 
   describe("Check interaction with elements", () => {
     it("should redirect to profile page when author text is clicked", async () => {
       const author = await screen.findByTestId("author");
       fireEvent.click(author);
-      expect(window.location.pathname).toBe("/user/1");
+      expect(window.location.pathname).toBe("/user/5");
     });
 
     it("should open box for replying to comment when reply is clicked", async () => {
@@ -114,6 +141,15 @@ describe("CommentCard Tests", () => {
       expect(reply.innerHTML).toContain("Reply");
       const replyBox = await screen.queryByTestId("comment-reply-box");
       expect(replyBox).toBeNull();
+    });
+
+    it("deletes comment successfully", async () => {
+      const deleteBtn = await screen.findByTestId("delete-button");
+      fireEvent.click(deleteBtn);
+
+      expect(deleteBtn).toBeDisabled();
+
+      await waitFor(() => expect(mockBeenCalled).toBe(true));
     });
   });
 });
