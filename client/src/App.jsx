@@ -58,9 +58,6 @@ function App() {
 							<PrivateRoute exact path="/pact/:pactID">
 								<PactPage />
 							</PrivateRoute>
-							<PrivateRoute exact path="/pact/:pactID/">
-								<PactPage />
-							</PrivateRoute>
 							<PrivateRoute exact path="/pact/:pactID/post/:postID">
 								<PostPage />
 							</PrivateRoute>
