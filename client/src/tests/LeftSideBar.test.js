@@ -6,47 +6,22 @@ import { rest } from "msw";
 import { setupServer } from "msw/node";
 import pacts from "./utils/testPacts";
 import LeftSideBar from "../components/LeftSideBar";
-
-const user = {
-	pacts: [pacts[0]._id, pacts[1]._id],
-	firstName: "pac",
-	lastName: "to",
-	image:
-		"https://res.cloudinary.com/djlwzi9br/image/upload/v1644581875/man1_qexxnb.jpg",
-	_id: "1",
-};
+import { useMockServer } from "./utils/useMockServer"
 
 describe("Left Sidebar tests", () => {
-	const server = setupServer(
-		rest.get(`${process.env.REACT_APP_URL}/me`, (req, res, ctx) => {
-			return res(
-				ctx.json({
-					message: user,
-					errors: [],
-				})
-			);
-		}),
-
-		rest.get(`${process.env.REACT_APP_URL}/university`, (req, res, ctx) => {
-			return res(
-				ctx.json({
-					message: { pacts: pacts },
-					errors: [],
-				})
-			);
-		})
-	);
-
-	beforeAll(() => {
-		server.listen();
-	});
-
-	afterAll(() => {
-		server.close();
-	});
+	const server = useMockServer();
 
 	beforeEach(async () => {
-		server.resetHandlers();
+		server.use(
+			rest.get(`${process.env.REACT_APP_URL}/university`, (req, res, ctx) => {
+				return res(
+					ctx.json({
+						message: { pacts: pacts },
+						errors: [],
+					})
+				);
+			})
+		);
 	});
 
 	const renderWithMock = async () => {
