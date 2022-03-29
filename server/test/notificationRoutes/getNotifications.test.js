@@ -1,26 +1,19 @@
-const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const supertest = require("supertest");
 const app = require("../../app");
 const { createToken } = require("../../controllers/authController");
 const { generateTestUser, getDefaultTestUserEmail } = require("../fixtures/generateTestUser");
 const { generateTestNotification, getTestNotificationId } = require("../fixtures/generateTestNotification");
-const { jsonResponse } = require("../../helpers/responseHandlers");
-const { MESSAGES, NOTIFICATION_MESSAGES } = require("../../helpers/messages");
+const { MESSAGES } = require("../../helpers/messages");
 const User = require("../../models/User");
 const Notification = require('../../models/Notification');
-const University = require('../../models/University');
+const useTestDatabase = require("../helpers/useTestDatabase");
 
 dotenv.config();
 
 describe("GET /notifications getNotifications()", () => {
-  beforeAll(async () => {
-    await mongoose.connect(process.env.TEST_DB_CONNECTION_URL);
-  });
 
-  afterAll(async () => {
-    await mongoose.connection.close();
-  });
+  useTestDatabase("notificationsGET");
 
   beforeEach(async () => {
     const user = await generateTestUser();
@@ -29,12 +22,6 @@ describe("GET /notifications getNotifications()", () => {
     // Make a notification for the user
     const notification = await generateTestNotification(user);
     await notification.save();
-  });
-
-  afterEach(async () => {
-    await User.deleteMany({});
-    await Notification.deleteMany({});
-    await University.deleteMany({});
   });
 
   it("user can get its notifications", async () => {
