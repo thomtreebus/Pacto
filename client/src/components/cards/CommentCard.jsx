@@ -14,7 +14,7 @@ import { IconButton } from "@mui/material";
 import ErrorMessage from "../ErrorMessage";
 
 export default function CommentCard({ comment, post, postUpdaterFunc }) {
-  const { user, silentUserRefresh } = useAuth();
+  const { user } = useAuth();
   const [showReplyBox, setShowReplyBox] = useState(false);
   const history = useHistory();
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
