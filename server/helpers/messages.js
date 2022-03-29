@@ -50,7 +50,7 @@ module.exports.PACT_MESSAGES = {
 	IS_BANNED_USER: "You have been banned from this pact cannot join!",
 	NAME: {
 		NOT_UNIQUE: `Name ${UNIQUE_MESSAGE}`,
-		MAX_LENGTH_EXCEEDED: "Name cannot exceed 33 characters",
+		MAX_LENGTH_EXCEEDED: "Name cannot exceed 50 characters",
 		MIN_LENGTH_NOT_MET: "Name must be at least 2 characters",
 		BLANK: "Name is a required field",
 	},
@@ -92,11 +92,16 @@ module.exports.PACT_MESSAGES = {
 };
 
 module.exports.POST_MESSAGES = {
-  NO_AUTHOR: "Author is a required field",
+	NOT_FOUND: "Post not found",
+	NOT_AUTHORISED: {
+		NOT_AUTHOR_NOT_MOD: "User is neither a mod nor the author of the post",
+		NOT_AUTHOR: "User is not the author of the post",
+	},
+	NO_AUTHOR: "Author is a required field",
   NO_PACT: "Post is a required field",
   TITLE: {
 		BLANK: "Title is a required field",
-		MAX_LENGTH_EXCEEDED: "Title cannot exceed 50 characters",
+		MAX_LENGTH_EXCEEDED: "Title cannot exceed 200 characters",
 	},
   TYPE: {
     BLANK: "Type is a required field",
@@ -106,7 +111,7 @@ module.exports.POST_MESSAGES = {
 	},
 	TEXT: {
 		BLANK: "Type is 'text', so Text is a required field",
-		MAX_LENGTH_EXCEEDED: "Text cannot exceed 1000 characters",
+		MAX_LENGTH_EXCEEDED: "Text cannot exceed 3000 characters",
 	},
 	LINK: {
 		BLANK: "Type is 'link', so Link is a required field",
@@ -121,6 +126,12 @@ module.exports.POST_MESSAGES = {
     NOT_AUTHOR_NOT_MOD: "User is neither a mod nor the author of the post",
     NOT_AUTHOR: "User is not the author of the post"
   }
+};
+
+module.exports.NOTIFICATION_MESSAGES = {
+	NOT_FOUND: "No notifications found",
+	ALREADY_READ: "Notification has already been marked as read",
+	OTHER_USER: "Can not mark a notification as read for another user"
 }
 
 module.exports.FRIEND_MESSAGES = {

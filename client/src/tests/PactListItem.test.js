@@ -6,39 +6,32 @@ import { setupServer } from "msw/node";
 import pacts from "./utils/testPacts";
 import { waitForElementToBeRemoved } from "@testing-library/react";
 import PactListItem from "../components/PactListItem.jsx";
+import { useMockServer } from "./utils/useMockServer.js";
 
 describe("Pact List Item Tests", () => {
-	const server = setupServer(
-		rest.get(`${process.env.REACT_APP_URL}/me`, (req, res, ctx) => {
-			return res(
-				ctx.json({
-					message: {
-						_id: pacts[0].members[0],
-						firstName: "pac",
-						lastName: "to",
-						pacts: [],
-					},
-					errors: [],
-				})
-			);
-		}),
-		rest.post(`${process.env.REACT_APP_URL}/pact/:id/join`, (req, res, ctx) => {
-			return res(
-				ctx.json({ message: "Successfully Joined the pact", errors: [] })
-			);
-		})
-	);
-
-	beforeAll(() => {
-		server.listen();
-	});
-
-	afterAll(() => {
-		server.close();
-	});
+	const server = useMockServer();
 
 	beforeEach(async () => {
-		server.resetHandlers();
+		server.use(
+			rest.get(`${process.env.REACT_APP_URL}/me`, (req, res, ctx) => {
+				return res(
+					ctx.json({
+						message: {
+							_id: pacts[0].members[0],
+							firstName: "pac",
+							lastName: "to",
+							pacts: [],
+						},
+						errors: [],
+					})
+				);
+			}),
+			rest.post(`${process.env.REACT_APP_URL}/pact/:id/join`, (req, res, ctx) => {
+				return res(
+					ctx.json({ message: "Successfully Joined the pact", errors: [] })
+				);
+			})
+		);
 	});
 
 	const renderWithMock = async (element) => {

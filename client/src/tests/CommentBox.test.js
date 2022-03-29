@@ -5,6 +5,8 @@ import "@testing-library/jest-dom";
 import MockComponent from "./utils/MockComponent";
 import { setupServer } from "msw/node";
 import { rest } from "msw";
+import users from "./utils/testUsers";
+import { useMockServer } from "./utils/useMockServer";
 
 const COMMENT_TEXT = "amet officia molestias esse!";
 
@@ -41,45 +43,32 @@ const comment = {
 }
 
 describe("CommentBox Tests", () => {
-  const server = setupServer(
-		rest.get(`${process.env.REACT_APP_URL}/me`, (req, res, ctx) => {
-			return res(
-				ctx.json({ message: { firstName: "pac", lastName: "to", _id: "5" }, errors: [] })
-			);
-		}),
-    rest.post(`${process.env.REACT_APP_URL}/pact/5/post/1/comment/1/reply`, (req, res, ctx) => {
-			return res(
-        ctx.status(201),
-        ctx.json({
-          message: {
-            text: req.body.text,
-            parentComment: {_id:comment._id}
-          },
-          errors: []
-        })
-      );
-		}),
-    rest.post(`${process.env.REACT_APP_URL}/pact/5/post/1/comment`, (req, res, ctx) => {
-      return res(
-        ctx.status(201),
-        ctx.json({
-          message: {text: req.body.text},
-          errors: []
-        })
-      );
-		}),
-	);
-
-  beforeAll(() => {
-		server.listen();
-	});
-
-	afterAll(() => {
-		server.close();
-	});
+  const server = useMockServer();
 
 	beforeEach(async () => {
-		server.resetHandlers();
+		server.use(
+      rest.post(`${process.env.REACT_APP_URL}/pact/5/post/1/comment/1/reply`, (req, res, ctx) => {
+        return res(
+          ctx.status(201),
+          ctx.json({
+            message: {
+              text: req.body.text,
+              parentComment: {_id:comment._id}
+            },
+            errors: []
+          })
+        );
+      }),
+      rest.post(`${process.env.REACT_APP_URL}/pact/5/post/1/comment`, (req, res, ctx) => {
+        return res(
+          ctx.status(201),
+          ctx.json({
+            message: {text: req.body.text},
+            errors: []
+          })
+        );
+      }),
+    );
 	});
 
   beforeEach(async () => {

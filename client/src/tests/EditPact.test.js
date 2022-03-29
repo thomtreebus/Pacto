@@ -9,23 +9,17 @@ import {Route, Router} from "react-router-dom";
 import {act} from "react-dom/test-utils";
 import userEvent from "@testing-library/user-event";
 import { createMemoryHistory } from 'history';
-
-
-const testUser = {
-  firstName: "pac",
-  lastName: "to",
-  _id: 1,
-}
-
+import users from "./utils/testUsers";
+import { useMockServer } from "./utils/useMockServer";
 
 const testPact = {
   _id : "1",
   name: "pactname",
-  category: "pactcategory",
+  category: "other",
   description: "pactdescription",
   moderators: [
     {
-      _id : 1,
+      _id : users[0]._id,
     }
   ],
 }
@@ -33,30 +27,16 @@ const testPact = {
 describe("EditPact Tests", () => {
   let history = undefined;
 
-  const server = setupServer(
-    rest.get(`${process.env.REACT_APP_URL}/me`, (req, res, ctx) => {
-      return res(
-        ctx.json({ message: testUser, errors: [] })
-      );
-    }),
-    rest.get(`${process.env.REACT_APP_URL}/pact/1`, (req, res, ctx) => {
-      return res(
-        ctx.json({ message: testPact, errors: [] })
-      );
-    })
-
-  );
-
-  beforeAll(() => {
-    server.listen();
-  });
-
-  afterAll(() => {
-    server.close();
-  });
+  const server = useMockServer();
 
   beforeEach(async () => {
-    server.resetHandlers();
+    server.use(
+      rest.get(`${process.env.REACT_APP_URL}/pact/1`, (req, res, ctx) => {
+        return res(
+          ctx.json({ message: testPact, errors: [] })
+        );
+      })
+    );
   });
 
   const renderWithMock = async () => {

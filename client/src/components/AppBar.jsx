@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { styled, alpha } from "@mui/material/styles";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
@@ -6,18 +6,19 @@ import Toolbar from "@mui/material/Toolbar";
 import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import InputBase from "@mui/material/InputBase";
-import MenuItem from "@mui/material/MenuItem";
-import Menu from "@mui/material/Menu";
 import SearchIcon from "@mui/icons-material/Search";
 import AccountCircle from "@mui/icons-material/AccountCircle";
-import MoreIcon from "@mui/icons-material/MoreVert";
 import { Link, useHistory } from "react-router-dom";
 import { ButtonBase } from "@mui/material";
-import Divider from "@mui/material/Divider";
 import Avatar from "@mui/material/Avatar";
 import { useAuth } from "../providers/AuthProvider";
+import NotificationsIcon from "@mui/icons-material/Notifications";
+import Badge from "@mui/material/Badge";
 import PactoIcon from "../assets/pacto-logo.png";
 import MenuIcon from "@mui/icons-material/Menu";
+import NotificationsMenu from "./NotificationsMenu";
+import ProfileMenu from "./ProfileMenu";
+import Loading from "../pages/Loading";
 
 const Search = styled("div")(({ theme }) => ({
 	position: "relative",
@@ -63,48 +64,69 @@ export default function PrimarySearchAppBar({ handleDrawerToggle }) {
 	const history = useHistory();
 
 	const { user, silentUserRefresh } = useAuth();
+	const [isLoading, setIsLoading] = useState(true);
 
-	const [anchorEl, setAnchorEl] = React.useState(null);
-	const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
+	const [profileAnchorEl, setProfileAnchorEl] = useState(null);
+	const [notificationsAnchorEl, setNotificationsAnchorEl] = useState(null);
 	const [search, setSearch] = React.useState("");
 
-	const isMenuOpen = Boolean(anchorEl);
-	const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
+	const isProfileMenuOpen = Boolean(profileAnchorEl);
+	const isNotificationsMenuOpen = Boolean(notificationsAnchorEl);
+
+	const [notifications, setNotifications] = useState([]);
+
+	const profileMenuId = "primary-search-account-menu";
+	const notificationsMenuId = "notifications-menu";
+
+
+	useEffect( () => {
+		 fetch(`${process.env.REACT_APP_URL}/notifications`, {
+			method: "GET",
+			credentials: "include",
+		})
+			.then((res) => {
+				return res.json();
+			})
+			.then((data) => {
+				setNotifications(
+					data.message.filter((notification) => !notification.read)
+				);
+				setIsLoading(false)
+			});
+	}, []);
 
 	const handleLogout = async () => {
 		await fetch(`${process.env.REACT_APP_URL}/logout`, {
 			credentials: "include",
 		});
-		silentUserRefresh();
+		await silentUserRefresh();
 	};
 
 	const handleProfileMenuOpen = (event) => {
-		setAnchorEl(event.currentTarget);
+		setProfileAnchorEl(event.currentTarget);
 	};
 
-	const handleMobileMenuClose = () => {
-		setMobileMoreAnchorEl(null);
-	};
-
-	const handleMenuClose = () => {
-		setAnchorEl(null);
-		handleMobileMenuClose();
-	};
-
-	const handleMobileMenuOpen = (event) => {
-		setMobileMoreAnchorEl(event.currentTarget);
+	const handleProfileMenuClose = () => {
+		setProfileAnchorEl(null);
 	};
 
 	const handleEditProfileClick = () => {
 		history.push("/edit-profile");
-		handleMenuClose();
+		handleProfileMenuClose();
 	};
 
 	const handleProfileClick = () => {
 		history.push("/user/" + user._id);
-		handleMenuClose();
+		handleProfileMenuClose();
 	};
 
+	const handleNotificationsMenuOpen = (event) => {
+		setNotificationsAnchorEl(event.currentTarget);
+	};
+
+	const handleNotificationsMenuClose = () => {
+		setNotificationsAnchorEl(null);
+	};
 	const handleSearch = () => {
 		if(!search) return; 
 		history.push(`/search/${search}`);
@@ -116,79 +138,9 @@ export default function PrimarySearchAppBar({ handleDrawerToggle }) {
 		}
 	}
 
-	const menuId = "primary-search-account-menu";
-	const renderMenu = (
-		<Menu
-			data-testid={menuId}
-			anchorEl={anchorEl}
-			anchorOrigin={{
-				vertical: "top",
-				horizontal: "right",
-			}}
-			id={menuId}
-			keepMounted
-			transformOrigin={{
-				vertical: "top",
-				horizontal: "right",
-			}}
-			open={isMenuOpen}
-			onClose={handleMenuClose}
-		>
-			<MenuItem data-testid="profile-item" onClick={handleProfileClick}>
-				Profile
-			</MenuItem>
-			<MenuItem
-				data-testid="edit-profile-item"
-				onClick={handleEditProfileClick}
-			>
-				Edit Profile
-			</MenuItem>
-			<Divider />
-			<MenuItem data-testid="logout-item" onClick={handleLogout}>
-				Log Out
-			</MenuItem>
-		</Menu>
-	);
-
-	const mobileMenuId = "primary-search-account-menu-mobile";
-	const renderMobileMenu = (
-		<Menu
-			data-testid={mobileMenuId}
-			anchorEl={mobileMoreAnchorEl}
-			anchorOrigin={{
-				vertical: "top",
-				horizontal: "right",
-			}}
-			id={mobileMenuId}
-			keepMounted
-			transformOrigin={{
-				vertical: "top",
-				horizontal: "right",
-			}}
-			open={isMobileMenuOpen}
-			onClose={handleMobileMenuClose}
-		>
-			<MenuItem
-				data-testid="profile-item-mobile"
-				onClick={handleMobileMenuClose}
-			>
-				<IconButton
-					size="large"
-					aria-label="account of current user"
-					aria-controls="primary-search-account-menu"
-					aria-haspopup="true"
-					color="inherit"
-				>
-					<AccountCircle />
-				</IconButton>
-				<p>Profile</p>
-			</MenuItem>
-			<Divider />
-			<MenuItem data-testid="logout-item-mobile" onClick={handleLogout}>
-				<p>Log Out</p>
-			</MenuItem>
-		</Menu>
-	);
+	if(isLoading){
+		return (<Loading data-testid="loading-app-bar"></Loading>)
+	}
 
 	return (
 		<Box sx={{ flexGrow: 1 }}>
@@ -237,13 +189,34 @@ export default function PrimarySearchAppBar({ handleDrawerToggle }) {
 						/>
 					</Search>
 					<Box sx={{ flexGrow: 1 }} />
-					<Box sx={{ display: { xs: "none", md: "flex" } }}>
+					<IconButton
+						size="large"
+						edge="end"
+						aria-label="notifications"
+						data-testid="notification-button"
+						color="inherit"
+						aria-controls={notificationsMenuId}
+						aria-haspopup="true"
+						onClick={handleNotificationsMenuOpen}
+					>
+						{notifications && (
+							<Badge
+								data-testid="badge"
+								badgeContent={notifications.length}
+								max={99}
+								color="error"
+							>
+								<NotificationsIcon />
+							</Badge>
+						)}
+					</IconButton>
+					<Box>
 						<IconButton
 							data-testid="profile-button"
 							size="large"
 							edge="end"
 							aria-label="account of current user"
-							aria-controls={menuId}
+							aria-controls={profileMenuId}
 							aria-haspopup="true"
 							onClick={handleProfileMenuOpen}
 							color="inherit"
@@ -251,23 +224,25 @@ export default function PrimarySearchAppBar({ handleDrawerToggle }) {
 							<AccountCircle data-testid="account-circle" />
 						</IconButton>
 					</Box>
-					<Box sx={{ display: { xs: "flex", md: "none" } }}>
-						<IconButton
-							data-testid="mobile-menu-button"
-							size="large"
-							aria-label="show more"
-							aria-controls={mobileMenuId}
-							aria-haspopup="true"
-							onClick={handleMobileMenuOpen}
-							color="inherit"
-						>
-							<MoreIcon data-testid="more-button" />
-						</IconButton>
-					</Box>
 				</Toolbar>
 			</AppBar>
-			{renderMobileMenu}
-			{renderMenu}
+			<ProfileMenu
+				profileMenuId={profileMenuId}
+				profileAnchorEl={profileAnchorEl}
+				isProfileMenuOpen={isProfileMenuOpen}
+				handleProfileMenuClose={handleProfileMenuClose}
+				handleProfileClick={handleProfileClick}
+				handleEditProfileClick={handleEditProfileClick}
+				handleLogout={handleLogout}
+			/>
+			<NotificationsMenu
+				notificationsMenuId={notificationsMenuId}
+				notificationsAnchorEl={notificationsAnchorEl}
+				handleNotificationsMenuClose={handleNotificationsMenuClose}
+				isNotificationsMenuOpen={isNotificationsMenuOpen}
+				notifications={notifications}
+				setNotifications={setNotifications}
+			/>
 		</Box>
 	);
 }

@@ -8,6 +8,7 @@ import { Route } from "react-router-dom";
 import EditProfile from "../pages/EditProfile";
 import userEvent from "@testing-library/user-event";
 import {act} from "react-dom/test-utils";
+import { useMockServer } from "./utils/useMockServer";
 
 
 const testUser = {
@@ -28,31 +29,22 @@ const testUser = {
 }
 
 describe("Edit Profile Page Tests", () => {
-  const server = setupServer(
-    rest.get(`${process.env.REACT_APP_URL}/me`, (req, res, ctx) => {
-      return res(
-        ctx.json({ message: testUser, errors: [] })
-      );
-    }),
-    rest.post(`https://api.cloudinary.com/v1_1/${process.env.REACT_APP_CLOUDINARY_CLOUD_NAME}/image/upload`, (req, res, ctx) => {
-      return res(
-        ctx.status(201),
-        ctx.json({}),
-      );
-    })
-
-  );
-
-  beforeAll(() => {
-    server.listen();
-  });
-
-  afterAll(() => {
-    server.close();
-  });
+  const server = useMockServer();
 
   beforeEach(async () => {
-    server.resetHandlers();
+    server.use(
+      rest.get(`${process.env.REACT_APP_URL}/me`, (req, res, ctx) => {
+        return res(
+          ctx.json({ message: testUser, errors: [] })
+        );
+      }),
+      rest.post(`https://api.cloudinary.com/v1_1/${process.env.REACT_APP_CLOUDINARY_CLOUD_NAME}/image/upload`, (req, res, ctx) => {
+        return res(
+          ctx.status(201),
+          ctx.json({}),
+        );
+      })
+    );
   });
 
   beforeEach(async () => {

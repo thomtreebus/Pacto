@@ -5,6 +5,8 @@ import "@testing-library/jest-dom";
 import MockComponent from "./utils/MockComponent";
 import { setupServer } from "msw/node";
 import { rest } from "msw";
+import users from "./utils/testUsers";
+import { useMockServer } from "./utils/useMockServer";
 
 const COMMENT_TEXT = "amet officia molestias esse!";
 
@@ -38,32 +40,7 @@ const comment = {
 }
 
 describe("CommentCard Tests", () => {
-  const server = setupServer(
-		rest.get(`${process.env.REACT_APP_URL}/me`, (req, res, ctx) => {
-			return res(
-				ctx.json({ message: { firstName: "pac", lastName: "to", _id: 5 }, errors: [] })
-			);
-		}),
-    rest.delete(`${process.env.REACT_APP_URL}/pact/5/post/1/comment/1`, (req, res, ctx) => {
-      const newComment = JSON.parse(JSON.stringify(comment));
-      newComment.deleted = true;
-			return res(
-				ctx.json({ message: newComment, errors: [] })
-			);
-		})
-	);
-
-  beforeAll(() => {
-		server.listen();
-	});
-
-	afterAll(() => {
-		server.close();
-	});
-
-	beforeEach(async () => {
-		server.resetHandlers();
-	});
+  const server = useMockServer();
 
   beforeEach(async () => {
 		render(

@@ -5,6 +5,7 @@ import "@testing-library/jest-dom";
 import MockComponent from "./utils/MockComponent";
 import { setupServer } from "msw/node";
 import { rest } from "msw";
+import { useMockServer } from "./utils/useMockServer";
 
 const post = {
   pact: {
@@ -28,25 +29,7 @@ const post = {
 }
 
 describe("BasePostCard Tests", () => {
-  const server = setupServer(
-		rest.get(`${process.env.REACT_APP_URL}/me`, (req, res, ctx) => {
-			return res(
-				ctx.json({ message: { firstName: "pac", lastName: "to", _id: "5" }, errors: [] })
-			);
-		}),
-	);
-
-  beforeAll(() => {
-		server.listen();
-	});
-
-	afterAll(() => {
-		server.close();
-	});
-
-	beforeEach(async () => {
-		server.resetHandlers();
-	});
+  const server = useMockServer();
 
   beforeEach(async () => {
 		render(

@@ -83,7 +83,7 @@ export default function UserPage() {
         setAllUsers(resAllUsers);
         setIsLoading(false);
       }).catch((err) => {
-        if (err.message === "The user aborted a request.") return;
+        if (err.name === "AbortError") return;
         history.push("/not-found");
     })
     return () => controller.abort();
@@ -104,8 +104,8 @@ export default function UserPage() {
       <Box sx={{ width: '100%' }}>
         <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
           <Tabs value={value} onChange={handleChange} aria-label="User type tab">
-            <Tab label="All" {...a11yProps(0)} />
-            <Tab label="Friends" {...a11yProps(1)} />
+            <Tab label="All" sx={{ justifyContent: "start" }} {...a11yProps(0)} />
+            <Tab label="Friends" sx={{ justifyContent: "start" }} {...a11yProps(1)} />
             <Tab label="Same Course" sx={{display : {xs: "none", md: "block"}}} {...a11yProps(2)} />
             <Tab label="Received Requests"  sx={{display : {xs: "none", md: "block"}}}  {...a11yProps(3)} />
             <Tab label="Sent Requests"  sx={{display : {xs: "none", md: "block"}}}  {...a11yProps(4)} />

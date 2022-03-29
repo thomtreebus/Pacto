@@ -8,6 +8,7 @@ import testUsers from "./utils/testUsers"
 import UserCardModeration from "../components/UserCardModeration";
 import userEvent from "@testing-library/user-event";
 import {act} from "react-dom/test-utils";
+import {useMockServer} from "./utils/useMockServer";
 
 // TODO These tests are similar to the tests of User card but does diverges a bit quite away. Combine tests and components if possible
 
@@ -57,32 +58,24 @@ const pactResponse = {
 }
 
 describe("UserCard Tests", () => {
-  const server = setupServer(
-    rest.get(`${process.env.REACT_APP_URL}/me`, (req, res, ctx) => {
-      return res(
-        ctx.json({
-          message: {
-            firstName: "pac",
-            lastName: "to",
-            image: "https://avatars.dicebear.com/api/identicon/temp.svg",
-            _id: "1",
-          },
-          errors: []
-        })
-      );
-    }),
-  );
-
-  beforeAll(() => {
-    server.listen();
-  });
-
-  afterAll(() => {
-    server.close();
-  });
+  const server = useMockServer();
 
   beforeEach(async () => {
-    server.resetHandlers();
+    server.use(
+      rest.get(`${process.env.REACT_APP_URL}/me`, (req, res, ctx) => {
+        return res(
+          ctx.json({
+            message: {
+              firstName: "pac",
+              lastName: "to",
+              image: "https://avatars.dicebear.com/api/identicon/temp.svg",
+              _id: "1",
+            },
+            errors: []
+          })
+        );
+      }),
+    )
   });
 
   const renderWithMock = async (children) => {

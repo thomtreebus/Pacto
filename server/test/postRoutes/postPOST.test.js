@@ -218,9 +218,9 @@ describe("POST /pact/:pactId/post", () => {
 
   // Validation tests
   describe("Title validation", () => {
-    it("rejects when title exceeds 50 characters", async () => {
+    it("rejects when title exceeds 200 characters", async () => {
       await isInvalidPost({
-        title: "x".repeat(51),
+        title: "x".repeat(201),
         type: TEXT_TYPE,
         text: TEXT
       }, "title", POST_MESSAGES.TITLE.MAX_LENGTH_EXCEEDED);
@@ -234,12 +234,12 @@ describe("POST /pact/:pactId/post", () => {
       }, "title", POST_MESSAGES.TITLE.BLANK);
     });
 
-    it("accepts when title is exactly 50 characters", async () => {
+    it("accepts when title is exactly 200 characters", async () => {
       await isValidPost({
-        title: "x".repeat(50),
+        title: "x".repeat(200),
         type: TEXT_TYPE,
         text: TEXT
-      }, expectedTitle="x".repeat(50));
+      }, expectedTitle="x".repeat(200));
     });
 
     it("rejects when title is blank", async () => {
@@ -282,19 +282,19 @@ describe("POST /pact/:pactId/post", () => {
       }, "text", POST_MESSAGES.TYPE.TEXT.BLANK);
     });
 
-    it("accepts text post with 1000 characters", async () => {
+    it("accepts text post with 3000 characters", async () => {
       await isValidPost({
         title: TITLE,
         type: TEXT_TYPE,
-        text: "x".repeat(1000)
-      }, undefined, undefined, expectedText="x".repeat(1000));
+        text: "x".repeat(3000)
+      }, undefined, undefined, expectedText="x".repeat(3000));
     });
 
-    it("rejects text post with 1001 characters", async () => {
+    it("rejects text post with 3001 characters", async () => {
       await isInvalidPost({
         title: TITLE,
         type: TEXT_TYPE,
-        text: "x".repeat(1001)
+        text: "x".repeat(3001)
       }, "text", POST_MESSAGES.TYPE.TEXT.MAX_LENGTH_EXCEEDED);
     });
 

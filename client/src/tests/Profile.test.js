@@ -10,6 +10,7 @@ import userEvent from "@testing-library/user-event";
 import {queryClient} from './utils/MockComponent'
 import { createMemoryHistory } from 'history';
 import pacts from "./utils/testPacts";
+import { useMockServer } from "./utils/useMockServer";
 
 const user = {
     pacts: [],
@@ -44,62 +45,44 @@ const user = {
     phone: "pactphone",
   }
 
-  const queryCache = queryClient.getQueryCache()
-
 describe("Profile Page Tests", () => {
   let history = undefined;
-
-  const server = setupServer(
-    rest.get(`${process.env.REACT_APP_URL}/me`, (req, res, ctx) => {
-      return res(
-        ctx.json({
-          message: user,
-          errors: []
-        })
-      );
-    }),
-
-    rest.get(`${process.env.REACT_APP_URL}/users/:id`, (req, res, ctx) => {
-      return res(
-        ctx.json({
-          message: user,
-          errors: []
-        })
-      );
-    }),
-
-    rest.get(`${process.env.REACT_APP_URL}/university`, (req, res, ctx) => {
-			return res(
-				ctx.json({
-					message: { pacts: pacts },
-					errors: [],
-				})
-			);
-		}),
-
-    rest.post(`https://api.cloudinary.com/v1_1/${process.env.REACT_APP_CLOUDINARY_CLOUD_NAME}/image/upload`, (req, res, ctx) => {
-      return res(
-        ctx.status(201),
-        ctx.json({}),
-      );
-    }),
-  );
-
-  beforeAll(() => {
-    server.listen();
-  });
-
-  afterAll(() => {
-    server.close();
-  });
+  const server = useMockServer();
 
   beforeEach(async () => {
-    server.resetHandlers();
+    server.use(
+      rest.get(`${process.env.REACT_APP_URL}/me`, (req, res, ctx) => {
+        return res(
+          ctx.json({
+            message: user,
+            errors: []
+          })
+        );
+      }),
+      rest.get(`${process.env.REACT_APP_URL}/users/:id`, (req, res, ctx) => {
+        return res(
+          ctx.json({
+            message: user,
+            errors: []
+          })
+        );
+      }),
+      rest.get(`${process.env.REACT_APP_URL}/university`, (req, res, ctx) => {
+        return res(
+          ctx.json({
+            message: { pacts: pacts },
+            errors: [],
+          })
+        );
+      }),
+      rest.post(`https://api.cloudinary.com/v1_1/${process.env.REACT_APP_CLOUDINARY_CLOUD_NAME}/image/upload`, (req, res, ctx) => {
+        return res(
+          ctx.status(201),
+          ctx.json({}),
+        );
+      }),
+    );
   });
-
-  afterEach( () => {
-    queryCache.clear();
-  })
 
   const renderWithMock = async () => {
     history = createMemoryHistory({initialEntries:[`/user/${user._id}`]})
