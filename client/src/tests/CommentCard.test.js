@@ -80,8 +80,8 @@ describe("CommentCard Tests", () => {
     });
 
     it("should render comment text", async () => {
-      const text = await screen.findByTestId("comment-text");
-      expect(text.innerHTML).toBe(COMMENT_TEXT);
+      const text = await screen.findByText(COMMENT_TEXT);
+      expect(text).toBeInTheDocument();
     });
 
     it("should render author text", async () => {

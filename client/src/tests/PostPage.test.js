@@ -1,4 +1,4 @@
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { render, screen, fireEvent, waitFor, findByText } from "@testing-library/react";
 import { waitForElementToBeRemoved } from "@testing-library/react"
 import PostPage from "../pages/PostPage";
 import "@testing-library/jest-dom";
@@ -120,6 +120,44 @@ describe("PostPage Tests", () => {
       expect(reply.innerHTML).toContain("Add comment");
       const replyBox = await screen.queryByTestId("comment-reply-box");
       expect(replyBox).toBeNull();
+    });
+
+    it("should handle callback from own CommentBox", async () => {
+      const COMMENT_TEXT = "lorem ipsum";
+
+      const addCommentBtn = await screen.findByText("Add comment");
+      fireEvent.click(addCommentBtn);
+
+      const submit = await screen.findByTestId("submit-button");
+      const input = await screen.findByRole("textbox", {
+				name: "Comment",
+			});
+
+      fireEvent.change(input, { target: { value: COMMENT_TEXT } });
+      fireEvent.click(submit);
+
+      await waitFor(() => expect(submit).toBeDisabled());
+      const newComment = await findByText(COMMENT_TEXT);
+      expect(newComment).toBeInTheDocument();
+    });
+
+    it("should handle callback from a comment's CommentBox", async () => {
+      const COMMENT_TEXT = "lorem ipsum";
+
+      const reply = await screen.findByText("Reply");
+      fireEvent.click(reply);
+
+      const submit = await screen.findByTestId("submit-button");
+      const input = await screen.findByRole("textbox", {
+				name: "Comment",
+			});
+
+      fireEvent.change(input, { target: { value: COMMENT_TEXT } });
+      fireEvent.click(submit);
+
+      await waitFor(() => expect(reply).not.toBeInTheDocument());
+      const newComment = await findByText(COMMENT_TEXT);
+      expect(newComment).toBeInTheDocument();
     });
   });
 });
