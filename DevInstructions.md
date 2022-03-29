@@ -13,7 +13,13 @@
     - [4. Setup Server Application](#4-setup-server-application)
       - [Environment Variables](#environment-variables-1)
   - [Development](#development)
+    - [Test-Driven Development](#test-driven-development)
     - [SOLID Principles](#solid-principles)
+      - [**Single Responsibility Principle**](#single-responsibility-principle)
+      - [**Open-CLosed Principle**](#open-closed-principle)
+      - [**Liskov Substitution Principle**](#liskov-substitution-principle)
+      - [**Interface Segregation Principle**](#interface-segregation-principle)
+      - [**Dependency Inversion Principle**](#dependency-inversion-principle)
 ## Software Installation
 Unzip the .zip folder and open a new terminal window inside the project directory.
 ### 1. Prerequisites
@@ -114,5 +120,19 @@ The client application relies on a few environment variables. Some variables wil
   DEPLOYED_URL=http://localhost:8000
   ```
 ## Development
-### SOLID Principles
+### Test-Driven Development
 
+### SOLID Principles
+#### **Single Responsibility Principle**
+In the client application, each component is solely responsible for displaying data and changing the UI when there is a change in state. Any interaction with the database is done by making requests to the server application. Most elements are contained within their own component that can be reused by other components. 
+
+In the server application, each file, or function has a sole responsibility. Routes are used to describe different API endpoints and calling the appropriate controller. Controllers perform a single CRUD operation. Various helpers/middleware are used for other specific purposes. By ensuring everything is responsible for one job, code becomes more reusable and easier to maintain. 
+
+#### **Open-CLosed Principle**
+
+#### **Liskov Substitution Principle**
+The application currently doesn't rely on inheritance as React is by nature, a functional framework. The majority of the server application uses a functional programming approach. Therefore it is very rare for a class to have child classes.
+#### **Interface Segregation Principle**
+In the client application,pages only depend on components that it displays/uses. At the top of each file, only the required functions/components are imported in order to ensure that interfaces are segregated from each other. The server application will throw an error if there are any unused imports at the top of a file.
+#### **Dependency Inversion Principle**
+Abstractions are used rather than concretions in order to make code cleaner and more reusable. When creating new functions and classes, try to decouple them as much as possible.
