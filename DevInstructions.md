@@ -9,6 +9,32 @@ $ npm -v
 $ docker -v
 $ docker-compose -v
 ```
+### External APIs/Services
+Both the client and server applications utilize a few APIs. Some of these require creating an account and registering for an API key. It is important to do this before completing the rest of the setup.
+
+#### **Cloudinary**
+[Cloudinary](https://cloudinary.com/) is for cloud image hosting. You need to create an account on Cloudinary in order to get an API key. Follow the Cloudinary [docs](https://cloudinary.com/documentation) in order to set up your account. Once you have an account you will see the following values:
+<p align="center">
+  <a href="cloudinary" rel="noopener sponsored" target="_blank"><img src="https://i.imgur.com/breMIms.png" alt="cloudinary" title="Cloudinary Account" loading="lazy" /></a>
+</p>
+You will need to add these variables as environment variables in a later step.
+
+<p></p>
+
+#### **Link Preview**
+[Link Preview](https://www.linkpreview.net/) is an API used to get website information from any given URL, in JSON format. It returns a title, thumbnail and short description of the website that a URL leads to and is used to show a small preview of a link in the client application.
+
+Use the Link Preview [documentation](https://docs.linkpreview.net/) instructions to sign up for an API key. Once you have an account, you will be shown your API key:
+
+<p align="center">
+  <a href="cloudinary" rel="noopener sponsored" target="_blank"><img src="https://i.imgur.com/8QWqHKV.png" alt="cloudinary" title="Cloudinary Account" loading="lazy" /></a>
+</p>
+You will need to add this API key as an environment variable in a later step.
+
+<p></p>
+
+#### **University API**
+The [University API](http://universities.hipolabs.com/search?country=United%20Kingdom) is a simple API that returns a university's name and domain name for any given UK university. It is used in the server application for email verification to determine if a user has a valid university email adress. There is no registration required to use this API.
 
 ### Setup Client Application
 Enter the client directory
@@ -26,7 +52,7 @@ The client application relies on a few environment variables. Create a file call
   ```
   REACT_APP_URL=http://localhost:8000
   ```
-- [Cloudinary](https://cloudinary.com/) is for cloud image hosting. You need to create an account on Cloudinary in order to get an API key. Follow the Cloudinary [docs](https://cloudinary.com/documentation) in order to set up your account. Once an account is created, add the required variables to .env
+-  Once an account is created, add the required variables to .env
   ```
   REACT_APP_CLOUDINARY_CLOUD_NAME= *insert your cloud name*
   REACT_APP_CLOUDINARY_KEY= *insert your Cloudinary key*
@@ -35,8 +61,6 @@ The client application relies on a few environment variables. Create a file call
   ```
 
 ### Setup Server Application
-
-### External APIs/Services
 
 #### Environment Variables
 The client application relies on a few environment variables. Some variables will be unique to each developer/team, but we have provided a few values that we used during development, feel free to use those as well or change them to something else. Create a file called .env and add the following variables:
@@ -55,13 +79,13 @@ The client application relies on a few environment variables. Some variables wil
   ```
 
 - EMAIL STUFF
-- Cloudinary variables - the values for these variables are the same as in the client .env file but the names are different
+- [Cloudinary](https://cloudinary.com/) variables - the values for these variables are the same as in the client .env file but the names are different
   ```
   CLOUDINARY_CLOUD_NAME= *insert your cloud name*
   CLOUDINARY_KEY= *insert your Cloudinary key*
   CLOUDINARY_SECRET= *insert your Cloudinary secret*
   ```
-- [University API](http://universities.hipolabs.com/search?country=United%20Kingdom) - the API used for getting the name and domain for all the universities in the UK.
+- [University API](http://universities.hipolabs.com/search?country=United%20Kingdom) URL - Add the URL for the University API as shown below:
   ```
   UNIVERSITY_API=http://universities.hipolabs.com/search?country=United%20Kingdom
   ```
