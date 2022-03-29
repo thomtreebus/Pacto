@@ -6,37 +6,10 @@ import { rest } from "msw";
 import { setupServer } from "msw/node";
 import UserCard from "../components/UserCard"
 import testUsers from "./utils/testUsers"
+import { useMockServer } from "./utils/useMockServer";
 
 describe("UserCard Tests", () => {
-	const server = setupServer(
-		rest.get(`${process.env.REACT_APP_URL}/me`, (req, res, ctx) => {
-			return res(
-				ctx.json({ message: { 
-                    firstName: "pac", 
-                    lastName: "to",
-                    image: "https://avatars.dicebear.com/api/identicon/temp.svg",
-                    friends: [1], // Logged in user is friends with testUsers[0]
-                    sentRequests: [{_id: 1, recipient: 2}], // and has sent a request to testUser[1]
-                    receivedRequests: [{_id: 2, requestor: 3}], // and has received a request from testUser[2]
-                    // User has no relationship with testUseer[3]
-                }, 
-                errors: [] 
-            })
-			);
-		}), 
-	);
-
-    beforeAll(() => {
-		server.listen();
-	});
-
-	afterAll(() => {
-		server.close();
-	});
-
-	beforeEach(async () => {
-		server.resetHandlers();
-	});
+    const server = useMockServer();
 
 	const renderWithMock = async (children) => {
 		render(<MockComponent>{children}</MockComponent>);
