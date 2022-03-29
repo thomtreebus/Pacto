@@ -1,3 +1,5 @@
+import users from "./testUsers";
+
 const pacts = [
 	{
 		_id: 1,
@@ -5,7 +7,7 @@ const pacts = [
 		description: "No description provided",
 		category: "course",
 		image: "https://avatars.dicebear.com/api/identicon/temp.svg",
-		members: ["01"],
+		members: [users[0]._id],
 		moderators: [],
 	},
 	{
@@ -23,7 +25,7 @@ const pacts = [
 		description: "No description provided",
 		category: "society",
 		image: "https://avatars.dicebear.com/api/identicon/temp.svg",
-		members: ["01", "02"],
+		members: [users[0]._id, users[1]._id],
 		moderators: [],
 	},
 	{
@@ -32,7 +34,7 @@ const pacts = [
 		description: "No description provided",
 		category: "other",
 		image: "https://avatars.dicebear.com/api/identicon/temp.svg",
-		members: ["02"],
+		members: [users[1]._id],
 		moderators: [],
 	},
 ];

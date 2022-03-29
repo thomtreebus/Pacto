@@ -10,19 +10,6 @@ import { useMockServer } from "./utils/useMockServer";
 
 describe("PactGrid Tests", () => {
 	const server = useMockServer();
-	
-	beforeEach(async () => {
-		server.use(
-			rest.get(`${process.env.REACT_APP_URL}/me`, (req, res, ctx) => {
-				return res(
-					ctx.json({
-						message: { firstName: "pac", lastName: "to", _id: "01" },
-						errors: [],
-					})
-				);
-			})
-		);
-	});
 
 	async function renderWithMockComponent(grid) {
 		render(<MockComponent>{grid}</MockComponent>);
