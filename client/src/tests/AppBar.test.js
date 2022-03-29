@@ -1,16 +1,15 @@
-import { render, screen, fireEvent, waitFor, waitForElementToBeRemoved } from "@testing-library/react"
+import { render, screen, fireEvent, waitFor, waitForElementToBeRemoved, act } from "@testing-library/react"
 import AppBar from "../components/AppBar.jsx";
 import "@testing-library/jest-dom";
 import MockComponent from "./utils/MockComponent.jsx";
 import { rest } from "msw";
 import { setupServer } from "msw/node";
-import { Route,Switch} from "react-router-dom";
+import { Switch } from "react-router-dom";
 import { createMemoryHistory } from 'history';
 import PrivateRoute from "../components/PrivateRoute";
 import AuthRoute from "../components/AuthRoute";
 
 describe("App Bar Tests", () => {
-
 
   const server = setupServer(
 		rest.get(`${process.env.REACT_APP_URL}/me`, (req, res, ctx) => {
@@ -26,7 +25,27 @@ describe("App Bar Tests", () => {
 			return res(
 				ctx.json({ message: null, errors: [] })
 			);
-		})
+		}),
+    rest.get(`${process.env.REACT_APP_URL}/notifications`, (req, res, ctx) => {
+      return res(
+        ctx.json({
+          errors: [], 
+          message: [
+            { __v: 0, _id: "1", text: "Your post received a new comment", read: true, time: "2022-03-25T10:02:42.545Z" },
+            { __v: 0, _id: "2", text: "Your post received a new comment", read: false, time: "2022-03-25T10:02:42.545Z" }
+          ] })
+      );
+    }),
+    rest.put(`${process.env.REACT_APP_URL}/notifications/2/update`, (req, res, ctx) => {
+      return res(
+        ctx.json({
+          errors: [], 
+          message: [
+            { __v: 0, _id: "1", text: "Your post received a new comment", read: true, time: "2022-03-25T10:02:42.545Z" },
+            { __v: 0, _id: "2", text: "Your post received a new comment", read: true, time: "2022-03-25T10:02:42.545Z" }
+          ] })
+      );
+    })
 	);
 
 	beforeAll(() => {
@@ -41,7 +60,7 @@ describe("App Bar Tests", () => {
 		server.resetHandlers();
 	});
 
-  beforeEach(async () => {
+  const renderWithMock = async (element) => {
     history = createMemoryHistory({ initialEntries: [`/feed`] });
     render(
       <MockComponent>
@@ -64,11 +83,16 @@ describe("App Bar Tests", () => {
           </Switch>
         </PrivateRoute>
       </MockComponent>
-      );
+    );
     await waitForElementToBeRemoved(() => screen.getByText("Loading"));
-  });
+  }
 
   describe("Check elements are rendered", () => {
+
+    beforeEach( async () => {
+      await renderWithMock();
+    })
+
     it("should render the app bar element", () => {
       const appBarElement = screen.getByTestId("app-bar");
       expect(appBarElement).toBeInTheDocument();
@@ -103,25 +127,29 @@ describe("App Bar Tests", () => {
       const logoutItemElement = screen.getByTestId("logout-item");
       expect(logoutItemElement).toBeInTheDocument();
     });
-  
-    it("should render the mobile menu button element", () => {
-      const iconButtonElement = screen.getByTestId("mobile-menu-button");
-      expect(iconButtonElement).toBeInTheDocument();
-      const moreIconElement = screen.getByTestId("more-button");
-      expect(moreIconElement).toBeInTheDocument();
-    });
-  
-    it("should render the mobile button menu item elements", () => {
-      const menuElement = screen.getByTestId("primary-search-account-menu-mobile");
+    
+    it("should render the notifications icon bell", async () => {
+      const menuElement = await waitFor(() => screen.getByTestId("NotificationsIcon"));
       expect(menuElement).toBeInTheDocument();
-      const profileItemElement = screen.getByTestId("profile-item-mobile");
-      expect(profileItemElement).toBeInTheDocument();
-      const logoutItemElement = screen.getByTestId("logout-item-mobile");
-      expect(logoutItemElement).toBeInTheDocument();
+    });
+
+    it("should render the notification card", async () => {
+      const menuElement = await screen.findByTestId("notification-card-2");
+      expect(menuElement).toBeInTheDocument();
+    });
+
+    it("should render the mark as read button on the notification card", async () => {
+      const buttonElement = await screen.findByTestId("mark-notification-as-read-2");
+      expect(buttonElement).toBeInTheDocument();
     });
   });
 
   describe("Check interaction with elements", () => {
+
+    beforeEach( async () => {
+      await renderWithMock();
+    })
+
     it("should log out the user when log out is pressed", async () => {
       server.use(
 				rest.get(`${process.env.REACT_APP_URL}/me`, (req, res, ctx) => {
@@ -158,30 +186,13 @@ describe("App Bar Tests", () => {
       const menuElement = screen.getByTestId("primary-search-account-menu");
       await waitFor(() => expect(menuElement).toBeVisible());
     });
-
-    it("should open the mobile menu when the icon button is pressed", async () => {
-      const iconButtonElement = screen.getByTestId("mobile-menu-button");
-      fireEvent.click(iconButtonElement);
-      const menuElement = screen.getByTestId("primary-search-account-menu-mobile");
-      expect(menuElement).toBeVisible();
-    });
-
+  
     it("should close the profile menu when a menu item is pressed", async () => { 
       const iconButtonElement = screen.getByTestId("profile-button");
       fireEvent.click(iconButtonElement);
       const menuElement = screen.getByTestId("primary-search-account-menu");
       expect(menuElement).toBeInTheDocument();
       const profileItemElement = screen.getByTestId("profile-item");
-      fireEvent.click(profileItemElement);
-      await waitFor(() => expect(menuElement).not.toBeVisible());
-    });
-
-    it("should close the mobile menu when a menu item is pressed", async () => { 
-      const iconButtonElement = screen.getByTestId("mobile-menu-button");
-      fireEvent.click(iconButtonElement);
-      const menuElement = screen.getByTestId("primary-search-account-menu-mobile");
-      expect(menuElement).toBeInTheDocument();
-      const profileItemElement = screen.getByTestId("profile-item-mobile");
       fireEvent.click(profileItemElement);
       await waitFor(() => expect(menuElement).not.toBeVisible());
     });
@@ -201,5 +212,59 @@ describe("App Bar Tests", () => {
       expect(redirectMessage).toBeInTheDocument();
       expect(window.location.pathname).toBe("/user/userid1");
     });
+
+    it("should open the notifications menu when the notification bell is pressed", async () => {
+      const buttonElement = await waitFor(() => screen.getByTestId("notification-button"));
+      fireEvent.click(buttonElement);
+      const menuElement = screen.getByTestId("notifications-menu");
+      await waitFor(() => expect(menuElement).toBeVisible());
+    });
+
+    it("should close the profile menu when the user presses escape", async () => { 
+      const iconButtonElement = await waitFor(() => screen.getByTestId("notification-button"));
+      fireEvent.click(iconButtonElement);
+      const menuElement = screen.getByTestId("notifications-menu");
+      expect(menuElement).toBeInTheDocument();
+      fireEvent.keyDown(menuElement, {
+        key: 'Escape',
+        code: 'Escape'
+      });
+      await waitFor(() => expect(menuElement).not.toBeVisible());
+    });
+
+    it("should remove the notification if the mark as read button is pressed", async () => {
+      const buttonElement = await screen.findByTestId("mark-notification-as-read-2");
+      await act(async () => {
+        await waitFor(() => fireEvent.click(buttonElement));
+        await expect(buttonElement).toBeDisabled();
+        await waitFor(async () =>{
+          expect(await screen.queryByTestId("notification-card-2")).not.toBeInTheDocument()
+        });
+      });
+    });
   });
+
+  describe("Other tests", () => {
+    it("should display the error with marking a notification as read", async () => {
+      server.use(
+        rest.put(`${process.env.REACT_APP_URL}/notifications/2/update`, (req, res, ctx) => {
+          return res(
+            ctx.status(400),
+            ctx.json({
+              errors: [{field: null, message: "There was an error marking as read"}],
+              message: null })
+          );
+        })
+      );
+      await renderWithMock();
+      const buttonElement = await screen.findByTestId("mark-notification-as-read-2");
+      await act(async () => {
+        fireEvent.click(buttonElement);
+        });
+      expect(await screen.findByTestId("notification-card-2")).toBeInTheDocument();
+      expect(await screen.findByText("There was an error marking as read")).toBeInTheDocument();
+      expect(await screen.findByTestId("error-message-2")).toBeInTheDocument();
+      expect(buttonElement).not.toBeDisabled();
+    });
+  })
 });

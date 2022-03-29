@@ -11,6 +11,7 @@ import { useMockServer } from "./utils/useMockServer"
 describe("Left Sidebar tests", () => {
 	const server = useMockServer();
 
+
 	beforeEach(async () => {
 		server.use(
 			rest.get(`${process.env.REACT_APP_URL}/university`, (req, res, ctx) => {
@@ -19,6 +20,11 @@ describe("Left Sidebar tests", () => {
 						message: { pacts: pacts },
 						errors: [],
 					})
+				);
+			}),
+			rest.get(`${process.env.REACT_APP_URL}/notifications`, (req, res, ctx) => {
+				return res(
+					ctx.json({ message: [], errors: [] })
 				);
 			})
 		);
