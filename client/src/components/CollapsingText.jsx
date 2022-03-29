@@ -1,8 +1,8 @@
-import { ArrowDropDown, ArrowDropUp } from "@mui/icons-material";
+import { ArrowDropDown, ArrowDropUp, Colorize } from "@mui/icons-material";
 import { Typography, Collapse, Grid, IconButton } from "@mui/material";
 import { useState, useRef, useLayoutEffect } from "react";
 
-export default function CollapsingText({ text }) {
+export default function CollapsingText({ text, variant="body1", color }) {
   const [collapse, setCollapse] = useState(false);
   const textRef = useRef();
   const [dimensions, setDimensions] = useState({ width:0, height: 0 });
@@ -42,7 +42,7 @@ export default function CollapsingText({ text }) {
   return (
     dimensions.height > COLLAPSE_LIMIT ? <Grid>
       <Collapse in={collapse} collapsedSize="100px">
-        <Typography variant="body1" ref={textRef}>
+        <Typography variant={variant} color={color} ref={textRef}>
           {text}
         </Typography>
       </Collapse>
@@ -54,7 +54,7 @@ export default function CollapsingText({ text }) {
       </Typography>
     </Grid>
     :
-    <Typography variant="body1" ref={textRef}>
+    <Typography variant={variant} color={color} ref={textRef}>
       {text}
     </Typography>
   )

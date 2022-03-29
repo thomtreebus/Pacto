@@ -12,6 +12,7 @@ import { relativeTime } from "../../helpers/timeHandllers";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { IconButton } from "@mui/material";
 import ErrorMessage from "../ErrorMessage";
+import CollapsingText from "../CollapsingText";
 
 export const DELETED_COMMENT_MESSAGE = "This comment has been deleted.";
 
@@ -115,9 +116,11 @@ export default function CommentCard({ comment, post, postUpdaterFunc }) {
               Posted by <span onClick={() => history.push(`/user/${comment.author._id}`)} className="link" data-testid="author">{comment.author.firstName + " " + comment.author.lastName}</span> {relativeTime(comment.createdAt)}
             </Typography>
 
-            <Typography variant="body1" color={`${comment.deleted ? 'error' : 'inherit'}`} data-testid="comment-text">
-              {comment.deleted ? DELETED_COMMENT_MESSAGE : comment.text}
-            </Typography>
+            <CollapsingText 
+              text={comment.deleted ? DELETED_COMMENT_MESSAGE : comment.text}
+              variant="body1"
+              color={`${comment.deleted ? 'error' : 'inherit'}`}
+            />
 
             { !comment.deleted && <Typography variant="caption" className="link" onClick={() => {setShowReplyBox(!showReplyBox)}} data-testid="reply-button">
               {showReplyBox ? "Hide" : "Reply"}
