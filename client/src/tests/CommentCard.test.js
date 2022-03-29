@@ -41,6 +41,20 @@ const comment = {
 
 describe("CommentCard Tests", () => {
   const server = useMockServer();
+  server.use(
+		rest.get(`${process.env.REACT_APP_URL}/me`, (req, res, ctx) => {
+			return res(
+				ctx.json({ message: { firstName: "pac", lastName: "to", _id: 5 }, errors: [] })
+			);
+		}),
+    rest.delete(`${process.env.REACT_APP_URL}/pact/5/post/1/comment/1`, (req, res, ctx) => {
+      const newComment = JSON.parse(JSON.stringify(comment));
+      newComment.deleted = true;
+			return res(
+				ctx.json({ message: newComment, errors: [] })
+			);
+		})
+	);
 
   beforeEach(async () => {
 		render(
@@ -89,8 +103,8 @@ describe("CommentCard Tests", () => {
           );
         }),
       );
-      const del = await screen.findByTestId("delete-button");
-      expect(del).toBeInTheDocument();
+      const del = await screen.queryByTestId("delete-button");
+      expect(del).not.toBeInTheDocument();
     });
   });
 

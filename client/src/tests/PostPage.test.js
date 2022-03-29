@@ -42,14 +42,37 @@ const post = {message:{
 
 describe("PostPage Tests", () => {
   const server = useMockServer();
-
-	beforeEach(async () => {
-		server.use(
-      rest.get(`${process.env.REACT_APP_URL}/pact/5/post/1`, (req, res, ctx) => {
-        return res(ctx.json(post));
-      }),
-    );
-	});
+  server.use(
+		rest.get(`${process.env.REACT_APP_URL}/me`, (req, res, ctx) => {
+			return res(
+				ctx.json({ message: { firstName: "pac", lastName: "to", _id: "5" }, errors: [] })
+			);
+		}),
+    rest.post(`${process.env.REACT_APP_URL}/pact/5/post/1/comment/1/reply`, (req, res, ctx) => {
+			return res(
+        ctx.status(201),
+        ctx.json({
+          message: {
+            text: req.body.text,
+            parentComment: {_id:comment._id}
+          },
+          errors: []
+        })
+      );
+		}),
+    rest.post(`${process.env.REACT_APP_URL}/pact/5/post/1/comment`, (req, res, ctx) => {
+      return res(
+        ctx.status(201),
+        ctx.json({
+          message: {text: req.body.text},
+          errors: []
+        })
+      );
+		}),
+    rest.get(`${process.env.REACT_APP_URL}/pact/5/post/1`, (req, res, ctx) => {
+      return res(ctx.json(post));
+    }),
+	);
 
   beforeEach(async () => {
     const history = createMemoryHistory({ initialEntries: [`/pact/5/post/1`] });

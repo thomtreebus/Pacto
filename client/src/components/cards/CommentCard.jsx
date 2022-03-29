@@ -155,7 +155,7 @@ export default function CommentCard({ comment, post, postUpdaterFunc }) {
           </Box>}
         </Box>
         {((comment.author._id === user._id ||
-						post.pact.moderators.includes(user._id)) && !comment.deleted) && (
+						post.pact.moderators?.includes(user._id)) && !comment.deleted) && (
 						<Box sx={{ display: "flex", justifyContent: "flex-end" }}>
 							<IconButton
 								color="error"
