@@ -16,7 +16,7 @@ module.exports.postPost = async (req, res) => {
     const { title, text, image, link, type } = req.body;
 		const pact = req.pact;
 
-		const post = await Post.create({ author:user, pact, title, image, text, link, type });
+		const post = await Post.create({ author:user, pact, title: title?.trim(), image, text: text?.trim(), link, type });
 		// Add post to the pact
 		await Pact.findByIdAndUpdate(pact, {$push: {posts: post}});
 		res.status(201).json(jsonResponse(post, []));

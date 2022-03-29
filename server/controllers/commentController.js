@@ -12,7 +12,7 @@ const makeComment = async(req, res, parentComment=undefined) => {
     const { text } = req.body;
 
     const newComment = {
-      text: text.trim(),
+      text: text?.trim(),
       author: req.user._id,
       parentComment
     }
