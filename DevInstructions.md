@@ -25,7 +25,7 @@
 ## Software Installation
 Unzip the .zip folder and open a new terminal window inside the project directory.
 ### 1. Prerequisites
-In order to run the application, you must have the latest stable release version of [Node.js](https://nodejs.org/en/), [npm](https://www.npmjs.com/), [Docker](https://www.docker.com/), and [docker-compose](https://docs.docker.com/compose/). To check whether you have these  installed, run the following commands:
+In order to run the application, you must have the latest stable release version (note: future versions might not work with the versions that were used during development) of [Node.js](https://nodejs.org/en/), [npm](https://www.npmjs.com/), [Docker](https://www.docker.com/), and [docker-compose](https://docs.docker.com/compose/). To check whether you have these  installed, run the following commands:
 ```
 $ node -v
 $ npm -v

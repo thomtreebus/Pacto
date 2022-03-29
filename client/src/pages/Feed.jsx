@@ -25,7 +25,7 @@ export default function Feed() {
       setIsLoading(false);
       setError(null);
 		}).catch((err) => {
-      if (err.message === "The user aborted a request.") return;
+      if (err.name == "AbortError") return;
     })
     return () => controller.abort();
 	}, [])

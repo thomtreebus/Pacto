@@ -48,7 +48,7 @@ export default function Profile() {
     }).then((data) => {
       setDisplayedUser(data.message)
     }).catch((err) => {
-      if (err.message === "The user aborted a request.") return;
+      if (err.name == "AbortError") return;
       if (err.message === "Could not fetch user profile") history.push("/not-found")
     });
     return () => controller.abort();

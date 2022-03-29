@@ -83,7 +83,7 @@ export default function UserPage() {
         setAllUsers(resAllUsers);
         setIsLoading(false);
       }).catch((err) => {
-        if (err.message === "The user aborted a request.") return;
+        if (err.name == "AbortError") return;
         history.push("/not-found");
     })
     return () => controller.abort();
