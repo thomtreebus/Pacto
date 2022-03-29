@@ -5,27 +5,11 @@ import PageList from "../components/PageList";
 import MockComponent from "./utils/MockComponent";
 import { rest } from "msw";
 import { setupServer } from "msw/node";
+import users from "./utils/testUsers";
+import { useMockServer } from "./utils/useMockServer";
 
 describe("Page List Tests", () => {
-	const server = setupServer(
-		rest.get(`${process.env.REACT_APP_URL}/me`, (req, res, ctx) => {
-			return res(
-				ctx.json({ message: { firstName: "pac", lastName: "to" }, errors: [] })
-			);
-		})
-	);
-
-	beforeAll(() => {
-		server.listen();
-	});
-
-	afterAll(() => {
-		server.close();
-	});
-
-	beforeEach(async () => {
-		server.resetHandlers();
-	});
+	const server = useMockServer();
 
 	beforeEach(async () => {
 		render(

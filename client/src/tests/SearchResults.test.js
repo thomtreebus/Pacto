@@ -7,6 +7,8 @@ import { rest } from "msw";
 import { setupServer } from "msw/node";
 import { createMemoryHistory } from 'history';
 import { Router, Route } from 'react-router-dom'
+import users from "./utils/testUsers";
+import { useMockServer } from "./utils/useMockServer";
 
 const response = {
   message: {
@@ -35,29 +37,16 @@ const response = {
 }
 
 describe("SearchResults Tests", () => {
-	const server = setupServer(
-		rest.get(`${process.env.REACT_APP_URL}/me`, (req, res, ctx) => {
-			return res(
-				ctx.json({ message: { firstName: "pac", lastName: "to" }, errors: [] })
-			);
-		}),
-		rest.get(`${process.env.REACT_APP_URL}/search/e`, (req, res, ctx) => {
-			return res(
-				ctx.json(response)
-			);
-		})
-	);
-
-	beforeAll(() => {
-		server.listen();
-	});
-
-	afterAll(() => {
-		server.close();
-	});
+	const server = useMockServer();
 
 	beforeEach(async () => {
-		server.resetHandlers();
+		server.use(
+			rest.get(`${process.env.REACT_APP_URL}/search/e`, (req, res, ctx) => {
+				return res(
+					ctx.json(response)
+				);
+			})
+		);
 		jest.spyOn(console, 'error').mockImplementation(() => { });
 	});
 

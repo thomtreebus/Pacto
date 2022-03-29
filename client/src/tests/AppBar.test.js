@@ -8,56 +8,52 @@ import { Switch } from "react-router-dom";
 import { createMemoryHistory } from 'history';
 import PrivateRoute from "../components/PrivateRoute";
 import AuthRoute from "../components/AuthRoute";
+import { useMockServer } from "./utils/useMockServer.js";
 
 describe("App Bar Tests", () => {
 
-  const server = setupServer(
-		rest.get(`${process.env.REACT_APP_URL}/me`, (req, res, ctx) => {
-			return res(
-				ctx.json({ message: {
-          _id : "userid1",
-          firstName: "pac",
-          lastName: "to"
-          }, errors: [] })
-			);
-		}),
-    rest.get(`${process.env.REACT_APP_URL}/logout`, (req, res, ctx) => {
-			return res(
-				ctx.json({ message: null, errors: [] })
-			);
-		}),
-    rest.get(`${process.env.REACT_APP_URL}/notifications`, (req, res, ctx) => {
-      return res(
-        ctx.json({
-          errors: [], 
-          message: [
-            { __v: 0, _id: "1", text: "Your post received a new comment", read: true, time: "2022-03-25T10:02:42.545Z" },
-            { __v: 0, _id: "2", text: "Your post received a new comment", read: false, time: "2022-03-25T10:02:42.545Z" }
-          ] })
-      );
-    }),
-    rest.put(`${process.env.REACT_APP_URL}/notifications/2/update`, (req, res, ctx) => {
-      return res(
-        ctx.json({
-          errors: [], 
-          message: [
-            { __v: 0, _id: "1", text: "Your post received a new comment", read: true, time: "2022-03-25T10:02:42.545Z" },
-            { __v: 0, _id: "2", text: "Your post received a new comment", read: true, time: "2022-03-25T10:02:42.545Z" }
-          ] })
-      );
-    })
-	);
-
-	beforeAll(() => {
-		server.listen();
-	});
-
-	afterAll(() => {
-		server.close();
-	});
+  const server = useMockServer();
 
 	beforeEach(async () => {
-		server.resetHandlers();
+		server.use(
+      rest.get(`${process.env.REACT_APP_URL}/me`, (req, res, ctx) => {
+        return res(
+          ctx.json({ 
+            message: {
+              _id : "userid1",
+              firstName: "pac",
+              lastName: "to"
+            },
+            errors: []
+          })
+        );
+      }),
+      rest.get(`${process.env.REACT_APP_URL}/logout`, (req, res, ctx) => {
+        return res(
+          ctx.json({ message: null, errors: [] })
+        );
+      }),
+      rest.get(`${process.env.REACT_APP_URL}/notifications`, (req, res, ctx) => {
+        return res(
+          ctx.json({
+            errors: [], 
+            message: [
+              { __v: 0, _id: "1", text: "Your post received a new comment", read: true, time: "2022-03-25T10:02:42.545Z" },
+              { __v: 0, _id: "2", text: "Your post received a new comment", read: false, time: "2022-03-25T10:02:42.545Z" }
+            ] })
+        );
+      }),
+      rest.put(`${process.env.REACT_APP_URL}/notifications/2/update`, (req, res, ctx) => {
+        return res(
+          ctx.json({
+            errors: [], 
+            message: [
+              { __v: 0, _id: "1", text: "Your post received a new comment", read: true, time: "2022-03-25T10:02:42.545Z" },
+              { __v: 0, _id: "2", text: "Your post received a new comment", read: true, time: "2022-03-25T10:02:42.545Z" }
+            ] })
+        );
+      })
+    );
 	});
 
   const renderWithMock = async (element) => {

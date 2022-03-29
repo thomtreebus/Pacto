@@ -4,6 +4,8 @@ import "@testing-library/jest-dom";
 import MockComponent from "./utils/MockComponent";
 import { setupServer } from "msw/node";
 import { rest } from "msw";
+import users from "./utils/testUsers";
+import { useMockServer } from "./utils/useMockServer";
 
 const textPost = {
   pact: {
@@ -69,25 +71,7 @@ const linkPost = {
 }
 
 describe("PostCard Tests", () => {
-  const server = setupServer(
-		rest.get(`${process.env.REACT_APP_URL}/me`, (req, res, ctx) => {
-			return res(
-				ctx.json({ message: { firstName: "pac", lastName: "to", _id: "5" }, errors: [] })
-			);
-		}),
-  );
-
-  beforeAll(() => {
-		server.listen();
-	});
-
-	afterAll(() => {
-		server.close();
-	});
-
-	beforeEach(async () => {
-		server.resetHandlers();
-	});
+  const server = useMockServer();
   
   describe("Check correct post type is rendered", () => {
     it("should render a text post when type is text", async () => {

@@ -7,6 +7,8 @@ import { setupServer } from "msw/node";
 import { createMemoryHistory } from 'history';
 import { rest } from "msw";
 import { Router, Route } from "react-router-dom";
+import users from "./utils/testUsers";
+import { useMockServer } from "./utils/useMockServer";
 
 const post = {message:{
   text: "lorem ispum",
@@ -39,27 +41,14 @@ const post = {message:{
 }};
 
 describe("PostPage Tests", () => {
-  const server = setupServer(
-		rest.get(`${process.env.REACT_APP_URL}/me`, (req, res, ctx) => {
-			return res(
-				ctx.json({ message: { firstName: "pac", lastName: "to", _id: "5" }, errors: [] })
-			);
-		}),
-    rest.get(`${process.env.REACT_APP_URL}/pact/5/post/1`, (req, res, ctx) => {
-			return res(ctx.json(post));
-		}),
-	);
-
-  beforeAll(() => {
-		server.listen();
-	});
-
-	afterAll(() => {
-		server.close();
-	});
+  const server = useMockServer();
 
 	beforeEach(async () => {
-		server.resetHandlers();
+		server.use(
+      rest.get(`${process.env.REACT_APP_URL}/pact/5/post/1`, (req, res, ctx) => {
+        return res(ctx.json(post));
+      }),
+    );
 	});
 
   beforeEach(async () => {
