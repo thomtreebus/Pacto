@@ -15,16 +15,26 @@ const handleFieldErrors = require('../helpers/errorHandler');
 // Magic numbers
 const COOKIE_MAX_AGE = 432000; // 432000 = 5 days
 const SALT_ROUNDS = 10;
+const PRIVATE_KEY = "kekw";
 
-// Helper method to generate JWT
+/**
+ * Helper method to generate JWT
+ * @param {ObjectId} - The id of the user
+ * @returns The JWT
+ */
 const createToken = (id) => {
-	return jwt.sign({ id }, "kekw", {
+	return jwt.sign({ id }, PRIVATE_KEY, {
 		expiresIn: COOKIE_MAX_AGE,
 	});
 };
 module.exports.createToken = createToken;
 
-// POST /signup
+/**
+ * Creates a new user using data provided in the request.
+ * @param {Request} req - The request
+ * @param {Response} res - The response to the request
+ * @async
+ */
 module.exports.signupPost = async (req, res) => {
 	const { firstName, lastName, uniEmail, password } = req.body;
 	const processedEmail = uniEmail.toLowerCase()
@@ -102,7 +112,13 @@ module.exports.signupPost = async (req, res) => {
 	}
 };
 
-// POST /login
+/**
+ * Logs in a user if the credentials provided are correct.
+ * @param {Request} req - The request
+ * @param {Response} res - The response to the request
+ * @throws {Error} If the credentials are invalid, or the user is inactive.
+ * @async
+ */
 module.exports.loginPost = async (req, res) => {
 	const { uniEmail, password } = req.body;
 
@@ -137,13 +153,25 @@ module.exports.loginPost = async (req, res) => {
 	}
 };
 
-// GET /logout
-module.exports.logoutGet = (req, res) => {
+/**
+ * Logs out a logged in user.
+ * @param {Request} req - The request
+ * @param {Response} res - The response to the request
+ * @async
+ */
+module.exports.logoutGet = async (req, res) => {
 	res.cookie("jwt", "", { maxAge: 1 });
 	res.status(200).json(jsonResponse(null, []));
 };
 
-// GET /verify
+/**
+ * Verifies a user and adds them to their university (most likely when 
+ * they click on the link sent to them when creating an account).
+ * @param {Request} req - The request
+ * @param {Response} res - The response to the request
+ * @throws {Error} If the verification code is invalid or missing.
+ * @async
+ */
 module.exports.verifyGet = async (req, res) => {
 	try {
 		// Get code from query param
@@ -160,9 +188,7 @@ module.exports.verifyGet = async (req, res) => {
 
 		// Add user to their university
 		const user = await User.findByIdAndUpdate(linker.userId, { active: true });
-		const university = await University.findByIdAndUpdate(user.university, {$push: {users: user}});
-
-		// await university.populate({ path: 'users', model: User});
+		await University.findByIdAndUpdate(user.university, {$push: {users: user}});
 
 		await linker.delete();
 		res.status(200).send(MESSAGES.VERIFICATION.SUCCESS_RESPONSE_WHOLE_BODY);
@@ -172,6 +198,12 @@ module.exports.verifyGet = async (req, res) => {
 	}
 };
 
+/**
+ * Returns information about the user who made the request.
+ * @param {Request} req - The request
+ * @param {Response} res - The response to the request
+ * @async
+ */
 module.exports.meGet = async (req, res) => {
 	res.status(200).json(jsonResponse(req.user, []));
 };

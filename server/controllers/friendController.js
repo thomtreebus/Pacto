@@ -3,6 +3,14 @@ const FriendRequest = require('../models/FriendRequest');
 const { FRIEND_MESSAGES } = require('../helpers/messages');
 const {jsonResponse, jsonError} = require("../helpers/responseHandlers");
 
+/**
+ * Sends a friend request to a user.
+ * It fails if the user making the request is already a friend of the recipient,
+ * or either of them already sent a request to the other.
+ * @param {Request} req - The request
+ * @param {Response} res - The response to the request
+ * @async
+ */
 module.exports.sendFriendRequest = async (req, res) => {
   try {
     const user = req.user;
@@ -32,6 +40,14 @@ module.exports.sendFriendRequest = async (req, res) => {
   }
 }
 
+/**
+ * Accepts a friend request, so the requestor and the recipient
+ * become friends.
+ * If it succeeds, the friend request is then deleted.
+ * @param {Request} req - The request
+ * @param {Response} res - The response to the request
+ * @async
+ */
 module.exports.acceptFriendRequest = async (req, res) => {
   const recipient = req.user;
   const { id } = req.params;
@@ -69,6 +85,14 @@ module.exports.acceptFriendRequest = async (req, res) => {
   }
 }
 
+/**
+ * Rejects a friend request, so the requestor and the recipient
+ * do NOT become friends.
+ * If it succeeds, the friend request is then deleted.
+ * @param {Request} req - The request
+ * @param {Response} res - The response to the request
+ * @async
+ */
 module.exports.rejectFriendRequest = async (req, res) => {
   const recipient = req.user;
   const { id } = req.params;
@@ -102,6 +126,13 @@ module.exports.rejectFriendRequest = async (req, res) => {
   }
 }
 
+/**
+ * Removes a user from the friends list, it fails if the user was not a friend.
+ * Removing a friend happens for both users, even if it is requested only by 1 of them.
+ * @param {Request} req - The request
+ * @param {Response} res - The response to the request
+ * @async
+ */
 module.exports.removeFriend = async (req, res) => {
   try {
     const user = req.user;

@@ -5,15 +5,19 @@ const University = require("../models/University");
 const {USER_MESSAGES} = require("../helpers/messages");
 const FriendRequest = require('../models/FriendRequest');
 
+/**
+ * Updates the profile of the user making the request.
+ * @param {Request} req - The request
+ * @param {Response} res - The response to the request
+ * @async
+ */
 module.exports.updateProfile = async(req, res) => {
   let status = undefined;
   let jsonErrors = [];
   let resMessage = null;
   try {
     const { id } = req.params;
-    const { firstName, lastName, personalEmail, course } = req.body;
 
-    // if (!mongoose.Types.ObjectId.isValid(id)) return res.status(404).send(`No user with id: ${id}`);
     if (!mongoose.Types.ObjectId.isValid(id)) {
       status = 404;
       throw Error(USER_MESSAGES.DOES_NOT_EXIST);
@@ -21,7 +25,7 @@ module.exports.updateProfile = async(req, res) => {
       status = 401;
       throw Error(USER_MESSAGES.UPDATE_OTHER_PROFILE_UNAUTHORISED)
     } else {
-      const updatedUser = await User.findByIdAndUpdate(id, { ...req.body }, {runValidators: true});
+      await User.findByIdAndUpdate(id, { ...req.body }, {runValidators: true});
       status = 200
       const university = req.user.university;
       resMessage = await User.findOne({university, _id: req.params.id});
@@ -41,7 +45,13 @@ module.exports.updateProfile = async(req, res) => {
   }
 }
 
-
+/**
+ * Returns the profile of a user.
+ * The id of the user is given in the parameters of the request.
+ * @param {Request} req - The request
+ * @param {Response} res - The response to the request
+ * @async
+ */
 module.exports.viewProfile = async(req, res) => {
   let status = 400;
   try {
@@ -67,8 +77,6 @@ module.exports.viewProfile = async(req, res) => {
       throw Error(USER_MESSAGES.NOT_ACTIVE)
     }
 
-    // await user.populate({ path: 'user', model: User })
-
     res.status(200).json(jsonResponse(user, []));
 
   } catch (err) {
@@ -76,6 +84,13 @@ module.exports.viewProfile = async(req, res) => {
   }
 }
 
+/**
+ * Returns a list of all users in the university of 
+ * the user who made the request.
+ * @param {Request} req - The request
+ * @param {Response} res - The response to the request
+ * @async
+ */
 module.exports.allUniUsers = async(req, res) => {
   let status = 400;
   try {
@@ -92,6 +107,12 @@ module.exports.allUniUsers = async(req, res) => {
   }
 }
 
+/**
+ * Daletes a user whose id is given in the parameters of the request.
+ * @param {Request} req - The request
+ * @param {Response} res - The response to the request
+ * @async
+ */
 module.exports.deleteUser = async (req, res) => {
   const { id } = req.params;
   await User.findByIdAndDelete(id);
