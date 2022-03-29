@@ -1,6 +1,6 @@
-# Developer Instructions
+# Pacto Developer Instructions
 ## Table of Contents
-- [Developer Instructions](#developer-instructions)
+- [Pacto Developer Instructions](#pacto-developer-instructions)
   - [Table of Contents](#table-of-contents)
   - [Software Installation](#software-installation)
     - [1. Prerequisites](#1-prerequisites)
@@ -8,10 +8,12 @@
       - [**Cloudinary**](#cloudinary)
       - [**Link Preview**](#link-preview)
       - [**University API**](#university-api)
-    - [3. Setup Client Application](#3-setup-client-application)
-      - [Environment Variables](#environment-variables)
-    - [4. Setup Server Application](#4-setup-server-application)
-      - [Environment Variables](#environment-variables-1)
+    - [3. Setup Server Application](#3-setup-server-application)
+      - [**Environment Variables**](#environment-variables)
+      - [**Start Application**](#start-application)
+    - [4. Setup Client Application](#4-setup-client-application)
+      - [**Environment Variables**](#environment-variables-1)
+      - [**Start Application**](#start-application-1)
   - [Development](#development)
     - [Test-Driven Development](#test-driven-development)
     - [SOLID Principles](#solid-principles)
@@ -57,33 +59,9 @@ You will need to add this API key as an environment variable in a later step.
 #### **University API**
 The [University API](http://universities.hipolabs.com/search?country=United%20Kingdom) is a simple API that returns a university's name and domain name for any given UK university. It is used in the server application for email verification to determine if a user has a valid university email adress. There is no registration required to use this API.
 
-### 3. Setup Client Application
-Enter the client directory
-```
-$ cd client
-```
-Install the required packages with npm
-```
-$ npm install
-```
-#### Environment Variables
-The server application relies on a few environment variables. Create a file called .env and add the following variables:
+### 3. Setup Server Application
 
-- The URL for the server application. While developing you can use localhost and choose a port to run the server application on
-  ```
-  REACT_APP_URL=http://localhost:8000
-  ```
--  Once an account is created, add the required variables to .env
-    ```
-    REACT_APP_CLOUDINARY_CLOUD_NAME= *insert your cloud name*
-    REACT_APP_CLOUDINARY_KEY= *insert your Cloudinary key*
-    REACT_APP_CLOUDINARY_SECRET= *insert your Cloudinary secret*
-    REACT_APP_CLOUDINARY_URL= *insert your Cloudinary URL*
-    ```
-
-### 4. Setup Server Application
-
-#### Environment Variables
+#### **Environment Variables**
 The client application relies on a few environment variables. Some variables will be unique to each developer/team, but we have provided a few values that we used during development, feel free to use those as well or change them to something else. Create a file called .env and add the following variables:
 
 - The MongoDB development database connection URL that the server uses to connect to the database. For example:
@@ -100,7 +78,7 @@ The client application relies on a few environment variables. Some variables wil
   ```
 
 - EMAIL STUFF
-- [Cloudinary](https://cloudinary.com/) variables - the values for these variables are the same as in the client .env file but the names are different
+- [Cloudinary](https://cloudinary.com/) variables - add the Cloudinary values that you got when registering for an account
   ```
   CLOUDINARY_CLOUD_NAME= *insert your cloud name*
   CLOUDINARY_KEY= *insert your Cloudinary key*
@@ -119,6 +97,52 @@ The client application relies on a few environment variables. Some variables wil
   ```
   DEPLOYED_URL=http://localhost:8000
   ```
+#### **Start Application**
+Before running the server application, you need to start the database 
+```
+$ npm run dbstart
+```
+If that doesn't run try running the same command with sudo
+```
+$ sudo run npm dbstart
+```
+Once the database is running, you can star the application
+```
+$ npm run start
+```
+
+### 4. Setup Client Application
+
+#### **Environment Variables**
+The server application relies on a few environment variables. Create a file called .env and add the following variables:
+
+- The URL for the server application. While developing you can use localhost and choose a port to run the server application on
+  ```
+  REACT_APP_URL=http://localhost:8000
+  ```
+-  The Cloudinary variables need to be added to the client .env file as well. The values should be the same as in the server .env file but the variable names must include the REACT_APP_ prefix
+    ```
+    REACT_APP_CLOUDINARY_CLOUD_NAME= *insert your cloud name*
+    REACT_APP_CLOUDINARY_KEY= *insert your Cloudinary key*
+    REACT_APP_CLOUDINARY_SECRET= *insert your Cloudinary secret*
+    REACT_APP_CLOUDINARY_URL= *insert your Cloudinary URL*
+    ```
+
+#### **Start Application**
+Enter the client directory
+```
+$ cd client
+```
+Install the required packages with npm
+```
+$ npm install
+```
+Run the application
+```
+$ npm run start
+```
+Once the client application starts to run, a new tab will open and show the React app.
+
 ## Development
 ### Test-Driven Development
 
