@@ -119,15 +119,15 @@ describe("PUT /pact", () => {
       });
     });
 
-    it("rejects when name exceeds 33 characters", async () => {
+    it("rejects when name exceeds 50 characters", async () => {
       await isInvalidPact({
-        name: "x".repeat(34)
+        name: "x".repeat(51)
       }, "name", PACT_MESSAGES.NAME.MAX_LENGTH_EXCEEDED);
     });
 
-    it("accepts when name is exactly 33 characters", async () => {
+    it("accepts when name is exactly 50 characters", async () => {
       await isValidPact({
-        name: "x".repeat(33)
+        name: "x".repeat(50)
       });
     });
 

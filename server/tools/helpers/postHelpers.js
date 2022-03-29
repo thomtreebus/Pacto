@@ -1,12 +1,10 @@
 const Chance = require("chance");
-const userConstants = require("./userConstants");
+const { randQuote, randParagraph } = require("@ngneat/falso");
 const Pact = require("../../models/Pact");
 const User = require("../../models/User");
 const Post = require("../../models/Post");
 const Comment = require("../../models/Comment");
 const { LINKS } = require("./postConstants");
-const {createNotification} = require("./notificationHelpers");
-
 
 const chance = new Chance(1234);
 
@@ -17,6 +15,7 @@ async function seedPosts(university) {
 }
 
 async function populatePacts(pacts) {
+	// Generate 20 random posts for each pact
 	for (let i = 0; i < pacts.length; i++) {
 		await generateRandomPosts(pacts[i], 20);
 		const posts = await Post.find({ pact: pacts[i] });
@@ -27,7 +26,7 @@ async function populatePacts(pacts) {
 async function generateRandomPosts(pact, numberOfPosts) {
 
 	const generators = [generateRandomTextPost, generateRandomImagePost, generateRandomLinkPost];
-
+	// For each post, randomly pick a post type, either text, image, or link.
 	for (let i = 0; i < numberOfPosts; i++) {
 		const randomGenerator = generators[chance.integer({ min: 0, max: generators.length-1 })];
 		const post =  await randomGenerator(pact);
@@ -36,19 +35,20 @@ async function generateRandomPosts(pact, numberOfPosts) {
 }
 
 async function generateRandomTextPost(pact) {
-	const title = chance.sentence({ words: 2 });
-	const post  = await createPost(pact, getRandomAuthor(pact), title, {text : chance.sentence({ words: 30 })});
+	// const title = chance.sentence({ words: 2 });
+	const title = randQuote().substring(0,200);
+	const post  = await createPost(pact, getRandomAuthor(pact), title, {text : randQuote() + " " + randQuote()});
 	return post;
 }
 
 async function generateRandomImagePost(pact) {
-	const title = chance.sentence({ words: 2 });
+	const title = randQuote().substring(0,200);
 	const post = await createPost(pact, getRandomAuthor(pact), title, {  type: "image", image : getImageLink(title)});
 	return post;
 }
 
 async function generateRandomLinkPost(pact) {
-	const title = chance.sentence({ words: 2 });
+	const title = randQuote().substring(0,200);
 	const post = await createPost(pact, getRandomAuthor(pact), title, {  type: "link", link : getRandomLink()});
 	return post;
 }
@@ -91,7 +91,7 @@ async function generateRandomComments(pact, post, numberOfComments, options={par
 }
 
 async function createRandomComment(pact, post, options={parentComment: undefined}) {
-	const comment = await createComment(post, getRandomAuthor(pact), chance.sentence({ words: 15 }), options);
+	const comment = await createComment(post, getRandomAuthor(pact), randQuote().substring(0,150), options);
 	return comment;
 }
 
@@ -110,7 +110,6 @@ async function createComment(post, author, text, options={parentComment: undefin
 		parentComment.childComments.push(comment);
 		await parentComment.save();
 	}
-	await createNotification(post.author, "Your post received a new comment")
 	return comment;
 }
 
@@ -122,7 +121,7 @@ async function populateVotes(obj, pact) {
 	const { members } = pact;
 	
 	const voteOptions = [populateUpvote, populateDownvote, async (obj, member) => {}]
-	
+	// For each member of a pact, either have them upvote or downvote a post
 	for (let i = 0; i < members.length; i++) {
 		const member = members[i];
 		const voteFunction = voteOptions[chance.integer({ min: 0, max: voteOptions.length-1 })];

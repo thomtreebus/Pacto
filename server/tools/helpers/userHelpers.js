@@ -5,6 +5,7 @@ const User = require("../../models/User");
 const FriendRequest = require("../../models/FriendRequest");
 const chance = new Chance(1234);
 const SALT_ROUNDS = 10;
+const { createNotification } = require("./notificationHelpers");
 
 async function seedUsers(university, USER_COUNT) {
 	const names = chance.unique(chance.name, USER_COUNT);
@@ -12,15 +13,31 @@ async function seedUsers(university, USER_COUNT) {
 	for (let i = 0; i < names.length; i++) {
 		await createUser(names[i].split(" ")[0], names[i].split(" ")[1], university);
 	}
-
-	await createUser("Pac", "To", university);
+	
+	await seedPacToUser(university);
 	await generateFriends();
 	console.log(`Finished seeding ${USER_COUNT} users`);
 }
 
+async function seedPacToUser(university) {
+	await createUser("Pac", "To", university);
+	const user = await User.findOne({ firstName: "Pac" });
+	// Seed notifications for the user used to view the application
+	await createNotification(user, "Welcome to Pacto!");
+	await createNotification(user, "Your post received a new comment!");
+	await createNotification(user, "You have an incoming friend request");
+	await createNotification(user, "Jane Doe has accepted your friend request");
+	await createNotification(user, "You have been promoted to moderator in the PactoPact");
+	await createNotification(user, "You are no longer banned from the Bird Watching pact");
+};
+
 async function createUser(firstName, lastName, university) {
 	const salt = await bcrypt.genSalt(SALT_ROUNDS);
 	const hashedPassword = await bcrypt.hash("Password123", salt);
+
+	const course = getRandomCourse();
+	const location = getRandomLocation();
+	const hobbies = getRandomHobbies();
 
 	const user = await User.create({
 		firstName,
@@ -29,14 +46,14 @@ async function createUser(firstName, lastName, university) {
 		password: hashedPassword,
 		active: true,
 		university: university,
-		course: getRandomCourse(),
-		location: getRandomLocation(),
+		course: course,
+		location: location,
 		image: getRandomImage(firstName, lastName),
-		bio: chance.paragraph(),
-		hobbies: getRandomHobbies(),
+		bio: `Hi! My name is ${firstName} ${lastName}. I'm from ${location} and I'm currently studying ${course} at ${university.name}. I'm really into ${hobbies[0]} and have recently started to become interested in ${hobbies[1]} as well! Feel free to send me a friend request or follow me on one of my other social media accounts.`,
+		hobbies: hobbies,
 		friends: [],
 		instagram: `${firstName}.${lastName}`,
-		linkedin: `${firstName}.${lastName}`,
+		linkedin: `${firstName} ${lastName}`,
 		phone: chance.phone({ country: 'uk', mobile: true })
 	});
 
@@ -92,6 +109,7 @@ async function generateFriendRequest(user1, user2) {
 	const request = await FriendRequest.create({requestor : shuffledUsers[0], recipient : shuffledUsers[1]})
 	shuffledUsers[0].sentRequests.push(request);
 	shuffledUsers[1].receivedRequests.push(request);
+	await createNotification(shuffledUsers[0], `${shuffledUsers[0].firstName} ${shuffledUsers[0].lastName} has sent you a friend request`)
 	await shuffledUsers[0].save();
 	await shuffledUsers[1].save();
 }

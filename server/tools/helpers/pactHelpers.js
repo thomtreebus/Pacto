@@ -1,7 +1,9 @@
 const Chance = require("chance");
+const { randQuote } = require("@ngneat/falso");
 const userConstants = require("./userConstants");
 const Pact = require("../../models/Pact");
 const User = require("../../models/User");
+const {createNotification} = require("./notificationHelpers");
 
 const chance = new Chance(1234);
 
@@ -19,7 +21,7 @@ async function seedPactoPact(university){
 	("PactoPact", "other", "Pacto pact", university, "https://images.unsplash.com/photo-1538481199705-c710c4e965fc?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1265&q=80");
 	await addUsersToPact([], pactoPact) // add default user
 
-	const randomUsers = await getRandomUsers(50,false)
+	const randomUsers = await getRandomUsers(30,false)
 	const pactToPactModerators = randomUsers.splice(0,4);
 	const bannedUsers = randomUsers.splice(0, 10);
 
@@ -38,7 +40,7 @@ async function seedCourses(university) {
 		const course = userConstants.COURSES[i];
 		const name = course.name;
 		const image = course.icon;
-		const pact = await createPact(name, "course", chance.sentence(), university, image);
+		const pact = await createPact(name, "course", randQuote().substring(0,100), university, image);
 		const users = await User.find({ course: name });
 		if (users.length > 8) {
 			const bannedUsers = users.splice(1, 3);
@@ -52,7 +54,7 @@ async function seedModules(university) {
 	const modules = getRandomModuleCodes(userConstants.COURSES.length);
 
 	for (let i = 0; i < modules.length; i++) {
-		const pact = await createPact(`${modules[i]}`, "module", chance.sentence(), university);
+		const pact = await createPact(`${modules[i]}`, "module", randQuote().substring(0,100), university);
 		const users = await getRandomUsers(4);
 		await addUsersToPact(users, pact);
 	}
@@ -65,7 +67,7 @@ async function seedHobbies(university) {
 		const image = hobby.icon;
 		const possibleCategories = ["society", "other"];
 		const chosenCategory = possibleCategories[chance.integer({ min: 0, max: possibleCategories.length-1 })];
-		const pact = await createPact(name, chosenCategory, chance.sentence(), university, image);
+		const pact = await createPact(name, chosenCategory, randQuote().substring(0,100), university, image);
 		const users = await User.find({ hobbies: name });
 		if (users.length > 8) {
 			const bannedUsers = users.splice(1, 3);
@@ -117,6 +119,7 @@ async function addBannedUsersToPact(users, pact) {
 	if(users.length > 0) {
 		for(let i = 0; i < users.length; i ++) {
 			await addBannedUserToPact(users[i], pact);
+			await createNotification(users[i], `You have been banned from ${pact.name}`)
 		}
 	}
 }
