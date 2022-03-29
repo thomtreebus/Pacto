@@ -16,7 +16,6 @@ const handleFieldErrors = require('../helpers/errorHandler');
 const COOKIE_MAX_AGE = 432000; // 432000 = 5 days
 const SALT_ROUNDS = 10;
 
-// Helper method to generate JWT
 /**
  * Creates a token cookie to keep the user logged in.
  * @param id The mongoose object id of the user.
