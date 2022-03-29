@@ -116,7 +116,7 @@ export default function Profile() {
           <Chip label={`${displayedUser.pacts.length} Pacts`} icon={<ForumIcon />} variant="outlined" />
         </Box>
         <Divider sx={{ marginTop: "10px", marginBottom: "10px" }}></Divider>
-        <Typography variant="body1" textAlign={"justify"}  multiline style={{whiteSpace: 'pre-line'}}> {displayedUser.bio} </Typography>
+        <Typography variant="body1" textAlign={"justify"}  multiline={true} style={{whiteSpace: 'pre-line'}}> {displayedUser.bio} </Typography>
       </Grid>
     </Grid>)
   )
