@@ -48,7 +48,7 @@ function NotificationCard({ notification, notifications, setNotifications }) {
 					<MarkChatReadIcon />
 				</IconButton>
 				{isError && (
-					<Typography data-testid={`error-message-${notifications._id}`} variant="body1" color="secondary">
+					<Typography data-testid={`error-message-${notification._id}`} variant="body1" color="secondary">
 						{errorMessage}
 					</Typography>
 				)}
