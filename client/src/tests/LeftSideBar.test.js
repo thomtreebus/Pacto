@@ -34,7 +34,13 @@ describe("Left Sidebar tests", () => {
 					errors: [],
 				})
 			);
-		})
+		}),
+
+		rest.get(`${process.env.REACT_APP_URL}/notifications`, (req, res, ctx) => {
+      return res(
+        ctx.json({ message: [], errors: [] })
+      );
+    })
 	);
 
 	beforeAll(() => {

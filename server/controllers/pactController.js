@@ -6,6 +6,7 @@ const Comment = require("../models/Comment");
 const {jsonResponse, jsonError} = require("../helpers/responseHandlers");
 const handleFieldErrors = require('../helpers/errorHandler');
 const { MESSAGES, PACT_MESSAGES } = require("../helpers/messages");
+const Notification = require("../models/Notification");
 const getPreview = require("../helpers/LinkCache");
 
 // POST pact
@@ -196,6 +197,9 @@ module.exports.banMember = async (req, res) => {
 		await Pact.findByIdAndUpdate(pact._id, { $pull: { members: user._id } });
 		await Pact.findByIdAndUpdate(pact._id, { $push: { bannedUsers: user._id } });
 
+		const notification = await Notification.create({ user: user, text: `You have been banned from ${pact.name}` });
+		await User.findByIdAndUpdate(user._id, { $push: { notifications: notification._id } }); 
+		
 		res.json(jsonResponse(PACT_MESSAGES.SUCCESSFUL_BAN, []));
 	}
 	catch (err) {
@@ -220,6 +224,9 @@ module.exports.promoteMember = async (req, res) => {
 
 		await Pact.findByIdAndUpdate(pact._id, { $push: { moderators: user._id } });
 
+		const notification = await Notification.create({ user: user, text: `You have been promoted to moderator in ${pact.name}` });
+		await User.findByIdAndUpdate(user._id, { $push: { notifications: notification._id } }); 
+
 		res.json(jsonResponse(PACT_MESSAGES.SUCCESSFUL_PROMOTION, []));
 	}
 	catch (err) {
@@ -240,6 +247,9 @@ module.exports.revokeBan = async (req, res) => {
 		await Pact.findByIdAndUpdate(pact._id, { $push: { members: user._id } });
 		await Pact.findByIdAndUpdate(pact._id, { $pull: { bannedUsers: user._id } });
 		await User.findByIdAndUpdate(user._id, { $push: { pacts: pact._id } });
+
+		const notification = await Notification.create({ user: user, text: `You are no longer banned from ${pact.name}` });
+		await User.findByIdAndUpdate(user._id, { $push: { notifications: notification._id } }); 
 
 		res.json(jsonResponse(PACT_MESSAGES.SUCCESSFUL_REVOKE_BAN, []));
 	}
