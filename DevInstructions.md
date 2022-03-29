@@ -1,7 +1,7 @@
 # Developer Instructions
 ## Software Installation
 Unzip the .zip folder and open a new terminal window inside the project directory.
-### Prerequisites
+### 1. Prerequisites
 In order to run the application, you must have the latest stable release version of [Node.js](https://nodejs.org/en/), [npm](https://www.npmjs.com/), [Docker](https://www.docker.com/), and [docker-compose](https://docs.docker.com/compose/). To check whether you have these  installed, run the following commands:
 ```
 $ node -v
@@ -9,7 +9,7 @@ $ npm -v
 $ docker -v
 $ docker-compose -v
 ```
-### External APIs/Services
+### 2. Register for APIs
 Both the client and server applications utilize a few APIs. Some of these require creating an account and registering for an API key. It is important to do this before completing the rest of the setup.
 
 #### **Cloudinary**
@@ -36,7 +36,7 @@ You will need to add this API key as an environment variable in a later step.
 #### **University API**
 The [University API](http://universities.hipolabs.com/search?country=United%20Kingdom) is a simple API that returns a university's name and domain name for any given UK university. It is used in the server application for email verification to determine if a user has a valid university email adress. There is no registration required to use this API.
 
-### Setup Client Application
+### 3. Setup Client Application
 Enter the client directory
 ```
 $ cd client
@@ -46,21 +46,21 @@ Install the required packages with npm
 $ npm install
 ```
 #### Environment Variables
-The client application relies on a few environment variables. Create a file called .env and add the following variables:
+The server application relies on a few environment variables. Create a file called .env and add the following variables:
 
 - The URL for the server application. While developing you can use localhost and choose a port to run the server application on
   ```
   REACT_APP_URL=http://localhost:8000
   ```
 -  Once an account is created, add the required variables to .env
-  ```
-  REACT_APP_CLOUDINARY_CLOUD_NAME= *insert your cloud name*
-  REACT_APP_CLOUDINARY_KEY= *insert your Cloudinary key*
-  REACT_APP_CLOUDINARY_SECRET= *insert your Cloudinary secret*
-  REACT_APP_CLOUDINARY_URL= *insert your Cloudinary URL*
-  ```
+    ```
+    REACT_APP_CLOUDINARY_CLOUD_NAME= *insert your cloud name*
+    REACT_APP_CLOUDINARY_KEY= *insert your Cloudinary key*
+    REACT_APP_CLOUDINARY_SECRET= *insert your Cloudinary secret*
+    REACT_APP_CLOUDINARY_URL= *insert your Cloudinary URL*
+    ```
 
-### Setup Server Application
+### 4. Setup Server Application
 
 #### Environment Variables
 The client application relies on a few environment variables. Some variables will be unique to each developer/team, but we have provided a few values that we used during development, feel free to use those as well or change them to something else. Create a file called .env and add the following variables:
