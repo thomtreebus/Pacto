@@ -94,7 +94,6 @@ export default function EditPact() {
         setImage(data.image)
         setIsLoading(false);
       }).catch((err) => {
-        console.log(err.name)
         if (err.name === "AbortError") return;
         setSnackBarError(err)
         setSnackbarOpen(true)
