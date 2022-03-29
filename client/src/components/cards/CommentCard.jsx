@@ -21,6 +21,8 @@ export default function CommentCard({ comment, post, postUpdaterFunc }) {
 	const [isError, setIsError] = useState(false);
 	const [errorMessage, setErrorMessage] = useState("");
 
+  const DELETED_COMMENT_MESSAGE = "This comment has been deleted.";
+
   const handleDelete = async () => {
     setIsButtonDisabled(true);
 
@@ -96,7 +98,8 @@ export default function CommentCard({ comment, post, postUpdaterFunc }) {
           initThumbUp={comment.upvoters.includes(user._id)} 
           initThumbDown={comment.downvoters.includes(user._id)} 
           handleLikeEvent={handleLikeEvent}
-          initLikes={comment.votes}>
+          initLikes={comment.votes}
+          disabled={comment.deleted}>
           </Voter>
 
           <Box sx={{ overflow: "hidden" }}>
@@ -105,7 +108,7 @@ export default function CommentCard({ comment, post, postUpdaterFunc }) {
             </Typography>
 
             <Typography variant="body1" color={`${comment.deleted ? 'error' : 'inherit'}`} data-testid="comment-text">
-              {comment.text}
+              {comment.deleted ? DELETED_COMMENT_MESSAGE : comment.text}
             </Typography>
 
             { !comment.deleted && <Typography variant="caption" className="link" onClick={() => {setShowReplyBox(!showReplyBox)}} data-testid="reply-button">
