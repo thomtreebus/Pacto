@@ -5,10 +5,9 @@ const fetch = require("node-fetch");
 const apiCache = new NodeCache({stdTTL: 60});
 
 /**
- * Using the University API, check if a given url is a valid University domain 
- * and add it to the apiCache
- * @param url - A provided domain url
- * @returns - The data added to the apiCache
+ * Caches the data returned by an API for 60 seconds.
+ * @param url - URL of an API GET request to be cached
+ * @returns - Fetched json data of the api request.
  */
 const getUrls = async (url) => {
   try {
