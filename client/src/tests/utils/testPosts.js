@@ -1,4 +1,12 @@
-const testdata = [
+/**
+ * A file to store the test posts used by some of the tests.
+ */
+
+/**
+ * The test pacts list which can be used by other helper
+ * files.
+ */
+const testPosts = [
   {
     pact: {
       _id : 5,
@@ -161,4 +169,4 @@ const testdata = [
   },
 ];
 
-export default testdata;
+export default testPosts;

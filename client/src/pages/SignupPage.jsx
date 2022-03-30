@@ -83,7 +83,7 @@ export default function SignupPage() {
 			<Alert severity="info" sx={{ marginTop: 3 }}>
 				<AlertTitle>Use a valid university email!</AlertTitle>
 				You will be sent an email with a link to verify after signing up
-				<strong> remember to check you spam as well!</strong>
+				<strong> ...Remember to check your spam as well!</strong>
 			</Alert>
 			<Box
 				sx={{
@@ -165,7 +165,7 @@ export default function SignupPage() {
 					>
 						Sign Up
 					</Button>
-					<Grid container justifyContent="flex-end">
+					<Grid container justifyContent="flex-start">
 						<Grid item>
 							<Link to="/login" variant="body2">
 								Already have an account? Sign in
