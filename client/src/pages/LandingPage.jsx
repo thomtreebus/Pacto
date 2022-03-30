@@ -3,6 +3,9 @@ import Button from "@mui/material/Button";
 import { useHistory } from "react-router-dom";
 import { Link } from "react-router-dom";
 
+/**
+ * Displays the landing page
+ */
 export default function LandingPage() {
 	const history = useHistory();
 

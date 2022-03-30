@@ -12,6 +12,9 @@ import Typography from "@mui/material/Typography";
 import { useAuth } from "../providers/AuthProvider";
 import ErrorMessage from "../components/ErrorMessage";
 
+/**
+ * Page that allows the user to enter their credentials and enter the website
+ */
 export default function LoginPage() {
 	const { silentUserRefresh } = useAuth();
 	const [snackbarOpen, setSnackbarOpen] = useState(false);

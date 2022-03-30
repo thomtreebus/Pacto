@@ -1,6 +1,9 @@
 import { Box, CircularProgress } from "@mui/material";
 import React from "react";
 
+/**
+ * Displays the loading page when a page is loading
+ */
 export default function Loading() {
 	return (
 		<Box
