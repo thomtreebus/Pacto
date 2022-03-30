@@ -99,8 +99,6 @@ describe("search /search/:query", () => {
   it("returns posts with names that match query", async () => {
     const query = "Dummy title";
     const user = await User.findOne({ uniEmail: getDefaultTestUserEmail() });
-    // const pact = await Pact.findOne({ id: getTestPactId() })
-    // const post = await generateTestPost(user, pact);
     const token = createToken(user._id);
     const response = await supertest(app)
     .get(`/search/${query}`)
