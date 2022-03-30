@@ -1,3 +1,12 @@
+/**
+ * A file to store the test users used by some of the tests.
+ */
+
+/**
+ * The test users list which can be used by other helper
+ * files. Note the default user for the useMockServerHook and 
+ * many other tests is user[0].
+ */
 const users = [
 	{
         _id: 1,
@@ -12,7 +21,7 @@ const users = [
         lastName: "To",
         linkedin: "Pac.To",
         location: "Liverpool",
-        pacts: ['623372b49841b9fb6b85f4d9', '623372b49841b9fb6b85f59f', '623372b49841b9fb6b85f655', '623372b49841b9fb6b85f479', '623372b49841b9fb6b85f487'],
+        pacts: [1],
         password: "$2b$10$RPzzCadIwiq5C1Jmf5ltKujRgKRCi2D0X7eJkqQPS7sWxArWM0Hwu",
         phone: "07624 780037",
         uniEmail: "pac.to@kcl.ac.uk",
@@ -33,7 +42,7 @@ const users = [
         lastName: "Tree",
         linkedin: "Thom.Tree",
         location: "Belgium",
-        pacts: ['623372b49841b9fb6b85f4d9'],
+        pacts: [1, '623372b49841b9fb6b85f4d9'],
         password: "$2b$10$RPzzCadIwiq5C1Jmf5ltKujRgKRCi2D0X7eJkqQPS7sWxArWM0Hwu",
         phone: "07624 780037",
         uniEmail: "thom.tree@kcl.ac.uk",
@@ -61,7 +70,7 @@ const users = [
         sentRequests: [{_id: 2, recipient: 1, requestor: 3}]
 	},
 	{
-		_id: 4,
+        _id: 4,
         active: true,
         bio: "Welcom",
         course: "Geography",

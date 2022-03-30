@@ -1,5 +1,14 @@
-import users from "./testUsers";
+/**
+ * A file to store the test pacts used by some of the tests.
+ */
 
+import users from "./testUsers";
+import posts from "./testPosts"
+
+/**
+ * The test pacts list which can be used by other helper
+ * files.
+ */
 const pacts = [
 	{
 		_id: 1,
@@ -9,6 +18,7 @@ const pacts = [
 		image: "https://avatars.dicebear.com/api/identicon/temp.svg",
 		members: [users[0]._id],
 		moderators: [],
+		posts: [posts[3]]
 	},
 	{
 		_id: 2,
@@ -18,6 +28,7 @@ const pacts = [
 		image: "https://avatars.dicebear.com/api/identicon/temp.svg",
 		members: [],
 		moderators: [],
+		posts: [posts[1]]
 	},
 	{
 		_id: 3,
@@ -27,6 +38,7 @@ const pacts = [
 		image: "https://avatars.dicebear.com/api/identicon/temp.svg",
 		members: [users[0]._id, users[1]._id],
 		moderators: [],
+		posts: [posts[0]]
 	},
 	{
 		_id: 4,
@@ -34,8 +46,9 @@ const pacts = [
 		description: "No description provided",
 		category: "other",
 		image: "https://avatars.dicebear.com/api/identicon/temp.svg",
-		members: [users[1]._id],
-		moderators: [],
+		members: [users[0]._id, users[1]._id, users[2]._id],
+		moderators: [users[0]._id, users[1]._id],
+		posts: [posts[0], posts[1]]
 	},
 ];
 
