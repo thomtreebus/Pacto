@@ -1,3 +1,8 @@
+/**
+ * This authController deals with user authentication such as signup and login along with getting the
+ * logged-in user's information
+ */
+
 const User = require("../models/User");
 const FriendRequest = require('../models/FriendRequest');
 const EmailVerificationCode = require("../models/EmailVerificationCode");
