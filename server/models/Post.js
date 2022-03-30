@@ -32,6 +32,13 @@ function isValidHttpUrl(str) {
   }
 };
 
+/**
+ * Post model for pact posts. Posts can be of 3 different types: text, image, and link
+ * Text posts have a piece of text as body
+ * Image posts display an image
+ * Link posts are used to share a URL
+ * The model stores information about the post as well as the post's comments
+ */
 const PostSchema = mongoose.Schema({
   pact: {
     type: Schema.Types.ObjectId,
@@ -85,6 +92,7 @@ const PostSchema = mongoose.Schema({
     ]
   },
 
+  // Net number of upvotes/downvotes
   votes: {
     type: Number,
     required: [true, POST_MESSAGES.NO_VOTES],

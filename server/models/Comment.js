@@ -2,6 +2,9 @@ const mongoose = require('mongoose');
 const {COMMENT_MESSAGES} = require('../helpers/messages');
 const Schema = mongoose.Schema;
 
+/**
+ * The Comment model for post comments.
+ */
 const CommentSchema = mongoose.Schema({
   author: {
     type: String,
@@ -37,7 +40,7 @@ const CommentSchema = mongoose.Schema({
     ref: 'Comment',
     required: true
   }],
-
+  // If a comment is a reply to another comment, then a reference to the parent comment is provided
   parentComment: {
     type: Schema.Types.ObjectId,
     ref: 'Comment',
