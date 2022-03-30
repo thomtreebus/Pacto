@@ -1,6 +1,10 @@
 import { Box, Typography } from "@mui/material";
 import React from "react";
 
+/**
+ * A page that displays the error message if an error is encountered
+ * @param {string} error 
+ */
 export default function Error({ error }) {
 	return (
 		<Box

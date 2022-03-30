@@ -25,6 +25,9 @@ const Input = styled("input")({
 	display: "none",
 });
 
+/**
+ * A page to edit the user's profile
+ */
 export default function EditProfile() {
 	const { user, silentUserRefresh } = useAuth();
 

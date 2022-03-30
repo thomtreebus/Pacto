@@ -23,7 +23,9 @@ const Input = styled("input")({
   display: "none",
 });
 
-
+/**
+ * A page to edit the details of a Pact
+ */
 export default function EditPact() {
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   const { user, silentUserRefresh } = useAuth();
