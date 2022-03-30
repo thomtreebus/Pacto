@@ -1,5 +1,5 @@
 /**
- * This contains route regarding user authentication
+ * This contains the routes regarding user authentication
  * @type {e | (() => Express)}
  */
 
