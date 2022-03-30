@@ -36,6 +36,9 @@ TabPanel.propTypes = {
   value: PropTypes.number.isRequired,
 };
 
+/**
+ * Allows the user to search for a particular Pact, post or user
+ */
 export default function SearchResults() {
   const { query } = useParams();
   const [isLoading, setIsLoading] = useState(true);

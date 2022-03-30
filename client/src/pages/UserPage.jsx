@@ -43,6 +43,9 @@ function a11yProps(index) {
   };
 }
 
+/**
+ * Displays a list of users with certain conditions, such as same course, friends etc.
+ */
 export default function UserPage() {
 
     const { user } = useAuth();

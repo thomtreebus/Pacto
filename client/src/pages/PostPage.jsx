@@ -8,7 +8,10 @@ import CommentBox from "../components/CommentBox";
 import CommentCard from "../components/cards/CommentCard";
 import PostCard from "../components/cards/PostCard";
 import { useAuth } from "../providers/AuthProvider";
-;
+
+/**
+ * Page that allows users to create a post to a certain Pact
+ */
 export default function PostPage() {
   const { user } = useAuth()
   const { pactID, postID } = useParams();
