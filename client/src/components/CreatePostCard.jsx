@@ -59,6 +59,10 @@ function a11yProps(index) {
   };
 }
 
+/**
+ * Used to create posts
+ * @param {number} pactID The pact id the post is to be created in
+ */
 export default function CreatePostCard({pactID}) {
   const [value, setValue] = React.useState(0);
   const history = useHistory();

@@ -14,6 +14,9 @@ const pages = [
 	{ icon: <PeopleIcon />, text: "Users", path: "/users" },
 ];
 
+/**
+ * List of pages shown on sidebar
+ */
 export default function PageList() {
 	const { activePage, setActivePage } = useAuth();
 	const history = useHistory();

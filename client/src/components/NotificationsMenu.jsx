@@ -2,6 +2,16 @@ import Menu from "@mui/material/Menu";
 import NotificationCard from "./NotificationCard";
 import { Typography } from "@mui/material";
 
+/**
+ * Displays notifications
+ * @param {number} limit The maximum number of notifications to show at any time
+ * @param {number} notificationsMenuId
+ * @param {Object} notificationsAnchorEl
+ * @param {function} handleNotificationsMenuClose
+ * @param {boolean} isNotificationsMenuOpen
+ * @param {Array} notifications
+ * @param {function} setNotifications
+ */
 export default function NotificationsMenu({
 	limit = 5,
 	notificationsMenuId,

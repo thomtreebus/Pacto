@@ -18,6 +18,10 @@ import LeaveIcon from "@mui/icons-material/ExitToApp";
 import DeleteIcon from "@mui/icons-material/Delete";
 import ErrorMessage from "../ErrorMessage";
 
+/**
+ * A feed displaying posts and information about a pact, plus other functionality
+ * @param {Object} pact Pact document
+ */
 export default function PactPageFeedTab({pact}){
   const [open, setOpen] = useState(false);
   const [isMod, setIsMod] = useState(false);

@@ -8,6 +8,10 @@ import { useHistory } from "react-router-dom";
 import { useAuth } from "../providers/AuthProvider";
 import { Button, Divider, Alert } from "@mui/material";
 
+/**
+ * Pact list item shown on sidebar
+ * @param {Object} pact Pact document
+ */
 export default function PactListItem({ pact }) {
 	const { user, silentUserRefresh, activePage, setActivePage } = useAuth();
 	const history = useHistory();

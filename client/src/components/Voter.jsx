@@ -6,6 +6,13 @@ import { Typography } from "@mui/material";
 import ThumbUpRoundedIcon from "@mui/icons-material/ThumbUpRounded";
 import ThumbDownRoundedIcon from "@mui/icons-material/ThumbDownRounded";
 
+/**
+ * A component to vote up or down a post/comment
+ * @param {boolean} initThumbUp Initial state of thumb up
+ * @param {boolean} initThumbDown Initial state of thumb down
+ * @param {number} initLikes Initial state of thumb likes
+ * @param {function} handleLikeEvent Function that handles an event when a button is pressed
+ */
 export default function Voter({initThumbUp, initThumbDown, initLikes, handleLikeEvent}){
   const [thumbUp, setThumbUp] = useState(initThumbUp);
   const [thumbDown, setThumbDown] = useState(initThumbDown);

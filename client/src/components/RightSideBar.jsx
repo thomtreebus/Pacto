@@ -6,6 +6,9 @@ import { Typography, Toolbar, Divider } from "@mui/material";
 
 const drawerWidth = 240;
 
+/**
+ * A right side bar
+ */
 export default function RightSideBar() {
 	return (
 		<Box sx={{ display: { xs: "none", md: "flex" } }}>

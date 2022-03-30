@@ -5,6 +5,10 @@ import BookIcon from "@mui/icons-material/MenuBook";
 import CreateIcon from "@mui/icons-material/Create";
 import { Chip } from "@mui/material";
 
+/**
+ * A chip signifying the category a pact belongs to
+ * @param {Object} pact The pact document
+ */
 export default function PactChip({ pact }) {
 	let icon = <CommentIcon />;
 	let color = "info";

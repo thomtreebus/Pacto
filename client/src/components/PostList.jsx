@@ -6,6 +6,10 @@ import { useState } from "react";
 import { Typography } from "@mui/material";
 import { useEffect } from "react";
 
+/**
+ * List of posts to display
+ * @param {Array} posts Array of posts
+ */
 export default function PostList({ posts, searchable=true }) {
   const [orderablePosts, setPosts] = useState(posts);
 	const [search, setSearch] = useState("");

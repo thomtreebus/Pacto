@@ -2,6 +2,9 @@ import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";
 import Divider from "@mui/material/Divider";
 
+/**
+ * A menu to be shown on the app bar
+ */
 export default function ProfileMenu({
   profileMenuId, 
   profileAnchorEl, 

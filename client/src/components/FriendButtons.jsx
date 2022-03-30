@@ -7,7 +7,11 @@ import RejectIcon from '@mui/icons-material/Close';
 import { Tooltip, IconButton } from "@mui/material";
 import { useAuth } from "../providers/AuthProvider";
 
-export default function FriendButtons({user}){ // logged in user and user to be interacted with
+/**
+ * Buttons to accept/reject frient requests, or add/remove friends.
+ * @param {Object} user The user the profile belongs to
+ */
+export default function FriendButtons({user}){
   const {user : currentUser, silentUserRefresh} = useAuth();
   const [isFriend, setIsFriend] = useState(currentUser.friends && currentUser.friends.includes(user._id));
   const [hasSentRequest, setHasSentRequest] = useState(currentUser.sentRequests && currentUser.sentRequests.some(r => r.recipient === user._id));

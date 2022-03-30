@@ -9,6 +9,12 @@ import PromoteIcon from '@mui/icons-material/Star';
 import { Tooltip } from "@mui/material";
 import { IconButton } from "@mui/material";
 
+/**
+ * Displays a user ready for moderation
+ * @param {Object} user
+ * @param {Object} pact
+ * @param {boolean} showBannedUsers
+ */
 export default function UserCardModeration({user, pact, showBannedUsers}) {
 
   const history = useHistory();

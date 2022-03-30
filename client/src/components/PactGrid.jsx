@@ -3,6 +3,10 @@ import PactCard from "../components/PactCard";
 import { Grid, Typography } from "@mui/material";
 import { useAuth } from "../providers/AuthProvider";
 
+/**
+ * A grid displaying pact cards
+ * @param {Array} pacts List of pacts
+ */
 export default function PactGrid({ pacts }) {
 	const { user } = useAuth();
 

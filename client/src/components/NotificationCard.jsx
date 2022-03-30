@@ -4,6 +4,12 @@ import { relativeTime } from "../helpers/timeHandllers";
 import { IconButton } from "@mui/material";
 import MarkChatReadIcon from "@mui/icons-material/MarkChatRead";
 
+/**
+ * Displays a single notification
+ * @param {Object} notification The notification to be displayed
+ * @param {Array} notifications A list of all notifications
+ * @param {function} setNotifications A state setter, used to remove this notification when it's dismissed
+ */
 function NotificationCard({ notification, notifications, setNotifications }) {
 	const [buttonIsDisabled, setIsButtonDisabled] = useState(false);
 	const [isError, setIsError] = useState(false);

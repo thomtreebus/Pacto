@@ -5,6 +5,10 @@ import PactList from "./PactList";
 import { useAuth } from "../providers/AuthProvider";
 import { Typography } from "@mui/material";
 
+/**
+ * List of pacts to be show on sidebar that the user isn't part of
+ * @param {number} numberOfPacts The maximum number of pacts to be shown
+ */
 export default function MyPactList({ numberOfPacts = 3 }) {
 	const { isLoading, data, refetch } = useQuery("popularpacts", () =>
 		fetch(`${process.env.REACT_APP_URL}/university`, {

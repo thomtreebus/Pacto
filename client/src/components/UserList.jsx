@@ -2,6 +2,10 @@ import React from "react";
 import { Typography } from "@mui/material";
 import UserCard from "./UserCard";
 
+/**
+ * Produces a list of users
+ * @param {Array} users Array of users
+ */
 export default function UserList({ users }) {
 	if (!users || !users.length) {
 		return (

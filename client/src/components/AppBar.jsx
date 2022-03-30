@@ -60,6 +60,11 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 	},
 }));
 
+/**
+ * An appbar providing functionality such as buttons to
+ * view your profile, notifications, logout or make search queries
+ * @param {function} handleDrawerToggle Called when drawer is clicked
+ */
 export default function PrimarySearchAppBar({ handleDrawerToggle }) {
 	const history = useHistory();
 

@@ -6,6 +6,9 @@ import LeftSideBarContent from "./LeftSideBarContent";
 
 const drawerWidth = 240;
 
+/**
+ * A left sidebar (and also an appbar for some reason)
+ */
 export default function LeftSideBar() {
 	const [mobileOpen, setMobileOpen] = useState(false);
 

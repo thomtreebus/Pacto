@@ -12,6 +12,9 @@ import { useAuth } from "../providers/AuthProvider";
 import PageList from "./PageList";
 import MyPactList from "./MyPactList";
 
+/**
+ * The content of a sidebar
+ */
 export default function LeftSideBarContent() {
 	const { user } = useAuth();
 
