@@ -1,5 +1,13 @@
+/**
+ * A file to store the test pacts used by some of the tests.
+ */
+
 import users from "./testUsers";
 
+/**
+ * The test pacts list which can be used by other helper
+ * files.
+ */
 const pacts = [
 	{
 		_id: 1,
@@ -34,8 +42,8 @@ const pacts = [
 		description: "No description provided",
 		category: "other",
 		image: "https://avatars.dicebear.com/api/identicon/temp.svg",
-		members: [users[1]._id],
-		moderators: [],
+		members: [users[0]._id, users[1]._id, users[2]._id],
+		moderators: [users[0]._id, users[1]._id],
 	},
 ];
 

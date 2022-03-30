@@ -1,3 +1,12 @@
+/**
+ * A file to store the test users used by some of the tests.
+ */
+
+/**
+ * The test users list which can be used by other helper
+ * files. Note the default user for the useMockServerHook and 
+ * many other tests is user[0].
+ */
 const users = [
 	{
         _id: 1,
@@ -61,7 +70,7 @@ const users = [
         sentRequests: [{_id: 2, recipient: 1, requestor: 3}]
 	},
 	{
-		_id: 4,
+        _id: 4,
         active: true,
         bio: "Welcom",
         course: "Geography",
