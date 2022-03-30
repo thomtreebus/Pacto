@@ -13,7 +13,7 @@ const Pact = require("../../models/Pact");
 
 const COMMENT_TEXT = "This is my 1st comment.";
 
-describe.only("POST /pact/:pactId/post/:postId/comment", () =>{
+describe("POST /pact/:pactId/post/:postId/comment", () =>{
   useTestDatabase();
 
   beforeEach(async () => {
