@@ -1,17 +1,49 @@
-import { render, screen, fireEvent, waitFor, waitForElementToBeRemoved, act } from "@testing-library/react"
+/**
+ * Tests for the app bar which is used in the sidebar and is reposnisble
+ * for functionality that spans multiple pages.
+ */
+
+import { screen, fireEvent, waitFor, act } from "@testing-library/react"
 import AppBar from "../components/AppBar.jsx";
 import "@testing-library/jest-dom";
-import MockComponent from "./utils/MockComponent.jsx";
 import { rest } from "msw";
-import { setupServer } from "msw/node";
 import { Switch } from "react-router-dom";
-import { createMemoryHistory } from 'history';
 import PrivateRoute from "../components/PrivateRoute";
 import AuthRoute from "../components/AuthRoute";
 import { useMockServer } from "./utils/useMockServer.js";
+import mockRender from "./utils/mockRender"
+
+/**
+ * A mock component to make it easier to test functionality.
+ * 
+ * @returns The mock component so that it can be rendered.
+ */
+const MockAppBarComponent = () => {
+  return (
+    <>
+      <AuthRoute exact path="/login">
+        <h1>Redirected to login</h1>
+      </AuthRoute>
+      <PrivateRoute path="*">
+        <AppBar />
+        <Switch>
+          <PrivateRoute exact path="/feed">
+            <h1>Redirected to feed</h1>
+          </PrivateRoute>
+          <PrivateRoute exact path="/edit-profile">
+            <h1>Redirected to edit-profile</h1>
+          </PrivateRoute>
+          <PrivateRoute exact path="/user/userid1">
+            <h1>Redirected to profile</h1>
+          </PrivateRoute>
+        </Switch>
+      </PrivateRoute>
+    </>
+  )  
+}
 
 describe("App Bar Tests", () => {
-
+  let history;
   const server = useMockServer();
 
 	beforeEach(async () => {
@@ -56,32 +88,13 @@ describe("App Bar Tests", () => {
     );
 	});
 
-  const renderWithMock = async (element) => {
-    history = createMemoryHistory({ initialEntries: [`/feed`] });
-    render(
-      <MockComponent>
-        <AuthRoute exact path="/login">
-          <h1>Redirected to login</h1>
-        </AuthRoute>
 
-        <PrivateRoute path="*">
-          <AppBar />
-          <Switch>
-            <PrivateRoute exact path="/feed">
-              <h1>Redirected to feed</h1>
-            </PrivateRoute>
-            <PrivateRoute exact path="/edit-profile">
-              <h1>Redirected to edit-profile</h1>
-            </PrivateRoute>
-            <PrivateRoute exact path="/user/userid1">
-              <h1>Redirected to profile</h1>
-            </PrivateRoute>
-          </Switch>
-        </PrivateRoute>
-      </MockComponent>
-    );
-    await waitForElementToBeRemoved(() => screen.getByText("Loading"));
-  }
+  /**
+   * A wrapper function to facilitate easier use of the mock rendered.
+   * Also updated history with the values that the rendered component takes.
+   * 
+   */
+  const renderWithMock = async () => history = await mockRender (<MockAppBarComponent/>, '/feed')
 
   describe("Check elements are rendered", () => {
 
@@ -158,7 +171,7 @@ describe("App Bar Tests", () => {
       fireEvent.click(logoutItemElement);
       const redirectMessage = await screen.findByText(/Redirected to login/i);
 			expect(redirectMessage).toBeInTheDocument();
-      expect(window.location.pathname).toBe("/login");
+      expect(history.location.pathname).toBe("/login");
     });
 
     it("should redirect to home when the Pacto icon is pressed",async () => {
@@ -166,7 +179,7 @@ describe("App Bar Tests", () => {
       fireEvent.click(buttonElement);
       const redirectMessage = await screen.findByText(/Redirected to feed/i);
 			expect(redirectMessage).toBeInTheDocument();
-      expect(window.location.pathname).toBe("/feed");
+      expect(history.location.pathname).toBe("/feed");
     });
 
     it("should open the profile menu when the icon button is pressed", async () => {
@@ -198,7 +211,7 @@ describe("App Bar Tests", () => {
       fireEvent.click(buttonElement);
       const redirectMessage = await screen.findByText(/Redirected to edit-profile/i);
       expect(redirectMessage).toBeInTheDocument();
-      expect(window.location.pathname).toBe("/edit-profile");
+      expect(history.location.pathname).toBe("/edit-profile");
     });
 
     it("should redirect to profile view when profile button is pressed", async () => {
@@ -206,7 +219,7 @@ describe("App Bar Tests", () => {
       fireEvent.click(buttonElement);
       const redirectMessage = await screen.findByText(/Redirected to profile/i);
       expect(redirectMessage).toBeInTheDocument();
-      expect(window.location.pathname).toBe("/user/userid1");
+      expect(history.location.pathname).toBe("/user/userid1");
     });
 
     it("should open the notifications menu when the notification bell is pressed", async () => {

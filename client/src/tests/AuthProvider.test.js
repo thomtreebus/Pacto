@@ -1,12 +1,13 @@
-import { render, screen } from "@testing-library/react";
-import { waitForElementToBeRemoved } from "@testing-library/react";
+/**
+ * Tests for the context provider AuthProvider. 
+ */
+
+import { screen } from "@testing-library/react";
 import "@testing-library/jest-dom";
-import MockComponent from "./utils/MockComponent";
-import AuthRoute from "../components/AuthRoute";
 import { rest } from "msw";
-import { setupServer } from "msw/node";
 import { useAuth } from "../providers/AuthProvider";
 import { useMockServer } from "./utils/useMockServer";
+import mockRender from "./utils/mockRender";
 
 const MockAuthProviderUser = () => {
 	const { user, isAuthenticated } = useAuth();
@@ -25,14 +26,7 @@ const MockAuthProviderUser = () => {
 describe("AuthProvider Tests", () => {
 	const server = useMockServer();
 
-	async function renderComponent() {
-		render(
-			<MockComponent>
-				<MockAuthProviderUser />
-			</MockComponent>
-		);
-		await waitForElementToBeRemoved(() => screen.getByText("Loading"));
-	}
+	const renderComponent = async () => await mockRender(<MockAuthProviderUser />)
 
 	it("isAuthenticated is true and user is defined when user is logged in", async () => {
 		await renderComponent();
@@ -51,6 +45,17 @@ describe("AuthProvider Tests", () => {
 		);
 		await renderComponent();
 		const textElement = screen.getByText("You are not logged in");
+		expect(textElement).toBeInTheDocument();
+	});
+
+	it("displays and error is something went wrong with the request", async () => {
+		server.use(
+			rest.get(`${process.env.REACT_APP_URL}/me`, (req, res, ctx) => {
+				return res(ctx.xml());
+			})
+		);
+		await renderComponent();
+		const textElement = screen.getByText(/Error:/i);
 		expect(textElement).toBeInTheDocument();
 	});
 });
