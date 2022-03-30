@@ -32,19 +32,7 @@ The application has certain features that can only be viewed by users with a mod
 
 ## Installation instructions
 
-To install the software and use it in your local development environment, you must first set up and activate a local
-development environment. From the root of the project:
-
-```
-$ virtualenv venv
-$ source venv/bin/activate
-```
-
-In both the client and server directories , install the required packages:
-
-```
-$ npm install
-```
+A detailed guide on how to install the application and run it as a developer can be viewed in the [Developer Instructions](/DevInstructions.md) file (DevInstructions.md)
 
 ## Credits/Sources
 
