@@ -7,7 +7,7 @@ const {MESSAGES, USER_MESSAGES} = require("../../helpers/messages");
 const useTestDatabase = require("../helpers/useTestDatabase");
 
 describe("GET /users/:id", () => {
-  useTestDatabase("getUsers");
+  useTestDatabase();
 
   it("logged in user can see their profile data", async () => {
     const user = await generateTestUser();

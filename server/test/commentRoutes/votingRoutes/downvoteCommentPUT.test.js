@@ -12,7 +12,7 @@ const useTestDatabase = require("../../helpers/useTestDatabase");
 
 const COMMENT_TEXT = "comment here."
 describe("PUT /pact/:pactId/post/:postId/comment/:commentId/downvote", () => {
-  useTestDatabase("downvoteComment")
+  useTestDatabase()
   let commentId = null;
 
   beforeEach(async () => {

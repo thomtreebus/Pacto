@@ -12,7 +12,7 @@ const useTestDatabase = require("../helpers/useTestDatabase");
 const COMMENT_TEXT = "Some random text."
 
 describe("GET /pact/:pactId/post/:postId/comment/:commentId", () =>{
-  useTestDatabase("getComment");
+  useTestDatabase();
   let commentId = null;
 
   beforeEach(async () => {

@@ -17,7 +17,7 @@ const useTestDatabase = require("../helpers/useTestDatabase");
 const COMMENT_TEXT = "Some random text."
 
 describe("Post/Comment Middlewares", () =>{
-  useTestDatabase("postCommentMiddleWare");
+  useTestDatabase();
   let commentId = null;
 
   beforeEach(async () => {

@@ -10,7 +10,7 @@ const Post = require('../../../models/Post');
 const useTestDatabase = require("../../helpers/useTestDatabase");
 
 describe("PUT /pact/:pactId/post/downvote/:postId", () => {
-  useTestDatabase("downvoteComment")
+  useTestDatabase()
 
   beforeEach(async () => {
     const user = await generateTestUser();

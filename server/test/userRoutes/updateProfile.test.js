@@ -8,7 +8,7 @@ const useTestDatabase = require("../helpers/useTestDatabase");
 jest.mock("../../helpers/emailHandlers");
 
 describe("Update Profile PUT", () => {
-  useTestDatabase("updateProfile");
+  useTestDatabase();
 
   // Generate a user and make it active. Then save it to the test database and return the user.
   async function generateActiveSavedTestUser(name = "pac"){

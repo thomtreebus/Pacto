@@ -14,7 +14,7 @@ const LAST_NAME = "Doe";
 const PASSWORD = "Password123";
 
 describe("POST /signup", () => {
-  useTestDatabase("signup");
+  useTestDatabase();
 
   beforeEach(async () => {
     const user = await generateTestUser();
