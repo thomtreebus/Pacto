@@ -162,4 +162,22 @@ describe("PostPage Tests", () => {
       expect(commentCards.length).toBe(2);
     });
   });
+
+  describe("Misc. tests", () => {
+    it("Redirects to 404 on missing post", async () => {
+      server.use(
+        rest.get(`${process.env.REACT_APP_URL}/pact/1/post/1`, (req, res, ctx) => {
+          return res(
+            ctx.status(400),
+            ctx.json({ 
+              message: null,
+              errors: []
+            })
+          );
+        }),
+      );
+      await renderWithMock();
+      await screen.findAllByText(/Not found/i);
+    });
+  });
 });
