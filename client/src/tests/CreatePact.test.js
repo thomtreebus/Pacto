@@ -5,35 +5,24 @@ import "@testing-library/jest-dom";
 import MockComponent from "./utils/MockComponent";
 import { rest } from "msw";
 import { setupServer } from "msw/node";
+import users from "./utils/testUsers";
+import { useMockServer } from "./utils/useMockServer";
 
 describe("CreatePact Tests", () => {
-	const server = setupServer(
-		rest.get(`${process.env.REACT_APP_URL}/me`, (req, res, ctx) => {
-			return res(
-				ctx.json({ message: { _id: "01", firstName: "pac", lastName: "to", pacts : [] }, errors: [] })
-			);
-		}),
-		rest.post(`${process.env.REACT_APP_URL}/pact`, (req, res, ctx) => {
-			return res(
-				ctx.status(401),
-				ctx.json({
-					message: null,
-					errors: [{ field: null, message: "The details entered are invalid." }],
-				})
-			);
-		})
-	);
-
-	beforeAll(() => {
-		server.listen();
-	});
-
-	afterAll(() => {
-		server.close();
-	});
+	const server = useMockServer();
 
 	beforeEach(async () => {
-		server.resetHandlers();
+		server.use(
+			rest.post(`${process.env.REACT_APP_URL}/pact`, (req, res, ctx) => {
+				return res(
+					ctx.status(401),
+					ctx.json({
+						message: null,
+						errors: [{ field: null, message: "The details entered are invalid." }],
+					})
+				);
+			})
+		);
 	});
 
 	beforeEach(async () => {

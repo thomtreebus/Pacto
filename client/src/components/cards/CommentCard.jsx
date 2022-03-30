@@ -8,45 +8,21 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';import { useHistory 
 import { useAuth } from "../../providers/AuthProvider";
 import CommentBox from "../CommentBox";
 import Voter from "../Voter";
-import { relativeTime } from "../../helpers/timeHandllers";
+import { relativeTime } from "../../helpers/timeHandler";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { IconButton } from "@mui/material";
 import ErrorMessage from "../ErrorMessage";
+import CollapsingText from "../CollapsingText";
+
+export const DELETED_COMMENT_MESSAGE = "This comment has been deleted.";
 
 export default function CommentCard({ comment, post, postUpdaterFunc }) {
-  const { user, silentUserRefresh } = useAuth();
+  const { user } = useAuth();
   const [showReplyBox, setShowReplyBox] = useState(false);
   const history = useHistory();
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
 	const [isError, setIsError] = useState(false);
 	const [errorMessage, setErrorMessage] = useState("");
-
-  const handleDelete = async () => {
-    setIsButtonDisabled(true);
-
-    const response = await fetch(
-      `${process.env.REACT_APP_URL}/pact/${post.pact._id}/post/${post._id}/comment/${comment._id}`,
-      {
-        method: "DELETE",
-        credentials: "include",
-      }
-    );
-
-    try {
-      if (response.status !== 200) {
-        const json = await response.json();
-        if (json.errors.length) throw Error(json.errors[0].message);
-      }
-    } catch (err) {
-      setIsError(true);
-      setErrorMessage(err.message);
-      setIsButtonDisabled(false);
-      return;
-    }
-
-    await silentUserRefresh();
-    history.push(`/pact/${post.pact._id}/post/${post._id}`);
-  };
 
   const handleLikeEvent = async (eventCode) => {
     const url = (() => {
@@ -62,20 +38,55 @@ export default function CommentCard({ comment, post, postUpdaterFunc }) {
     });
 	};
 
+  const updateComment = (updatedComment, replies=[]) => {
+    const newPostObj = JSON.parse(JSON.stringify(post)); // Deep clone the post so it can be modified and resaved
+
+    const indexOfCommentToUpdate = post.comments.indexOf(comment);
+    newPostObj.comments = newPostObj.comments.filter(c => c._id !== comment._id); // Remove comment from post
+    newPostObj.comments.splice(indexOfCommentToUpdate, 0, updatedComment); // Add updated comment to post in its place
+
+    replies.forEach((reply) => {
+      updatedComment.childComments.unshift(reply); // Add reply of comment to its children
+      newPostObj.comments.unshift(reply); // Add reply of comment to overall list of comments (for rendering)
+    })
+    
+    postUpdaterFunc(newPostObj); // Send LOCALLY updated post object to parent. Server side updates itself. We are avoiding refresh
+  }
+
+  const handleDelete = async () => {
+    setIsButtonDisabled(true);
+
+    const response = await fetch(
+      `${process.env.REACT_APP_URL}/pact/${post.pact._id}/post/${post._id}/comment/${comment._id}`,
+      {
+        method: "DELETE",
+        credentials: "include",
+      }
+    );
+
+    try {
+      const json = await response.json();
+
+      if (response.status !== 200) {
+        if (json.errors.length) throw Error(json.errors[0].message);
+      }
+      
+      const newComment = json.message;
+      updateComment(newComment);  
+    } 
+    catch (err) {
+      setIsError(true);
+      setErrorMessage(err.message);
+      setIsButtonDisabled(false);
+      return;
+    }
+  };
+
   const replySubmissionHandler = (newComment) => {
     setShowReplyBox(false);
-    const indexOfCommentToUpdate = post.comments.indexOf(comment);
-
-    const newPostObj = JSON.parse(JSON.stringify(post)); // Deep clone the post so it can be modified and resaved
     const newRepliedToCommentObj = JSON.parse(JSON.stringify(comment)); // Deep clone the replied-tocomment so it can be modified and resaved
     
-    newRepliedToCommentObj.childComments.unshift(newComment); // Add reply of comment to its children
-    newPostObj.comments.unshift(newComment); // Add reply of comment to overall list of comments (for rendering)
-
-    newPostObj.comments = newPostObj.comments.filter(c => c._id !== comment._id); // Remove replied-to comment from post
-    newPostObj.comments.splice(indexOfCommentToUpdate, 0, newRepliedToCommentObj); // Add updated replied-to comment
-
-    postUpdaterFunc(newPostObj); // Send updated post object to parent
+    updateComment(newRepliedToCommentObj, [newComment]);
   }
 
   if(!comment){
@@ -96,7 +107,8 @@ export default function CommentCard({ comment, post, postUpdaterFunc }) {
           initThumbUp={comment.upvoters.includes(user._id)} 
           initThumbDown={comment.downvoters.includes(user._id)} 
           handleLikeEvent={handleLikeEvent}
-          initLikes={comment.votes}>
+          initLikes={comment.votes}
+          disabled={comment.deleted}>
           </Voter>
 
           <Box sx={{ overflow: "hidden" }}>
@@ -104,9 +116,12 @@ export default function CommentCard({ comment, post, postUpdaterFunc }) {
               Posted by <span onClick={() => history.push(`/user/${comment.author._id}`)} className="link" data-testid="author">{comment.author.firstName + " " + comment.author.lastName}</span> {relativeTime(comment.createdAt)}
             </Typography>
 
-            <Typography variant="body1" color={`${comment.deleted ? 'error' : 'inherit'}`} data-testid="comment-text">
-              {comment.text}
-            </Typography>
+            <CollapsingText 
+              text={comment.deleted ? DELETED_COMMENT_MESSAGE : comment.text}
+              variant="body1"
+              color={`${comment.deleted ? 'error' : 'inherit'}`}
+              textDataTestId="comment-text"
+            />
 
             { !comment.deleted && <Typography variant="caption" className="link" onClick={() => {setShowReplyBox(!showReplyBox)}} data-testid="reply-button">
               {showReplyBox ? "Hide" : "Reply"}
@@ -141,12 +156,13 @@ export default function CommentCard({ comment, post, postUpdaterFunc }) {
           </Box>}
         </Box>
         {((comment.author._id === user._id ||
-						post.pact.moderators.includes(user._id)) && !comment.deleted) && (
+						post.pact.moderators?.includes(user._id)) && !comment.deleted) && (
 						<Box sx={{ display: "flex", justifyContent: "flex-end" }}>
 							<IconButton
 								color="error"
 								onClick={handleDelete}
 								disabled={isButtonDisabled}
+                data-testid="delete-button"
 							>
 								<DeleteIcon fontSize="medium" />
 							</IconButton>

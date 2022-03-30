@@ -1,15 +1,16 @@
 const supertest = require("supertest");
 const app = require("../../app");
 const { createToken } = require("../../controllers/authController");
-const { generateTestUser, getDefaultTestUserEmail} = require("../fixtures/generateTestUser");
+const { generateTestUser, getDefaultTestUserEmail } = require("../fixtures/generateTestUser");
 const { generateTestPact, getTestPactId } = require("../fixtures/generateTestPact");
 const { MESSAGES, PACT_MESSAGES } = require("../../helpers/messages");
 const User = require("../../models/User");
 const Pact = require('../../models/Pact');
+const Notification = require('../../models/Notification');
 const useTestDatabase = require("../helpers/useTestDatabase");
 
 describe("POST /post/upvote/:pactid/:id", () => {
-  useTestDatabase("revokeBan");
+  useTestDatabase();
 
   beforeEach(async () => {
     const user = await generateTestUser();
@@ -47,6 +48,39 @@ describe("POST /post/upvote/:pactid/:id", () => {
     const responseUser = await User.findOne({ uniEmail: "bob.to@kcl.ac.uk" });
     const newPactCount = responseUser.pacts.length;
     expect(newPactCount).toBe(oldPactCount + 1);
+  });
+
+  it("user gets notification that they are no longer banned", async () => {
+    const user = await User.findOne({ uniEmail: getDefaultTestUserEmail() });
+    const pact = await Pact.findOne({ id: getTestPactId() });
+    const revokeBanUser = await User.findOne({ uniEmail: "bob.to@kcl.ac.uk" });
+    const token = createToken(user._id);
+    const oldBanCount = pact.bannedUsers.length;
+    const oldPactCount = revokeBanUser.pacts.length;
+    const oldNotificationCount = revokeBanUser.notifications.length;
+
+    const response = await supertest(app)
+    .put(`/pact/${ pact._id }/${ revokeBanUser._id }/revokeban/`)
+    .set("Cookie", [`jwt=${token}`])
+    .expect(200);
+    expect(response.body.message).toBeDefined();
+    expect(response.body.errors.length).toBe(0);
+
+    const responsePact = await Pact.findOne({ id: getTestPactId() });
+    const newBanCount = responsePact.bannedUsers.length;
+    expect(newBanCount).toBe(oldBanCount - 1);
+
+    const responseUser = await User.findOne({ uniEmail: "bob.to@kcl.ac.uk" });
+    const newPactCount = responseUser.pacts.length;
+    expect(newPactCount).toBe(oldPactCount + 1);
+    const newNotificationCount = responseUser.notifications.length;
+    expect(newNotificationCount).toBe(oldNotificationCount + 1);
+
+
+    const notification = await Notification.findOne({ user: revokeBanUser._id });
+    expect(notification).toBeDefined();
+    expect(notification.user._id.toString()).toBe(revokeBanUser._id.toString());
+    expect(notification.text).toBe(`You are no longer banned from ${pact.name}`);
   });
 
   it("moderator can not revoke ban of user that is not banned", async () => {

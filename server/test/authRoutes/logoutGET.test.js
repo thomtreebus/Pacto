@@ -7,7 +7,7 @@ const { generateTestUser, getDefaultTestUserEmail } = require('../fixtures/gener
 const useTestDatabase = require("../helpers/useTestDatabase");
 
 describe("GET /logout", () => {
-  useTestDatabase("logout");
+  useTestDatabase();
 
   beforeEach(async () => {
     const user = await generateTestUser();

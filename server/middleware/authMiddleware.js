@@ -1,3 +1,8 @@
+/**
+ * This middleware is a check used before the main module function is called.
+ * It checks if the request contains a user with a valid cookie signifying they are logged in.
+ */
+
 const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 const { jsonResponse, jsonError } = require("../helpers/responseHandlers");

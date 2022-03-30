@@ -1,53 +1,41 @@
-import { render, screen } from "@testing-library/react";
-import { waitForElementToBeRemoved } from "@testing-library/react";
+/**
+ * Tests for the bae layout componnent which wraps the component in the side bars 
+ * and also add the appbar at the top. 
+ */
+
+import { screen } from "@testing-library/react";
 import "@testing-library/jest-dom";
-import MockComponent from "./utils/MockComponent";
 import BaseLayout from "../layouts/BaseLayout";
 import { rest } from "msw";
-import { setupServer } from "msw/node";
 import pacts from "./utils/testPacts";
+import { useMockServer } from "./utils/useMockServer";
+import mockRender from "./utils/mockRender";
 
 describe("BaseLayout Tests", () => {
-	const server = setupServer(
-		rest.get(`${process.env.REACT_APP_URL}/me`, (req, res, ctx) => {
-			return res(
-				ctx.json({
-					message: { firstName: "pac", lastName: "to", _id: "01", pacts: [] },
-					errors: [],
-				})
-			);
-		}),
-		rest.get(`${process.env.REACT_APP_URL}/university`, (req, res, ctx) => {
-			return res(
-				ctx.json({
-					message: { pacts: pacts },
-					errors: [],
-				})
-			);
-		})
-	);
-
-	beforeAll(() => {
-		server.listen();
-	});
-
-	afterAll(() => {
-		server.close();
-	});
-
-	async function renderComponent() {
-		render(
-			<MockComponent>
-				<BaseLayout>
-					<h1>This is my base layout</h1>
-				</BaseLayout>
-			</MockComponent>
-		);
-		await waitForElementToBeRemoved(() => screen.getByText("Loading"));
-	}
+	let history;
+	const server = useMockServer();
 
 	beforeEach(async () => {
-		server.resetHandlers();
+		server.use(
+			rest.get(`${process.env.REACT_APP_URL}/university`, (req, res, ctx) => {
+				return res(
+					ctx.json({
+						message: { pacts: pacts },
+						errors: [],
+					})
+				);
+			}),
+			rest.get(`${process.env.REACT_APP_URL}/notifications`, (req, res, ctx) => {
+				return res(
+					ctx.json({ message: [], errors: [] })
+				);
+			})
+		);
+	});
+
+	const renderComponent = async () => history = await mockRender(<BaseLayout><h1>This is my base layout</h1></BaseLayout>) 
+
+	beforeEach(async () => {
 		await renderComponent();
 	});
 

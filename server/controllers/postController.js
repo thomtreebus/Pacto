@@ -2,6 +2,7 @@ const Post = require("../models/Post");
 const Pact = require("../models/Pact");
 const Comment = require("../models/Comment");
 const User = require("../models/User");
+const Notification = require("../models/Notification");
 const handleFieldErrors = require('../helpers/errorHandler');
 const { jsonResponse, jsonError } = require("../helpers/responseHandlers");
 const { POST_MESSAGES } = require("../helpers/messages");
@@ -20,7 +21,7 @@ module.exports.postPost = async (req, res) => {
     const { title, text, image, link, type } = req.body;
 		const pact = req.pact;
 
-		const post = await Post.create({ author:user, pact, title, image, text, link, type });
+		const post = await Post.create({ author:user, pact, title: title?.trim(), image, text: text?.trim(), link, type });
 		// Add post to the pact
 		await Pact.findByIdAndUpdate(pact, {$push: {posts: post}});
 		res.status(201).json(jsonResponse(post, []));
@@ -90,6 +91,9 @@ module.exports.upvotePostPut = async (req, res) => {
 			res.status(404).json(jsonResponse(null, [jsonError(null, POST_MESSAGES.NOT_FOUND)]));
 		} else {
 			await upvote(post, req.user);
+
+			// Notify poster that their post has been upvoted
+			await Notification.create({ user: post.author, text: `${req.user.firstName} ${req.user.lastName} upvoted your post in ${req.pact.name}` });
 
 			// Populating before returning the post
 			await post.populate({ path: 'pact', model: Pact});

@@ -11,7 +11,7 @@ const Post = require('../../models/Post');
 const useTestDatabase = require("../helpers/useTestDatabase");
 
 describe("DELETE /pact/:pactId/post/:postId", () => {
-  useTestDatabase("deletePost");
+  useTestDatabase();
 
   beforeEach(async () => {
     const user = await generateTestUser();

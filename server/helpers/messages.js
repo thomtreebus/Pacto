@@ -105,7 +105,12 @@ module.exports.PACT_MESSAGES = {
  * Error messages about posts.
  */
 module.exports.POST_MESSAGES = {
-  NO_AUTHOR: "Author is a required field",
+	NOT_FOUND: "Post not found",
+	NOT_AUTHORISED: {
+		NOT_AUTHOR_NOT_MOD: "User is neither a mod nor the author of the post",
+		NOT_AUTHOR: "User is not the author of the post",
+	},
+	NO_AUTHOR: "Author is a required field",
   NO_PACT: "Post is a required field",
   TITLE: {
 		BLANK: "Title is a required field",
@@ -134,6 +139,12 @@ module.exports.POST_MESSAGES = {
     NOT_AUTHOR_NOT_MOD: "User is neither a mod nor the author of the post",
     NOT_AUTHOR: "User is not the author of the post"
   }
+};
+
+module.exports.NOTIFICATION_MESSAGES = {
+	NOT_FOUND: "No notifications found",
+	ALREADY_READ: "Notification has already been marked as read",
+	OTHER_USER: "Can not mark a notification as read for another user"
 }
 
 /**

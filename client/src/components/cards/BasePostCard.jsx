@@ -2,7 +2,7 @@ import { Box, Card, CardContent } from "@mui/material";
 import { Typography } from "@mui/material";
 import { useHistory } from "react-router-dom";
 import CommentIcon from "@mui/icons-material/Comment";
-import { relativeTime } from "../../helpers/timeHandllers";
+import { relativeTime } from "../../helpers/timeHandler";
 import { useAuth } from "../../providers/AuthProvider";
 import Voter from "../Voter";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -91,39 +91,47 @@ export default function BasePostCard({ children, post, numComments = null }) {
 								{relativeTime(post.createdAt)}
 							</Typography>
 
-							<Typography variant="h6" data-testid="title">
+							<Typography variant="h6" data-testid="title" className="link" onClick={() => {
+									history.push(`/pact/${post.pact._id}/post/${post._id}`);
+								}}>
 								{post.title}
 							</Typography>
 
 							{children}
-
-							<Typography
-								variant="subtitle2"
-								className="link"
-								data-testid="comments"
-								onClick={() => {
-									history.push(`/pact/${post.pact._id}/post/${post._id}`);
-								}}
-							>
-								<CommentIcon
-									sx={{ verticalAlign: "middle", marginRight: "5px" }}
-								/>
-								{commentCount} {commentCount === 1 ? "Comment" : "Comments"}
-							</Typography>
 						</Box>
 					</Box>
-					{(post.author._id === user._id ||
-						post.pact.moderators.includes(user._id)) && (
-						<Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-							<IconButton
-								color="error"
-								onClick={handleDelete}
-								disabled={isButtonDisabled}
-							>
-								<DeleteIcon fontSize="medium" />
-							</IconButton>
-						</Box>
-					)}
+					<Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+					<Box sx={{ display: "flex", marginTop: 1 }}>
+						<Typography
+							variant="subtitle2"
+							className="link"
+							data-testid="comments"
+							sx={{ textAlign: "left" }}
+							onClick={() => {
+								history.push(`/pact/${post.pact._id}/post/${post._id}`);
+							}}
+						>
+							<CommentIcon
+								sx={{ verticalAlign: "middle", marginRight: "5px" }}
+							/>
+							{commentCount} {commentCount === 1 ? "Comment" : "Comments"}
+						</Typography>
+					</Box>
+					<Box sx={{ display: "flex" }}>
+						{(post.author._id === user._id ||
+							post.pact.moderators.includes(user._id)) && (
+								<IconButton
+									color="error"
+									onClick={handleDelete}
+									disabled={isButtonDisabled}
+									data-testid="delete-button"
+								>
+									<DeleteIcon fontSize="medium" />
+								</IconButton>
+						)}
+					</Box>
+					
+					</Box>
 				</CardContent>
 			</Card>
 		</>

@@ -48,7 +48,7 @@ export default function Profile() {
     }).then((data) => {
       setDisplayedUser(data.message)
     }).catch((err) => {
-      if (err.message === "The user aborted a request.") return;
+      if (err.name === "AbortError") return;
       if (err.message === "Could not fetch user profile") history.push("/not-found")
     });
     return () => controller.abort();
@@ -116,7 +116,7 @@ export default function Profile() {
           <Chip label={`${displayedUser.pacts.length} Pacts`} icon={<ForumIcon />} variant="outlined" />
         </Box>
         <Divider sx={{ marginTop: "10px", marginBottom: "10px" }}></Divider>
-        <Typography variant="body1" textAlign={"justify"}> {displayedUser.bio} </Typography>
+        <Typography variant="body1" textAlign={"justify"}  multiline="true" style={{whiteSpace: 'pre-line'}}> {displayedUser.bio} </Typography>
       </Grid>
     </Grid>)
   )

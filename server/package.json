@@ -13,6 +13,13 @@
     "unseed": "node ./tools/unseed.js",
     "coverage": "jest --coverage --runInBand"
   },
+  "jest": {
+    "coveragePathIgnorePatterns": [
+      "node_modules/",
+      "test/fixtures/",
+      "test/helpers/"
+    ]
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",

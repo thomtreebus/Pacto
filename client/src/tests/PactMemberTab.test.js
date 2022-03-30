@@ -7,6 +7,7 @@ import { Router, Route } from "react-router-dom";
 import { createMemoryHistory } from 'history';
 import userEvent from "@testing-library/user-event";
 import PactMembersTab from "../components/PactPage/PactMembersTab";
+import { useMockServer } from "./utils/useMockServer";
 
 const response = {
   message: {
@@ -55,46 +56,38 @@ const response = {
 }
 
 describe("PactPage Tests", () => {
-  const server = setupServer(
-    rest.get(`${process.env.REACT_APP_URL}/me`, (req, res, ctx) => {
-      return res(
-        ctx.json({
-          message: {
-            firstName: "pac",
-            lastName: "to",
-            _id: response.message.moderators[0]._id,
-            pacts: [response.message._id]
-          }, errors: []
-        })
-      );
-    }),
-    rest.get(`${process.env.REACT_APP_URL}/pact/1`, (req, res, ctx) => {
-      return res(
-        ctx.json(response)
-      );
-    }),
-    rest.delete(`${process.env.REACT_APP_URL}/pact/1/leave`, (req, res, ctx) => {
-      return res(
-        ctx.json({message: "Successfully left the pact", errors: []})
-      );
-    }),
-    rest.delete(`${process.env.REACT_APP_URL}/pact/1/delete`, (req, res, ctx) => {
-      return res(
-        ctx.json({message: "Successfully deleted the pact", errors: []})
-      );
-    })
-  );
-
-  beforeAll(() => {
-    server.listen();
-  });
-
-  afterAll(() => {
-    server.close();
-  });
+  const server = useMockServer();
 
   beforeEach(async () => {
-    server.resetHandlers();
+    server.use(
+      rest.get(`${process.env.REACT_APP_URL}/me`, (req, res, ctx) => {
+        return res(
+          ctx.json({
+            message: {
+              firstName: "pac",
+              lastName: "to",
+              _id: response.message.moderators[0]._id,
+              pacts: [response.message._id]
+            }, errors: []
+          })
+        );
+      }),
+      rest.get(`${process.env.REACT_APP_URL}/pact/1`, (req, res, ctx) => {
+        return res(
+          ctx.json(response)
+        );
+      }),
+      rest.delete(`${process.env.REACT_APP_URL}/pact/1/leave`, (req, res, ctx) => {
+        return res(
+          ctx.json({message: "Successfully left the pact", errors: []})
+        );
+      }),
+      rest.delete(`${process.env.REACT_APP_URL}/pact/1/delete`, (req, res, ctx) => {
+        return res(
+          ctx.json({message: "Successfully deleted the pact", errors: []})
+        );
+      })
+    );
   });
 
   let history;

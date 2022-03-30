@@ -9,7 +9,7 @@ const { generateTestUser } = require("../fixtures/generateTestUser");
 const useTestDatabase = require("../helpers/useTestDatabase");
 
 describe("Auth Middlewares", () => {
-  useTestDatabase("authMiddleWare");
+  useTestDatabase();
 
   describe("Authentication Middleware", () => {
     app.get("/mockRoute", checkAuthenticated, function (req, res) {

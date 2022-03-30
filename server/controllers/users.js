@@ -107,14 +107,3 @@ module.exports.allUniUsers = async(req, res) => {
   }
 }
 
-/**
- * Daletes a user whose id is given in the parameters of the request.
- * @param {Request} req - The request
- * @param {Response} res - The response to the request
- * @async
- */
-module.exports.deleteUser = async (req, res) => {
-  const { id } = req.params;
-  await User.findByIdAndDelete(id);
-  req.flash('success', 'Successfully deleted account!');
-}

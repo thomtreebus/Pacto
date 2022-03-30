@@ -8,11 +8,11 @@ const useTestDatabase = require("../helpers/useTestDatabase");
 jest.mock("../../helpers/emailHandlers");
 
 describe("Update Profile PUT", () => {
-  useTestDatabase("updateProfile");
+  useTestDatabase();
 
   // Generate a user and make it active. Then save it to the test database and return the user.
   async function generateActiveSavedTestUser(name = "pac"){
-    const user = await generateTestUser();
+    const user = await generateTestUser(name);
     user.active = true;
     await user.save();
     return user
@@ -45,6 +45,17 @@ describe("Update Profile PUT", () => {
    expect(response.body.errors.length).toBe(1);
   });
 
+  it("returns an error when not mongo id (for the user id)", async () => {
+    const user = await generateActiveSavedTestUser();
+    const token = createToken(user._id);
+
+    const response = await supertest(app).put(`/users/notid`).set("Cookie", [`jwt=${token}`]);
+    expect(response.body.message).toBe(null);
+    expect(response.body.errors[0].field).toBe(null);
+    expect(response.body.errors[0].message).toBe(USER_MESSAGES.DOES_NOT_EXIST);
+    expect(response.body.errors.length).toBe(1);
+  });
+
   it("returns an error when invalid user", async () => {
     const user = await generateActiveSavedTestUser();
     const token = createToken(user._id);
@@ -53,6 +64,22 @@ describe("Update Profile PUT", () => {
     expect(response.body.message).toBe(null);
     expect(response.body.errors[0].field).toBe(null);
     expect(response.body.errors[0].message).toBe(USER_MESSAGES.DOES_NOT_EXIST);
+    expect(response.body.errors.length).toBe(1);
+  });
+
+  it("returns an error if trying to update another user", async () => {
+    const user = await generateActiveSavedTestUser();
+    const token = createToken(user._id);
+
+    const user2 = await generateActiveSavedTestUser("userTwo");
+    const user2id = user2._id;
+
+    const response = await supertest(app).put(`/users/${ user2id }`)
+    .set("Cookie", [`jwt=${token}`])
+    .expect(401)
+    expect(response.body.message).toBe(null);
+    expect(response.body.errors[0].field).toBe(null);
+    expect(response.body.errors[0].message).toBe(USER_MESSAGES.UPDATE_OTHER_PROFILE_UNAUTHORISED);
     expect(response.body.errors.length).toBe(1);
   });
 

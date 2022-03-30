@@ -5,6 +5,7 @@ import "@testing-library/jest-dom";
 import MockComponent from "./utils/MockComponent";
 import { setupServer } from "msw/node";
 import { rest } from "msw";
+import { useMockServer } from "./utils/useMockServer";
 
 const post = {
   pact: {
@@ -28,25 +29,7 @@ const post = {
 }
 
 describe("BasePostCard Tests", () => {
-  const server = setupServer(
-		rest.get(`${process.env.REACT_APP_URL}/me`, (req, res, ctx) => {
-			return res(
-				ctx.json({ message: { firstName: "pac", lastName: "to", _id: "5" }, errors: [] })
-			);
-		}),
-	);
-
-  beforeAll(() => {
-		server.listen();
-	});
-
-	afterAll(() => {
-		server.close();
-	});
-
-	beforeEach(async () => {
-		server.resetHandlers();
-	});
+  const server = useMockServer();
 
   beforeEach(async () => {
 		render(
@@ -105,6 +88,18 @@ describe("BasePostCard Tests", () => {
       const author = await screen.findByTestId("author");
       fireEvent.click(author);
       expect(window.location.pathname).toBe("/user/1");
+    });
+
+    it("should redirect to post page when title text is clicked", async () => {
+      const title = await screen.findByTestId("title");
+      fireEvent.click(title);
+      expect(window.location.pathname).toBe("/pact/5/post/1");
+    });
+
+    it("should redirect to post page when comments text is clicked", async () => {
+      const comments = await screen.findByTestId("comments");
+      fireEvent.click(comments);
+      expect(window.location.pathname).toBe("/pact/5/post/1");
     });
   });
 });

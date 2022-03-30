@@ -12,7 +12,7 @@ const useTestDatabase = require("../helpers/useTestDatabase");
 const COMMENT_TEXT = "This is my 1st comment.";
 
 describe("POST /pact/:pactId/post/:postId/comment/:commentId/reply", () =>{
-  useTestDatabase("replyToComment");
+  useTestDatabase();
   let commentId = null;
 
   beforeEach(async () => {

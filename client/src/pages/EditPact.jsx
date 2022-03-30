@@ -94,7 +94,7 @@ export default function EditPact() {
         setImage(data.image)
         setIsLoading(false);
       }).catch((err) => {
-        if (err.message === "The user aborted a request.") return;
+        if (err.name === "AbortError") return;
         setSnackBarError(err)
         setSnackbarOpen(true)
         return history.push(`/not-found`);

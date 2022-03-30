@@ -1,47 +1,23 @@
-import { render, screen } from "@testing-library/react";
-import { waitForElementToBeRemoved } from "@testing-library/react";
+/**
+ * Tests for the constum route componnent auth route. 
+ */
+
+import { screen } from "@testing-library/react";
 import "@testing-library/jest-dom";
-import MockComponent from "./utils/MockComponent";
 import AuthRoute from "../components/AuthRoute";
 import { rest } from "msw";
-import { setupServer } from "msw/node";
+import { useMockServer } from "./utils/useMockServer";
+import mockRender from "./utils/mockRender";
 
 describe("AuthRoute Tests", () => {
-	const server = setupServer(
-		rest.get(`${process.env.REACT_APP_URL}/me`, (req, res, ctx) => {
-			return res(
-				ctx.status(200),
-				ctx.json({ message: { firstName: "pac", lastName: "to" }, errors: [] })
-			);
-		})
-	);
+	let history;
+	const server = useMockServer();
 
-	beforeAll(() => {
-		server.listen();
-	});
-
-	afterAll(() => {
-		server.close();
-	});
-
-	beforeEach(async () => {
-		server.resetHandlers();
-	});
-
-	async function renderComponent() {
-		render(
-			<MockComponent>
-				<AuthRoute>
-					<h1>You are not logged in</h1>
-				</AuthRoute>
-			</MockComponent>
-		);
-		await waitForElementToBeRemoved(() => screen.getByText("Loading"));
-	}
-
+	const renderComponent = async () => history = await mockRender(<AuthRoute><h1>You are not logged in</h1></AuthRoute>) 
+	
 	it("redirects to /feed if the user is already logged in", async () => {
 		await renderComponent();
-		expect(window.location.pathname).toBe("/feed");
+		expect(history.location.pathname).toBe("/feed");
 	});
 
 	it("renders the compontent when the user is not logged in", async () => {

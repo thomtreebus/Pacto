@@ -6,30 +6,10 @@ import MockComponent from "./utils/MockComponent";
 import { rest } from "msw";
 import { setupServer } from "msw/node";
 import pacts from "./utils/testPacts";
+import { useMockServer } from "./utils/useMockServer";
 
 describe("PactGrid Tests", () => {
-	const server = setupServer(
-		rest.get(`${process.env.REACT_APP_URL}/me`, (req, res, ctx) => {
-			return res(
-				ctx.json({
-					message: { firstName: "pac", lastName: "to", _id: "01" },
-					errors: [],
-				})
-			);
-		})
-	);
-
-	beforeAll(() => {
-		server.listen();
-	});
-
-	afterAll(() => {
-		server.close();
-	});
-
-	beforeEach(async () => {
-		server.resetHandlers();
-	});
+	const server = useMockServer();
 
 	async function renderWithMockComponent(grid) {
 		render(<MockComponent>{grid}</MockComponent>);

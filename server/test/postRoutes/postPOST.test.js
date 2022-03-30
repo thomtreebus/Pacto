@@ -21,7 +21,7 @@ const LINK = "https://examplelink.com";
 const DEFAULT_TYPE = TEXT_TYPE;
 
 describe("POST /pact/:pactId/post", () => {
-  useTestDatabase("createPost");
+  useTestDatabase();
 
   beforeEach(async () => {
     const user = await generateTestUser();
@@ -226,6 +226,14 @@ describe("POST /pact/:pactId/post", () => {
       }, "title", POST_MESSAGES.TITLE.MAX_LENGTH_EXCEEDED);
     });
 
+    it("trims whitespace from title", async () => {
+      await isInvalidPost({
+        title: " ",
+        type: TEXT_TYPE,
+        text: TEXT
+      }, "title", POST_MESSAGES.TITLE.BLANK);
+    });
+
     it("accepts when title is exactly 200 characters", async () => {
       await isValidPost({
         title: "x".repeat(200),
@@ -261,6 +269,14 @@ describe("POST /pact/:pactId/post", () => {
 
     it("rejects text post without text", async () => {
       await isInvalidPost({
+        title: TITLE,
+        type: TEXT_TYPE
+      }, "text", POST_MESSAGES.TYPE.TEXT.BLANK);
+    });
+
+    it("trims whitespace from post", async () => {
+      await isInvalidPost({
+        text: " ",
         title: TITLE,
         type: TEXT_TYPE
       }, "text", POST_MESSAGES.TYPE.TEXT.BLANK);

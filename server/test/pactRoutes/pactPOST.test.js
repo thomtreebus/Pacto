@@ -17,7 +17,7 @@ const DEFAULT_DESCRIPTION = "A Pact that doesn't know what it wants to be...";
 const DEFAULT_CATEGORY = "other";
 
 describe("POST /pact", () => {
-  useTestDatabase("createPact");
+  useTestDatabase();
 
   beforeEach(async () => {
     const user = await generateTestUser();

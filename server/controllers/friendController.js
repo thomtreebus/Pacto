@@ -1,5 +1,6 @@
 const User = require('../models/User');
 const FriendRequest = require('../models/FriendRequest');
+const Notification = require('../models/Notification');
 const { FRIEND_MESSAGES } = require('../helpers/messages');
 const {jsonResponse, jsonError} = require("../helpers/responseHandlers");
 
@@ -32,6 +33,10 @@ module.exports.sendFriendRequest = async (req, res) => {
 
       await User.findByIdAndUpdate(user._id, { $push: { sentRequests: friendRequest._id } });
       await User.findByIdAndUpdate(id, { $push: { receivedRequests: friendRequest._id } });
+
+      // Notify recipient that they have received a new friend request
+      const notification = await Notification.create({ user: recipient._id, text: `${user.firstName} ${user.lastName} has sent you a friend request` });
+		  await User.findByIdAndUpdate(recipient._id, { $push: { notifications: notification._id } }); 
 
       res.status(201).json(jsonResponse(friendRequest, []));
     }
@@ -72,6 +77,10 @@ module.exports.acceptFriendRequest = async (req, res) => {
   
         // Delete the friend request
         await FriendRequest.findByIdAndDelete(id);
+
+        // Notify requestor that recipient has accepted request
+        const notification = await Notification.create({ user: requestor._id, text: `${recipient.firstName} ${recipient.lastName} has accepted your friend request` });
+		    await User.findByIdAndUpdate(requestor._id, { $push: { notifications: notification._id } }); 
   
         res.status(201).json(jsonResponse(null, []));
       } else {

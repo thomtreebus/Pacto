@@ -1,10 +1,6 @@
-import {
-	render,
-	screen,
-	fireEvent,
-	waitFor,
-	waitForElementToBeRemoved,
-} from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
+import { fireEvent, waitFor } from "@testing-library/react";
+import { waitForElementToBeRemoved } from "@testing-library/react";
 import PactCard from "../components/PactCard";
 import "@testing-library/jest-dom";
 import testPacts from "./utils/testPacts";
@@ -13,37 +9,23 @@ import { rest } from "msw";
 import { setupServer } from "msw/node";
 import MockComponent from "./utils/MockComponent";
 import { Children } from "react";
+import users from "./utils/testUsers";
+import { useMockServer } from "./utils/useMockServer";
 
 describe("Pact Card Tests", () => {
-	const server = setupServer(
-		rest.get(`${process.env.REACT_APP_URL}/me`, (req, res, ctx) => {
-			return res(
-				ctx.json({
-					message: { firstName: "pac", lastName: "to", _id: "01", pacts: [] },
-					errors: [],
-				})
-			);
-		}),
-		rest.post(`${process.env.REACT_APP_URL}/pact/:id/join`, (req, res, ctx) => {
-			return res(
-				ctx.json({
-					message: "Successfully joined the pact",
-					errors: [],
-				})
-			);
-		})
-	);
-
-	beforeAll(() => {
-		server.listen();
-	});
-
-	afterAll(() => {
-		server.close();
-	});
+	const server = useMockServer();
 
 	beforeEach(async () => {
-		server.resetHandlers();
+		server.use(
+			rest.post(`${process.env.REACT_APP_URL}/pact/:id/join`, (req, res, ctx) => {
+				return res(
+					ctx.json({
+						message: "Successfully joined the pact",
+						errors: [],
+					})
+				);
+			})
+		);
 	});
 
 	const renderWithMock = async (children) => {
