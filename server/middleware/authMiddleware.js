@@ -15,7 +15,7 @@ const FriendRequest = require('../models/FriendRequest');
  * @param req contains information regarding the incoming request.
  * @param res contains information regarding the response.
  * @param next Required parameter for middleware. Signals call of the next function.
- * @returns {Promise<void>}
+ * @returns {Promise<void>} Javascript async function.
  */
 const checkAuthenticated = async (req, res, next) => {
   const token = req.cookies.jwt;
