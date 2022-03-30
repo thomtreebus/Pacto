@@ -13,6 +13,8 @@ const { checkAuthenticated } = require("../../middleware/authMiddleware");
 const { checkIsMemberOfPact } = require("../../middleware/pactMiddleware");
 const { jsonResponse } = require("../../helpers/responseHandlers");
 const useTestDatabase = require("../helpers/useTestDatabase");
+const Post = require("../../models/Post");
+const { generateTestComment } = require("../fixtures/genereateTestComment");
 
 const COMMENT_TEXT = "Some random text."
 
@@ -99,6 +101,24 @@ describe("Post/Comment Middlewares", () =>{
   
       const res = await sendMockRoute(token, 404, wrongPostId, commentId);
       expect(res.body.errors[0].message).toBe(COMMENT_MESSAGES.NOT_FOUND);
+    });
+
+    it("throws 410 error on deleted comment", async () =>{
+      const user = await User.findOne({uniEmail: getDefaultTestUserEmail()});
+      const token = createToken(user._id);
+
+      const pact = await Pact.findById(getTestPactId());
+  
+      await generateTestPost(user, pact);
+      const postId = getTestPostId();
+      const post = await Post.findOne({ _id: postId });
+
+      const comment = await generateTestComment(user, post);
+      comment.deleted = true;
+      comment.save();
+
+      const res = await sendMockRoute(token, 410, postId, comment._id);
+      expect(res.body.errors[0].message).toBe(COMMENT_MESSAGES.REMOVED);
     });
   });
 });

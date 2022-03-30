@@ -194,8 +194,6 @@ module.exports.verifyGet = async (req, res) => {
 		const user = await User.findByIdAndUpdate(linker.userId, { active: true });
 		const university = await University.findByIdAndUpdate(user.university, {$push: {users: user}});
 
-		// await university.populate({ path: 'users', model: User});
-
 		await linker.delete();
 		res.status(200).send(MESSAGES.VERIFICATION.SUCCESS_RESPONSE_WHOLE_BODY);
 	}
