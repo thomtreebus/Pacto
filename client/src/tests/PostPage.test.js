@@ -143,7 +143,7 @@ describe("PostPage Tests", () => {
       expect(replyBox).toBeNull();
     });
 
-    it("should handle callback into its postUpdater", async () => {
+    it("should handle callback from top level comment", async () => {
       const COMMENT_TEXT = "hello";
 
       const addCommentBtn = await screen.findByText("Add comment");
