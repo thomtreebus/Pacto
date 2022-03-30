@@ -14,7 +14,7 @@ const { checkIsMemberOfPact } = require("../../middleware/pactMiddleware");
 const { jsonResponse } = require("../../helpers/responseHandlers");
 const useTestDatabase = require("../helpers/useTestDatabase");
 const Post = require("../../models/Post");
-const { generateTestComment } = require("../fixtures/genereateTestComment");
+const { generateTestComment, getTestCommentId } = require("../fixtures/genereateTestComment");
 
 const COMMENT_TEXT = "Some random text."
 
@@ -117,7 +117,7 @@ describe("Post/Comment Middlewares", () =>{
       comment.deleted = true;
       comment.save();
 
-      const res = await sendMockRoute(token, 410, postId, comment._id);
+      const res = await sendMockRoute(token, 410, postId, getTestCommentId());
       expect(res.body.errors[0].message).toBe(COMMENT_MESSAGES.REMOVED);
     });
   });
