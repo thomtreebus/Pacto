@@ -4,6 +4,14 @@ const {jsonResponse, jsonError} = require("../helpers/responseHandlers");
 const User = require("../models/User");
 const getPreview = require("../helpers/LinkCache")
 
+/**
+ * Returns the feed of the user who made the request.
+ * The feed consists of a list of posts made in the pacts 
+ * in which the user is in.
+ * @param {Request} req - The request
+ * @param {Response} res - The response to the request
+ * @async
+ */
 module.exports.feedGET = async (req, res) => {
   try {
     const user = req.user;

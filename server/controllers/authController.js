@@ -20,19 +20,19 @@ const handleFieldErrors = require('../helpers/errorHandler');
 // Magic numbers
 const COOKIE_MAX_AGE = 432000; // 432000 = 5 days
 const SALT_ROUNDS = 10;
+const PRIVATE_KEY = "kekw";
 
 /**
- * Creates a token cookie to keep the user logged in.
+ * Creates a JWT cookie to keep the user logged in.
  * @param id The mongoose object id of the user.
- * @returns {*} Javascript function.
+ * @returns Javascript function.
  */
 const createToken = (id) => {
-	return jwt.sign({ id }, "kekw", {
+	return jwt.sign({ id }, PRIVATE_KEY, {
 		expiresIn: COOKIE_MAX_AGE,
 	});
 };
 module.exports.createToken = createToken;
-
 
 /**
  * POST /signup. Sends signup infrmation for server to verify and create an account.
@@ -192,8 +192,7 @@ module.exports.verifyGet = async (req, res) => {
 
 		// Add user to their university
 		const user = await User.findByIdAndUpdate(linker.userId, { active: true });
-		const university = await University.findByIdAndUpdate(user.university, {$push: {users: user}});
-
+		await University.findByIdAndUpdate(user.university, {$push: {users: user}});
 		await linker.delete();
 		res.status(200).send(MESSAGES.VERIFICATION.SUCCESS_RESPONSE_WHOLE_BODY);
 	}

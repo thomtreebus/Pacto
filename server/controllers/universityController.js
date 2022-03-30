@@ -4,6 +4,12 @@ const Pact = require("../models/Pact");
 const Post = require("../models/Post");
 const { jsonResponse, jsonError } = require("../helpers/responseHandlers");
 
+/**
+ * Returns the university of the user.
+ * @param {Request} req - The request
+ * @param {Response} res - The response to the request
+ * @async
+ */
 module.exports.universityGet = async (req, res) => {
 	try {
 		const uni = req.user.university;
@@ -15,6 +21,14 @@ module.exports.universityGet = async (req, res) => {
 	}
 };
 
+/**
+ * Searches pacts, users and posts through the university of the user making the request
+ * that matches the query string specified by the user making the request.
+ * It returns a list of pacts, users and posts.
+ * @param {Request} req - The request
+ * @param {Response} res - The response to the request
+ * @async
+ */
 module.exports.search = async (req, res) => {
 	try {
 		const searchQuery = req.params.query;

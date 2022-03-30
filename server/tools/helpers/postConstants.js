@@ -1,3 +1,6 @@
+/**
+ * URLs to be used for link posts
+ */
 module.exports.LINKS = [
 	"https://www.youtube.com/watch?v=dQw4w9WgXcQ",
 	"https://www.reddit.com/r/AskUK/comments/tfdu70/where_would_you_live_in_the_uk_if_you_are_fully/",
