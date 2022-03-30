@@ -1,4 +1,4 @@
-import { render, screen, fireEvent, waitFor, findByText } from "@testing-library/react";
+import {render, screen, fireEvent, waitFor} from "@testing-library/react";
 import { waitForElementToBeRemoved } from "@testing-library/react"
 import PostPage from "../pages/PostPage";
 import "@testing-library/jest-dom";
@@ -128,6 +128,7 @@ describe("PostPage Tests", () => {
       const reply = await screen.findByTestId("comment-adder");
       expect(reply.innerHTML).toContain("Add comment");
       fireEvent.click(reply);
+      await waitFor(() => expect(screen.findByTestId("comment-reply-box")).not.toBe({}))
       expect(reply.innerHTML).toContain("Hide");
       const replyBox = await screen.findByTestId("comment-reply-box");
       expect(replyBox).toBeDefined();
@@ -148,16 +149,16 @@ describe("PostPage Tests", () => {
 
       const addCommentBtn = await screen.findByText("Add comment");
       fireEvent.click(addCommentBtn);
-
-      const submit = await screen.findByTestId("submit-button");
       const input = await screen.findByRole("textbox", {
 				name: "Comment",
 			});
-
       fireEvent.change(input, { target: { value: COMMENT_TEXT } });
-      fireEvent.click(submit);
 
+      const submit = await screen.findByTestId("submit-button");
+      fireEvent.click(submit);
+      await waitFor(() => expect(submit).not.toBeDisabled())
       await waitFor(() => expect(input).not.toBeInTheDocument());
+
       const commentCards = await screen.findAllByTestId("comment-text");
       expect(commentCards.length).toBe(2);
     });

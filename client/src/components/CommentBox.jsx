@@ -54,10 +54,10 @@ export default function CommentBox({
 			}
 		});
 
+		setIsButtonDisabled(false);
 		if (response.ok) {
 			successHandler(json["message"]);
-		} 
-		setIsButtonDisabled(false);
+		}
 	};
 
 	return (
