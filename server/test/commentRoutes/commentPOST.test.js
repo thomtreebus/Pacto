@@ -68,31 +68,31 @@ describe("POST /pact/:pactId/post/:postId/comment", () =>{
   })
 
   it("notify post author that comment has been created", async () => {
-    const user2 = await generateTestUser("userTwo")
+    const commentUser = await generateTestUser("userTwo")
     const pact = await Pact.findById(getTestPactId());
-    user2.active = true;
-    await user2.pacts.push(pact);
-    user2.save();
-    await pact.members.push(user2)
+    commentUser.active = true;
+    await commentUser.pacts.push(pact);
+    commentUser.save();
+    await pact.members.push(commentUser)
     pact.save();
 
-    const user1 = await User.findOne({ uniEmail: getDefaultTestUserEmail() });
-    const token = createToken(user2._id);
+    const postUser = await User.findOne({ uniEmail: getDefaultTestUserEmail() });
+    const token = createToken(commentUser._id);
 
-    const beforeCount = user1.notifications.length;
+    const beforeCount = postUser.notifications.length;
 
     const sentText = COMMENT_TEXT;
-    // another user makes a comment on user1's post.
+    // another user makes a comment on postUser's post.
     const response = await sendRequest(token, sentText, 201);
 
     expect(response.body.errors.length).toBe(0);
     expect(response.body.message.text).toBe(sentText);
 
-    const updatedUser1 = await User.findOne({ id: user1._id });
-    const afterCount = updatedUser1.notifications.length;
+    const updatedPostUser = await User.findOne({ id: postUser._id });
+    const afterCount = updatedPostUser.notifications.length;
     expect(afterCount).toBe(beforeCount+1);
 
-    const notification = await Notification.findOne({ user: user1._id });
+    const notification = await Notification.findOne({ user: postUser._id });
     expect(notification).toBeDefined();
     expect(notification.text).toBe("Your post received a new comment");
 
