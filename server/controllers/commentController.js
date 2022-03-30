@@ -39,9 +39,21 @@ const makeComment = async(req, res, parentComment=undefined) => {
     await comment.populate({path: "parentComment", model: Comment});
     await comment.populate({path: "childComments", model: Comment});
 
-    if (!parentComment && (req.user._id.toString() !== req.post.author._id.toString())) {
-      const notification = await Notification.create({user: req.post.author, text: `Your post received a new comment`});
-      await User.findByIdAndUpdate(req.post.author, {$push: {notifications: notification._id}});
+    if ((req.user._id.toString() !== req.post.author._id.toString())) {
+      const parentCommentIsNotPostAuthor = parentComment && (parentComment.author !== req.post.author._id.toString())
+      // if parent author is not defined ( replied to main post )
+      // or if parent comment is not the post author ( they already got the replied to your comment notification)
+      // send the parent author a notification saying there is a new comment on their post
+      if(!parentComment || parentCommentIsNotPostAuthor ) {
+        const notification = await Notification.create({
+          user: req.post.author,
+          text: `Your post received a new comment`
+        });
+        await User.findByIdAndUpdate(req.post.author, {$push: {notifications: notification._id}});
+      }
+      else{
+
+      }
     }
 
     return res.status(201).json(jsonResponse(comment, []));
