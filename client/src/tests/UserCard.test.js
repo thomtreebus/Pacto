@@ -1,23 +1,21 @@
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
-import { waitForElementToBeRemoved } from "@testing-library/react";
+/**
+ * Test for the user card component.
+ */
+
+import { screen, fireEvent, waitFor } from "@testing-library/react";
 import "@testing-library/jest-dom";
-import MockComponent from "./utils/MockComponent";
 import { rest } from "msw";
-import { setupServer } from "msw/node";
 import UserCard from "../components/UserCard"
 import testUsers from "./utils/testUsers"
 import { useMockServer } from "./utils/useMockServer";
+import mockRender from "./utils/mockRender";
 
 describe("UserCard Tests", () => {
+    let history;
     const server = useMockServer();
 
-	const renderWithMock = async (children) => {
-		render(<MockComponent>{children}</MockComponent>);
-		await waitForElementToBeRemoved(() => screen.getByText("Loading"));
-	};
-
     beforeEach(async () => {
-        await renderWithMock(<UserCard user={testUsers[1]} />);
+        history = await mockRender(<UserCard user={testUsers[1]} />);
     });
 
     describe("Check element rendering", () => {
@@ -52,7 +50,7 @@ describe("UserCard Tests", () => {
             );
             const buttonElement = await screen.findByTestId("user-image");
             fireEvent.click(buttonElement);
-            await waitFor(() => expect(window.location.pathname).toBe("/user/2"));	
+            await waitFor(() => expect(history.location.pathname).toBe("/user/2"));	
         });
 
         it("should redirect to user profile when the user name is pressed", async () => {
@@ -69,7 +67,7 @@ describe("UserCard Tests", () => {
             );
             const buttonElement = await screen.findByTestId("user-name");
             fireEvent.click(buttonElement);
-            await waitFor(() => expect(window.location.pathname).toBe("/user/2"));	
+            await waitFor(() => expect(history.location.pathname).toBe("/user/2"));	
         });
     })
 });
