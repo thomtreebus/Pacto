@@ -21,7 +21,7 @@ const users = [
         lastName: "To",
         linkedin: "Pac.To",
         location: "Liverpool",
-        pacts: ['623372b49841b9fb6b85f4d9', '623372b49841b9fb6b85f59f', '623372b49841b9fb6b85f655', '623372b49841b9fb6b85f479', '623372b49841b9fb6b85f487'],
+        pacts: [1],
         password: "$2b$10$RPzzCadIwiq5C1Jmf5ltKujRgKRCi2D0X7eJkqQPS7sWxArWM0Hwu",
         phone: "07624 780037",
         uniEmail: "pac.to@kcl.ac.uk",

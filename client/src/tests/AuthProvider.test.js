@@ -51,7 +51,7 @@ describe("AuthProvider Tests", () => {
 	it("displays and error is something went wrong with the request", async () => {
 		server.use(
 			rest.get(`${process.env.REACT_APP_URL}/me`, (req, res, ctx) => {
-				return res(ctx.xml());
+				return res(ctx.text());
 			})
 		);
 		await renderComponent();

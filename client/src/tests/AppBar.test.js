@@ -88,12 +88,6 @@ describe("App Bar Tests", () => {
     );
 	});
 
-
-  /**
-   * A wrapper function to facilitate easier use of the mock rendered.
-   * Also updated history with the values that the rendered component takes.
-   * 
-   */
   const renderWithMock = async () => history = await mockRender (<MockAppBarComponent/>, '/feed')
 
   describe("Check elements are rendered", () => {
