@@ -42,6 +42,9 @@ module.exports.search = async (req, res) => {
 			pact: { $in: userPacts },
 		});
 
+		// Limit results to only display 50 posts
+		if (posts.length > 50) posts.slice(0, 50);
+		
 		// Populate pact in posts
 		for (let i = 0; i < posts.length; i++) {
 			const post = posts[i];
