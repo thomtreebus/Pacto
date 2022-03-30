@@ -7,7 +7,7 @@ const {MESSAGES, USER_MESSAGES} = require("../../helpers/messages");
 const useTestDatabase = require("../helpers/useTestDatabase");
 
 describe("GET /users/:id", () => {
-  useTestDatabase("getUsers");
+  useTestDatabase();
 
   it("logged in user can see their profile data", async () => {
     const user = await generateTestUser();
@@ -61,6 +61,20 @@ describe("GET /users/:id", () => {
     expect(response.body.message).toBe(null);
   });
 
+  it("doesn't return data if wrong mongo id is used", async () => {
+    const user = await generateTestUser();
+    user.active = true;
+    await user.save();
+    const token = createToken(user._id);
+
+    let response = await supertest(app)
+      .get("/users/"+"notid")
+      .set("Cookie", [`jwt=${token}`]);
+    expect(response.body.errors).toHaveLength(1);
+    expect(response.body.errors[0].message).toBe(USER_MESSAGES.DOES_NOT_EXIST);
+    expect(response.body.message).toBe(null);
+  });
+
   it("doesn't return data if user not exist", async () => {
     const user = await generateTestUser();
     user.active = true;
@@ -68,7 +82,7 @@ describe("GET /users/:id", () => {
     const token = createToken(user._id);
 
     let response = await supertest(app)
-      .get("/users/"+"999999999999999999999999999999999999999")
+      .get("/users/"+"999999999999999999999999")
       .set("Cookie", [`jwt=${token}`]);
     expect(response.body.errors).toHaveLength(1);
     expect(response.body.errors[0].message).toBe(USER_MESSAGES.DOES_NOT_EXIST);

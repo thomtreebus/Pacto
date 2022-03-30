@@ -13,7 +13,7 @@ const Post = require("../../models/Post");
 const COMMENT_TEXT = "This is my 1st comment.";
 
 describe("POST /pact/:pactId/post/:postId/comment", () =>{
-  useTestDatabase("createComment");
+  useTestDatabase();
 
   beforeEach(async () => {
     const user = await generateTestUser();
@@ -78,6 +78,14 @@ describe("POST /pact/:pactId/post/:postId/comment", () =>{
 
     expect(response.body.errors.length).toBe(1);
     expect(response.body.errors[0].message).toBe(COMMENT_MESSAGES.BLANK);
+  });
+
+  it("trims whitespace from text", async () =>{
+    const user = await User.findOne({uniEmail: getDefaultTestUserEmail()});
+    const token = createToken(user._id);
+
+    const sentText = "x".repeat(512) + " ";
+    const response = await sendRequest(token, sentText, 201);
   });
 
   it("accepts 512 char comment", async () =>{

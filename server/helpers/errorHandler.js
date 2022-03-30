@@ -29,12 +29,7 @@ const errorHandler = (err) => {
 const getErrorList = (err) => {
   let jsonErrors = [];
   const allErrors = errorHandler(err);
-    if(allErrors){
-			allErrors.forEach((myErr) => jsonErrors.push(myErr));
-		} 
-		else {
-			jsonErrors.push(jsonError(null, err.message));
-		}
+  allErrors.forEach((myErr) => jsonErrors.push(myErr));
 	return jsonErrors;
 }
 

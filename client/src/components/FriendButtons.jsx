@@ -22,7 +22,7 @@ export default function FriendButtons({user}){
     return null;
   }
 
-  const FRIEND_EVENT_STATUS_CODES = {
+  const FRIEND_EVENT = {
     ACCEPT_REQ: 0,
     REJECT_REQ: 1,
     REMOVE_FRIEND: 2,
@@ -37,33 +37,33 @@ export default function FriendButtons({user}){
     // Forward request to backend
     const url = (() => {
       switch(status) {
-        case FRIEND_EVENT_STATUS_CODES.ACCEPT_REQ: return `friends/${friendRequest._id}/accept`;
-        case FRIEND_EVENT_STATUS_CODES.REJECT_REQ: return `friends/${friendRequest._id}/reject`;
-        case FRIEND_EVENT_STATUS_CODES.REMOVE_FRIEND: return `friends/remove/${user._id}`;
-        case FRIEND_EVENT_STATUS_CODES.ADD_FRIEND: return `friends/${user._id}`;
+        case FRIEND_EVENT.ACCEPT_REQ: return `friends/${friendRequest._id}/accept`;
+        case FRIEND_EVENT.REJECT_REQ: return `friends/${friendRequest._id}/reject`;
+        case FRIEND_EVENT.REMOVE_FRIEND: return `friends/remove/${user._id}`;
+        case FRIEND_EVENT.ADD_FRIEND: return `friends/${user._id}`;
         // no default
       }
     })()
 
     const response = await fetch(`${process.env.REACT_APP_URL}/${url}`, {
-      method: (status === FRIEND_EVENT_STATUS_CODES.ADD_FRIEND) ? "POST" : "PUT",
+      method: (status === FRIEND_EVENT.ADD_FRIEND) ? "POST" : "PUT",
       credentials: "include",
     });
     
     // Update state on success
     if(response.ok){
       switch(status) {
-        case FRIEND_EVENT_STATUS_CODES.ACCEPT_REQ:
+        case FRIEND_EVENT.ACCEPT_REQ:
           setHasReceivedRequest(false);
           setIsFriend(true);
           break;
-        case FRIEND_EVENT_STATUS_CODES.REJECT_REQ:
+        case FRIEND_EVENT.REJECT_REQ:
           setHasReceivedRequest(false);
           break;
-        case FRIEND_EVENT_STATUS_CODES.REMOVE_FRIEND: 
+        case FRIEND_EVENT.REMOVE_FRIEND:
           setIsFriend(false);
           break;
-        case FRIEND_EVENT_STATUS_CODES.ADD_FRIEND:
+        case FRIEND_EVENT.ADD_FRIEND:
           setHasSentRequest(true);
           break;
         // no default
@@ -80,7 +80,7 @@ export default function FriendButtons({user}){
         {isFriend && 
         <Tooltip title="Remove Friend">
             <span>
-              <IconButton data-testid="del-friend-btn" disabled={buttonsDisabled}  onClick={()=>friendEvent(FRIEND_EVENT_STATUS_CODES.REMOVE_FRIEND)} >
+              <IconButton data-testid="del-friend-btn" disabled={buttonsDisabled}  onClick={()=>friendEvent(FRIEND_EVENT.REMOVE_FRIEND)} >
                 <RemoveFriendIcon color="error" fontSize="large" sx={{border: "0.2rem solid", borderRadius: "5px"}} />
               </IconButton>
             </span>
@@ -90,7 +90,7 @@ export default function FriendButtons({user}){
         {hasReceivedRequest && 
           <Tooltip title="Accept Friend Request">
             <span>
-              <IconButton data-testid="accept-req-btn" disabled={buttonsDisabled}  onClick={()=>friendEvent(FRIEND_EVENT_STATUS_CODES.ACCEPT_REQ)} >
+              <IconButton data-testid="accept-req-btn" disabled={buttonsDisabled}  onClick={()=>friendEvent(FRIEND_EVENT.ACCEPT_REQ)} >
                 <AcceptIcon color="success" fontSize="large" sx={{border: "0.2rem solid", borderRadius: "5px"}} />
               </IconButton>
             </span>
@@ -100,7 +100,7 @@ export default function FriendButtons({user}){
         {hasReceivedRequest &&
           <Tooltip title="Decline Friend Request">
             <span>
-              <IconButton  data-testid="reject-req-btn" disabled={buttonsDisabled}  onClick={()=>friendEvent(FRIEND_EVENT_STATUS_CODES.REJECT_REQ)} >
+              <IconButton  data-testid="reject-req-btn" disabled={buttonsDisabled}  onClick={()=>friendEvent(FRIEND_EVENT.REJECT_REQ)} >
                 <RejectIcon color="error" fontSize="large" sx={{border: "0.2rem solid", borderRadius: "5px"}} />
               </IconButton>
             </span>
@@ -120,7 +120,7 @@ export default function FriendButtons({user}){
         {!hasSentRequest && !hasReceivedRequest && !isFriend &&           
           <Tooltip title="Add Friend">
             <span>
-              <IconButton data-testid="add-friend-btn" disabled={buttonsDisabled}  onClick={()=>friendEvent(FRIEND_EVENT_STATUS_CODES.ADD_FRIEND)} >
+              <IconButton data-testid="add-friend-btn" disabled={buttonsDisabled}  onClick={()=>friendEvent(FRIEND_EVENT.ADD_FRIEND)} >
                 <AddFriendIcon color="primary" fontSize="large" sx={{border: "0.2rem solid", borderRadius: "5px"}} />
               </IconButton>
             </span>

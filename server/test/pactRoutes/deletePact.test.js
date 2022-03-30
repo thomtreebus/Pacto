@@ -14,7 +14,7 @@ const { generateTestPost } = require("../fixtures/generateTestPost");
 const { generateTestComment } = require("../fixtures/genereateTestComment");
 
 describe("DELETE /pact/:pact_id/delete", () => {
-  useTestDatabase("deletePact");
+  useTestDatabase();
 
   beforeEach(async () => {
     const user = await generateTestUser();

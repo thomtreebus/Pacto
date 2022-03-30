@@ -10,7 +10,7 @@ let obj = {
   save: () => {}
 }
 describe("Generic downvote", () => {
-  useTestDatabase("genericDownvote");
+  useTestDatabase();
 
   beforeEach(async () => {
     const user = await generateTestUser();

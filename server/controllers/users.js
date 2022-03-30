@@ -13,7 +13,6 @@ module.exports.updateProfile = async(req, res) => {
     const { id } = req.params;
     const { firstName, lastName, personalEmail, course } = req.body;
 
-    // if (!mongoose.Types.ObjectId.isValid(id)) return res.status(404).send(`No user with id: ${id}`);
     if (!mongoose.Types.ObjectId.isValid(id)) {
       status = 404;
       throw Error(USER_MESSAGES.DOES_NOT_EXIST);
@@ -21,7 +20,7 @@ module.exports.updateProfile = async(req, res) => {
       status = 401;
       throw Error(USER_MESSAGES.UPDATE_OTHER_PROFILE_UNAUTHORISED)
     } else {
-      const updatedUser = await User.findByIdAndUpdate(id, { ...req.body }, {runValidators: true});
+      await User.findByIdAndUpdate(id, { ...req.body }, {runValidators: true});
       status = 200
       const university = req.user.university;
       resMessage = await User.findOne({university, _id: req.params.id});
@@ -90,10 +89,4 @@ module.exports.allUniUsers = async(req, res) => {
   } catch (err) {
     res.status(status).json(jsonResponse(null, [jsonError(null, err.message)]));
   }
-}
-
-module.exports.deleteUser = async (req, res) => {
-  const { id } = req.params;
-  await User.findByIdAndDelete(id);
-  req.flash('success', USER_MESSAGES.SUCCESSFUL_DELETE);
 }

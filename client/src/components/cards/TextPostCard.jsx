@@ -1,9 +1,11 @@
-import { Typography } from "@mui/material";
+import CollapsingText from "../CollapsingText"
 
 export default function TextPostCard({ post }) {
   return (
-    <Typography variant="body1">
-      {post.text}
-    </Typography>
+    <CollapsingText 
+    text={
+      post.text
+    }
+    />
   )
 }

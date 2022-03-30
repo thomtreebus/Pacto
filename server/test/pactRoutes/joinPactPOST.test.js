@@ -9,7 +9,7 @@ const Pact = require('../../models/Pact');
 const useTestDatabase = require("../helpers/useTestDatabase");
 
 describe("POST /pact/:pactid/join", () => {
-  useTestDatabase("joinPact");
+  useTestDatabase();
 
   beforeEach(async () => {
     const user = await generateTestUser();

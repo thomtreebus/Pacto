@@ -4,13 +4,13 @@ const { createToken } = require("../../../controllers/authController");
 const { generateTestUser, getDefaultTestUserEmail} = require("../../fixtures/generateTestUser");
 const { generateTestPact, getTestPactId } = require("../../fixtures/generateTestPact");
 const { generateTestPost, getTestPostId } = require("../../fixtures/generateTestPost");
-const { MESSAGES, PACT_MESSAGES } = require("../../../helpers/messages");
+const { MESSAGES, PACT_MESSAGES, POST_MESSAGES } = require("../../../helpers/messages");
 const User = require("../../../models/User");
 const Post = require('../../../models/Post');
 const useTestDatabase = require("../../helpers/useTestDatabase");
 
 describe("PUT /pact/:pactId/post/downvote/:postId", () => {
-  useTestDatabase("downvoteComment")
+  useTestDatabase()
 
   beforeEach(async () => {
     const user = await generateTestUser();
@@ -46,6 +46,19 @@ describe("PUT /pact/:pactId/post/downvote/:postId", () => {
     expect(responsePost.votes).toBe(oldVotes - 1);
     expect(responsePost.upvoters).toStrictEqual([]);
     expect(responsePost.downvoters[0]).toBe(user._id.toString());
+  });
+
+  it("fails for non-existent post id", async () => {
+    const crapId = "123456789012345678901234"
+    const user = await User.findOne({ uniEmail: getDefaultTestUserEmail() });
+    const token = createToken(user._id);
+    const response = await supertest(app)
+    .put(`/pact/${ getTestPactId() }/post/downvote/${ crapId }`)
+    .set("Cookie", [`jwt=${ token }`])
+    .expect(404);
+    expect(response.body.message).toBe(null);
+    expect(response.body.errors.length).toBe(1);
+    expect(response.body.errors[0].message).toBe(POST_MESSAGES.NOT_FOUND);
   });
 
   it("uses checkAuthenticated middleware", async () => {

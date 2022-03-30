@@ -319,6 +319,5 @@ module.exports.deletePact = async (req, res) => {
 	}
 	catch (err) {
 		res.status(404).json(jsonResponse(null, [jsonError(null, err.message)]));
-		console.log(err.message);
 	}
 }

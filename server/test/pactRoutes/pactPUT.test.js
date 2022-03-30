@@ -15,7 +15,7 @@ const DESCRIPTION = "This is my 1st pact."
 const CATEGORY = "course";
 
 describe("PUT /pact", () => {
-  useTestDatabase("updatePact");
+  useTestDatabase();
 
   beforeEach(async () => {
     const user = await generateTestUser();

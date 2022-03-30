@@ -116,7 +116,7 @@ describe("CommentBox Tests", () => {
     });
 
     it("should successfully submit reply to comment", async () => {
-      await renderWithMock(<CommentBox post={comment.post} repliedToComment={comment} successHandler={mockSuccessHandler} />)
+      await renderWithMock(<CommentBox post={comment.post} repliedToComment={comment} successHandler={mockSuccessHandler} />);
       const submit = await screen.findByTestId("submit-button");
       const input = await screen.findByRole("textbox", {
 				name: "Comment",
@@ -129,6 +129,39 @@ describe("CommentBox Tests", () => {
 
       await waitFor(() => expect(mockBeenCalled).toBe(true));
       expect(parameterRecievedByMock.parentComment._id).toBe(comment._id);
+    });
+
+    it("should provide error when invalid comment is submitted", async () => {
+      server.use(
+        rest.post(`${process.env.REACT_APP_URL}/pact/5/post/1/comment`, (req, res, ctx) => {
+          return res(
+            ctx.status(400),
+            ctx.json({
+              message: null,
+              errors: [
+                {field: "text", message: "Comment text is required"}
+              ]
+            })
+          );
+        }),
+      );
+      await renderWithMock(<CommentBox post={comment.post} successHandler={mockSuccessHandler} />);
+      const input = await screen.findByRole("textbox", {
+				name: "Comment",
+			});
+      const submit = await screen.findByTestId("submit-button");
+      // Not making any input
+
+      expect(mockBeenCalled).toBe(false);
+
+      fireEvent.click(submit);
+
+      await waitFor(() => expect(submit).not.toBeDisabled());
+
+      const errorMsg = await screen.queryByText("Comment text is required");
+      expect(errorMsg).toBeInTheDocument();
+
+      expect(mockBeenCalled).toBe(false);
     });
   });
 });

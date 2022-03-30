@@ -12,15 +12,16 @@ import ThumbDownRoundedIcon from "@mui/icons-material/ThumbDownRounded";
  * @param {boolean} initThumbDown Initial state of thumb down
  * @param {number} initLikes Initial state of thumb likes
  * @param {function} handleLikeEvent Function that handles an event when a button is pressed
+ * @param {boolean} disabled Signifies if voting functionality should be disabled
  */
-export default function Voter({initThumbUp, initThumbDown, initLikes, handleLikeEvent}){
+export default function Voter({initThumbUp, initThumbDown, initLikes, handleLikeEvent, disabled=false}){
   const [thumbUp, setThumbUp] = useState(initThumbUp);
   const [thumbDown, setThumbDown] = useState(initThumbDown);
   const [likes, setLikes] = useState(initLikes);
 
   return(
     <Box data-testid="voter" sx={{ float: "left", paddingRight: "16px", textAlign: "center" }}>
-      <IconButton sx={{ paddingRight: 0, paddingLeft: 0, paddingTop: 0 ,paddingBottom: 0 }} onClick={() => {
+      <IconButton sx={{ paddingRight: 0, paddingLeft: 0, paddingTop: 0 ,paddingBottom: 0 }} disabled={disabled} onClick={() => {
         if (thumbUp) {
           setLikes(likes - 1);
         } else if (thumbDown) {
@@ -39,7 +40,7 @@ export default function Voter({initThumbUp, initThumbDown, initLikes, handleLike
         {likes}
       </Typography>
 
-      <IconButton sx={{ paddingRight: 0, paddingLeft: 0, paddingTop: 0 ,paddingBottom: 0 }} onClick={() => {
+      <IconButton sx={{ paddingRight: 0, paddingLeft: 0, paddingTop: 0 ,paddingBottom: 0 }} disabled ={disabled} onClick={() => {
         if (thumbDown) {
           setLikes(likes + 1);
         } else if (thumbUp) {
