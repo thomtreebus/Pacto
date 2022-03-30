@@ -10,6 +10,10 @@ import { useHistory } from "react-router-dom";
 import MenuItem from "@mui/material/MenuItem";
 import { useAuth } from "../providers/AuthProvider";
 
+
+/**
+ * A page to create a new Pact
+ */
 export default function CreatePactPage() {
 	const [category, setCategory] = useState("");
 	const [isButtonDisabled, setIsButtonDisabled] = useState(false);
