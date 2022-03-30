@@ -124,6 +124,7 @@ export default function BasePostCard({ children, post, numComments = null }) {
 									color="error"
 									onClick={handleDelete}
 									disabled={isButtonDisabled}
+									data-testid="delete-button"
 								>
 									<DeleteIcon fontSize="medium" />
 								</IconButton>

@@ -120,6 +120,7 @@ export default function CommentCard({ comment, post, postUpdaterFunc }) {
               text={comment.deleted ? DELETED_COMMENT_MESSAGE : comment.text}
               variant="body1"
               color={`${comment.deleted ? 'error' : 'inherit'}`}
+              textDataTestId="comment-text"
             />
 
             { !comment.deleted && <Typography variant="caption" className="link" onClick={() => {setShowReplyBox(!showReplyBox)}} data-testid="reply-button">
