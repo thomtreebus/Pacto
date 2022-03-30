@@ -2,7 +2,7 @@ import { Box, Card, CardContent } from "@mui/material";
 import { Typography } from "@mui/material";
 import { useHistory } from "react-router-dom";
 import CommentIcon from "@mui/icons-material/Comment";
-import { relativeTime } from "../../helpers/timeHandllers";
+import { relativeTime } from "../../helpers/timeHandler";
 import { useAuth } from "../../providers/AuthProvider";
 import Voter from "../Voter";
 import DeleteIcon from "@mui/icons-material/Delete";
