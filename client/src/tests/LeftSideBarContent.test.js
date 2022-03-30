@@ -1,12 +1,14 @@
-import { render, screen } from "@testing-library/react";
-import { waitForElementToBeRemoved } from "@testing-library/react";
-import MockComponent from "./utils/MockComponent";
+/**
+ * Tests for the left side bar which contains mypacts and the navigation links.
+ */
+
+import { screen } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import { rest } from "msw";
-import { setupServer } from "msw/node";
 import pacts from "./utils/testPacts";
 import LeftSideBarContent from "../components/LeftSideBarContent";
 import { useMockServer } from "./utils/useMockServer";
+import mockRender from "./utils/mockRender";
 
 const user = {
 	pacts: [pacts[0]._id, pacts[1]._id],
@@ -40,18 +42,9 @@ describe("Left Sidebar content tests", () => {
 		);
 	});
 
-	const renderWithMock = async () => {
-		render(
-			<MockComponent>
-				<LeftSideBarContent />
-			</MockComponent>
-		);
-		await waitForElementToBeRemoved(() => screen.getByText("Loading"));
-	};
-
 	describe("Renders the elements", () => {
 		beforeEach(async () => {
-			await renderWithMock();
+			await mockRender(<LeftSideBarContent />);
 		});
 
 		it("renders the users first and last name", async () => {
