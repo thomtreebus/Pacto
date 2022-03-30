@@ -10,7 +10,7 @@ const { MESSAGES, FRIEND_MESSAGES } = require("../../../helpers/messages");
 const useTestDatabase = require("../../helpers/useTestDatabase");
 
 describe("acceptFriendRequest /friends", () => {
-  useTestDatabase("acceptFriendRequest");
+  useTestDatabase();
 
   beforeEach(async () => {
     const user = await generateTestUser();

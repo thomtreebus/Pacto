@@ -10,7 +10,7 @@ const useTestDatabase = require("../helpers/useTestDatabase");
 const VERIFICATION_CODE = "kaushik12";
 
 describe("GET /verify", () => {
-  useTestDatabase("verification");
+  useTestDatabase();
 
   beforeEach(async () => {
     const user = await generateTestUser();

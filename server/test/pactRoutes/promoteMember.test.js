@@ -10,7 +10,7 @@ const Notification = require("../../models/Notification");
 const useTestDatabase = require("../helpers/useTestDatabase");
 
 describe("promoteMember /pact/:pactId/:userId/promote", () => {
-  useTestDatabase("promoteMember");
+  useTestDatabase();
 
   beforeEach(async () => {
     const user = await generateTestUser();

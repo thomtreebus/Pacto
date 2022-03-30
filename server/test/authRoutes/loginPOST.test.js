@@ -7,7 +7,7 @@ const { MESSAGES } = require("../../helpers/messages");
 const useTestDatabase = require("../helpers/useTestDatabase");
 
 describe("POST /login", () => {
-  useTestDatabase("login");
+  useTestDatabase();
 
   beforeEach(async () => {
     const user = await generateTestUser();

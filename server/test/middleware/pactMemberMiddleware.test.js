@@ -12,7 +12,7 @@ const Pact = require("../../models/Pact");
 const useTestDatabase = require("../helpers/useTestDatabase");
 
 describe("CheckIsMemberOfPact Middleware", () => {
- useTestDatabase("checkIsMemberOfPactMiddleware");
+ useTestDatabase();
 
   beforeEach(async () => {
     const user = await generateTestUser();

@@ -9,7 +9,7 @@ const {generateTestPact, getTestPactId} = require("../fixtures/generateTestPact"
 const useTestDatabase = require("../helpers/useTestDatabase");
 
 describe("DELETE /pact/:pact_id/leave", () => {
-  useTestDatabase("leavePact");
+  useTestDatabase();
 
   beforeEach(async () => {
     const user = await generateTestUser();

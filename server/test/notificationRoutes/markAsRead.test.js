@@ -13,7 +13,7 @@ dotenv.config();
 
 describe("GET /notifications getNotifications()", () => {
 
-  useTestDatabase("markAsReadGET");
+  useTestDatabase();
 
   beforeEach(async () => {
     const user = await generateTestUser();

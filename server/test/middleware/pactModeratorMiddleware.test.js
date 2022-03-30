@@ -12,7 +12,7 @@ const Pact = require("../../models/Pact");
 const useTestDatabase = require("../helpers/useTestDatabase");
 
 describe("CheckIsModeratorOfPact Middleware", () => {
-  useTestDatabase("checkIsModeratorOfPact");
+  useTestDatabase();
 
   beforeEach(async () => {
     const user = await generateTestUser();
