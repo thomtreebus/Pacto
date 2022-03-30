@@ -1,3 +1,8 @@
+/**
+ * This middleware is a check used before the main module function is called.
+ * It checks if the request contains a user with a valid cookie signifying they are logged in.
+ */
+
 const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 const { jsonResponse, jsonError } = require("../helpers/responseHandlers");
@@ -5,6 +10,13 @@ const University = require('../models/University');
 const { MESSAGES } = require("../helpers/messages");
 const FriendRequest = require('../models/FriendRequest');
 
+/**
+ * This function checks if the user has a valid cookie.
+ * @param req contains information regarding the incoming request.
+ * @param res contains information regarding the response.
+ * @param next Required parameter for middleware. Signals call of the next function.
+ * @returns {Promise<void>}
+ */
 const checkAuthenticated = async (req, res, next) => {
   const token = req.cookies.jwt;
 
