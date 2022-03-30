@@ -3,7 +3,6 @@ import { waitForElementToBeRemoved, waitFor } from "@testing-library/react"
 import CommentCard, { DELETED_COMMENT_MESSAGE } from "../components/cards/CommentCard";
 import "@testing-library/jest-dom";
 import MockComponent from "./utils/MockComponent";
-import { setupServer } from "msw/node";
 import { rest } from "msw";
 import users from "./utils/testUsers";
 import { useMockServer } from "./utils/useMockServer";
@@ -15,20 +14,15 @@ const mockSuccessHandler = () => {
   mockBeenCalled = true;
 }
 
-
 const comment = {
   post: {
     text: "lorem ispum",
     type: "text",
     _id: 1,
     comments: [],
-    pact : { _id: 5}
+    pact : { _id: 1 }
   },
-  author: {
-    firstName: "pac",
-    lastName: "to",
-    _id: 5
-  },
+  author: users[0],
   createdAt: Date.now(),
   text: COMMENT_TEXT,
   votes: 6,
@@ -40,32 +34,35 @@ const comment = {
 }
 
 describe("CommentCard Tests", () => {
-  const server = useMockServer();
-  server.use(
-		rest.get(`${process.env.REACT_APP_URL}/me`, (req, res, ctx) => {
-			return res(
-				ctx.json({ message: { firstName: "pac", lastName: "to", _id: 5 }, errors: [] })
-			);
-		}),
-    rest.delete(`${process.env.REACT_APP_URL}/pact/5/post/1/comment/1`, (req, res, ctx) => {
-      const newComment = JSON.parse(JSON.stringify(comment));
-      newComment.deleted = true;
-			return res(
-				ctx.json({ message: newComment, errors: [] })
-			);
-		})
-	);
+  const server = useMockServer(); 
 
-  beforeEach(async () => {
-		render(
+  const renderWithMock = async (child=<CommentCard post={comment.post} comment={comment} postUpdaterFunc={mockSuccessHandler} />) => {
+    render(
       <MockComponent>
-        <CommentCard post={comment.post} comment={comment} postUpdaterFunc={mockSuccessHandler} />
+        {child}
       </MockComponent>
     );
+
     await waitForElementToBeRemoved(() => screen.getByText("Loading"));
-	});
+  }
+
+  beforeEach(async () => {
+    server.use(
+      rest.delete(`${process.env.REACT_APP_URL}/pact/1/post/1/comment/1`, (req, res, ctx) => {
+        const newComment = JSON.parse(JSON.stringify(comment));
+        newComment.deleted = true;
+        return res(
+          ctx.json({ message: newComment, errors: [] })
+        );
+      })
+    );
+  });
 
   describe("Check elements are rendered", () => {
+    beforeEach(async () => {
+      await renderWithMock();
+    });
+
     it("should render voter component", async () => {
       await screen.findByTestId("voter");
     });
@@ -77,7 +74,7 @@ describe("CommentCard Tests", () => {
 
     it("should render author text", async () => {
       const author = await screen.findByTestId("author");
-      expect(author.innerHTML).toBe("pac to");
+      expect(author.innerHTML).toBe(users[0].firstName + " " + users[0].lastName);
     });
 
     it("should render date text", async () => {
@@ -94,25 +91,32 @@ describe("CommentCard Tests", () => {
       const del = await screen.findByTestId("delete-button");
       expect(del).toBeInTheDocument();
     });
+  });
 
+  describe("Check rendering non-author case", () => {
     it("should not render delete button if not author or mod", async () => {
       server.use(
         rest.get(`${process.env.REACT_APP_URL}/me`, (req, res, ctx) => {
           return res(
-            ctx.json({ message: { firstName: "pac", lastName: "to", _id: 3 }, errors: [] })
+            ctx.json({ message: users[1], errors: [] })
           );
         }),
       );
+      await renderWithMock();
       const del = await screen.queryByTestId("delete-button");
-      expect(del).not.toBeInTheDocument();
+      expect(del).toBeNull();
     });
-  });
+  })
 
   describe("Check interaction with elements", () => {
+    beforeEach(async () => {
+      await renderWithMock();
+    });
+
     it("should redirect to profile page when author text is clicked", async () => {
       const author = await screen.findByTestId("author");
       fireEvent.click(author);
-      expect(window.location.pathname).toBe("/user/5");
+      expect(window.location.pathname).toBe(`/user/${users[0]._id}`);
     });
 
     it("should open box for replying to comment when reply is clicked", async () => {

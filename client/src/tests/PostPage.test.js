@@ -10,25 +10,17 @@ import { Router, Route } from "react-router-dom";
 import users from "./utils/testUsers";
 import { useMockServer } from "./utils/useMockServer";
 
-const post = {message:{
+const post = { message:{
   text: "lorem ispum",
   type: "text",
   _id: 1,
   pact: {_id:1, moderators : []},
-  author: {
-    firstName: "Krishi",
-    lastName: "Wali",
-    _id: 1
-  },
+  author: users[1],
   votes: 6,
   upvoters: [],
   downvoters: [],
   comments: [{
-    author: {
-      firstName: "pac",
-      lastName: "to",
-      _id: 5
-    },
+    author: users[0],
     upvoters: [],
     downvoters: [],
     votes: 0,
@@ -43,12 +35,7 @@ const post = {message:{
 describe("PostPage Tests", () => {
   const server = useMockServer();
   server.use(
-		rest.get(`${process.env.REACT_APP_URL}/me`, (req, res, ctx) => {
-			return res(
-				ctx.json({ message: { firstName: "pac", lastName: "to", _id: "5" }, errors: [] })
-			);
-		}),
-    rest.post(`${process.env.REACT_APP_URL}/pact/5/post/1/comment/1/reply`, (req, res, ctx) => {
+    rest.post(`${process.env.REACT_APP_URL}/pact/1/post/1/comment/1/reply`, (req, res, ctx) => {
 			return res(
         ctx.status(201),
         ctx.json({
@@ -60,7 +47,7 @@ describe("PostPage Tests", () => {
         })
       );
 		}),
-    rest.post(`${process.env.REACT_APP_URL}/pact/5/post/1/comment`, (req, res, ctx) => {
+    rest.post(`${process.env.REACT_APP_URL}/pact/1/post/1/comment`, (req, res, ctx) => {
       return res(
         ctx.status(201),
         ctx.json({
@@ -69,13 +56,13 @@ describe("PostPage Tests", () => {
         })
       );
 		}),
-    rest.get(`${process.env.REACT_APP_URL}/pact/5/post/1`, (req, res, ctx) => {
+    rest.get(`${process.env.REACT_APP_URL}/pact/1/post/1`, (req, res, ctx) => {
       return res(ctx.json(post));
     }),
 	);
 
   beforeEach(async () => {
-    const history = createMemoryHistory({ initialEntries: [`/pact/5/post/1`] });
+    const history = createMemoryHistory({ initialEntries: [`/pact/1/post/1`] });
 
     render(
       <MockComponent>
