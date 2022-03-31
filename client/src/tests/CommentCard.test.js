@@ -46,13 +46,21 @@ describe("CommentCard Tests", () => {
     await waitForElementToBeRemoved(() => screen.getByText("Loading"));
   }
 
+  let postLiked;
   beforeEach(async () => {
+    postLiked = false;
     server.use(
       rest.delete(`${process.env.REACT_APP_URL}/pact/1/post/1/comment/1`, (req, res, ctx) => {
         const newComment = JSON.parse(JSON.stringify(comment));
         newComment.deleted = true;
         return res(
           ctx.json({ message: newComment, errors: [] })
+        );
+      }),
+      rest.put(`${process.env.REACT_APP_URL}/pact/1/post/1/comment/1/upvote`, (req, res, ctx) => {
+        postLiked=true;
+        return res(
+          ctx.json({})
         );
       })
     );
@@ -145,6 +153,13 @@ describe("CommentCard Tests", () => {
       expect(deleteBtn).toBeDisabled();
 
       await waitFor(() => expect(mockBeenCalled).toBe(true));
+    });
+
+    it("comment voting callback function is called when comment is liked via Voter component", async () => {
+      const likeBtn = await screen.findByTestId("ThumbUpRoundedIcon");
+      fireEvent.click(likeBtn);
+
+      await waitFor(() => expect(postLiked).toBe(true));
     });
   });
 });
