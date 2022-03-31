@@ -5,6 +5,10 @@ import { useHistory } from "react-router-dom";
 import Container from "@mui/material/Container";
 import {Box} from "@mui/system";
 
+/**
+ * This is the page used to verify the email codes.
+ * @returns {JSX.Element}
+ */
 export default function Verify() {
   const {id} = useParams();
   const history = useHistory();
