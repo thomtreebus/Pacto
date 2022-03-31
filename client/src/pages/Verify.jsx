@@ -6,10 +6,10 @@ import Container from "@mui/material/Container";
 import {Box} from "@mui/system";
 
 export default function Verify() {
-  const {verifyID} = useParams();
+  const {id} = useParams();
   const history = useHistory();
   const handleClick = async () => {
-    const response = await fetch(`${process.env.REACT_APP_URL}/verify/${verifyID}`, {
+    const response = await fetch(`${process.env.REACT_APP_URL}/verify?code=${id}`, {
       method: "GET",
     });
     await response;
