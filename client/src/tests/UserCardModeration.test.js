@@ -1,17 +1,17 @@
-import {render, screen, fireEvent, waitFor} from "@testing-library/react";
-import {waitForElementToBeRemoved} from "@testing-library/react";
+/**
+ * Tests for the user card component variant which also includes moderation tools.
+ */
+
+import { screen, fireEvent, waitFor } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import MockComponent from "./utils/MockComponent";
 import {rest} from "msw";
-import {setupServer} from "msw/node";
 import testUsers from "./utils/testUsers"
 import UserCardModeration from "../components/UserCardModeration";
 import userEvent from "@testing-library/user-event";
 import {act} from "react-dom/test-utils";
 import {useMockServer} from "./utils/useMockServer";
-
-// TODO These tests are similar to the tests of User card but does diverges a bit quite away. Combine tests and components if possible
-
+import mockRender from "./utils/mockRender";
 
 const pactResponse = {
   message: {
@@ -58,6 +58,7 @@ const pactResponse = {
 }
 
 describe("UserCard Tests", () => {
+  let history;
   const server = useMockServer();
 
   beforeEach(async () => {
@@ -78,12 +79,9 @@ describe("UserCard Tests", () => {
     )
   });
 
-  const renderWithMock = async (children) => {
-    render(<MockComponent>{children}</MockComponent>);
-    await waitForElementToBeRemoved(() => screen.getByText("Loading"));
+  const renderWithMock = async (element) => {
+    history = await mockRender(element);
   };
-
-
 
   describe("Check elements are rendered", () => {
     beforeEach(async () => {
@@ -123,7 +121,7 @@ describe("UserCard Tests", () => {
       await renderWithMock(<UserCardModeration user={testUsers[0]} pact={pactResponse.message} showBannedUsers={true}/>);
       const buttonElement = await screen.findByAltText("user-image");
       fireEvent.click(buttonElement);
-      await waitFor(() => expect(window.location.pathname).toBe("/user/1"));
+      await waitFor(() => expect(history.location.pathname).toBe("/user/1"));
     });
 
     it("Sends a PUT /pact/:id/:userId/promote response", async () => {

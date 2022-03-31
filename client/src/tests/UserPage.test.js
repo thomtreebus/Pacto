@@ -1,19 +1,36 @@
+/**
+ * Tests for the user page.
+ */
+
 import UserPage from "../pages/UserPage";
-import { render, screen, fireEvent, cleanup } from "@testing-library/react";
-import { waitForElementToBeRemoved } from "@testing-library/react";
+import { screen, fireEvent, cleanup } from "@testing-library/react";
 import "@testing-library/jest-dom";
-import MockComponent from "./utils/MockComponent";
 import { rest } from "msw";
 import users from "./utils/testUsers";
-import { createMemoryHistory } from 'history';
-import {Route, Router} from "react-router-dom";
+import { Route } from "react-router-dom";
 import { useMockServer } from "./utils/useMockServer";
+import mockRender from "./utils/mockRender";
 
 const CATEGORIES = ["All", "Friends", "Same Course", "Received Requests", "Sent Requests"];
 
+const MockUserPage = () => {
+    return ( 
+        <>
+            <Route exact path="/users">
+                <UserPage />
+            </Route>
+            <Route exact path="/user/:id">
+                <h1>Redirected to user-profile</h1>
+            </Route>
+            <Route exact path="/not-found">
+                <h1>Redirected to not-found</h1>
+            </Route>
+        </>
+    );
+}
+
 describe("User Page Tests", () => {
     let history = undefined;
-
     const server = useMockServer();
 
     beforeEach(async () => {
@@ -30,24 +47,7 @@ describe("User Page Tests", () => {
     });
 
     const renderWithMock = async () => {
-        history = createMemoryHistory({initialEntries:[`/users`]})
-
-        render(
-            <MockComponent>
-                <Router history={history}>
-                    <Route exact path="/users">
-                        <UserPage />
-                    </Route>
-                    <Route exact path="/user/:id">
-                        <h1>Redirected to user-profile</h1>
-                    </Route>
-                    <Route exact path="/not-found">
-                        <h1>Redirected to not-found</h1>
-                    </Route>
-                </Router>
-            </MockComponent>
-        );
-        await waitForElementToBeRemoved(() => screen.getByText("Loading"));
+        history = await mockRender(<MockUserPage/>, `/users`)
     };
 
     describe("Check elements are rendered", () => {

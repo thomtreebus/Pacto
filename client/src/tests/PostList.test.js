@@ -1,22 +1,20 @@
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+/**
+ * Tests for the post list.
+ */
+
+import { screen, fireEvent, waitFor } from "@testing-library/react";
 import PostList from "../components/PostList";
 import "@testing-library/jest-dom";
 import testdata from "./utils/testPosts"
-import MockComponent from "./utils/MockComponent";
-import { setupServer } from "msw/node";
-import { rest } from "msw";
-import users from "./utils/testUsers";
 import { useMockServer } from "./utils/useMockServer";
+
+import mockRender from "./utils/mockRender";
 
 describe("PostList Tests", () => {
   const server = useMockServer();
 
-  beforeEach(() => {
-    render(
-      <MockComponent>
-        <PostList posts={testdata}/>
-      </MockComponent>
-    )
+  beforeEach(async () => {
+    await mockRender(<PostList posts={testdata} />)
   })
 
   describe("Check elements are rendered", () => {

@@ -1,11 +1,13 @@
-import { render, screen, fireEvent } from "@testing-library/react";
-import { waitForElementToBeRemoved } from "@testing-library/react"
+/**
+ * Tests for the voter component / ie dislike and like functionality.
+ */
+
+import { screen, fireEvent } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import MockComponent from "./utils/MockComponent";
-import { setupServer } from "msw/node";
-import { rest } from "msw";
 import Voter from "../components/Voter";
 import { useMockServer } from "./utils/useMockServer";
+import mockRender from "./utils/mockRender";
 
 const post = {
   pact: 5,
@@ -29,12 +31,11 @@ describe("Voter Tests", () => {
   const server = useMockServer();
   
   beforeEach(async () => {
-		render(
+		await mockRender(
       <MockComponent>
         <Voter initThumbUp={post.upvoters.includes(1)} initThumbDown={post.downvoters.includes(1)} initLikes={post.votes} handleLikeEvent={()=>{}}/>
       </MockComponent>
     );
-    await waitForElementToBeRemoved(() => screen.getByText("Loading"));
 	});
 
   describe("Check elements are rendered", () => {
