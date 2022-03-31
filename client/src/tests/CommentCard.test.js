@@ -1,4 +1,4 @@
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen, fireEvent, findAllByTestId } from "@testing-library/react";
 import { waitForElementToBeRemoved, waitFor } from "@testing-library/react"
 import CommentCard, { DELETED_COMMENT_MESSAGE } from "../components/cards/CommentCard";
 import "@testing-library/jest-dom";
@@ -48,8 +48,10 @@ describe("CommentCard Tests", () => {
   }
 
   let postVoted;
+  let replyPosted;
   beforeEach(async () => {
     postVoted = false;
+    replyPosted = false;
     server.use(
       rest.delete(`${process.env.REACT_APP_URL}/pact/1/post/1/comment/1`, (req, res, ctx) => {
         const newComment = JSON.parse(JSON.stringify(comment));
@@ -59,7 +61,8 @@ describe("CommentCard Tests", () => {
         );
       }),
       rest.post(`${process.env.REACT_APP_URL}/pact/1/post/1/comment/1/reply`, (req, res, ctx) => {
-        const newComment = comments[0]
+        const newComment = comments[0];
+        replyPosted = true;
         return res(
           ctx.json({ message: newComment, errors: [] })
         );
@@ -114,7 +117,7 @@ describe("CommentCard Tests", () => {
     });
   });
 
-  describe("Check rendering non-author case", () => {
+  describe("Check rendering special cases", () => {
     it("should not render delete button if not author or mod", async () => {
       server.use(
         rest.get(`${process.env.REACT_APP_URL}/me`, (req, res, ctx) => {
@@ -126,6 +129,27 @@ describe("CommentCard Tests", () => {
       await renderWithMock();
       const del = await screen.queryByTestId("delete-button");
       expect(del).toBeNull();
+    });
+
+    it("should render childComments if they exist", async () => {
+      const commentWithChild = JSON.parse(JSON.stringify(comment));
+      commentWithChild.childComments.push(comments[1]);
+      commentWithChild.post.comments.push(comments[1]);
+
+      await renderWithMock(<CommentCard post={commentWithChild.post} comment={commentWithChild} postUpdaterFunc={mockSuccessHandler} />);
+      const replies = await screen.findByTestId("show-replies");
+      fireEvent.click(replies);
+
+      const commentCards = await screen.findAllByTestId("comment-card");
+      expect(commentCards.length).toBe(2);
+    });
+
+    it("should render deleted comments correctly", async () => {
+      const delComment = JSON.parse(JSON.stringify(comment));
+      delComment.deleted = true;
+
+      await renderWithMock(<CommentCard post={delComment.post} comment={delComment} postUpdaterFunc={mockSuccessHandler} />);
+      await screen.findByText(DELETED_COMMENT_MESSAGE);
     });
   })
 
@@ -168,6 +192,42 @@ describe("CommentCard Tests", () => {
       await waitFor(() => expect(mockBeenCalled).toBe(true));
     });
 
+    it("handles error when deleting comment", async () => {
+      server.use(
+        rest.delete(`${process.env.REACT_APP_URL}/pact/1/post/1/comment/1`, (req, res, ctx) => {
+          return res(
+            ctx.status(400),
+            ctx.json({ message: null, errors: [{field: null, message: "Error"}] })
+          );
+        }),
+      );
+      const deleteBtn = await screen.findByTestId("delete-button");
+      fireEvent.click(deleteBtn);
+
+      expect(deleteBtn).toBeDisabled();
+
+      await waitFor(() => expect(mockBeenCalled).toBe(true));
+      await screen.findByTestId("snackbar");
+    });
+
+    it("handles error unhandled in backend when deleting comment", async () => {
+      server.use(
+        rest.delete(`${process.env.REACT_APP_URL}/pact/1/post/1/comment/1`, (req, res, ctx) => {
+          return res(
+            ctx.status(400),
+            ctx.json({})
+          );
+        }),
+      );
+      const deleteBtn = await screen.findByTestId("delete-button");
+      fireEvent.click(deleteBtn);
+
+      expect(deleteBtn).toBeDisabled();
+
+      await waitFor(() => expect(mockBeenCalled).toBe(true));
+      await screen.findByTestId("snackbar");
+    });
+
     it("comment voting callback function is called when comment is liked via Voter component", async () => {
       const likeBtn = await screen.findByTestId("ThumbUpRoundedIcon");
       fireEvent.click(likeBtn);
@@ -195,10 +255,8 @@ describe("CommentCard Tests", () => {
       const submit = await screen.findByTestId("submit-button");
       fireEvent.click(submit);
 
-      await waitFor(() => expect(submit).not.toBeDisabled())
-      await waitFor(() => expect(input).not.toBeInTheDocument());
-
-      await screen.findByText("Show replies");
+      await waitFor(() => expect(replyPosted).toBe(true))
+      
     });
   });
 });
