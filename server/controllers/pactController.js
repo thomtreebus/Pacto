@@ -15,7 +15,7 @@ const getPreview = require("../helpers/LinkCache");
  * @param {Response} res - The response to the request
  * @async
  */
-module.exports.pactPost = async (req, res) => {
+module.exports.createPact = async (req, res) => {
 	try {
 		const user = req.user;
     const { name } = req.body;
@@ -63,7 +63,7 @@ module.exports.pactPost = async (req, res) => {
  * @param {Response} res - The response to the request
  * @async
  */
-module.exports.pactGet = async (req, res) => {
+module.exports.getPact = async (req, res) => {
 	try {
 		const pact = req.pact;
 		await pact.populate({
@@ -125,7 +125,7 @@ module.exports.pactGet = async (req, res) => {
  * @param {Response} res - The response to the request
  * @async
  */
-module.exports.pactPut = async(req, res) => {
+module.exports.updatePact = async(req, res) => {
 	let status = undefined;
 	const jsonErrors = [];
 	let resMessage = null;
