@@ -77,7 +77,7 @@ export default function BasePostCard({ children, post, numComments = null }) {
 							initThumbDown={post.downvoters.includes(user._id)}
 							handleLikeEvent={handleLikeEvent}
 							initLikes={post.votes}
-						></Voter>
+						/>
 						<Box sx={{ overflow: "hidden" }}>
 							<Typography variant="caption" data-testid="author-date-line">
 								Posted by{" "}
