@@ -62,3 +62,5 @@ The following APIs are used in the project in both the client and server applica
 - [Link Preview](https://www.linkpreview.net/) - Returns website information including a title, description, and thumbnail from any given URL, in JSON format.
 
 ## Note
+
+The Certbot docker instructions were partially adapted from this [blog](https://mindsers.blog/post/https-using-nginx-certbot-docker/)
