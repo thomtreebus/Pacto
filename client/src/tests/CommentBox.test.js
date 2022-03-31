@@ -1,12 +1,13 @@
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
-import { waitForElementToBeRemoved } from "@testing-library/react"
+/**
+ * Tests for the comment box which is added when the user want to add a new comment.
+ */
+
+import { screen, fireEvent, waitFor } from "@testing-library/react";
 import CommentBox from "../components/CommentBox";
 import "@testing-library/jest-dom";
-import MockComponent from "./utils/MockComponent";
-import { setupServer } from "msw/node";
 import { rest } from "msw";
-import users from "./utils/testUsers";
 import { useMockServer } from "./utils/useMockServer";
+import mockRender from "./utils/mockRender";
 
 const COMMENT_TEXT = "amet officia molestias esse!";
 
@@ -76,18 +77,9 @@ describe("CommentBox Tests", () => {
     mockBeenCalled = false;
 	});
 
-  const renderWithMock = async (element) => {
-    render(
-      <MockComponent>
-        { element }
-      </MockComponent>
-    );
-    await waitForElementToBeRemoved(() => screen.getByText("Loading"));
-  }
-
   describe("Check elements are rendered", () => {
     beforeEach( async() => {
-      await renderWithMock(<CommentBox post={comment.post} successHandler={mockSuccessHandler} />);
+      await mockRender(<CommentBox post={comment.post} successHandler={mockSuccessHandler} />);
     })
     it("should render text entry component", async () => {
       await screen.findByTestId("text-entry-field");
@@ -100,7 +92,7 @@ describe("CommentBox Tests", () => {
 
   describe("Check interaction with elements", () => {
     it("should successfully submit comment", async () => {
-      await renderWithMock(<CommentBox post={comment.post} successHandler={mockSuccessHandler} />);
+      await mockRender(<CommentBox post={comment.post} successHandler={mockSuccessHandler} />);
       const submit = await screen.findByTestId("submit-button");
       const input = await screen.findByRole("textbox", {
 				name: "Comment",
@@ -116,7 +108,7 @@ describe("CommentBox Tests", () => {
     });
 
     it("should successfully submit reply to comment", async () => {
-      await renderWithMock(<CommentBox post={comment.post} repliedToComment={comment} successHandler={mockSuccessHandler} />);
+      await mockRender(<CommentBox post={comment.post} repliedToComment={comment} successHandler={mockSuccessHandler} />);
       const submit = await screen.findByTestId("submit-button");
       const input = await screen.findByRole("textbox", {
 				name: "Comment",
@@ -145,7 +137,7 @@ describe("CommentBox Tests", () => {
           );
         }),
       );
-      await renderWithMock(<CommentBox post={comment.post} successHandler={mockSuccessHandler} />);
+      await mockRender(<CommentBox post={comment.post} successHandler={mockSuccessHandler} />);
       const input = await screen.findByRole("textbox", {
 				name: "Comment",
 			});

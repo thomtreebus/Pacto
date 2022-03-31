@@ -1,12 +1,14 @@
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
-import { waitForElementToBeRemoved } from "@testing-library/react";
+/**
+ * Tests for the friends button component.
+ */
+
+import { screen, fireEvent } from "@testing-library/react";
 import "@testing-library/jest-dom";
-import MockComponent from "./utils/MockComponent";
 import { rest } from "msw";
-import { setupServer } from "msw/node";
 import FriendButtons from "../components/FriendButtons";
 import testUsers from "./utils/testUsers";
 import { useMockServer } from "./utils/useMockServer";
+import mockRender from "./utils/mockRender";
 
 const loggedInUser = {
 	firstName: "pac",
@@ -75,14 +77,9 @@ describe("FriendButton Tests", () => {
 		);
 	});
 
-	const renderWithMock = async (children) => {
-		render(<MockComponent>{children}</MockComponent>);
-		await waitForElementToBeRemoved(() => screen.getByText("Loading"));
-	};
-
 	describe("Check element rendering and interaction: is-friend case", () => {
 		beforeEach(async () => {
-			await renderWithMock(
+			await mockRender(
 				<FriendButtons currentUser={loggedInUser} user={testUsers[0]} />
 			);
 		});
@@ -104,7 +101,7 @@ describe("FriendButton Tests", () => {
 
 	describe("Check element rendering and interaction: request-sent case", () => {
 		beforeEach(async () => {
-			await renderWithMock(
+			await mockRender(
 				<FriendButtons currentUser={loggedInUser} user={testUsers[1]} />
 			);
 		});
@@ -118,7 +115,7 @@ describe("FriendButton Tests", () => {
 
 	describe("Check element rendering and interaction: request-received case", () => {
 		beforeEach(async () => {
-			await renderWithMock(
+			await mockRender(
 				<FriendButtons currentUser={loggedInUser} user={testUsers[2]} />
 			);
 		});
@@ -152,7 +149,7 @@ describe("FriendButton Tests", () => {
 
 	describe("Check element rendering and interaction: no-relation case", () => {
 		beforeEach(async () => {
-			await renderWithMock(
+			await mockRender(
 				<FriendButtons currentUser={loggedInUser} user={testUsers[3]} />
 			);
 		});

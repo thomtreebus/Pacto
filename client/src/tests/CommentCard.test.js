@@ -1,11 +1,15 @@
-import { render, screen, fireEvent } from "@testing-library/react";
-import { waitForElementToBeRemoved, waitFor } from "@testing-library/react"
-import CommentCard, { DELETED_COMMENT_MESSAGE } from "../components/cards/CommentCard";
+/**
+ * Tests for the comment card component.
+ */
+
+import { screen, fireEvent } from "@testing-library/react";
+import { waitFor } from "@testing-library/react"
+import CommentCard from "../components/cards/CommentCard";
 import "@testing-library/jest-dom";
-import MockComponent from "./utils/MockComponent";
 import { rest } from "msw";
 import users from "./utils/testUsers";
 import { useMockServer } from "./utils/useMockServer";
+import mockRender from "./utils/mockRender";
 
 const COMMENT_TEXT = "amet officia molestias esse!";
 
@@ -34,16 +38,11 @@ const comment = {
 }
 
 describe("CommentCard Tests", () => {
+  let history;
   const server = useMockServer(); 
 
   const renderWithMock = async (child=<CommentCard post={comment.post} comment={comment} postUpdaterFunc={mockSuccessHandler} />) => {
-    render(
-      <MockComponent>
-        {child}
-      </MockComponent>
-    );
-
-    await waitForElementToBeRemoved(() => screen.getByText("Loading"));
+    history = await mockRender(child);
   }
 
   beforeEach(async () => {
@@ -116,7 +115,7 @@ describe("CommentCard Tests", () => {
     it("should redirect to profile page when author text is clicked", async () => {
       const author = await screen.findByTestId("author");
       fireEvent.click(author);
-      expect(window.location.pathname).toBe(`/user/${users[0]._id}`);
+      expect(history.location.pathname).toBe(`/user/${users[0]._id}`);
     });
 
     it("should open box for replying to comment when reply is clicked", async () => {
@@ -148,3 +147,4 @@ describe("CommentCard Tests", () => {
     });
   });
 });
+  

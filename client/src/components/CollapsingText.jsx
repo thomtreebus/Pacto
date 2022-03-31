@@ -48,7 +48,7 @@ export default function CollapsingText({ text, variant="body1", color, textDataT
       </Collapse>
       <Typography onClick={() => {setCollapse(!collapse)}} className="link" variant="subtitle2" color="disabled">
         See more
-        <IconButton disableRipple disabledFocusRipple>
+        <IconButton disableRipple disabledfocusripple="true">
           { collapse ? <ArrowDropUp fontSize="medium" /> : <ArrowDropDown fontSize="medium" /> }
         </IconButton>
       </Typography>

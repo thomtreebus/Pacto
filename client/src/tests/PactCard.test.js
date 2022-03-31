@@ -1,18 +1,18 @@
-import { render, screen } from "@testing-library/react";
+/***
+ * Tests for the pact card.
+ */
+
+import { screen } from "@testing-library/react";
 import { fireEvent, waitFor } from "@testing-library/react";
-import { waitForElementToBeRemoved } from "@testing-library/react";
 import PactCard from "../components/PactCard";
 import "@testing-library/jest-dom";
 import testPacts from "./utils/testPacts";
-import { BrowserRouter } from "react-router-dom";
 import { rest } from "msw";
-import { setupServer } from "msw/node";
-import MockComponent from "./utils/MockComponent";
-import { Children } from "react";
-import users from "./utils/testUsers";
 import { useMockServer } from "./utils/useMockServer";
+import mockRender from "./utils/mockRender";
 
 describe("Pact Card Tests", () => {
+	let history;
 	const server = useMockServer();
 
 	beforeEach(async () => {
@@ -28,9 +28,8 @@ describe("Pact Card Tests", () => {
 		);
 	});
 
-	const renderWithMock = async (children) => {
-		render(<MockComponent>{children}</MockComponent>);
-		await waitForElementToBeRemoved(() => screen.getByText("Loading"));
+	const renderWithMock = async (element) => {
+		history = await mockRender(element);
 	};
 
 	describe("renders the correct static elements of the pact", () => {
@@ -107,20 +106,20 @@ describe("Pact Card Tests", () => {
 			const error = await screen.findByText(/not found/i);
 			expect(error).toBeInTheDocument();
 			expect(button).not.toBeDisabled();
-			expect(window.location.pathname).toBe("/");
+			expect(history.location.pathname).toBe("/");
 		});
 
 		describe("render the correct button", () => {
 			async function testViewButtonClick(button) {
 				fireEvent.click(button);
-				await waitFor(() => expect(window.location.pathname).toBe("/pact/1"));
+				await waitFor(() => expect(history.location.pathname).toBe("/pact/1"));
 			}
 
 			async function testSuccessfullJoinButtonClick(button) {
 				expect(button).not.toBeDisabled();
 				fireEvent.click(button);
 				expect(button).toBeDisabled();
-				await waitFor(() => expect(window.location.pathname).toBe("/pact/1"));
+				await waitFor(() => expect(history.location.pathname).toBe("/pact/1"));
 			}
 
 			it("should render the not joined button when no joined is supplied", async () => {

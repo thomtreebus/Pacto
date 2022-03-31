@@ -1,12 +1,15 @@
-import { render, screen } from "@testing-library/react";
+/**
+ * Tests for the my pacts list component.
+ */
+
+import { screen } from "@testing-library/react";
 import { waitForElementToBeRemoved } from "@testing-library/react";
-import MockComponent from "./utils/MockComponent";
 import "@testing-library/jest-dom";
 import { rest } from "msw";
-import { setupServer } from "msw/node";
 import pacts from "./utils/testPacts";
 import MyPactList from "../components/MyPactList";
 import { useMockServer } from "./utils/useMockServer";
+import mockRender from "./utils/mockRender";
 
 const user = {
 	pacts: [pacts[0]._id, pacts[1]._id],
@@ -41,17 +44,8 @@ describe("My Pact List tests", () => {
 		);
 	});
 
-	const renderWithMock = async () => {
-		render(
-			<MockComponent>
-				<MyPactList />
-			</MockComponent>
-		);
-		await waitForElementToBeRemoved(() => screen.getByText("Loading"));
-	};
-
 	it("renders only only those pacts which the user is a part of", async () => {
-		await renderWithMock();
+		await mockRender(<MyPactList />);
 		await waitForElementToBeRemoved(() => screen.getByText("Loading Pacts..."));
 
 		for (let i = 0; i < 2; i++) {

@@ -1,14 +1,16 @@
-import { render, screen , waitFor } from "@testing-library/react";
-import { waitForElementToBeRemoved } from "@testing-library/react";
-import MockComponent from "./utils/MockComponent";
+/**
+ * Tests for the user profile page.
+ */
+
+import { screen , waitFor } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import { rest } from "msw";
-import {Route, Router} from "react-router-dom";
+import {Route} from "react-router-dom";
 import Profile from "../pages/Profile";
 import userEvent from "@testing-library/user-event";
-import { createMemoryHistory } from 'history';
 import pacts from "./utils/testPacts";
 import { useMockServer } from "./utils/useMockServer";
+import mockRender from "./utils/mockRender";
 
 const user = {
     pacts: [],
@@ -43,8 +45,25 @@ const user = {
     phone: "pactphone",
 }
 
+  const MockUserProfilePage = () => {
+    return (
+      <>
+       <Route exact path="/user/:id">
+          <Profile />
+        </Route>
+        <Route exact path="/edit-profile">
+          <h1>Redirected to edit-profile</h1>
+        </Route>
+        <Route exact path="/not-found">
+          <h1>Redirected to not-found</h1>
+        </Route>
+      </>
+    )
+  }
+
+
 describe("Profile Page Tests", () => {
-  let history = undefined;
+  let history;
   const server = useMockServer();
 
   beforeEach(async () => {
@@ -83,25 +102,7 @@ describe("Profile Page Tests", () => {
   });
 
   const renderWithMock = async () => {
-    history = createMemoryHistory({initialEntries:[`/user/${user._id}`]})
-
-    render(
-      <MockComponent>
-        <Router history={history}>
-          <Route exact path="/user/:id">
-            <Profile />
-          </Route>
-          <Route exact path="/edit-profile">
-            <h1>Redirected to edit-profile</h1>
-          </Route>
-          <Route exact path="/not-found">
-            <h1>Redirected to not-found</h1>
-          </Route>
-        </Router>
-
-      </MockComponent>
-    );
-    await waitForElementToBeRemoved(() => screen.getByText("Loading"));
+    history = await mockRender(<MockUserProfilePage/>, `/user/${user._id}`);
   }
 
   describe("Tests with user who had socials", () => {

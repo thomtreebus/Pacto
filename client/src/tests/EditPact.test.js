@@ -1,16 +1,17 @@
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
-import { waitForElementToBeRemoved } from "@testing-library/react";
+/**
+ * Tests for the component the users uses to edit a pact.
+ */
+
+import { screen, fireEvent, waitFor } from "@testing-library/react";
 import EditPact from "../pages/EditPact";
 import "@testing-library/jest-dom";
-import MockComponent from "./utils/MockComponent";
 import { rest } from "msw";
-import { setupServer } from "msw/node";
-import {Route, Router} from "react-router-dom";
+import {Route} from "react-router-dom";
 import {act} from "react-dom/test-utils";
 import userEvent from "@testing-library/user-event";
-import { createMemoryHistory } from 'history';
 import users from "./utils/testUsers";
 import { useMockServer } from "./utils/useMockServer";
+import mockRender from "./utils/mockRender";
 
 const testPact = {
   _id : "1",
@@ -24,9 +25,24 @@ const testPact = {
   ],
 }
 
-describe("EditPact Tests", () => {
-  let history = undefined;
+const MockEditPact = () => {
+  return (
+    <>
+      <Route exact path="/pact/:pactId/edit-pact">
+        <EditPact/>
+      </Route>
+      <Route exact path="/pact/:pactId">
+        <h1>Redirected to pact</h1>
+      </Route>
+      <Route exact path="/not-found">
+        <h1>Redirected to not-found</h1>
+      </Route>
+    </>
+  )
+}
 
+describe("EditPact Tests", () => {
+  let history;
   const server = useMockServer();
 
   beforeEach(async () => {
@@ -40,23 +56,7 @@ describe("EditPact Tests", () => {
   });
 
   const renderWithMock = async () => {
-    history = createMemoryHistory({initialEntries: [`/pact/${testPact._id}/edit-pact`]})
-    render(
-      <MockComponent>
-        <Router history={history}>
-          <Route exact path="/pact/:pactId/edit-pact">
-            <EditPact/>
-          </Route>
-          <Route exact path="/pact/:pactId">
-            <h1>Redirected to pact</h1>
-          </Route>
-          <Route exact path="/not-found">
-            <h1>Redirected to not-found</h1>
-          </Route>
-        </Router>
-      </MockComponent>
-    );
-    await waitForElementToBeRemoved(() => screen.getByText("Loading"));
+    history = await mockRender(<MockEditPact/>, `/pact/${testPact._id}/edit-pact`)
   }
 
   describe("Check elements are rendered", () => {

@@ -1,23 +1,24 @@
-import { render, screen } from "@testing-library/react";
-import { waitForElementToBeRemoved } from "@testing-library/react";
+/**
+ * Tests for a the costum implementation of route private route. 
+ */
+
+import { screen } from "@testing-library/react";
 import "@testing-library/jest-dom";
-import MockComponent from "./utils/MockComponent";
 import PrivateRoute from "../components/PrivateRoute";
 import { rest } from "msw";
 import { useMockServer } from "./utils/useMockServer";
+import mockRender from "./utils/mockRender";
 
 describe("PrivateRoute Tests", () => {
+	let history;
 	const server = useMockServer();
 
 	async function renderComponent() {
-		render(
-			<MockComponent>
-				<PrivateRoute>
-					<h1>You are logged in</h1>
-				</PrivateRoute>
-			</MockComponent>
+		history = await mockRender(				
+			<PrivateRoute>
+				<h1>You are logged in</h1>
+			</PrivateRoute>
 		);
-		await waitForElementToBeRemoved(() => screen.getByText("Loading"));
 	}
 
 	it("renders the component when the user is logged in", async () => {
@@ -36,6 +37,6 @@ describe("PrivateRoute Tests", () => {
 			})
 		);
 		await renderComponent();
-		expect(window.location.pathname).toBe("/login");
+		expect(history.location.pathname).toBe("/login");
 	});
 });

@@ -1,14 +1,16 @@
-import { render, screen, fireEvent } from "@testing-library/react";
-import { waitForElementToBeRemoved, waitFor } from "@testing-library/react";
+/**
+ * Tests for the component the edit profile page this is where
+ * ther user can edit deatils relating to their account.
+ */
+
+import { screen, fireEvent, waitFor } from "@testing-library/react";
 import "@testing-library/jest-dom";
-import MockComponent from "./utils/MockComponent";
 import { rest } from "msw";
-import { setupServer } from "msw/node";
-import { Route } from "react-router-dom";
 import EditProfile from "../pages/EditProfile";
 import userEvent from "@testing-library/user-event";
 import {act} from "react-dom/test-utils";
 import { useMockServer } from "./utils/useMockServer";
+import mockRender from "./utils/mockRender";
 
 
 const testUser = {
@@ -29,6 +31,7 @@ const testUser = {
 }
 
 describe("Edit Profile Page Tests", () => {
+  let history;
   const server = useMockServer();
 
   beforeEach(async () => {
@@ -48,15 +51,7 @@ describe("Edit Profile Page Tests", () => {
   });
 
   beforeEach(async () => {
-    render(
-      <MockComponent>
-          <EditProfile />
-          <Route exact path="/profile">
-            <h1>Redirected to profile</h1>
-          </Route>
-      </MockComponent>
-    );
-    await waitForElementToBeRemoved(() => screen.getByText("Loading"));
+    history = await mockRender(<EditProfile />);
   });
 
   describe("Check elements are rendered", () => {
@@ -294,7 +289,7 @@ describe("Edit Profile Page Tests", () => {
 
       await waitFor(() => userEvent.click(updateProfileButton));
       await waitFor(() => {
-        expect(window.location.pathname).toBe("/user/1");
+        expect(history.location.pathname).toBe("/user/1");
       }); 
     });
   });

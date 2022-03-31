@@ -1,3 +1,7 @@
+/**
+ * Tests for post card component.
+ */
+
 import { render, screen } from "@testing-library/react";
 import TextPostCard from "../components/cards/TextPostCard";
 import "@testing-library/jest-dom";
