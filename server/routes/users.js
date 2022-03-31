@@ -4,8 +4,8 @@ const users = require('../controllers/users');
 const { checkAuthenticated } = require("../middleware/authMiddleware");
 
 router.put('/:id', checkAuthenticated, users.updateProfile);
-router.get("/:id", checkAuthenticated, users.viewProfile);
+router.get("/:id", checkAuthenticated, users.getProfile);
 
-router.get("/", checkAuthenticated, users.allUniUsers);
+router.get("/", checkAuthenticated, users.getUniversityUsers);
 
 module.exports = router;
