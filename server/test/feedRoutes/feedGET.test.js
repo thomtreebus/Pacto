@@ -49,9 +49,9 @@ describe("GET /feed", () =>{
     const pact = await generateTestPact(user);
     await pact.save();
 
-    post = await generateTestPost(user, pact);
+    const post = await generateTestPost(user, pact);
     await post.save();
-    post2 = await generateTestPost(user, pact, "randomtitle", "", "link", "http://google.com");
+    const post2 = await generateTestPost(user, pact, "randomtitle", "", "link", "http://google.com");
     await post2.save();
   });
 

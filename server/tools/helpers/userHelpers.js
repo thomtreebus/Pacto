@@ -116,7 +116,7 @@ function getRandomLocation() {
  */
 function getRandomHobbies() {
 	const hobbies = []; 
-	randomHobby = () => chance.integer({ min: 0, max: userConstants.HOBBIES.length-1 })
+	const randomHobby = () => chance.integer({ min: 0, max: userConstants.HOBBIES.length-1 })
 	chance.unique(randomHobby, 2).forEach(hobby => hobbies.push(userConstants.HOBBIES[hobby].name));
 	return hobbies;
 }

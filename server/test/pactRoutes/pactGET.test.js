@@ -3,14 +3,13 @@ const User = require("../../models/User");
 const University = require("../../models/University");
 const Link = require("../../models/Link");
 const mongoose = require("mongoose");
-const dotenv = require("dotenv");
 const supertest = require("supertest");
 const app = require("../../app");
 const { generateTestUser, getDefaultTestUserEmail } = require("../fixtures/generateTestUser");
 const { generateTestPact, getTestPactId } = require("../fixtures/generateTestPact");
-const { generateTestPost, getTestPostId } = require("../fixtures/generateTestPost");
+const { generateTestPost } = require("../fixtures/generateTestPost");
 const { createToken } = require("../../controllers/authController");
-const { PACT_MESSAGES, MESSAGES } = require("../../helpers/messages");
+const { MESSAGES } = require("../../helpers/messages");
 const { rest } = require("msw");
 const { setupServer } = require("msw/node");
 
@@ -46,9 +45,9 @@ describe("GET /pact/:id", () =>{
     const pact = await generateTestPact(user);
     await pact.save();
 
-    post = await generateTestPost(user, pact);
+    const post = await generateTestPost(user, pact);
     await post.save();
-    post2 = await generateTestPost(user, pact, "randomtitle", "", "link", "http://google.com");
+    const post2 = await generateTestPost(user, pact, "randomtitle", "", "link", "http://google.com");
     await post2.save();
   });
 
