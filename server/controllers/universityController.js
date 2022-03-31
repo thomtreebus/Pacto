@@ -29,7 +29,7 @@ module.exports.getUniversity = async (req, res) => {
  * @param {Response} res - The response to the request
  * @async
  */
-module.exports.search = async (req, res) => {
+module.exports.getSearchResults = async (req, res) => {
 	try {
 		const searchQuery = req.params.query;
 		const university = await University.findOne({ id: req.user.university });
