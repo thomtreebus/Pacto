@@ -43,9 +43,9 @@ module.exports.search = async (req, res) => {
 		});
 
 		// Limit results to only display top 50 of each 
-		if (posts.length > 50) posts.slice(0, 50);
-		if (pacts.length > 50) pacts.slice(0, 50);
-		if (users.length > 50) users.slice(0, 50);
+		posts.slice(0, 50);
+		pacts.slice(0, 50);
+		users.slice(0, 50);
 
 		// Populate pact in posts
 		for (let i = 0; i < posts.length; i++) {
