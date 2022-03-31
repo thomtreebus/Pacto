@@ -17,6 +17,7 @@ import PactPage from "./pages/PactPage";
 import PostPage from "./pages/PostPage";
 import UserPage from "./pages/UserPage";
 import SearchResults from "./pages/SearchResults";
+import Verify from "./pages/Verify";
 
 
 function App() {
@@ -26,6 +27,9 @@ function App() {
 			<Switch>
 				<Route exact path="/">
 					<Landing />
+				</Route>
+				<Route exact path="/verify/:id">
+					<Verify />
 				</Route>
 				<AuthRoute exact path="/login">
 					<Login />
