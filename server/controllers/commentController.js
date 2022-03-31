@@ -52,9 +52,6 @@ const makeComment = async(req, res, parentComment=undefined) => {
         });
         await User.findByIdAndUpdate(req.post.author, {$push: {notifications: notification._id}});
       }
-      else{
-
-      }
     }
 
     return res.status(201).json(jsonResponse(comment, []));
