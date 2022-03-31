@@ -11,7 +11,7 @@ import UserCardModeration from "../components/UserCardModeration";
 import userEvent from "@testing-library/user-event";
 import {act} from "react-dom/test-utils";
 import {useMockServer} from "./utils/useMockServer";
-import mockRedner from "./utils/mockRender";
+import mockRender from "./utils/mockRender";
 
 const pactResponse = {
   message: {
@@ -80,7 +80,7 @@ describe("UserCard Tests", () => {
   });
 
   const renderWithMock = async (element) => {
-    history = await mockRedner(element);
+    history = await mockRender(element);
   };
 
   describe("Check elements are rendered", () => {
