@@ -8,12 +8,15 @@
       - [**Cloudinary**](#cloudinary)
       - [**Link Preview**](#link-preview)
       - [**University API**](#university-api)
+      - [**SendGrid SMTP Server**](#sendgrid-smtp-server)
+      - [**Gmail SMTP Server**](#gmail-smtp-server)
     - [3. Setup Server Application](#3-setup-server-application)
       - [**Environment Variables**](#environment-variables)
       - [**Start Application**](#start-application)
     - [4. Setup Client Application](#4-setup-client-application)
       - [**Environment Variables**](#environment-variables-1)
       - [**Start Application**](#start-application-1)
+    - [5. Deployment](#5-deployment)
   - [Development](#development)
     - [Test-Driven Development](#test-driven-development)
     - [SOLID Principles](#solid-principles)
@@ -25,7 +28,7 @@
 ## Software Installation
 Unzip the .zip folder and open a new terminal window inside the project directory.
 ### 1. Prerequisites
-In order to run the application, you must have the latest stable release version (note: future versions might not work with the versions that were used during development) of [Node.js](https://nodejs.org/en/), [npm](https://www.npmjs.com/), [Docker](https://www.docker.com/), and [docker-compose](https://docs.docker.com/compose/). To check whether you have these  installed, run the following commands:
+In order to run the application, you must have the latest stable release version (*note: future versions might not work with the versions that were used during development*) of [Node.js](https://nodejs.org/en/), [npm](https://www.npmjs.com/), [Docker](https://www.docker.com/), and [docker-compose](https://docs.docker.com/compose/). To check whether you have these  installed, run the following commands:
 ```
 $ node -v
 $ npm -v
@@ -63,14 +66,14 @@ The [University API](http://universities.hipolabs.com/search?country=United%20Ki
 
 > Please note, this approach requires you to own a domain. 
 
-We are using [Sendgrid](https://signup.sendgrid.com/) for our deployed version. Once signed up select `Authenticate a domain instead` and follow the steps provided. This will give you all the variables required below for `Email handler variables`. 
+We are using [Sendgrid](https://signup.sendgrid.com/) for our deployed application. Once signed up select `Authenticate a domain instead` and follow the steps provided. This will give you all the environment variables required below for `Email handler variables`. 
 
 #### **Gmail SMTP Server**
 
-If you do not have a domain, our application supports other smtp services like GMail. 
-Sign up for a new gmail account with only an email and password and pass those into the `Email handler variables` below. 
+If you do not have a domain, the application supports other smtp services like [Gmail](https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=&cad=rja&uact=8&ved=2ahUKEwicjJWqyvD2AhVVolwKHdp_BXsQFnoECAsQAQ&url=https%3A%2F%2Fwww.google.com%2Fgmail%2F&usg=AOvVaw3mZ_qbD_gQyp_sqkjrwStn). 
+Sign up for a new Gmail account with only an email and password and pass those into the `Email handler variables` below. 
 
-Make sure the email author the same as the email and use the smtp link: `smtp.gmail.com`  
+Make sure the email author is the same as the email and use the smtp link: `smtp.gmail.com`  
 
 
 ### 3. Setup Server Application
@@ -91,11 +94,11 @@ The client application relies on a few environment variables. Some variables wil
   CORS_URL=http://localhost:3000
   ```
 
-- Email handler variables - We are currently using sendgrid in our application but, it may be substituted for any other smtp service that uses https and port 465.
+- Email handler variables - We are currently using [Sendgrid](https://signup.sendgrid.com/) in our application but, it may be substituted for any other SMTP service that uses https and port 465.
   ```
   EMAIL_USER=*insert username* (usually email or an api key)
   EMAIL_PASS=*insert password/secret key*
-  EMAIL_AUTHOR=*insert author to be displayed when a user receives an emaill*
+  EMAIL_AUTHOR=*insert author to be displayed when a user receives an email*
   SMTP_HOST=*insert the smtp link*
   ```
 - [Cloudinary](https://cloudinary.com/) variables - add the Cloudinary values that you got when registering for an account
@@ -162,6 +165,9 @@ Run the application
 $ npm run start
 ```
 Once the client application starts to run, a new tab will open and show the React app.
+
+### 5. Deployment
+How to deploy.
 
 ## Development
 ### Test-Driven Development
