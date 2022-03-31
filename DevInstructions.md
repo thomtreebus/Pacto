@@ -21,7 +21,7 @@
     - [Test-Driven Development](#test-driven-development)
     - [SOLID Principles](#solid-principles)
       - [**Single Responsibility Principle**](#single-responsibility-principle)
-      - [**Open-CLosed Principle**](#open-closed-principle)
+      - [**Open-Closed Principle**](#open-closed-principle)
       - [**Liskov Substitution Principle**](#liskov-substitution-principle)
       - [**Interface Segregation Principle**](#interface-segregation-principle)
       - [**Dependency Inversion Principle**](#dependency-inversion-principle)
@@ -171,6 +171,9 @@ How to deploy.
 
 ## Development
 ### Test-Driven Development
+Test driven development was employed throughout the development of the application. Before adding any major new functionality, tests were written to ensure that once the functionality was implemented, it would work as intended. For example, when creating a new page, a few tests would be written first (to fail intentionally), and once the page was created, the tests would be used to check that the page fulfilled its purpose. 
+
+When developing new features for the application, be sure to write automated tests, or use manual testing in scenarios where automated testing can not be employed. To read more about our approach to testing, take a look at the [Testing Report](/TestReport.md).
 
 ### SOLID Principles
 #### **Single Responsibility Principle**
@@ -178,7 +181,8 @@ In the client application, each component is solely responsible for displaying d
 
 In the server application, each file, or function has a sole responsibility. Routes are used to describe different API endpoints and calling the appropriate controller. Controllers perform a single CRUD operation. Various helpers/middleware are used for other specific purposes. By ensuring everything is responsible for one job, code becomes more reusable and easier to maintain. 
 
-#### **Open-CLosed Principle**
+#### **Open-Closed Principle**
+New functionality can be added to the application without having to modify existing models. The server application can be extended by adding new controllers that can perform certain operations without having to modify any of the models. On the client new components can be created without having to change existing components.
 
 #### **Liskov Substitution Principle**
 The application currently doesn't rely on inheritance as React is by nature, a functional framework. The majority of the server application uses a functional programming approach. Therefore it is very rare for a class to have child classes.
