@@ -6,7 +6,7 @@ const { MESSAGES } = require("../../helpers/messages");
 const useTestDatabase = require("../helpers/useTestDatabase");
 
 describe("GET /me", () => {
-  useTestDatabase("me");
+  useTestDatabase();
 
   it("returns a user object when logged in", async () => {
     const user = await generateTestUser();

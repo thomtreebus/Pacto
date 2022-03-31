@@ -13,7 +13,7 @@ const useTestDatabase = require("../helpers/useTestDatabase");
 const COMMENT_TEXT = "Some random text.";
 
 describe("DELETE /pact/:pactId/post/:postId/comment/:commentId", () =>{
-  useTestDatabase("deleteComment");
+  useTestDatabase();
   let commentId = null;
 
   beforeEach(async () => {

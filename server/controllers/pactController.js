@@ -9,7 +9,12 @@ const { MESSAGES, PACT_MESSAGES } = require("../helpers/messages");
 const Notification = require("../models/Notification");
 const getPreview = require("../helpers/LinkCache");
 
-// POST pact
+/**
+ * Creates a pact using information given in the request.
+ * @param {Request} req - The request
+ * @param {Response} res - The response to the request
+ * @async
+ */
 module.exports.pactPost = async (req, res) => {
 	try {
 		const user = req.user;
@@ -49,7 +54,15 @@ module.exports.pactPost = async (req, res) => {
 	}
 };
 
-// GET pact (by id)
+/**
+ * Returns a pact in the response in JSON format, using 
+ * the (pact) id provided in the request.
+ * The university, members, moderators, banned users, and posts
+ * fields of the pact gets populated.
+ * @param {Request} req - The request
+ * @param {Response} res - The response to the request
+ * @async
+ */
 module.exports.pactGet = async (req, res) => {
 	try {
 		const pact = req.pact;
@@ -105,7 +118,13 @@ module.exports.pactGet = async (req, res) => {
 };
 
 
-// PUT pact (by id)
+/**
+ * Updates information about the pact.
+ * It fails if the user making the request is not a moderator of the pact.
+ * @param {Request} req - The request
+ * @param {Response} res - The response to the request
+ * @async
+ */
 module.exports.pactPut = async(req, res) => {
 	let status = undefined;
 	const jsonErrors = [];
@@ -142,6 +161,13 @@ module.exports.pactPut = async(req, res) => {
 	}
 }
 
+/**
+ * Makes the user who made the request join a pact.
+ * The pact's id is given in the parameters of the request.
+ * @param {Request} req - The request
+ * @param {Response} res - The response to the request
+ * @async
+ */
 module.exports.joinPact = async (req, res) => {
 
 	try {
@@ -173,6 +199,14 @@ module.exports.joinPact = async (req, res) => {
 	}
 };
 
+/**
+ * Bans a member of the pact.
+ * The request must be made by a moderator, and another
+ * moderator cannot be banned.
+ * @param {Request} req - The request
+ * @param {Response} res - The response to the request
+ * @async
+ */
 module.exports.banMember = async (req, res) => {
 	try {
 		const user = await User.findById(req.params.userId);
@@ -207,6 +241,13 @@ module.exports.banMember = async (req, res) => {
 	}
 }
 
+/**
+ * Promotes a member of the pact to a moderator.
+ * The user making the request must be a moderator of the pact.
+ * @param {Request} req - The request
+ * @param {Response} res - The response to the request
+ * @async
+ */
 module.exports.promoteMember = async (req, res) => {
 	try {
 		const user = await User.findById(req.params.userId);
@@ -234,6 +275,13 @@ module.exports.promoteMember = async (req, res) => {
 	}
 }
 
+/**
+ * Revokes a the ban of a member, so they become again a normal member.
+ * The user making the request must be a moderator of the pact.
+ * @param {Request} req - The request
+ * @param {Response} res - The response to the request
+ * @async
+ */
 module.exports.revokeBan = async (req, res) => {
 	try {
 		const user = await User.findById(req.params.userId);
@@ -258,6 +306,15 @@ module.exports.revokeBan = async (req, res) => {
 	}
 }
 
+/**
+ * Makes the user who made the request leave a pact.
+ * It fails if the user is the only moderator of their pact,
+ * or if they are the last (and only) member of their pact.
+ * The pact's id is given in the params of the link.
+ * @param {Request} req - The request
+ * @param {Response} res - The response to the request
+ * @async
+ */
 module.exports.leavePact = async (req, res) => {
 	try {
 		const user = await User.findById(req.user._id);
@@ -279,7 +336,12 @@ module.exports.leavePact = async (req, res) => {
 	}
 }
 
-// Helper to delete recursively all comments of comments
+/**
+ * Helper to delete recursively all comments (all children comments 
+ * as well as parent comments)
+ * @param {[Comment]} comments - A list of comments
+ * @async
+ */
 async function deleteAllComments(comments) {
 	for (let i = 0; i < comments.length; i++) {
 		const actual = await Comment.findById(comments[i]._id);
@@ -290,6 +352,14 @@ async function deleteAllComments(comments) {
 	}
 }
 
+/**
+ * Deletes a pact. All posts and comments made in the post are also deleted.
+ * It fails if the user is not a moderator, or if they are not the only moderator
+ * of the pact.
+ * @param {Request} req - The request
+ * @param {Response} res - The response to the request
+ * @async
+ */
 module.exports.deletePact = async (req, res) => {
 	try {
 		const pact = await Pact.findById(req.params.pactId);
@@ -319,6 +389,5 @@ module.exports.deletePact = async (req, res) => {
 	}
 	catch (err) {
 		res.status(404).json(jsonResponse(null, [jsonError(null, err.message)]));
-		console.log(err.message);
 	}
 }

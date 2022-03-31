@@ -12,7 +12,7 @@ const Link = require("../../models/Link");
 
 dotenv.config();
 
-function useTestDatabase(key = "") {
+function useTestDatabase() {
 	beforeAll(async () => {
 		await mongoose.connect(`${process.env.TEST_DB_CONNECTION_URL}`);
 	});

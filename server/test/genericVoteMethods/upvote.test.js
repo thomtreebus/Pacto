@@ -11,7 +11,7 @@ let obj = {
 }
 
 describe("Generic upvote", () => {
-  useTestDatabase("genericUpvote");
+  useTestDatabase();
 
   beforeEach(async () => {
     const user = await generateTestUser();

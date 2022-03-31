@@ -10,7 +10,7 @@ const Notification = require('../../models/Notification');
 const useTestDatabase = require("../helpers/useTestDatabase");
 
 describe("POST /post/upvote/:pactid/:id", () => {
-  useTestDatabase("revokeBan");
+  useTestDatabase();
 
   beforeEach(async () => {
     const user = await generateTestUser();

@@ -21,7 +21,7 @@ const LINK = "https://examplelink.com";
 const DEFAULT_TYPE = TEXT_TYPE;
 
 describe("POST /pact/:pactId/post", () => {
-  useTestDatabase("createPost");
+  useTestDatabase();
 
   beforeEach(async () => {
     const user = await generateTestUser();

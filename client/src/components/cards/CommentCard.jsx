@@ -8,7 +8,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';import { useHistory 
 import { useAuth } from "../../providers/AuthProvider";
 import CommentBox from "../CommentBox";
 import Voter from "../Voter";
-import { relativeTime } from "../../helpers/timeHandllers";
+import { relativeTime } from "../../helpers/timeHandler";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { IconButton } from "@mui/material";
 import ErrorMessage from "../ErrorMessage";

@@ -1,3 +1,8 @@
+/**
+ * This contains the routes regarding user authentication
+ * @type {e | (() => Express)}
+ */
+
 const express = require("express");
 const router = express.Router();
 const authController = require("../controllers/authController");

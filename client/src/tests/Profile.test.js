@@ -43,7 +43,7 @@ const user = {
     instagram: "pactoInsta",
     linkedin: "pactlinked",
     phone: "pactphone",
-  }
+}
 
   const MockUserProfilePage = () => {
     return (
@@ -124,8 +124,26 @@ describe("Profile Page Tests", () => {
         expect(name).toBeInTheDocument();
       });
 
-      it("should render the user's course and Uni", async () => {
+      it("should render the user's course and Uni when user has course", async () => {
         const subText = await screen.findByText(`${user.course} student at ${user.university.name}`);
+        expect(subText).toBeInTheDocument();
+      });
+
+      it("should render the user's Uni if the user has no course", async () => {
+        const user2 = user;
+        user2.course = undefined;
+        server.use(
+          rest.get(`${process.env.REACT_APP_URL}/me`, (req, res, ctx) => {
+            return res(
+              ctx.json({
+                message: user2,
+                errors: []
+              })
+            );
+          })
+        );
+        await renderWithMock();
+        const subText = await screen.findByText(`Student at ${user.university.name}`);
         expect(subText).toBeInTheDocument();
       });
 

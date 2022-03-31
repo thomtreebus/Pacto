@@ -30,7 +30,7 @@ export default function NotificationsMenu({
 			onClose={handleNotificationsMenuClose}
 		>
 			{notifications
-				.slice(0, limit < notifications.length ? limit : notifications.length)
+				.slice(0, limit)
 				.map((notification) => (
 					<NotificationCard
 						key={notification._id}

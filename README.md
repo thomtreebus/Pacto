@@ -30,21 +30,11 @@ The application has certain features that can only be viewed by users with a mod
 **email**: pac.to@kcl.ac.uk
 **password**: Password123
 
+You can also register for an account as long as you have a valid UK university email address. 
+
 ## Installation instructions
 
-To install the software and use it in your local development environment, you must first set up and activate a local
-development environment. From the root of the project:
-
-```
-$ virtualenv venv
-$ source venv/bin/activate
-```
-
-In both the client and server directories , install the required packages:
-
-```
-$ npm install
-```
+A detailed guide on how to install the application and run it as a developer can be viewed in the [Developer Instructions](/DevInstructions.md) file (DevInstructions.md)
 
 ## Credits/Sources
 
@@ -54,7 +44,13 @@ The packages used by the two applications are specified in `package.json`
 
 ### MUI (Material UI)
 
-The majority of components and elements used in the client application were created using [MUI](https://mui.com/), a React library that uses [Material Design](https://material.io/design). These components are labelled accordingly in the files where they are directly used. Additionaly, some code that is shown in the [MUI documentation](https://mui.com/getting-started/installation/) has been used, this is also labelled in the files.
+The majority of components and elements used in the client application were created using [MUI](https://mui.com/), a React library that uses [Material Design](https://material.io/design). These components are labelled accordingly in the files where they are directly used. Additionaly, some code that is shown in the [MUI documentation](https://mui.com/getting-started/installation/) has been used, this is also labelled in the files. All React MUI components are located in the following directories:
+```
+client/src/components
+client/src/pages
+client/src/layouts
+client/src/providers
+```
 
 ### APIs 
 

@@ -13,7 +13,7 @@ const Post = require("../../models/Post");
 const COMMENT_TEXT = "This is my 1st comment.";
 
 describe("POST /pact/:pactId/post/:postId/comment", () =>{
-  useTestDatabase("createComment");
+  useTestDatabase();
 
   beforeEach(async () => {
     const user = await generateTestUser();

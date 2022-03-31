@@ -2,6 +2,9 @@ const mongoose = require('mongoose');
 const { PACT_MESSAGES } = require('../helpers/messages');
 const Schema = mongoose.Schema;
 
+/**
+ * Pact model for storing information about a pact as well as members/moderators and posts
+ */
 let PactSchema = mongoose.Schema({
   name: {
     type: String,
@@ -16,6 +19,7 @@ let PactSchema = mongoose.Schema({
     required: [true, PACT_MESSAGES.UNIVERSITY.BLANK]
   },
 
+  // Pacts can be grouped into different categories including societies, courses, modules, and other
   category: {
     type: String,
     enum: {
@@ -61,10 +65,11 @@ let PactSchema = mongoose.Schema({
     ref: 'Post'
   }]
 
-  // EVENTS TO BE ADDED
-
 });
 
+/**
+ * Get a default image for a pact using Dicebar Avatars
+ */
 PactSchema.pre('validate',  function(next) {
   if(this.image.includes('dicebear.com')) {
     this.image = `https://avatars.dicebear.com/api/identicon/${this.name}.svg`
