@@ -2,7 +2,6 @@ import { fireEvent, render, screen, waitFor, waitForElementToBeRemoved } from "@
 import PactPage from "../pages/PactPage";
 import "@testing-library/jest-dom";
 import { rest } from "msw";
-import { setupServer } from "msw/node";
 import MockComponent from "./utils/MockComponent";
 import { Router, Route } from "react-router-dom";
 import { createMemoryHistory } from 'history';
@@ -162,7 +161,7 @@ describe("PactPage Tests", () => {
               );
             }),
           );
-        }),
+        })
 
         it("renders only the exit icon", async () => {
           const leaveIcon = await screen.findByTestId("ExitToAppIcon");

@@ -4,10 +4,8 @@ import CreatePostCard from "../components/CreatePostCard";
 import "@testing-library/jest-dom";
 import MockComponent from "./utils/MockComponent";
 import { rest } from "msw";
-import { setupServer } from "msw/node";
 import userEvent from "@testing-library/user-event";
 import {act} from "react-dom/test-utils";
-import users from "./utils/testUsers";
 import { useMockServer } from "./utils/useMockServer";
 
 const pactId = 1;
@@ -356,8 +354,8 @@ describe("CreatePostCard Tests", () => {
 			const snackbarButtonElement = await screen.findByTestId("snackbar");
 			expect(snackbarButtonElement).toBeInTheDocument();
 			setTimeout(() => {
-				expect(screen.queryByTestId("snackbar")).not.toBeInTheDocument(), 6500;
-			});
+				expect(screen.queryByTestId("snackbar")).not.toBeInTheDocument()
+			}, 6500);
 		});
 	});
 });
