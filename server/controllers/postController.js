@@ -165,7 +165,7 @@ module.exports.downvotePostPut = async (req, res) => {
 module.exports.postDelete = async (req, res) => {
 	let status = 400;
 	try {
-		let post = null;
+		let post;
 		try {
 			post = await Post.findOne({ pact: req.pact, _id:req.params.postId });
 		} catch {

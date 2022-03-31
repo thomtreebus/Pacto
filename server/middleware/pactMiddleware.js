@@ -26,7 +26,7 @@ const checkIsMemberOfPact = async (req, res, next) => {
       throw Error(MESSAGES.AUTH.IS_NOT_LOGGED_IN);
     }
 
-    let pact = null;
+    let pact;
 		try {
 			pact = await Pact.findOne({ university: user.university, _id:req.params.pactId });
 		}
@@ -74,7 +74,7 @@ const checkIsModeratorOfPact = async (req, res, next) => {
       throw Error(MESSAGES.AUTH.IS_NOT_LOGGED_IN);
     }
 
-    let pact = null;
+    let pact;
 		try {
 			pact = await Pact.findOne({ university: user.university, _id:req.params.pactId });
 		}
