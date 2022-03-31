@@ -41,7 +41,7 @@ module.exports.createToken = createToken;
  * @param res contains information regarding the response. (User information)
  * @returns {Promise<void>} Javascript async function.
  */
-module.exports.signupPost = async (req, res) => {
+module.exports.signup = async (req, res) => {
 	const { firstName, lastName, uniEmail, password } = req.body;
 	const processedEmail = uniEmail.toLowerCase()
 	let jsonErrors = [];
@@ -125,7 +125,7 @@ module.exports.signupPost = async (req, res) => {
  * @param res contains information regarding the response. (User information)
  * @returns {Promise<void>} Javascript async function.
  */
-module.exports.loginPost = async (req, res) => {
+module.exports.login = async (req, res) => {
 	const { uniEmail, password } = req.body;
 
 	try {
@@ -165,7 +165,7 @@ module.exports.loginPost = async (req, res) => {
  * @param res contains information regarding the response.
  * @returns {Promise<void>} Javascript async function.
  */
-module.exports.logoutGet = (req, res) => {
+module.exports.logout = (req, res) => {
 	res.cookie("jwt", "", { maxAge: 1 });
 	res.status(200).json(jsonResponse(null, []));
 };
@@ -176,7 +176,7 @@ module.exports.logoutGet = (req, res) => {
  * @param res contains information regarding the response. (Success message)
  * @returns {Promise<void>} Javascript async function.
  */
-module.exports.verifyGet = async (req, res) => {
+module.exports.verify = async (req, res) => {
 	try {
 		// Get code from query param
 		const code = req.query.code;
@@ -208,6 +208,6 @@ module.exports.verifyGet = async (req, res) => {
  * @param res contains information regarding the response. (User information)
  * @returns {Promise<void>} Javascript async function.
  */
-module.exports.meGet = async (req, res) => {
+module.exports.getMe = async (req, res) => {
 	res.status(200).json(jsonResponse(req.user, []));
 };

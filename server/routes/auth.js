@@ -8,14 +8,14 @@ const router = express.Router();
 const authController = require("../controllers/authController");
 const { checkAuthenticated } = require("../middleware/authMiddleware");
 
-router.post("/signup", authController.signupPost);
+router.post("/signup", authController.signup);
 
-router.post("/login", authController.loginPost);
+router.post("/login", authController.login);
 
-router.get("/logout", authController.logoutGet);
+router.get("/logout", authController.logout);
 
-router.get("/verify", authController.verifyGet);
+router.get("/verify", authController.verify);
 
-router.get("/me", checkAuthenticated, authController.meGet);
+router.get("/me", checkAuthenticated, authController.getMe);
 
 module.exports = router;
