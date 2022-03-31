@@ -2,9 +2,6 @@ import { render, screen, waitFor } from "@testing-library/react";
 import PostCard from "../components/cards/PostCard";
 import "@testing-library/jest-dom";
 import MockComponent from "./utils/MockComponent";
-import { setupServer } from "msw/node";
-import { rest } from "msw";
-import users from "./utils/testUsers";
 import { useMockServer } from "./utils/useMockServer";
 
 const textPost = {
@@ -17,7 +14,7 @@ const textPost = {
     lastName: "Wali",
     _id: 1
   },
-  createdAt: new Date(Date.now() - (86400000) * 0).toISOString(),
+  createdAt: new Date(Date.now()).toISOString(),
   title: "ipsumLorem ipsumLorem ipsumLorem ipsumLorem",
   text: "amet officia molestias esse!",
   type: "text",
@@ -38,7 +35,7 @@ const imagePost = {
     lastName: "Wali",
     _id: 1
   },
-  createdAt: new Date(Date.now() - (86400000) * 0).toISOString(),
+  createdAt: new Date(Date.now()).toISOString(),
   title: "ipsumLorem ipsumLorem ipsumLorem ipsumLorem",
   image: "imagelink",
   type: "image",
@@ -59,7 +56,7 @@ const linkPost = {
     lastName: "Wali",
     _id: 1
   },
-  createdAt: new Date(Date.now() - (86400000) * 0).toISOString(),
+  createdAt: new Date(Date.now()).toISOString(),
   title: "ipsumLorem ipsumLorem ipsumLorem ipsumLorem",
   link: "link",
   type: "link",

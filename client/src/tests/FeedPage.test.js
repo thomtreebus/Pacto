@@ -2,11 +2,9 @@ import { render, screen, waitForElementToBeRemoved } from "@testing-library/reac
 import Feed from "../pages/Feed";
 import "@testing-library/jest-dom";
 import { rest } from "msw";
-import { setupServer } from "msw/node";
 import MockComponent from "./utils/MockComponent";
 import { Router, Route } from "react-router-dom";
 import { createMemoryHistory } from 'history';
-import users from "./utils/testUsers";
 import { useMockServer } from "./utils/useMockServer";
 
 const response = {
@@ -21,7 +19,7 @@ const response = {
           lastName: "Wali",
           _id: 1
         },
-        createdAt: new Date(Date.now() - (86400000) * 0).toISOString(),
+        createdAt: new Date(Date.now()).toISOString(),
         title: "Lorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem",
         text: "Lorem ipsum dolor inventore ad! Porro soluta eum amet officia molestias esse!Lorem ipsum dolor inventore ad! Porro soluta eum amet officia molestias esse!Lorem ipsum dolor inventore ad! Porro soluta eum amet officia molestias esse!",
         type: "text",

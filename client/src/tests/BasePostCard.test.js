@@ -3,8 +3,6 @@ import { waitForElementToBeRemoved } from "@testing-library/react"
 import BasePostCard from "../components/cards/BasePostCard";
 import "@testing-library/jest-dom";
 import MockComponent from "./utils/MockComponent";
-import { setupServer } from "msw/node";
-import { rest } from "msw";
 import { useMockServer } from "./utils/useMockServer";
 
 const post = {
@@ -17,7 +15,7 @@ const post = {
     lastName: "Wali",
     _id: 1
   },
-  createdAt: new Date(Date.now() - (86400000) * 0).toISOString(),
+  createdAt: new Date(Date.now()).toISOString(),
   title: "ipsumLorem ipsumLorem ipsumLorem ipsumLorem",
   text: "amet officia molestias esse!",
   type: "text",

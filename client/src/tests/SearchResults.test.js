@@ -1,13 +1,11 @@
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import { waitForElementToBeRemoved } from "@testing-library/react";
 import SearchResults from "../pages/SearchResults";
 import "@testing-library/jest-dom";
 import MockComponent from "./utils/MockComponent";
 import { rest } from "msw";
-import { setupServer } from "msw/node";
 import { createMemoryHistory } from 'history';
 import { Router, Route } from 'react-router-dom'
-import users from "./utils/testUsers";
 import { useMockServer } from "./utils/useMockServer";
 
 const response = {
@@ -20,7 +18,7 @@ const response = {
           lastName: "Wali",
           _id: 1
         },
-        createdAt: new Date(Date.now() - (86400000) * 0).toISOString(),
+				createdAt: new Date(Date.now()).toISOString(),
         title: "Lorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem",
         text: "Lorem ipsum dolor inventore ad! Porro soluta eum amet officia molestias esse!Lorem ipsum dolor inventore ad! Porro soluta eum amet officia molestias esse!Lorem ipsum dolor inventore ad! Porro soluta eum amet officia molestias esse!",
         type: "text",
