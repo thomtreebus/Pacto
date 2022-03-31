@@ -2,7 +2,7 @@ const supertest = require("supertest");
 const app = require("../../app");
 const { MESSAGES, USER_MESSAGES} = require("../../helpers/messages");
 const { generateTestUser } = require("../fixtures/generateTestUser");
-const {createToken} = require("../../controllers/authController");
+const {createToken} = require("../../controllers/auth");
 const useTestDatabase = require("../helpers/useTestDatabase");
 
 jest.mock("../../helpers/emailHandlers");

@@ -1,7 +1,7 @@
 const dotenv = require("dotenv");
 const supertest = require("supertest");
 const app = require("../../app");
-const { createToken } = require("../../controllers/authController");
+const { createToken } = require("../../controllers/auth");
 const { generateTestUser, getDefaultTestUserEmail } = require("../fixtures/generateTestUser");
 const { generateTestNotification, getTestNotificationId } = require("../fixtures/generateTestNotification");
 const { MESSAGES, NOTIFICATION_MESSAGES } = require("../../helpers/messages");

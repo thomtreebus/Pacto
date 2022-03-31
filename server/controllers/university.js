@@ -10,7 +10,7 @@ const { jsonResponse, jsonError } = require("../helpers/responseHandlers");
  * @param {Response} res - The response to the request
  * @async
  */
-module.exports.universityGet = async (req, res) => {
+module.exports.getUniversity = async (req, res) => {
 	try {
 		const uni = req.user.university;
 		await uni.populate({ path: "users", model: User });
@@ -29,7 +29,7 @@ module.exports.universityGet = async (req, res) => {
  * @param {Response} res - The response to the request
  * @async
  */
-module.exports.search = async (req, res) => {
+module.exports.getSearchResults = async (req, res) => {
 	try {
 		const searchQuery = req.params.query;
 		const university = await University.findOne({ id: req.user.university });
