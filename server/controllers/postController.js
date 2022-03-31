@@ -1,16 +1,20 @@
 const Post = require("../models/Post");
 const Pact = require("../models/Pact");
-const University = require("../models/University");
 const Comment = require("../models/Comment");
 const User = require("../models/User");
 const Notification = require("../models/Notification");
 const handleFieldErrors = require('../helpers/errorHandler');
 const { jsonResponse, jsonError } = require("../helpers/responseHandlers");
-const { POST_MESSAGES, MESSAGES } = require("../helpers/messages");
+const { POST_MESSAGES } = require("../helpers/messages");
 const { upvote, downvote } = require("../helpers/genericVoteMethods");
 const getPreview = require("../helpers/LinkCache");
 
-// POST post
+/**
+ * Creates a post using information given in the request.
+ * @param {Request} req - The request
+ * @param {Response} res - The response to the request
+ * @async
+ */
 module.exports.postPost = async (req, res) => {
 	try {
     const user = req.user;
@@ -27,7 +31,14 @@ module.exports.postPost = async (req, res) => {
 	}
 };
 
-// GET pact (by id)
+/**
+ * Returns a post using the id of the post given in the parameters
+ * of the request.
+ * It populates the pact, the author, and the comments of the post.
+ * @param {Request} req - The request
+ * @param {Response} res - The response to the request
+ * @async
+ */
 module.exports.postGet = async (req, res) => {
 	let post = null;
 	try {
@@ -65,7 +76,13 @@ module.exports.postGet = async (req, res) => {
 	}
 };
 
-// PUT upvote post
+/**
+ * Upvotes a comment.
+ * If the same user upvotes a comment twice, it counts as 0 upvote.
+ * @param {Request} req - The request
+ * @param {Response} res - The response to the request
+ * @async
+ */
 module.exports.upvotePostPut = async (req, res) => {
 	try {
 		// Checking post exists
@@ -99,7 +116,13 @@ module.exports.upvotePostPut = async (req, res) => {
 	}
 };
 
-// PUT downvote
+/**
+ * Downvotes a post.
+ * If the same user downvotes a post twice, it counts as 0 downvote.
+ * @param {Request} req - The request
+ * @param {Response} res - The response to the request
+ * @async
+ */
 module.exports.downvotePostPut = async (req, res) => {
 	try {
 		// Checking post exists
@@ -131,7 +154,14 @@ module.exports.downvotePostPut = async (req, res) => {
 	}
 };
 
-// DELETE post
+/**
+ * Deletes a post.
+ * To succeed, the user who made the request must be the author,
+ * or a moderator of the pact in which the post was made.
+ * @param {Request} req - The request
+ * @param {Response} res - The response to the request
+ * @async
+ */
 module.exports.postDelete = async (req, res) => {
 	let status = 400;
 	try {

@@ -1,7 +1,11 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
+/**
+ * Notification model for user notifications
+ */
 const NotificationSchema = mongoose.Schema({
+  // User the notification is sent to
   user: {
     type: Schema.Types.ObjectId,
     ref: 'User',
@@ -17,7 +21,7 @@ const NotificationSchema = mongoose.Schema({
     type: Date,
     default: Date.now
   },
-
+  // Wether or not the user has seen/read the notification
   read: {
     type: Boolean,
     default: false
