@@ -11,6 +11,6 @@ router.put('/friends/:id/accept', checkAuthenticated, friends.acceptFriendReques
 router.put('/friends/:id/reject', checkAuthenticated, friends.rejectFriendRequest);
 
 // removal:
-router.put('/friends/remove/:id', checkAuthenticated, friends.removeFriend);
+router.put('/friends/remove/:id', checkAuthenticated, friends.deleteFriend);
 
 module.exports = router;
