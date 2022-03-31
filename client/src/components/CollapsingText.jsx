@@ -1,4 +1,4 @@
-import { ArrowDropDown, ArrowDropUp, Colorize } from "@mui/icons-material";
+import { ArrowDropDown, ArrowDropUp } from "@mui/icons-material";
 import { Typography, Collapse, Grid, IconButton } from "@mui/material";
 import { useState, useRef, useLayoutEffect } from "react";
 
