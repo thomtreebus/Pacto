@@ -111,7 +111,7 @@ export default function CommentCard({ comment, post, postUpdaterFunc }) {
           disabled={comment.deleted}>
           </Voter>
 
-          <Box sx={{ overflow: "hidden" }}>
+          <Box sx={{ overflow: "hidden", wordBreak: "break-word" }}>
             <Typography variant="caption" data-testid="author-date-line">
               Posted by <span onClick={() => history.push(`/user/${comment.author._id}`)} className="link" data-testid="author">{comment.author.firstName + " " + comment.author.lastName}</span> {relativeTime(comment.createdAt)}
             </Typography>
