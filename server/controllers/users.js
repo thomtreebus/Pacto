@@ -52,7 +52,7 @@ module.exports.updateProfile = async(req, res) => {
  * @param {Response} res - The response to the request
  * @async
  */
-module.exports.viewProfile = async(req, res) => {
+module.exports.getProfile = async(req, res) => {
   let status = 400;
   try {
     const university = req.user.university;
@@ -91,7 +91,7 @@ module.exports.viewProfile = async(req, res) => {
  * @param {Response} res - The response to the request
  * @async
  */
-module.exports.allUniUsers = async(req, res) => {
+module.exports.getUniversityUsers = async(req, res) => {
   let status = 400;
   try {
     const university = req.user.university;
