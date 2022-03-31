@@ -34,7 +34,7 @@ export default function Verify() {
         }}
       >
         <Button
-          label="Update Profile"
+          label="Verify Account"
           sx={{
             float: "right",
             marginTop: { xs: 1, lg: 30 },
