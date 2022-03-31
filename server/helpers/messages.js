@@ -134,11 +134,7 @@ module.exports.POST_MESSAGES = {
   NO_VOTES: "Votes is a required field",
   NO_UPVOTERS: "Upvoters is a required field",
   NO_DOWNVOTERS: "Downvoters is a required field",
-  NOT_FOUND: "Post not found",
-  NOT_AUTHORISED: {
-    NOT_AUTHOR_NOT_MOD: "User is neither a mod nor the author of the post",
-    NOT_AUTHOR: "User is not the author of the post"
-  }
+
 };
 
 module.exports.NOTIFICATION_MESSAGES = {
