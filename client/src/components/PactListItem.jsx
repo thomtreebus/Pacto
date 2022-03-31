@@ -69,7 +69,11 @@ export default function PactListItem({ pact }) {
 				<ListItemIcon>
 					<Avatar src={pact.image} data-testid="avatar" />
 				</ListItemIcon>
-				<ListItemText primary={pact.name} />
+				<ListItemText sx={{
+					flex: 1,
+					flexWrap: "wrap",
+					wordBreak: "break-word"
+					}} primary={pact.name} />
 			</ListItem>
 
 			{pact.members.includes(user._id) || (

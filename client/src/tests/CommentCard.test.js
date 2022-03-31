@@ -4,11 +4,12 @@
 
 import { screen, fireEvent } from "@testing-library/react";
 import { waitFor } from "@testing-library/react"
-import CommentCard from "../components/cards/CommentCard";
+import CommentCard, { DELETED_COMMENT_MESSAGE } from "../components/cards/CommentCard";
 import "@testing-library/jest-dom";
 import { rest } from "msw";
 import users from "./utils/testUsers";
 import { useMockServer } from "./utils/useMockServer";
+import comments from "./utils/testComments";
 import mockRender from "./utils/mockRender";
 
 const COMMENT_TEXT = "amet officia molestias esse!";
@@ -45,13 +46,36 @@ describe("CommentCard Tests", () => {
     history = await mockRender(child);
   }
 
+  let postVoted;
+  let replyPosted;
   beforeEach(async () => {
+    postVoted = false;
+    replyPosted = false;
     server.use(
       rest.delete(`${process.env.REACT_APP_URL}/pact/1/post/1/comment/1`, (req, res, ctx) => {
         const newComment = JSON.parse(JSON.stringify(comment));
         newComment.deleted = true;
         return res(
           ctx.json({ message: newComment, errors: [] })
+        );
+      }),
+      rest.post(`${process.env.REACT_APP_URL}/pact/1/post/1/comment/1/reply`, (req, res, ctx) => {
+        const newComment = comments[0];
+        replyPosted = true;
+        return res(
+          ctx.json({ message: newComment, errors: [] })
+        );
+      }),
+      rest.put(`${process.env.REACT_APP_URL}/pact/1/post/1/comment/1/upvote`, (req, res, ctx) => {
+        postVoted=true;
+        return res(
+          ctx.json({})
+        );
+      }),
+      rest.put(`${process.env.REACT_APP_URL}/pact/1/post/1/comment/1/downvote`, (req, res, ctx) => {
+        postVoted=true;
+        return res(
+          ctx.json({})
         );
       })
     );
@@ -92,7 +116,7 @@ describe("CommentCard Tests", () => {
     });
   });
 
-  describe("Check rendering non-author case", () => {
+  describe("Check rendering special cases", () => {
     it("should not render delete button if not author or mod", async () => {
       server.use(
         rest.get(`${process.env.REACT_APP_URL}/me`, (req, res, ctx) => {
@@ -104,6 +128,27 @@ describe("CommentCard Tests", () => {
       await renderWithMock();
       const del = await screen.queryByTestId("delete-button");
       expect(del).toBeNull();
+    });
+
+    it("should render childComments if they exist", async () => {
+      const commentWithChild = JSON.parse(JSON.stringify(comment));
+      commentWithChild.childComments.push(comments[1]);
+      commentWithChild.post.comments.push(comments[1]);
+
+      await renderWithMock(<CommentCard post={commentWithChild.post} comment={commentWithChild} postUpdaterFunc={mockSuccessHandler} />);
+      const replies = await screen.findByTestId("show-replies");
+      fireEvent.click(replies);
+
+      const commentCards = await screen.findAllByTestId("comment-card");
+      expect(commentCards.length).toBe(2);
+    });
+
+    it("should render deleted comments correctly", async () => {
+      const delComment = JSON.parse(JSON.stringify(comment));
+      delComment.deleted = true;
+
+      await renderWithMock(<CommentCard post={delComment.post} comment={delComment} postUpdaterFunc={mockSuccessHandler} />);
+      await screen.findByText(DELETED_COMMENT_MESSAGE);
     });
   })
 
@@ -144,6 +189,73 @@ describe("CommentCard Tests", () => {
       expect(deleteBtn).toBeDisabled();
 
       await waitFor(() => expect(mockBeenCalled).toBe(true));
+    });
+
+    it("handles error when deleting comment", async () => {
+      server.use(
+        rest.delete(`${process.env.REACT_APP_URL}/pact/1/post/1/comment/1`, (req, res, ctx) => {
+          return res(
+            ctx.status(400),
+            ctx.json({ message: null, errors: [{field: null, message: "Error"}] })
+          );
+        }),
+      );
+      const deleteBtn = await screen.findByTestId("delete-button");
+      fireEvent.click(deleteBtn);
+
+      expect(deleteBtn).toBeDisabled();
+
+      await waitFor(() => expect(mockBeenCalled).toBe(true));
+      await screen.findByTestId("snackbar");
+    });
+
+    it("handles error unhandled in backend when deleting comment", async () => {
+      server.use(
+        rest.delete(`${process.env.REACT_APP_URL}/pact/1/post/1/comment/1`, (req, res, ctx) => {
+          return res(
+            ctx.status(400),
+            ctx.json({})
+          );
+        }),
+      );
+      const deleteBtn = await screen.findByTestId("delete-button");
+      fireEvent.click(deleteBtn);
+
+      expect(deleteBtn).toBeDisabled();
+
+      await waitFor(() => expect(mockBeenCalled).toBe(true));
+      await screen.findByTestId("snackbar");
+    });
+
+    it("comment voting callback function is called when comment is liked via Voter component", async () => {
+      const likeBtn = await screen.findByTestId("ThumbUpRoundedIcon");
+      fireEvent.click(likeBtn);
+
+      await waitFor(() => expect(postVoted).toBe(true));
+    });
+
+    it("comment voting callback function is called when comment is disliked via Voter component", async () => {
+      const dislikeBtn = await screen.findByTestId("ThumbDownRoundedIcon");
+      fireEvent.click(dislikeBtn);
+
+      await waitFor(() => expect(postVoted).toBe(true));
+    });
+
+    it("should create a new child comment when replied to", async () => {
+      const COMMENT_TEXT = "hello";
+      const reply = await screen.findByTestId("reply-button");
+      fireEvent.click(reply);
+
+      const input = await screen.findByRole("textbox", {
+				name: "Comment",
+			});
+      fireEvent.change(input, { target: { value: COMMENT_TEXT } });
+
+      const submit = await screen.findByTestId("submit-button");
+      fireEvent.click(submit);
+
+      await waitFor(() => expect(replyPosted).toBe(true))
+      
     });
   });
 });
