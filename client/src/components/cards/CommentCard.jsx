@@ -78,7 +78,6 @@ export default function CommentCard({ comment, post, postUpdaterFunc }) {
       setIsError(true);
       setErrorMessage(err.message);
       setIsButtonDisabled(false);
-      return;
     }
   };
 
