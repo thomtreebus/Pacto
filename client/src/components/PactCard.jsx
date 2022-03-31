@@ -75,7 +75,7 @@ export default function PactCard({ pact, joined }) {
 								marginBottom: "10px",
 							}}
 						>
-							{pact.description.substr(0, DESCRIPTION_LENGTH + 1)}{" "}
+							{pact.description.slice(0, DESCRIPTION_LENGTH + 1)}{" "}
 							{pact.description.length > DESCRIPTION_LENGTH && `...`}
 						</Typography>
 					</Box>
