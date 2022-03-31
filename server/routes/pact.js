@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { createPact, getPact, updatePact, joinPact, banMember, promoteMember, revokeBan, leavePact, deleteAllComments, deletePact } = require("../controllers/pactController");
+const { createPact, getPact, updatePact, joinPact, banMember, promoteMember, revokeBan, leavePact, deleteAllComments, deletePact } = require("../controllers/pact");
 const { checkAuthenticated } = require("../middleware/authMiddleware");
 const { checkIsMemberOfPact, checkIsModeratorOfPact } = require("../middleware/pactMiddleware");
 

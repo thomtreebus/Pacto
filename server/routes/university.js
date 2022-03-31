@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { getUniversity, getSearchResults } = require("../controllers/universityController");
+const { getUniversity, getSearchResults } = require("../controllers/university");
 const { checkAuthenticated } = require("../middleware/authMiddleware");
 
 router.get("/university", checkAuthenticated, getUniversity);

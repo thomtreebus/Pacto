@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { sendFriendRequest, acceptFriendRequest, rejectFriendRequest, deleteFriend } = require('../controllers/friendController');
+const { sendFriendRequest, acceptFriendRequest, rejectFriendRequest, deleteFriend } = require('../controllers/friend');
 const { checkAuthenticated } = require("../middleware/authMiddleware");
 
 // routes for friends

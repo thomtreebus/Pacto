@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { createComment, deleteComment, getComment, upvoteComment, downvoteComment, createReplyToComment } = require("../controllers/commentController");
+const { createComment, deleteComment, getComment, upvoteComment, downvoteComment, createReplyToComment } = require("../controllers/comment");
 const { checkAuthenticated } = require("../middleware/authMiddleware");
 const { checkIsMemberOfPact } = require("../middleware/pactMiddleware");
 const { checkValidPost, checkValidPostComment } = require("../middleware/postMiddleware");

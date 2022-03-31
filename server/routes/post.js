@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { createPost, getPost, upvotePost, downvotePost, deletePost } = require("../controllers/postController");
+const { createPost, getPost, upvotePost, downvotePost, deletePost } = require("../controllers/post");
 const { checkAuthenticated } = require("../middleware/authMiddleware");
 const { checkIsMemberOfPact } = require("../middleware/pactMiddleware");
 
