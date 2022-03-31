@@ -144,7 +144,7 @@ describe("PostPage Tests", () => {
       expect(replyBox).toBeNull();
     });
 
-    it("should handle callback from top level comment", async () => {
+    it("should handle callback from 'top level' commentBox", async () => {
       const COMMENT_TEXT = "hello";
 
       const addCommentBtn = await screen.findByText("Add comment");
@@ -159,7 +159,7 @@ describe("PostPage Tests", () => {
       await waitFor(() => expect(submit).not.toBeDisabled())
       await waitFor(() => expect(input).not.toBeInTheDocument());
 
-      const commentCards = await screen.findAllByTestId("comment-text");
+      const commentCards = await screen.findAllByTestId("comment-card");
       expect(commentCards.length).toBe(2);
     });
   });

@@ -6,6 +6,7 @@ import MockComponent from "./utils/MockComponent";
 import { rest } from "msw";
 import users from "./utils/testUsers";
 import { useMockServer } from "./utils/useMockServer";
+import comments from "./utils/testComments";
 
 const COMMENT_TEXT = "amet officia molestias esse!";
 
@@ -46,9 +47,9 @@ describe("CommentCard Tests", () => {
     await waitForElementToBeRemoved(() => screen.getByText("Loading"));
   }
 
-  let postLiked;
+  let postVoted;
   beforeEach(async () => {
-    postLiked = false;
+    postVoted = false;
     server.use(
       rest.delete(`${process.env.REACT_APP_URL}/pact/1/post/1/comment/1`, (req, res, ctx) => {
         const newComment = JSON.parse(JSON.stringify(comment));
@@ -57,8 +58,20 @@ describe("CommentCard Tests", () => {
           ctx.json({ message: newComment, errors: [] })
         );
       }),
+      rest.post(`${process.env.REACT_APP_URL}/pact/1/post/1/comment/1/reply`, (req, res, ctx) => {
+        const newComment = comments[0]
+        return res(
+          ctx.json({ message: newComment, errors: [] })
+        );
+      }),
       rest.put(`${process.env.REACT_APP_URL}/pact/1/post/1/comment/1/upvote`, (req, res, ctx) => {
-        postLiked=true;
+        postVoted=true;
+        return res(
+          ctx.json({})
+        );
+      }),
+      rest.put(`${process.env.REACT_APP_URL}/pact/1/post/1/comment/1/downvote`, (req, res, ctx) => {
+        postVoted=true;
         return res(
           ctx.json({})
         );
@@ -159,7 +172,33 @@ describe("CommentCard Tests", () => {
       const likeBtn = await screen.findByTestId("ThumbUpRoundedIcon");
       fireEvent.click(likeBtn);
 
-      await waitFor(() => expect(postLiked).toBe(true));
+      await waitFor(() => expect(postVoted).toBe(true));
+    });
+
+    it("comment voting callback function is called when comment is disliked via Voter component", async () => {
+      const dislikeBtn = await screen.findByTestId("ThumbDownRoundedIcon");
+      fireEvent.click(dislikeBtn);
+
+      await waitFor(() => expect(postVoted).toBe(true));
+    });
+
+    it("should create a new child comment when replied to", async () => {
+      const COMMENT_TEXT = "hello";
+      const reply = await screen.findByTestId("reply-button");
+      fireEvent.click(reply);
+
+      const input = await screen.findByRole("textbox", {
+				name: "Comment",
+			});
+      fireEvent.change(input, { target: { value: COMMENT_TEXT } });
+
+      const submit = await screen.findByTestId("submit-button");
+      fireEvent.click(submit);
+
+      await waitFor(() => expect(submit).not.toBeDisabled())
+      await waitFor(() => expect(input).not.toBeInTheDocument());
+
+      await screen.findByText("Show replies");
     });
   });
 });
