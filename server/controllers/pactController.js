@@ -125,7 +125,7 @@ module.exports.getPact = async (req, res) => {
  * @param {Response} res - The response to the request
  * @async
  */
-module.exports.updatePact = async(req, res) => {
+module.exports.editPact = async(req, res) => {
 	let status = undefined;
 	const jsonErrors = [];
 	let resMessage = null;
