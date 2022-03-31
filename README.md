@@ -21,7 +21,7 @@ The project consists of two applications. A React app that the client interacts 
 
 ## Deployed version of the application
 
-The deployed version of the application can be found at [pacto.co.uk](http://pacto.co.uk:3000).
+The deployed version of the application can be found at [pacto.co.uk](https://pacto.co.uk).
 
 ## Access credentials for viewing different roles
 
