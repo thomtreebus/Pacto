@@ -107,7 +107,16 @@ module.exports.deleteComment = async (req, res) => {
 
     await req.comment.save();
 
-    await req.comment.populate({path: "author", model: User});
+    await req.comment.populate(
+      {
+        path: "author",
+        model: User,
+        select: [
+          "firstName",
+          "lastName",
+        ]
+      }
+    );
     await req.comment.populate({path: "parentComment", model: Comment});
     await req.comment.populate({path: "childComments", model: Comment});
 
