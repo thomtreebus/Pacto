@@ -24,7 +24,7 @@ const comment = {
     text: "lorem ispum",
     type: "text",
     _id: 1,
-    comments: [],
+    comments: [{_id: 1}],
     pact : { _id: 1 }
   },
   author: users[0],
