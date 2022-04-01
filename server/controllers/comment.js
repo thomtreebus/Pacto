@@ -44,10 +44,6 @@ const makeComment = async(req, res, parentComment=undefined) => {
       await parentComment.save();
     }
 
-    await comment.populate({path: "author", model: User});
-    await comment.populate({path: "parentComment", model: Comment});
-    await comment.populate({path: "childComments", model: Comment});
-
     if ((req.user._id.toString() !== req.post.author._id.toString())) {
       const parentCommentIsNotPostAuthor = parentComment && (parentComment.author !== req.post.author._id.toString())
       // if:  parent author is not defined ( Comment is replying directly to main post )
