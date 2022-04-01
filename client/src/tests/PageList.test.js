@@ -1,24 +1,19 @@
-import { fireEvent, render, screen } from "@testing-library/react";
-import { waitForElementToBeRemoved } from "@testing-library/react";
+/**
+ * Tests for the page list that is used in the sidebar.
+ */
+
+import { fireEvent, screen } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import PageList from "../components/PageList";
-import MockComponent from "./utils/MockComponent";
-import { rest } from "msw";
-import { setupServer } from "msw/node";
-import users from "./utils/testUsers";
 import { useMockServer } from "./utils/useMockServer";
+import mockRender from "./utils/mockRender";
 
 describe("Page List Tests", () => {
+	let history;
 	const server = useMockServer();
 
 	beforeEach(async () => {
-		render(
-			<MockComponent>
-				<PageList />
-			</MockComponent>
-		);
-
-		await waitForElementToBeRemoved(() => screen.getByText("Loading"));
+		history = await mockRender(<PageList />);
 	});
 
 	describe("Check elements are rendered", () => {
@@ -51,7 +46,7 @@ describe("Page List Tests", () => {
 			pages.forEach((page) => {
 				const linkElement = screen.getByText(page.text);
 				fireEvent.click(linkElement);
-				expect(window.location.pathname).toBe(page.url);
+				expect(history.location.pathname).toBe(page.url);
 			});
 		});
 	});

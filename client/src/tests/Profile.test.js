@@ -1,16 +1,16 @@
-import { render, screen , waitFor } from "@testing-library/react";
-import { waitForElementToBeRemoved } from "@testing-library/react";
-import MockComponent from "./utils/MockComponent";
+/**
+ * Tests for the user profile page.
+ */
+
+import { screen , waitFor } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import { rest } from "msw";
-import { setupServer } from "msw/node";
-import {Route, Router} from "react-router-dom";
+import {Route} from "react-router-dom";
 import Profile from "../pages/Profile";
 import userEvent from "@testing-library/user-event";
-import {queryClient} from './utils/MockComponent'
-import { createMemoryHistory } from 'history';
 import pacts from "./utils/testPacts";
 import { useMockServer } from "./utils/useMockServer";
+import mockRender from "./utils/mockRender";
 
 const user = {
     pacts: [],
@@ -43,10 +43,27 @@ const user = {
     instagram: "pactoInsta",
     linkedin: "pactlinked",
     phone: "pactphone",
+}
+
+  const MockUserProfilePage = () => {
+    return (
+      <>
+       <Route exact path="/user/:id">
+          <Profile />
+        </Route>
+        <Route exact path="/edit-profile">
+          <h1>Redirected to edit-profile</h1>
+        </Route>
+        <Route exact path="/not-found">
+          <h1>Redirected to not-found</h1>
+        </Route>
+      </>
+    )
   }
 
+
 describe("Profile Page Tests", () => {
-  let history = undefined;
+  let history;
   const server = useMockServer();
 
   beforeEach(async () => {
@@ -85,25 +102,7 @@ describe("Profile Page Tests", () => {
   });
 
   const renderWithMock = async () => {
-    history = createMemoryHistory({initialEntries:[`/user/${user._id}`]})
-
-    render(
-      <MockComponent>
-        <Router history={history}>
-          <Route exact path="/user/:id">
-            <Profile />
-          </Route>
-          <Route exact path="/edit-profile">
-            <h1>Redirected to edit-profile</h1>
-          </Route>
-          <Route exact path="/not-found">
-            <h1>Redirected to not-found</h1>
-          </Route>
-        </Router>
-
-      </MockComponent>
-    );
-    await waitForElementToBeRemoved(() => screen.getByText("Loading"));
+    history = await mockRender(<MockUserProfilePage/>, `/user/${user._id}`);
   }
 
   describe("Tests with user who had socials", () => {
@@ -125,8 +124,26 @@ describe("Profile Page Tests", () => {
         expect(name).toBeInTheDocument();
       });
 
-      it("should render the user's course and Uni", async () => {
+      it("should render the user's course and Uni when user has course", async () => {
         const subText = await screen.findByText(`${user.course} student at ${user.university.name}`);
+        expect(subText).toBeInTheDocument();
+      });
+
+      it("should render the user's Uni if the user has no course", async () => {
+        const user2 = user;
+        user2.course = undefined;
+        server.use(
+          rest.get(`${process.env.REACT_APP_URL}/me`, (req, res, ctx) => {
+            return res(
+              ctx.json({
+                message: user2,
+                errors: []
+              })
+            );
+          })
+        );
+        await renderWithMock();
+        const subText = await screen.findByText(`Student at ${user.university.name}`);
         expect(subText).toBeInTheDocument();
       });
 

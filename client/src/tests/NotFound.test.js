@@ -1,3 +1,7 @@
+/**
+ * Tests for the not found page.
+ */
+
 import NotFound from "../pages/NotFound";
 import { render, screen } from "@testing-library/react";
 import "@testing-library/jest-dom";

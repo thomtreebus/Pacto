@@ -1,16 +1,18 @@
-import { fireEvent, render, screen } from "@testing-library/react";
-import { waitForElementToBeRemoved } from "@testing-library/react";
-import MockComponent from "./utils/MockComponent";
+/**
+ * Tests for the left and the mobile side bar.
+ */
+
+import { fireEvent, screen } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import { rest } from "msw";
-import { setupServer } from "msw/node";
 import pacts from "./utils/testPacts";
 import LeftSideBar from "../components/LeftSideBar";
 import { useMockServer } from "./utils/useMockServer"
+import mockRender from "./utils/mockRender";
 
 describe("Left Sidebar tests", () => {
+	let history;
 	const server = useMockServer();
-
 
 	beforeEach(async () => {
 		server.use(
@@ -30,17 +32,8 @@ describe("Left Sidebar tests", () => {
 		);
 	});
 
-	const renderWithMock = async () => {
-		render(
-			<MockComponent>
-				<LeftSideBar />
-			</MockComponent>
-		);
-		await waitForElementToBeRemoved(() => screen.getByText("Loading"));
-	};
-
 	beforeEach(async () => {
-		await renderWithMock();
+		history = await mockRender(<LeftSideBar />);
 	});
 
 	describe("Sidebar default state", () => {

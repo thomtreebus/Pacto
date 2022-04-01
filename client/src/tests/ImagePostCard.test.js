@@ -1,3 +1,7 @@
+/**
+ * Tests for the image post card.
+ */
+
 import { render, screen } from "@testing-library/react";
 import ImagePostCard from "../components/cards/ImagePostCard";
 import "@testing-library/jest-dom";

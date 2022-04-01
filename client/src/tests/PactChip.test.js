@@ -1,3 +1,7 @@
+/***
+ * Tests for the pact chip / the logic for category display.
+ */
+
 import { render, screen } from "@testing-library/react";
 import PactChip from "../components/PactChip";
 import "@testing-library/jest-dom";

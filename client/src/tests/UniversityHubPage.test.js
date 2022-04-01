@@ -1,13 +1,17 @@
+/**
+ * Tests for the university hub page.
+ */
+
 import UniversityHubPage from "../pages/UniversityHubPage";
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
-import { waitForElementToBeRemoved } from "@testing-library/react";
+import { screen, fireEvent, waitFor } from "@testing-library/react";
 import "@testing-library/jest-dom";
-import MockComponent from "./utils/MockComponent";
 import { rest } from "msw";
 import pacts from "./utils/testPacts";
 import { useMockServer } from "./utils/useMockServer";
+import mockRender from "./utils/mockRender";
 
 describe("University Hub Tests", () => {
+	let history;
 	const server = useMockServer();
 
 	beforeEach(async () => {
@@ -24,12 +28,7 @@ describe("University Hub Tests", () => {
 	});
 
 	beforeEach(async () => {
-		render(
-			<MockComponent>
-				<UniversityHubPage />
-			</MockComponent>
-		);
-		await waitForElementToBeRemoved(() => screen.getByText("Loading"));
+		history = await mockRender(<UniversityHubPage/>);
 	});
 
 	describe("Check elements are rendered", () => {
@@ -143,7 +142,7 @@ describe("University Hub Tests", () => {
 				const fab = screen.getByTestId(/floating/i);
 				fireEvent.click(fab);
 				await waitFor(() =>
-					expect(window.location.pathname).toBe("/create-pact")
+					expect(history.location.pathname).toBe("/create-pact")
 				);
 			});
 		});

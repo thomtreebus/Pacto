@@ -2,13 +2,21 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const { POST_MESSAGES } = require('../helpers/messages')
 
-// function returns true if the given string is a valid type name
+/**
+ * Check if the given string is a valid type name (link, image or text).
+ * @param {String} str - The given type name
+ * @returns true if the given string is a valid type name
+ */
 const isValidType = (str) => {
   const regex = /^(link|image|text)$/;
   return regex.test(str);
 };
 
-// function returns true if the given url is a valid url and type is link
+/**
+ * Checks if the given url is a valid url and the type of the post is link
+ * @param {String} str - The URL
+ * @returns true if the given url is a valid url and the type of the post is link
+ */
 function isValidHttpUrl(str) {
   // if type is not link, we don't care about the url string
   if(this.type === "link") {
@@ -24,6 +32,13 @@ function isValidHttpUrl(str) {
   }
 };
 
+/**
+ * Post model for pact posts. Posts can be of 3 different types: text, image, and link
+ * Text posts have a piece of text as body
+ * Image posts display an image
+ * Link posts are used to share a URL
+ * The model stores information about the post as well as the post's comments
+ */
 const PostSchema = mongoose.Schema({
   pact: {
     type: Schema.Types.ObjectId,
@@ -77,6 +92,7 @@ const PostSchema = mongoose.Schema({
     ]
   },
 
+  // Net number of upvotes/downvotes
   votes: {
     type: Number,
     required: [true, POST_MESSAGES.NO_VOTES],

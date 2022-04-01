@@ -1,7 +1,14 @@
+/**
+ * Message to tell that something is already in use.
+ * Used by the errorHandler.
+ */
 UNIQUE_MESSAGE = "already in use";
-
 module.exports.UNIQUE_MESSAGE = UNIQUE_MESSAGE;
 
+/**
+ * General error messages concerning fields of users,
+ * passwords, login, verification and authentication.
+ */
 module.exports.MESSAGES = {
 	FIRST_NAME: {
 		BLANK: "First name is a required field",
@@ -46,6 +53,9 @@ module.exports.MESSAGES = {
 	},
 };
 
+/**
+ * Error messages about pacts.
+ */
 module.exports.PACT_MESSAGES = {
 	IS_BANNED_USER: "You have been banned from this pact cannot join!",
 	NAME: {
@@ -91,6 +101,9 @@ module.exports.PACT_MESSAGES = {
 	},
 };
 
+/**
+ * Error messages about posts.
+ */
 module.exports.POST_MESSAGES = {
 	NOT_FOUND: "Post not found",
 	NOT_AUTHORISED: {
@@ -134,6 +147,9 @@ module.exports.NOTIFICATION_MESSAGES = {
 	OTHER_USER: "Can not mark a notification as read for another user"
 }
 
+/**
+ * Error messages about friends.
+ */
 module.exports.FRIEND_MESSAGES = {
 	NOT_FOUND: "The user is not found",
 	NOT_FRIEND: "The user exists but is not a friend",
@@ -152,6 +168,9 @@ module.exports.FRIEND_MESSAGES = {
 	}
 };
 
+/**
+ * Error messages about comments.
+ */
 module.exports.COMMENT_MESSAGES = {
   NOT_FOUND: "Comment not found",
   NOT_AUTHORISED: {
@@ -164,6 +183,9 @@ module.exports.COMMENT_MESSAGES = {
   DELETED_COMMENT_TEXT: "[DATA EXPUNGED]"
 }
 
+/**
+ * Error messages about users.
+ */
 module.exports.USER_MESSAGES = {
 	NOT_AUTHENTICATED: "Post not found",
 	DOES_NOT_EXIST: "User does not exist",

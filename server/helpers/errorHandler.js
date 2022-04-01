@@ -1,15 +1,28 @@
 const { jsonError } = require("../helpers/responseHandlers");
 const { UNIQUE_MESSAGE } = require("../helpers/messages");
 
+/**
+ * Capitilises the 1st letter of the given word
+ * @param {String} word 
+ * @returns The capitalised word
+ */
 const capitaliseFirstLetter = (word) => {
   return (word.charAt(0).toUpperCase() + word.slice(1));
 }
 
+/**
+ * Helper method, constructs the String "(field name) is already in use."
+ * @param {String} field 
+ * @returns The string
+ */
 const getUniqueError = (field) => {
   return `${field !== 'uniEmail' ?  capitaliseFirstLetter(field) : 'Email' } ${UNIQUE_MESSAGE}`
 }
 
-// Helper function returns to give us errors as a json array.
+/**
+ * Helper function, returns errors as a json array.
+ * @param {[Error]} err - List of errors
+ */
 const errorHandler = (err) => {
   let fieldErrors = [];
 	if(err.code === 11000){
@@ -25,7 +38,10 @@ const errorHandler = (err) => {
   return fieldErrors;
 }
 
-// Helper function returns a list of errors in an easily readable format.
+/**
+ * Helper function, returns a list of errors in an easily readable format.
+ * @param {[Error]} err - List of errors
+ */
 const getErrorList = (err) => {
   let jsonErrors = [];
   const allErrors = errorHandler(err);

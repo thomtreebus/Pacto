@@ -1,3 +1,7 @@
+/**
+ * Tests for the link variant of the post cards.
+ */
+
 import { render, screen } from "@testing-library/react";
 import LinkPostCard from "../components/cards/LinkPostCard";
 import "@testing-library/jest-dom";
