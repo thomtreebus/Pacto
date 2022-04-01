@@ -3,7 +3,7 @@
  * of existing posts. 
  */
 
-import { render, screen, fireEvent, waitFor, cleanup, waitForElementToBeRemoved } from "@testing-library/react";
+import { screen, fireEvent, waitFor, cleanup } from "@testing-library/react";
 import BasePostCard from "../components/cards/BasePostCard";
 import "@testing-library/jest-dom";
 import { useMockServer } from "./utils/useMockServer";
