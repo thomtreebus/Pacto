@@ -76,7 +76,7 @@ const makeComment = async(req, res, parentComment=undefined) => {
  * @param {Response} res - The response to the request
  * @async
  */
-module.exports.commentPost = async (req, res) => {
+module.exports.createComment = async (req, res) => {
   await makeComment(req,res);
 }
 
@@ -87,7 +87,7 @@ module.exports.commentPost = async (req, res) => {
  * @param {Response} res - The response to the request
  * @async
  */
-module.exports.commentReplyPost = async (req, res) => {
+module.exports.createReplyToComment = async (req, res) => {
   await makeComment(req,res,req.comment);
 }
 
@@ -99,7 +99,7 @@ module.exports.commentReplyPost = async (req, res) => {
  * @param {Response} res - The response to the request
  * @async
  */
-module.exports.commentDelete = async (req, res) => {
+module.exports.deleteComment = async (req, res) => {
   if(!(req.pact.moderators.includes(req.user._id.toString()) || req.comment.author.toString()===req.user._id.toString())){
     res.status(401).json(jsonResponse(null, [jsonError(null, COMMENT_MESSAGES.NOT_AUTHORISED.MODIFY)]));
     return;
@@ -128,7 +128,7 @@ module.exports.commentDelete = async (req, res) => {
  * @param {Response} res - The response to the request
  * @async
  */
-module.exports.commentGet = async (req, res) => {
+module.exports.getComment = async (req, res) => {
   try {
     const comment = req.comment;
     await comment.populate({path: "author", model: User});
@@ -147,7 +147,7 @@ module.exports.commentGet = async (req, res) => {
  * @param {Response} res - The response to the request
  * @async
  */
-module.exports.commentUpvotePut = async (req, res) => {
+module.exports.upvoteComment = async (req, res) => {
   try {
     const comment = req.comment;
     await upvote(comment, req.user);
@@ -168,7 +168,7 @@ module.exports.commentUpvotePut = async (req, res) => {
  * @param {Response} res - The response to the request
  * @async
  */
-module.exports.commentDownvotePut = async (req, res) => {
+module.exports.downvoteComment = async (req, res) => {
   try {
     const comment = req.comment;
     await downvote(comment, req.user);

@@ -15,7 +15,7 @@ const getPreview = require("../helpers/LinkCache");
  * @param {Response} res - The response to the request
  * @async
  */
-module.exports.postPost = async (req, res) => {
+module.exports.createPost = async (req, res) => {
 	try {
     const user = req.user;
     const { title, text, image, link, type } = req.body;
@@ -39,7 +39,7 @@ module.exports.postPost = async (req, res) => {
  * @param {Response} res - The response to the request
  * @async
  */
-module.exports.postGet = async (req, res) => {
+module.exports.getPost = async (req, res) => {
 	let post = null;
 	try {
 		post = await Post.findOne({ pact: req.pact, _id:req.params.postId });
@@ -83,7 +83,7 @@ module.exports.postGet = async (req, res) => {
  * @param {Response} res - The response to the request
  * @async
  */
-module.exports.upvotePostPut = async (req, res) => {
+module.exports.upvotePost = async (req, res) => {
 	try {
 		// Checking post exists
 		const post = await Post.findOne({ pact: req.pact, _id:req.params.postId });
@@ -123,7 +123,7 @@ module.exports.upvotePostPut = async (req, res) => {
  * @param {Response} res - The response to the request
  * @async
  */
-module.exports.downvotePostPut = async (req, res) => {
+module.exports.downvotePost = async (req, res) => {
 	try {
 		// Checking post exists
 		const post = await Post.findOne({ pact: req.params.pactId, _id:req.params.postId });
@@ -162,7 +162,7 @@ module.exports.downvotePostPut = async (req, res) => {
  * @param {Response} res - The response to the request
  * @async
  */
-module.exports.postDelete = async (req, res) => {
+module.exports.deletePost = async (req, res) => {
 	let status = 400;
 	try {
 		let post = null;
