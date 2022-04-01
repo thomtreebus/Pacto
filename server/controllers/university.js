@@ -48,12 +48,18 @@ module.exports.getSearchResults = async (req, res) => {
 		const matchingUserIds = partialMatchingUsers.map((user) => user._id);
 		const users = await User.find({ _id: { $in: matchingUserIds } });
 
-		// Find all posts matching the query string
-		const uniPacts = await Pact.find({ university: university._id });
+		// Find all posts matching the query string (only posts of pacts a user is member of)
+		const user = req.user
+		const userPacts = await Pact.find({ members: user._id });	// Pacts that a user is member of
 		const posts = await Post.find({
-			pact: { $in: uniPacts },
 			title: { $regex: new RegExp(searchQuery, "i") },
+			pact: { $in: userPacts },
 		});
+
+		// Limit results to only display top 50 of each 
+		posts.slice(0, 50);
+		pacts.slice(0, 50);
+		users.slice(0, 50);
 
 		// Populate pact in posts
 		for (let i = 0; i < posts.length; i++) {

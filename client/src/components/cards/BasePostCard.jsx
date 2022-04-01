@@ -10,7 +10,7 @@ import { IconButton } from "@mui/material";
 import { useState } from "react";
 import ErrorMessage from "../ErrorMessage";
 
-export default function BasePostCard({ children, post, numComments = null }) {
+export default function BasePostCard({ children, post, numComments = null, showPact = false }) {
 	const { user, silentUserRefresh } = useAuth();
 	const commentCount = numComments === null ? post.comments.length : numComments;
 	const [isButtonDisabled, setIsButtonDisabled] = useState(false);
@@ -88,7 +88,14 @@ export default function BasePostCard({ children, post, numComments = null }) {
 								>
 									{post.author.firstName + " " + post.author.lastName}
 								</span>{" "}
-								{relativeTime(post.createdAt)}
+								{relativeTime(post.createdAt) + " "}
+								{showPact && <span
+									onClick={() => history.push(`/pact/${post.pact._id}`)}
+									className="link"
+									data-testid="pact"
+								>
+									{`in ${post.pact.name}`}
+								</span>}
 							</Typography>
 
 							<Typography variant="h6" data-testid="title" className="link" onClick={() => {

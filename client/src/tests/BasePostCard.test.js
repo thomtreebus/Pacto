@@ -86,12 +86,22 @@ describe("BasePostCard Tests", () => {
     });
 
     it("should render comments number with singular for 1", async () => {
-      document.body.innerHTML = "";
+      document.body.innerHTML = ""; // clear render
       const postCopy = {...post};
       postCopy.comments = [0];
       history = await mockRender(<BasePostCard post={postCopy} />);
       const comments = await screen.findByTestId("comments");
       expect(comments.innerHTML).toContain("1 Comment");
+    });
+
+    it("should render pact name if showPact is true", async () => {
+      document.body.innerHTML = ""; // clear render
+      render(
+        <MockComponent>
+          <BasePostCard post={post} showPact={true}/>
+        </MockComponent>
+      );
+      await screen.findByTestId("pact");
     });
 
     it("should render comment icon", async () => {
@@ -190,6 +200,18 @@ describe("BasePostCard Tests", () => {
       expect(deleteBtn).toBeDisabled();
       const errorMessage = await screen.findByText("Error");
       expect(errorMessage).toBeInTheDocument();
+    });
+
+    it("should redirect to pact if pact name is clicked", async () => {
+      document.body.innerHTML = ""; // clear render
+      render(
+        <MockComponent>
+          <BasePostCard post={post} showPact={true}/>
+        </MockComponent>
+      );
+      const pactName = await screen.findByTestId("pact");
+      fireEvent.click(pactName);
+      expect(window.location.pathname).toBe("/pact/5");
     });
   });
 });
