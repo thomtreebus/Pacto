@@ -37,7 +37,7 @@ export default function Feed() {
     {error && <ErrorPage />}
     <Box sx={{width: "95%", marginInline: "auto", display: "flex"}} justifyContent="center">
       <Grid item xs={12} lg={10} data-testid="comment-list">
-        {posts && <PostList posts={posts}/>}
+        {posts && <PostList posts={posts} showPact={true}/>}
       </Grid>
     </Box>
     </>
