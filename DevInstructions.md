@@ -139,13 +139,22 @@ Install the required packages with npm
 ```
 $ npm install
 ```
-Start the database 
+To be able to run the database, we need to give Docker read and write privileges for the User class (i.e. the file owner), the Group class (i.e. the group owning the file) and the Others class. To do this, we must change its mode:
+
+```
+$ sudo chmod 666 /var/run/docker.sock
+```
+Afterwards, we must enable the Docker socket.
+```
+$ sudo systemctl enable --now docker
+```
+Then we run need to start the server
 ```
 $ npm run dbstart
 ```
-If that doesn't run try running the same command with sudo
+If that doesn't run try running the same command with sudo privileges
 ```
-$ sudo run npm dbstart
+$ sudo npm run dbstart
 ```
 Once the database is running, you can start the application
 ```
