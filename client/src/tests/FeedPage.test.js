@@ -6,9 +6,7 @@ import { screen } from "@testing-library/react";
 import Feed from "../pages/Feed";
 import "@testing-library/jest-dom";
 import { rest } from "msw";
-import MockComponent from "./utils/MockComponent";
-import { Router, Route } from "react-router-dom";
-import { createMemoryHistory } from 'history';
+import { Route } from "react-router-dom";
 import { useMockServer } from "./utils/useMockServer";
 import mockRender from "./utils/mockRender";
 

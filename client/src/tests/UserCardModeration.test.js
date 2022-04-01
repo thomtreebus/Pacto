@@ -4,7 +4,6 @@
 
 import { screen, fireEvent, waitFor } from "@testing-library/react";
 import "@testing-library/jest-dom";
-import MockComponent from "./utils/MockComponent";
 import {rest} from "msw";
 import testUsers from "./utils/testUsers"
 import UserCardModeration from "../components/UserCardModeration";
