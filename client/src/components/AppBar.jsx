@@ -169,6 +169,7 @@ export default function PrimarySearchAppBar({ handleDrawerToggle }) {
 						<StyledInputBase
 							placeholder="Search…"
 							value={search}
+							data-testid="appbar-search"
 							onChange={(e) => setSearch(e.target.value)}
 							inputProps={{ "aria-label": "search" }}
 							onKeyDown={keyPress}

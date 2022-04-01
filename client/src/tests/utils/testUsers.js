@@ -14,7 +14,7 @@ const users = [
         bio: "Zawuug hovseb okemewuf paifjow wozibcul pe eto jajseda oki bal kub fej iweto. Du rom hibipi fousnu guka rug omzof kef nomeupe wegpukig jil jemdabtam cidbec. Ci givu tecuj nawarewa umaju on nafe ke osudu vaovo piltakho sojnaze dibun ma zuadiav. Abu adtenazu ho wos af pezo vizwuh zogo luhhirub ju one duri olane del awusebjuw ahifoza edoedjaj. Te hela va ro kedfuza hatipde inalocod ugo maglihhuj locu jutu ar nuzpov fazakkir jotus. Tetjewi rijodwul unasi ba mat mo surpa okajis kifim pavov tetof aksi gokona.",
         course: "Physics",
         firstName: "Pac",
-        friends: ["2"],
+        friends: [3],
         hobbies: ['Studying', 'Sleeping'],
         image: "http://res.cloudinary.com/djlwzi9br/image/upload/v1647542156/n6ds0kmqlhsgtt4ukrym.png",
         instagram: "Pac.To",

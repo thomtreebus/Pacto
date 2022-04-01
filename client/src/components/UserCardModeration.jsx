@@ -105,6 +105,7 @@ export default function UserCardModeration({user, pact, showBannedUsers}) {
           <CardHeader
             avatar={
               <Avatar
+                data-testid="user-image-avatar"
                 src={user.image}
                 alt="user-image"
                 onClick={handleViewButtonClick}

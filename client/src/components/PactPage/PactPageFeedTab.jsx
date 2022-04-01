@@ -168,7 +168,7 @@ export default function PactPageFeedTab({pact}){
               {"Create Post"}
             </DialogTitle>
             <DialogContent>
-              <CreatePostCard pactID={pact._id} />
+              { pact && <CreatePostCard pactID={pact._id} /> }
             </DialogContent>
           </Dialog>
         </Box>
