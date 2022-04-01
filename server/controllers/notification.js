@@ -8,11 +8,6 @@ module.exports.getNotifications = async (req, res) => {
   try {
     notifications = await Notification.find({ user: req.user._id });
     try {
-      for (let i = 0; i < notifications.length; i++) {
-        const notification = notifications[i];
-        await notification.populate({ path: 'user', model: User});
-      }
-      
 			res.status(200).json(jsonResponse(notifications, []));
 		} 
 		catch (err) {
