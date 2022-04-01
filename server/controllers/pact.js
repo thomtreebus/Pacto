@@ -345,10 +345,12 @@ module.exports.leavePact = async (req, res) => {
 async function deleteAllComments(comments) {
 	for (let i = 0; i < comments.length; i++) {
 		const actual = await Comment.findById(comments[i]._id);
-		if(actual.childComments !== undefined && actual.childComments !== null && actual.childComments.length !== 0) {
-			await deleteAllComments(actual.childComments);
+		if(actual){
+			if (actual.childComments !== undefined && actual.childComments !== null && actual.childComments.length !== 0) {
+				await deleteAllComments(actual.childComments);
+			}
+			await Comment.findByIdAndDelete(actual._id);
 		}
-		await Comment.findByIdAndDelete(actual._id);
 	}
 }
 
@@ -376,10 +378,12 @@ module.exports.deletePact = async (req, res) => {
 			// Delete all posts and comments
 			for (let i = 0; i < pact.posts.length; i++) {
 				const actual = await Post.findById(pact.posts[i]._id);
-				if(actual.comments !== undefined && actual.comments !== null && actual.comments.length > 0) {
-					await deleteAllComments(actual.comments);
+				if(actual){
+					if (actual.comments !== undefined && actual.comments !== null && actual.comments.length > 0) {
+						await deleteAllComments(actual.comments);
+					}
+					await Post.findByIdAndDelete(actual._id);
 				}
-				await Post.findByIdAndDelete(actual._id);
 			}
 			await University.findByIdAndUpdate(req.user.university._id, { $pull: { pacts: pact._id } });
 			// Delete the pact itself

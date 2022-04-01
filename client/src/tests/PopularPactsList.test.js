@@ -36,12 +36,12 @@ describe("Popular Pact List tests", () => {
 		);
 	});
 
-	it("shows unjoined pact with the most memebers first", async () => {
+	it("shows unjoined pact with the most members first", async () => {
 		await mockRender(<PopularPactsList />);
 		await waitForElementToBeRemoved(() => screen.getByText("Loading Pacts..."));
 		const items = screen.getAllByTestId("item");
 		expect(items.length).toBe(3);
-		// The pacts in order according to the number of memebers
+		// The pacts in order according to the number of members
 		expect(items[0].textContent).toBe(pacts[2].name);
 		expect(items[1].textContent).toBe(pacts[0].name);
 		expect(items[2].textContent).toBe(pacts[1].name);
