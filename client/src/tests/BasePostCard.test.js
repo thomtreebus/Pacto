@@ -117,5 +117,17 @@ describe("BasePostCard Tests", () => {
       fireEvent.click(comments);
       expect(window.location.pathname).toBe("/pact/5/post/1");
     });
+
+    it("should redirect to pact if pact name is clicked", async () => {
+      document.body.innerHTML = ""; // clear render
+      render(
+        <MockComponent>
+          <BasePostCard post={post} showPact={true}/>
+        </MockComponent>
+      );
+      const pactName = await screen.findByTestId("pact");
+      fireEvent.click(pactName);
+      expect(window.location.pathname).toBe("/pact/5");
+    });
   });
 });
