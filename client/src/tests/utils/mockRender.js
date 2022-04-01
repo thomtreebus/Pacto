@@ -1,5 +1,5 @@
 /**
- * A helper file conatining the render mock function. This helps
+ * A helper file containing the render mock function. This helps
  * facilitate the rendering of constructed mock components from the
  * test files.
  */
@@ -11,7 +11,7 @@ import MockComponent from "./MockComponent";
 import { render, screen } from "@testing-library/react";
 
 /**
- * Renders the component wrapped in the MockCoponents and can be awaited
+ * Renders the component wrapped in the MockComponents and can be awaited
  * so that execution is blocked until after the component has finished loading.
  *
  * @param element The element we want to render within the MockComponent.

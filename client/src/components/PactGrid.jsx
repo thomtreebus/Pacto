@@ -13,7 +13,7 @@ export default function PactGrid({ pacts }) {
 	if (pacts.length === 0) {
 		return (
 			<Typography variant="subtitle1" sx={{ textAlign: "center" }}>
-				The are currently no pacts avaliable
+				The are currently no pacts available
 			</Typography>
 		);
 	}

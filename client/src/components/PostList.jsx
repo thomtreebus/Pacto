@@ -66,10 +66,10 @@ export default function PostList({ posts, searchable=true, showPact=false }) {
       </Grid>
       <Grid item width="100%">
 
-        {!orderablePosts.length ? 
+        {!orderablePosts.length ?
           (
             <Typography variant="subtitle1" sx={{ textAlign: "center" }}>
-              There are no posts avaliable
+              There are no posts available
             </Typography>
           )
         :

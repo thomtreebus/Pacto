@@ -1,5 +1,5 @@
 /**
- * Tests for the basee post card componnent which wraps the the different types
+ * Tests for the base post card component which wraps the different types
  * of existing posts. 
  */
 

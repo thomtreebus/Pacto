@@ -26,7 +26,7 @@ describe("PactGrid Tests", () => {
 		expect(joinButton).not.toBeInTheDocument();
 	});
 
-	it("Renders a single unjoined pact when user has not joined the pact", async () => {
+	it("Renders a single un-joined pact when user has not joined the pact", async () => {
 		await mockRender(<PactGrid pacts={[pacts[1]]} />);
 		const viewButton = screen.queryByText(/View/i);
 		const joinButton = screen.queryByText(/Join/i);
@@ -34,7 +34,7 @@ describe("PactGrid Tests", () => {
 		expect(joinButton).toBeInTheDocument();
 	});
 
-	it("Renders both an unjoined pact and joined pact when user is in at least one pact but not all", async () => {
+	it("Renders both an un-joined pact and joined pact when user is in at least one pact but not all", async () => {
 		await mockRender(<PactGrid pacts={[pacts[1], pacts[0]]} />);
 		const viewButton = screen.queryByText(/View/i);
 		const joinButton = screen.queryByText(/Join/i);

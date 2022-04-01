@@ -1,7 +1,7 @@
 # Testing Report
 This report explains the various activities performed as part of testing the Major Group Project application.
 
-The finished product, Pacto, is a social networking application aimed at students attending universities in the United Kingdrom. Pacto consists of two applications: a front-end client application and a server-side API. Both parts of the final application were tested separately and they each have an individual testing suite. 
+The finished product, Pacto, is a social networking application aimed at students attending universities in the United Kingdom. Pacto consists of two applications: a front-end client application and a server-side API. Both parts of the final application were tested separately and they each have an individual testing suite. 
 
 ## Testing Scope
 - **In-Scope**: Functional testing for all features including user-facing and server-side functionality
@@ -13,10 +13,10 @@ The finished product, Pacto, is a social networking application aimed at student
   - Notifications
   - Search
   
-  Running development application on different operating systems (Windows, MacOS, Linux)
+  Running development application on different operating systems (Windows, macOS, Linux)
   
   User Acceptance Testing (UAT) - Ensure that  software solves the problem initially set out to solve
-- **Out of Scope**: Performance testing was not done for this application. This includes measuring loading times and operating under heavy loads (large number of users, frequent requests, etc.). It was not possible to test the system for performance due to the limitations of certain third party services that are used (ex. free APIs with limited number of requests/bandwith allowed).
+- **Out of Scope**: Performance testing was not done for this application. This includes measuring loading times and operating under heavy loads (large number of users, frequent requests, etc.). It was not possible to test the system for performance due to the limitations of certain third party services that are used (ex. free APIs with limited number of requests/bandwidth allowed).
 
 ## Metrics
 |     | Test Cases Executed      | Test Cases Passed | Code Coverage |
@@ -25,7 +25,7 @@ The finished product, Pacto, is a social networking application aimed at student
 | Server | 297  |   297     |  |
 
 ## Client Testing
-The client application was created using [React](https://reactjs.org/) and automated testing was done using [Jest](https://testing-library.com/docs/react-testing-library/intro). [React Testing Library](https://testing-library.com/docs/react-testing-library/intro/) was used in order to test all of the components and pages. 
+The client application was created using [React](https://reactjs.org/) and automated testing was done using [Jest](https://testing-library.com/docs/react-testing-library/intro). [React Testing Library](https://testing-library.com/docs/react-testing-library/intro/) was used in order to test all the components and pages. 
 
 In order to run the automated tests, run the following command from within the client directory:
 ```
@@ -44,7 +44,7 @@ In order to view the automated test coverage in the terminal, run the following 
 ```
 $ npm run coverage
 ```
-Running coverage will create a new directory (within the directory that coverage was run in) called `coverage`. Within this directory, an html report is created that shows the test coverage in detail. The report is located at `/coverage/lcov-report/index.html`
+Running coverage will create a new directory (within the directory that coverage was run in) called `coverage`. Within this directory, a html report is created that shows the test coverage in detail. The report is located at `/coverage/lcov-report/index.html`
 
 The coverage for the client application currently looks like this:
 <p align="center">

@@ -8,13 +8,13 @@ import { setupServer } from "msw/node";
 import testUsers from "./testUsers";
 
 /**
- * A test hook that can be simply be called inside of describe statement. 
- * It handles the creation of a default /me route usign user[0] from test users
+ * A test hook that can be simply be called inside a describe statement.
+ * It handles the creation of a default /me route using user[0] from test users
  * as well clean up after every single test.
  * 
- * @returns Returns the default configured server. Can be overriden with .use()
+ * @returns Returns the default configured server. Can be overridden with .use()
  * but the overriding is reset on every test put the overriding in beforeEach()
- * to acheieve a permanant override effect.
+ * to achieve a permanent override effect.
  */
 export const useMockServer = () => {
 	const server = setupServer(

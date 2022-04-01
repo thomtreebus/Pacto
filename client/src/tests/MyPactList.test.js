@@ -1,5 +1,5 @@
 /**
- * Tests for the my pacts list component.
+ * Tests for the "my pacts list" component.
  */
 
 import { screen } from "@testing-library/react";

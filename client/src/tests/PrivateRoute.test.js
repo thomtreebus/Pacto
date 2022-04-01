@@ -1,5 +1,5 @@
 /**
- * Tests for a the costum implementation of route private route. 
+ * Tests for the custom implementation of route private route.
  */
 
 import { screen } from "@testing-library/react";

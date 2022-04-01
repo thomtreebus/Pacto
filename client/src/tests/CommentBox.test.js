@@ -12,10 +12,10 @@ import mockRender from "./utils/mockRender";
 const COMMENT_TEXT = "amet officia molestias esse!";
 
 let mockBeenCalled = false;
-let parameterRecievedByMock = null;
+let parameterReceivedByMock = null;
 const mockSuccessHandler = (msg) => {
   expect(msg.text).toEqual(COMMENT_TEXT);
-  parameterRecievedByMock = msg;
+  parameterReceivedByMock = msg;
   mockBeenCalled = true;
 }
 
@@ -73,7 +73,7 @@ describe("CommentBox Tests", () => {
 	});
 
   beforeEach(async () => {
-    parameterRecievedByMock = null
+    parameterReceivedByMock = null
     mockBeenCalled = false;
 	});
 
@@ -104,7 +104,7 @@ describe("CommentBox Tests", () => {
       fireEvent.click(submit);
 
       await waitFor(() => expect(mockBeenCalled).toBe(true));
-      expect(parameterRecievedByMock.parentComment).toBeUndefined();
+      expect(parameterReceivedByMock.parentComment).toBeUndefined();
     });
 
     it("should successfully submit reply to comment", async () => {
@@ -120,7 +120,7 @@ describe("CommentBox Tests", () => {
       fireEvent.click(submit);
 
       await waitFor(() => expect(mockBeenCalled).toBe(true));
-      expect(parameterRecievedByMock.parentComment._id).toBe(comment._id);
+      expect(parameterReceivedByMock.parentComment._id).toBe(comment._id);
     });
 
     it("should provide error when invalid comment is submitted", async () => {

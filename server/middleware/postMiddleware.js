@@ -38,7 +38,7 @@ module.exports.checkValidPost = async (req,res, next) => {
  * Middleware to check that the comment is indeed a comment of the post given as a parameter of the request.
  * The comment's id is given in the parameters of the request.
  * It adds the comment field to the request if it passes the checks.
- * Returns an error if checkValidPost is not run first, or the comment is not found or it has been removed.
+ * Returns an error if checkValidPost is not run first, or the comment is not found, or it has been removed.
  * @param {Request} req - The request
  * @param {Response} res - The response to the request
  * @param {*} next - The next function to be executed

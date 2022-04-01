@@ -15,7 +15,7 @@ const isValidType = (str) => {
 /**
  * Checks if the given url is a valid url and the type of the post is link
  * @param {String} str - The URL
- * @returns true if the given url is a valid url and the type of the post is link
+ * @returns true if the given url is a valid url and the type of the post is {link}
  */
 function isValidHttpUrl(str) {
   // if type is not link, we don't care about the url string

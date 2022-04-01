@@ -6,7 +6,7 @@ import PactList from "./PactList";
 import { Typography } from "@mui/material";
 
 /**
- * Renders the list of pacts the logged in user belongs to
+ * Renders the list of pacts the logged-in user belongs to
  */
 export default function MyPactList() {
 	const { isLoading, data, refetch } = useQuery("mypacts", () =>

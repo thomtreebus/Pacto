@@ -39,7 +39,7 @@ export default function CommentCard({ comment, post, postUpdaterFunc }) {
 	};
 
   const updateComment = (updatedComment, replies=[]) => {
-    const newPostObj = JSON.parse(JSON.stringify(post)); // Deep clone the post so it can be modified and resaved
+    const newPostObj = JSON.parse(JSON.stringify(post)); // Deep clone the post, so it can be modified and re-saved
 
     const indexOfCommentToUpdate = post.comments.indexOf(comment);
     newPostObj.comments = newPostObj.comments.filter(c => c._id !== comment._id); // Remove comment from post
@@ -83,7 +83,7 @@ export default function CommentCard({ comment, post, postUpdaterFunc }) {
 
   const replySubmissionHandler = (newComment) => {
     setShowReplyBox(false);
-    const newRepliedToCommentObj = JSON.parse(JSON.stringify(comment)); // Deep clone the replied-tocomment so it can be modified and resaved
+    const newRepliedToCommentObj = JSON.parse(JSON.stringify(comment)); // Deep clone the replied-tocomment, so it can be modified and re-saved
     
     updateComment(newRepliedToCommentObj, [newComment]);
   }

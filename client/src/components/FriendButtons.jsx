@@ -8,7 +8,7 @@ import { Tooltip, IconButton } from "@mui/material";
 import { useAuth } from "../providers/AuthProvider";
 
 /**
- * Buttons to accept/reject frient requests, or add/remove friends.
+ * Buttons to accept/reject friend requests, or add/remove friends.
  * @param {Object} user The user the profile belongs to
  */
 export default function FriendButtons({user}){
@@ -111,7 +111,7 @@ export default function FriendButtons({user}){
           <Tooltip title="Request Sent">
             <span>
               <IconButton  data-testid="sent-req-btn" disabled >
-                <AddFriendIcon color="diabled" fontSize="large" sx={{border: "0.2rem solid", borderRadius: "5px"}} />
+                <AddFriendIcon color="disabled" fontSize="large" sx={{border: "0.2rem solid", borderRadius: "5px"}} />
               </IconButton>
             </span>
           </Tooltip>   

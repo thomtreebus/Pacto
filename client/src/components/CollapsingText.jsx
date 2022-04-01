@@ -27,7 +27,7 @@ export default function CollapsingText({ text, variant="body1", color }) {
   }, []);
 
   // Milliseconds the window size must be constant for before rechecking if collapsing is needed.
-  // Otherwise we get significant lag
+  // Otherwise, we get significant lag
   const RESET_TIMEOUT = 100;
 
   let movement_timer = null; // Will eventually be an object when clearInterval is called

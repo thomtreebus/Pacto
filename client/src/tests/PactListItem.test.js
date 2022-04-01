@@ -56,7 +56,7 @@ describe("Pact List Item Tests", () => {
 			});
 		});
 
-		describe("Check elements iteractions", () => {
+		describe("Check elements interactions", () => {
 			it("should redirect to the pact page when the pact item is clicked on if user is member of the pact", () => {
 				const item = screen.getByTestId(/item/i);
 				expect(item).toBeInTheDocument();

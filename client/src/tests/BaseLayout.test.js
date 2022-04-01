@@ -1,5 +1,5 @@
 /**
- * Tests for the bae layout componnent which wraps the component in the side bars 
+ * Tests for the bae layout component which wraps the component in the sidebars
  * and also add the appbar at the top. 
  */
 

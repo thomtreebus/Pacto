@@ -26,8 +26,8 @@ import FriendButtons from '../components/FriendButtons';
  * @param {string} string 
  */
 function capitalizeFirstLetter(string) {
-  const sanatisedString = string.trim();
-  return sanatisedString.charAt(0).toUpperCase() + sanatisedString.slice(1);
+  const sanitisedString = string.trim();
+  return sanitisedString.charAt(0).toUpperCase() + sanitisedString.slice(1);
 }
 
 /**

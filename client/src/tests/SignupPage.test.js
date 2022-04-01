@@ -253,7 +253,7 @@ describe("SignupPage Tests", () => {
 			expect(passwordElement).toBeInTheDocument();
 		});
 
-		it("hould return error when password does not match confirm password when the signup button is pressed with invalid credentials", async () => {
+		it("Should return error when password does not match confirm password when the signup button is pressed with invalid credentials", async () => {
 			const initialPassword = await screen.findByTestId(
 				"initial-password-input"
 			);

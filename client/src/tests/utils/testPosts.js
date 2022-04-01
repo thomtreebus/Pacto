@@ -1,5 +1,5 @@
 /**
- * A file to store the test posts used by some of the tests.
+ * A file to store the test posts used by some tests.
  */
 
 /**

@@ -7,7 +7,7 @@ import { Typography, Toolbar, Divider } from "@mui/material";
 const drawerWidth = 240;
 
 /**
- * A right side bar
+ * A right sidebar
  */
 export default function RightSideBar() {
 	return (

@@ -1,5 +1,5 @@
 /**
- * Tests for the app bar which is used in the sidebar and is reposnisble
+ * Tests for the app bar which is used in the sidebar and is responsible
  * for functionality that spans multiple pages.
  */
 
