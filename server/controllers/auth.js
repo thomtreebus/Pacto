@@ -203,5 +203,6 @@ module.exports.verify = async (req, res) => {
  * @returns {Promise<void>} Javascript async function.
  */
 module.exports.getMe = async (req, res) => {
-	res.status(200).json(jsonResponse(req.user, []));
+	const user = await req.user.select(["-password"])
+	res.status(200).json(jsonResponse(user, []));
 };
