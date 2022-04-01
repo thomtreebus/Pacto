@@ -2,7 +2,7 @@
  * Tests for the feed / home page of the application.
  */
 
-import { render, screen } from "@testing-library/react";
+import { screen } from "@testing-library/react";
 import Feed from "../pages/Feed";
 import "@testing-library/jest-dom";
 import { rest } from "msw";
