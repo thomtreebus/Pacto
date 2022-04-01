@@ -41,9 +41,8 @@ export default function BasePostCard({ children, post, numComments = null, showP
 			setIsButtonDisabled(false);
 			return;
 		}
-
-		await silentUserRefresh();
 		history.push(`/pact/${post.pact._id}`);
+		await silentUserRefresh();
 	};
 
 	const handleLikeEvent = async (eventCode) => {

@@ -120,6 +120,10 @@ The client application relies on a few environment variables. Some variables wil
   ```
   DEPLOYED_URL=http://localhost:8000
   ```
+- Production flag. This boolean flag makes the server run in https mode and makes use of the private keys and certificates required for https. Only set to true if you are deploying the application.
+  ```dotenv
+  IS_PROD=true|false
+  ```
 #### **Start Application**
 Before running the server application, you need to start the database 
 ```
@@ -167,7 +171,41 @@ $ npm run start
 Once the client application starts to run, a new tab will open and show the React app.
 
 ### 5. Deployment
-How to deploy.
+We have a simple docker container that does most of the work for you.
+
+#### 1. Go to nginx/conf and find default.conf.example
+
+Inside the file replace example.org to that of your own domain. 
+
+#### 2. Setup environment variables.
+
+As stated above, place the .env files in their respective directories.
+
+#### 3. Build application.
+Build the application by running the following command to set up the docker volumes in the root directory.
+```
+  docker-compose build
+```
+
+#### 4. Run the application
+Run the application in detached mode
+```
+  docker-compose up -d
+```
+
+#### 5. Run certbot for the https certificate
+Run the following command and follow the steps prompted. Replace example.org with your domain
+```
+  docker-compose run --rm certbot-https-certificate certonly --webroot --webroot-path /var/www/certbot/ -d example.org
+```
+
+
+#### 5. Restart docker containers to use certificate.
+To get nginx to use the new certificates we need to restart the containers 
+```
+  docker-compose down
+  docker-compose up -d
+```
 
 ## Development
 ### Test-Driven Development

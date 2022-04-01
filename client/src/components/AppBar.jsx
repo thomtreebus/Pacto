@@ -76,9 +76,8 @@ export default function PrimarySearchAppBar({ handleDrawerToggle }) {
 	const profileMenuId = "primary-search-account-menu";
 	const notificationsMenuId = "notifications-menu";
 
-
-	useEffect( () => {
-		 fetch(`${process.env.REACT_APP_URL}/notifications`, {
+	useEffect(() => {
+		fetch(`${process.env.REACT_APP_URL}/notifications`, {
 			method: "GET",
 			credentials: "include",
 		})
@@ -89,7 +88,7 @@ export default function PrimarySearchAppBar({ handleDrawerToggle }) {
 				setNotifications(
 					data.message.filter((notification) => !notification.read)
 				);
-				setIsLoading(false)
+				setIsLoading(false);
 			});
 	}, []);
 
@@ -109,18 +108,18 @@ export default function PrimarySearchAppBar({ handleDrawerToggle }) {
 		setNotificationsAnchorEl(null);
 	};
 	const handleSearch = () => {
-		if(!search) return; 
+		if (!search) return;
 		history.push(`/search/${search}`);
-	}
+	};
 
 	const keyPress = (e) => {
 		if (e.keyCode === 13) {
 			handleSearch();
 		}
-	}
+	};
 
-	if(isLoading){
-		return (<Loading data-testid="loading-app-bar"/>)
+	if (isLoading) {
+		return <Loading data-testid="loading-app-bar" />;
 	}
 
 	return (
