@@ -68,7 +68,7 @@ export default function CommentCard({ comment, post, postUpdaterFunc }) {
       const json = await response.json();
 
       if (response.status !== 200) {
-        throw Error(json.errors.length ? json.errors[0].message : "Server Error");
+        throw Error(json.errors?.length ? json.errors[0].message : "Server Error");
       }
       
       const newComment = json.message;

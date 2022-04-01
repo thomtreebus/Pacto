@@ -26,6 +26,8 @@ export default function Feed() {
       setError(null);
 		}).catch((err) => {
       if (err.name === "AbortError") return;
+      setError(err.message);
+      setIsLoading(false);
     })
     return () => controller.abort();
 	}, [])

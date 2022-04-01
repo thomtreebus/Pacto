@@ -5,11 +5,11 @@ import PactList from "./PactList";
 import { useAuth } from "../providers/AuthProvider";
 import { Typography } from "@mui/material";
 
-export default function MyPactList({ numberOfPacts = 3 }) {
+export default function PopularPactsList({ numberOfPacts = 3 }) {
 	const { isLoading, data, refetch } = useQuery("popularpacts", () =>
 		fetch(`${process.env.REACT_APP_URL}/university`, {
 			credentials: "include",
-		}).then((res) => res.json(), { enabled: false })
+		}).then((res) =>  res.json(), { enabled: false })
 	);
 
 	const { user } = useAuth();
