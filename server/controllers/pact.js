@@ -378,10 +378,12 @@ module.exports.deletePact = async (req, res) => {
 			// Delete all posts and comments
 			for (let i = 0; i < pact.posts.length; i++) {
 				const actual = await Post.findById(pact.posts[i]._id);
-				if(actual.comments !== undefined && actual.comments !== null && actual.comments.length > 0) {
-					await deleteAllComments(actual.comments);
+				if(actual){
+					if (actual.comments !== undefined && actual.comments !== null && actual.comments.length > 0) {
+						await deleteAllComments(actual.comments);
+					}
+					await Post.findByIdAndDelete(actual._id);
 				}
-				await Post.findByIdAndDelete(actual._id);
 			}
 			await University.findByIdAndUpdate(req.user.university._id, { $pull: { pacts: pact._id } });
 			// Delete the pact itself
