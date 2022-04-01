@@ -18,6 +18,8 @@ The finished product, Pacto, is a social networking application aimed at student
   User Acceptance Testing (UAT) - Ensure that  software solves the problem initially set out to solve
 - **Out of Scope**: Performance testing was not done for this application. This includes measuring loading times and operating under heavy loads (large number of users, frequent requests, etc.). It was not possible to test the system for performance due to the limitations of certain third party services that are used (ex. free APIs with limited number of requests/bandwith allowed).
 
+End-to-end testing was not done as the client and server application were both tested separately. 
+
 ## Metrics
 |     | Test Cases Executed      | Test Cases Passed | Code Coverage |
 | ----------- | ----------- | ----------- | ----------- |
@@ -31,6 +33,9 @@ In order to run the automated tests, run the following command from within the c
 ```
 $ npm run test
 ```
+
+Server requests were mocked in order to test the client interaction with the server application. Although we thoroughly tested the server application, testing for the interaction between the client and server was not automated.
+
 ## Server Testing
 The server application was created using [Node.js](https://nodejs.org/en/). Server-side testing was done using the [Jest](https://testing-library.com/docs/react-testing-library/intro) JavaScript testing framework as well as [supertest](https://www.npmjs.com/package/supertest).
 
@@ -69,4 +74,6 @@ The vast majority of testing has been automated, however, some parts of the proj
 - Page layouts - Automated testing was used to ensure a page contained all necessary components but manual testing was used to check that the layout of a page was correct. 
 
 - Different screen sizes - Testing how the application looks/behaves on different screen sizes was done manually using [PolyPane](https://polypane.app/), an application that lets you view an app in multiple different screen sizes at the same time. We used PolyPane to view the client on different types of screens ranging from small mobile screens all the way up to 4k monitors. Each page of the user interface was tested manually on different screen sizes to ensure that the components displayed correctly and behaved as expected.
+
+- Collapsible components - The React Testing Library is unable to set the screen size or height of a component which means we were unable to automate the testing of collapsible components. Some components would change depending on the size of the component (large text bodies would be collapsible, etc.) and this had to be tested manually. We would test this manually by for example, creating a post with a very long text body and making sure the post would not show all of the text and instead show the first few lines and then an option to expand the text to reveal it entirely. 
 
