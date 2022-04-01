@@ -24,9 +24,10 @@ export default function ProfileMenu({
 	};
 
   const handleLogout = async () => {
-		await fetch(`${process.env.REACT_APP_URL}/logout`, {
+		const res = await fetch(`${process.env.REACT_APP_URL}/logout`, {
 			credentials: "include",
 		});
+    await res;
 		await silentUserRefresh();
 	};
   
