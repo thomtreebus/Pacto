@@ -34,14 +34,14 @@ export default function CreatePostCard({pactID}) {
   const [apiPostTextError, setApiPostTextError] = useState('');
   const [apiPostImageError, setApiPostImageError] = useState('');
   const [apiPostLinkError, setApiPostLinkError] = useState('');
-  const [isUploadButtonDisabled, setIsUploadButtonDisabled] = useState(false);
+  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
 
   const [image, setImage] = React.useState(null);
 
   const [open, setOpen] = React.useState(false);
 
   const uploadImage = async (newImage) => {
-    setIsUploadButtonDisabled(true);
+    setIsButtonDisabled(true);
 
     const data = new FormData();
 
@@ -52,10 +52,10 @@ export default function CreatePostCard({pactID}) {
     try {
       const res = await Axios.post(`https://api.cloudinary.com/v1_1/${process.env.REACT_APP_CLOUDINARY_CLOUD_NAME}/image/upload`, data)
       setImage(res.data.url);
-      setIsUploadButtonDisabled(false);
+      setIsButtonDisabled(false);
     } catch (err) {
       setApiPostImageError(err.message);
-      setIsUploadButtonDisabled(false);
+      setIsButtonDisabled(false);
       setOpen(true);
     }
   }
@@ -72,6 +72,7 @@ export default function CreatePostCard({pactID}) {
   }
 
   const handleSubmit = async (event) => {
+    setIsButtonDisabled(true);
     event.preventDefault();
     const data = new FormData(event.currentTarget);
 
@@ -129,7 +130,9 @@ export default function CreatePostCard({pactID}) {
           default: // do nothing
         }
       }
-    })
+    });
+
+    setIsButtonDisabled(false);
 
     if (response.status !== 201) {
       return;
@@ -180,9 +183,9 @@ export default function CreatePostCard({pactID}) {
               data-testid="image-upload-icon"
               type="file"
               onChange={(e) => { uploadImage(e.target.files[0])}} 
-              disabled={isUploadButtonDisabled}
+              disabled={isButtonDisabled}
             />
-            <IconButton color="primary" component="span" disabled={isUploadButtonDisabled}>
+            <IconButton color="primary" component="span" disabled={isButtonDisabled}>
               <PhotoCameraIcon />
             </IconButton>
             {image && <Image
@@ -207,7 +210,7 @@ export default function CreatePostCard({pactID}) {
             helperText={apiPostLinkError}
           />
         </TabPanel>
-        <Button variant="contained" sx={{marginTop: '8px'}} type="submit" fullWidth disabled={isUploadButtonDisabled}>Post</Button>
+        <Button variant="contained" sx={{marginTop: '8px'}} type="submit" fullWidth disabled={isButtonDisabled}>Post</Button>
       </Box>
     </Card>
   );
