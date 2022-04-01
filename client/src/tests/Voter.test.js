@@ -4,7 +4,6 @@
 
 import { screen, fireEvent } from "@testing-library/react";
 import "@testing-library/jest-dom";
-import MockComponent from "./utils/MockComponent";
 import Voter from "../components/Voter";
 import { useMockServer } from "./utils/useMockServer";
 import mockRender from "./utils/mockRender";
@@ -32,9 +31,7 @@ describe("Voter Tests", () => {
   
   beforeEach(async () => {
 		await mockRender(
-      <MockComponent>
         <Voter initThumbUp={post.upvoters.includes(1)} initThumbDown={post.downvoters.includes(1)} initLikes={post.votes} handleLikeEvent={()=>{}}/>
-      </MockComponent>
     );
 	});
 

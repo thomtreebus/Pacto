@@ -77,4 +77,18 @@ describe("FeedPage Tests", () => {
       });
     })
   })
+
+  it("Check displays and error when there is an issue fetching the feed", async () => {
+    server.use(
+      rest.get(`${process.env.REACT_APP_URL}/feed`, (req, res, ctx) => {
+        return res(
+          ctx.status(400),
+          ctx.json({})
+        );
+      })
+    );
+    await renderWithMock();
+    const errorMessage = await screen.findByText(/error/i)
+    expect(errorMessage).toBeInTheDocument();
+  })
 })
