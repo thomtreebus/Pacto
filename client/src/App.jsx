@@ -6,7 +6,7 @@ import Landing from "./pages/LandingPage";
 import Feed from "./pages/Feed";
 import EditPact from "./pages/EditPact"
 import CreatePact from "./pages/CreatePact";
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import { Route, Switch } from "react-router-dom";
 import { CssBaseline } from "@mui/material";
 import EditProfile from "./pages/EditProfile";
 import PrivateRoute from "./components/PrivateRoute";
@@ -18,11 +18,19 @@ import PostPage from "./pages/PostPage";
 import UserPage from "./pages/UserPage";
 import SearchResults from "./pages/SearchResults";
 import Verify from "./pages/Verify";
-
+import { useHistory } from "react-router-dom";
+import { useAuth } from "./providers/AuthProvider";
 
 function App() {
+	const history = useHistory();
+	const {setActivePage} = useAuth();
+
+	history.listen((location, action) => {
+		setActivePage(location.pathname);
+	});
+
 	return (
-		<Router>
+		<>
 			<CssBaseline />
 			<Switch>
 				<Route exact path="/">
@@ -78,7 +86,7 @@ function App() {
 					</BaseLayout>
 				</PrivateRoute>
 			</Switch>
-		</Router>
+		</>
 	);
 }
 
