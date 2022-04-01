@@ -33,7 +33,7 @@ export default function BasePostCard({ children, post, numComments = null }) {
 		try {
 			if (response.status !== 204) {
 				const json = await response.json();
-				if (json.errors.length) throw Error(json.errors[0].message);
+				if (json.errors?.length) throw Error(json.errors[0].message);
 			}
 		} catch (err) {
 			setIsError(true);

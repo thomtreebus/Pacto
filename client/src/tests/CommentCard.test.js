@@ -25,7 +25,7 @@ const comment = {
     type: "text",
     _id: 1,
     comments: [{_id: 1}],
-    pact : { _id: 1 }
+    pact : { _id: 1, moderators: [users[1]._id] }
   },
   author: users[0],
   createdAt: Date.now(),
@@ -110,14 +110,14 @@ describe("CommentCard Tests", () => {
       expect(reply.innerHTML).toContain("Reply");
     });
 
-    it("should render delete button", async () => {
+    it("should render delete button if author", async () => {
       const del = await screen.findByTestId("delete-button");
       expect(del).toBeInTheDocument();
     });
   });
 
   describe("Check rendering special cases", () => {
-    it("should not render delete button if not author or mod", async () => {
+    it("should render delete button if moderator", async () => {
       server.use(
         rest.get(`${process.env.REACT_APP_URL}/me`, (req, res, ctx) => {
           return res(
@@ -126,7 +126,20 @@ describe("CommentCard Tests", () => {
         }),
       );
       await renderWithMock();
-      const del = await screen.queryByTestId("delete-button");
+      const del = await screen.findByTestId("delete-button");
+      expect(del).toBeInTheDocument();
+    });
+
+    it("should not render delete button if not author or mod", async () => {
+      server.use(
+        rest.get(`${process.env.REACT_APP_URL}/me`, (req, res, ctx) => {
+          return res(
+            ctx.json({ message: users[3], errors: [] })
+          );
+        }),
+      );
+      await renderWithMock();
+      const del = screen.queryByTestId("delete-button");
       expect(del).toBeNull();
     });
 
