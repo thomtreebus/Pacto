@@ -29,7 +29,15 @@ module.exports.getFeed = async (req, res) => {
           ]
         }
       );
-      await post.populate({ path: 'pact', model: Pact });
+      await post.populate(
+        {
+          path: "pact",
+          model: Pact,
+          select: [
+            "name",
+          ]
+        }
+      );
       if (post.type === "link") {
 				const preview = await getPreview(post.link);
 				if (preview !== null) {
