@@ -47,10 +47,10 @@ describe("Popular Pact List tests", () => {
 		expect(items[2].textContent).toBe(pacts[1].name);
 	});
 
-	it("does not show those pacts which the user is not a part of", async () => {
+	it("does not show those pacts which the user is a part of", async () => {
 		await mockRender(<PopularPactsList />);
 		const items = screen.getAllByTestId("item");
-		const unjoinedPactItem = screen.queryByText(pacts[3].name);
-		expect(unjoinedPactItem).not.toBeInTheDocument();
+		const joinedPactItem = screen.queryByText(pacts[3].name);
+		expect(joinedPactItem).not.toBeInTheDocument();
 	});
 });
