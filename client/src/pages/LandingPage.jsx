@@ -2,6 +2,7 @@ import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import { useHistory } from "react-router-dom";
 import { Link } from "react-router-dom";
+import { Box } from "@mui/material";
 
 export default function LandingPage() {
 	const history = useHistory();
@@ -12,7 +13,7 @@ export default function LandingPage() {
 
 	return (
 		<>
-			<div className="content"/>
+			<div className="content" />
 			<div className="container">
 				<Typography variant="h1" sx={{ color: "white", fontWeight: "light" }}>
 					Pacto
@@ -31,7 +32,6 @@ export default function LandingPage() {
 						backgroundColor: "rgb(25,118,210)",
 						fontWeight: "bold",
 						border: "3px solid",
-
 						"&:hover": {
 							backgroundColor: "white",
 							color: "rgb(25,118,210)",
@@ -42,8 +42,14 @@ export default function LandingPage() {
 				>
 					Join now!
 				</Button>
-				<Link to="/login" variant="body2" className="signin-link">
-					Already have an account? Sign in
+				<Link
+					to="/login"
+					variant="body2"
+					className="signin-link"
+					style={{ textAlign: "center" }}
+				>
+					Already have an account?
+					<Box sx={{ display: { xs: "block", sm: "none" } }} /> Sign in
 				</Link>
 			</div>
 		</>

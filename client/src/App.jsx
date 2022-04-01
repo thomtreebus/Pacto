@@ -28,9 +28,9 @@ function App() {
 				<Route exact path="/">
 					<Landing />
 				</Route>
-				<Route exact path="/verify/:id">
+				<AuthRoute exact path="/verify/:id">
 					<Verify />
-				</Route>
+				</AuthRoute>
 				<AuthRoute exact path="/login">
 					<Login />
 				</AuthRoute>
