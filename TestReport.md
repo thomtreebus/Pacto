@@ -21,8 +21,8 @@ The finished product, Pacto, is a social networking application aimed at student
 ## Metrics
 |     | Test Cases Executed      | Test Cases Passed | Code Coverage |
 | ----------- | ----------- | ----------- | ----------- |
-| Client|  340  |  340     |  |
-| Server | 297  |   297     |  |
+| Client|  374  |  374     | 99.35% |
+| Server | 297  |   297     | 97.22% |
 
 ## Client Testing
 The client application was created using [React](https://reactjs.org/) and automated testing was done using [Jest](https://testing-library.com/docs/react-testing-library/intro). [React Testing Library](https://testing-library.com/docs/react-testing-library/intro/) was used in order to test all of the components and pages. 
@@ -48,12 +48,12 @@ Running coverage will create a new directory (within the directory that coverage
 
 The coverage for the client application currently looks like this:
 <p align="center">
-  <a href="coverage" rel="noopener sponsored" target="_blank"><img src="" alt="coverage" title="Client Test Coverage" loading="lazy" /></a>
+  <a href="coverage" rel="noopener sponsored" target="_blank"><img src="https://i.imgur.com/k2052tP.png" alt="coverage" title="Client Test Coverage" loading="lazy" /></a>
 </p>
 
 The coverage for the server application currently looks like this:
 <p align="center">
-  <a href="coverage" rel="noopener sponsored" target="_blank"><img src="" alt="coverage" title="Server Test Coverage" loading="lazy" /></a>
+  <a href="coverage" rel="noopener sponsored" target="_blank"><img src="https://i.imgur.com/HcxO7R3.png" alt="coverage" title="Server Test Coverage" loading="lazy" /></a>
 </p>
 
 ## Manual Testing
