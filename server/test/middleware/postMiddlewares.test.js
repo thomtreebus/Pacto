@@ -6,18 +6,20 @@ const app = require("../../app");
 const { generateTestUser, getDefaultTestUserEmail} = require("../fixtures/generateTestUser");
 const { generateTestPact, getTestPactId } = require("../fixtures/generateTestPact");
 const { generateTestPost, getTestPostId } = require("../fixtures/generateTestPost");
-const { createToken } = require("../../controllers/authController");
+const { createToken } = require("../../controllers/auth");
 const { COMMENT_MESSAGES, POST_MESSAGES } = require("../../helpers/messages");
 const { checkValidPost, checkValidPostComment } = require("../../middleware/postMiddleware");
 const { checkAuthenticated } = require("../../middleware/authMiddleware");
 const { checkIsMemberOfPact } = require("../../middleware/pactMiddleware");
 const { jsonResponse } = require("../../helpers/responseHandlers");
 const useTestDatabase = require("../helpers/useTestDatabase");
+const Post = require("../../models/Post");
+const { generateTestComment, getTestCommentId } = require("../fixtures/genereateTestComment");
 
 const COMMENT_TEXT = "Some random text."
 
 describe("Post/Comment Middlewares", () =>{
-  useTestDatabase("postCommentMiddleWare");
+  useTestDatabase();
   let commentId = null;
 
   beforeEach(async () => {
@@ -99,6 +101,24 @@ describe("Post/Comment Middlewares", () =>{
   
       const res = await sendMockRoute(token, 404, wrongPostId, commentId);
       expect(res.body.errors[0].message).toBe(COMMENT_MESSAGES.NOT_FOUND);
+    });
+
+    it("throws 410 error on deleted comment", async () =>{
+      const user = await User.findOne({uniEmail: getDefaultTestUserEmail()});
+      const token = createToken(user._id);
+
+      const pact = await Pact.findById(getTestPactId());
+  
+      await generateTestPost(user, pact);
+      const postId = getTestPostId();
+      const post = await Post.findOne({ _id: postId });
+
+      const comment = await generateTestComment(user, post);
+      comment.deleted = true;
+      comment.save();
+
+      const res = await sendMockRoute(token, 410, postId, getTestCommentId());
+      expect(res.body.errors[0].message).toBe(COMMENT_MESSAGES.REMOVED);
     });
   });
 });

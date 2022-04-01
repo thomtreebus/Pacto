@@ -4,7 +4,7 @@ const University = require("../../models/University");
 const supertest = require("supertest");
 const app = require("../../app");
 const { generateTestUser, getDefaultTestUserEmail } = require("../fixtures/generateTestUser");
-const { createToken } = require("../../controllers/authController");
+const { createToken } = require("../../controllers/auth");
 const { PACT_MESSAGES } = require("../../helpers/messages");
 const {generateTestPact, getTestPactId} = require("../fixtures/generateTestPact");
 const useTestDatabase = require("../helpers/useTestDatabase");
@@ -15,7 +15,7 @@ const DESCRIPTION = "This is my 1st pact."
 const CATEGORY = "course";
 
 describe("PUT /pact", () => {
-  useTestDatabase("updatePact");
+  useTestDatabase();
 
   beforeEach(async () => {
     const user = await generateTestUser();

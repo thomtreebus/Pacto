@@ -5,17 +5,17 @@
 
 const express = require("express");
 const router = express.Router();
-const authController = require("../controllers/authController");
+const { signup, login, logout, verify, getMe } = require("../controllers/auth");
 const { checkAuthenticated } = require("../middleware/authMiddleware");
 
-router.post("/signup", authController.signupPost);
+router.post("/signup", signup);
 
-router.post("/login", authController.loginPost);
+router.post("/login", login);
 
-router.get("/logout", authController.logoutGet);
+router.get("/logout", logout);
 
-router.get("/verify", authController.verifyGet);
+router.get("/verify", verify);
 
-router.get("/me", checkAuthenticated, authController.meGet);
+router.get("/me", checkAuthenticated, getMe);
 
 module.exports = router;

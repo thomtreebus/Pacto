@@ -1,7 +1,7 @@
 const dotenv = require("dotenv");
 const supertest = require("supertest");
 const app = require("../../app");
-const { createToken } = require("../../controllers/authController");
+const { createToken } = require("../../controllers/auth");
 const { generateTestUser, getDefaultTestUserEmail } = require("../fixtures/generateTestUser");
 const { generateTestNotification, getTestNotificationId } = require("../fixtures/generateTestNotification");
 const { MESSAGES } = require("../../helpers/messages");
@@ -13,7 +13,7 @@ dotenv.config();
 
 describe("GET /notifications getNotifications()", () => {
 
-  useTestDatabase("notificationsGET");
+  useTestDatabase();
 
   beforeEach(async () => {
     const user = await generateTestUser();

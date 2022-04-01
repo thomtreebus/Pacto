@@ -81,7 +81,7 @@ export default function Profile() {
       maxWidth="60rem"
     >
 
-      <Grid container item direction="column" xs={12}>
+      <Grid container item sx={{flex: 1, flexWrap: "wrap", wordBreak:"break-word", overflow: "hidden"}} direction="column" xs={12}>
         <Box sx={{display : "flex", flexDirection: "column", alignItems: "flex-start"}} alignItems="center" container spacing={2} >
             <Image
               style={{ width: "100px", height: "100px", border: "3px solid #616161", borderRadius: "180px", overflow: "hidden", position: "relative", }}
@@ -91,7 +91,7 @@ export default function Profile() {
             </Image>
             <Stack direction="column" alignItems="left" sx={{}}>
               <Typography variant="h4">{displayedUser.firstName} {displayedUser.lastName}</Typography>
-              <Typography variant="subtitle1" sx={{ color: "#1976d2", marginTop: "2px" }}>  {capitalizeFirstLetter(`${displayedUser.course} student at ${displayedUser.university.name}`)} </Typography>
+              <Typography variant="subtitle1" sx={{ color: "#1976d2", marginTop: "2px" }}>  {capitalizeFirstLetter(`${displayedUser.course||""} student at ${displayedUser.university.name}`)} </Typography>
               <Typography variant="subtitle1" sx={{ color: "#616161", }}>  {displayedUser.location} </Typography>
             </Stack>
             <Box sx={{

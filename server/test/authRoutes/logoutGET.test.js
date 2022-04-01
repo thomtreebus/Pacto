@@ -1,13 +1,13 @@
 const supertest = require("supertest");
 const app = require("../../app");
 const Cookies = require("expect-cookies");
-const { createToken } = require("../../controllers/authController");
+const { createToken } = require("../../controllers/auth");
 const User = require("../../models/User");
 const { generateTestUser, getDefaultTestUserEmail } = require('../fixtures/generateTestUser');
 const useTestDatabase = require("../helpers/useTestDatabase");
 
 describe("GET /logout", () => {
-  useTestDatabase("logout");
+  useTestDatabase();
 
   beforeEach(async () => {
     const user = await generateTestUser();

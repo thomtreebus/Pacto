@@ -1,6 +1,6 @@
 const supertest = require("supertest");
 const app = require("../../app");
-const { createToken } = require("../../controllers/authController");
+const { createToken } = require("../../controllers/auth");
 const { generateTestUser, getDefaultTestUserEmail, generateCustomUniTestUser} = require("../fixtures/generateTestUser");
 const { generateTestPact, getTestPactId } = require("../fixtures/generateTestPact");
 const { generateTestPost, getTestPostId } = require("../fixtures/generateTestPost");
@@ -11,7 +11,7 @@ const Post = require('../../models/Post');
 const useTestDatabase = require("../helpers/useTestDatabase");
 
 describe("DELETE /pact/:pactId/post/:postId", () => {
-  useTestDatabase("deletePost");
+  useTestDatabase();
 
   beforeEach(async () => {
     const user = await generateTestUser();

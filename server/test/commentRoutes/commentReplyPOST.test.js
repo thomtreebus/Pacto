@@ -5,14 +5,14 @@ const app = require("../../app");
 const { generateTestUser, getDefaultTestUserEmail} = require("../fixtures/generateTestUser");
 const { generateTestPact, getTestPactId } = require("../fixtures/generateTestPact");
 const { generateTestPost, getTestPostId } = require("../fixtures/generateTestPost");
-const { createToken } = require("../../controllers/authController");
+const { createToken } = require("../../controllers/auth");
 const { PACT_MESSAGES, MESSAGES, COMMENT_MESSAGES } = require("../../helpers/messages");
 const useTestDatabase = require("../helpers/useTestDatabase");
 
 const COMMENT_TEXT = "This is my 1st comment.";
 
 describe("POST /pact/:pactId/post/:postId/comment/:commentId/reply", () =>{
-  useTestDatabase("replyToComment");
+  useTestDatabase();
   let commentId = null;
 
   beforeEach(async () => {

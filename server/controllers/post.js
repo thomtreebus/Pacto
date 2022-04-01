@@ -1,17 +1,21 @@
 const Post = require("../models/Post");
 const Pact = require("../models/Pact");
-const University = require("../models/University");
 const Comment = require("../models/Comment");
 const User = require("../models/User");
 const Notification = require("../models/Notification");
 const handleFieldErrors = require('../helpers/errorHandler');
 const { jsonResponse, jsonError } = require("../helpers/responseHandlers");
-const { POST_MESSAGES, MESSAGES } = require("../helpers/messages");
+const { POST_MESSAGES } = require("../helpers/messages");
 const { upvote, downvote } = require("../helpers/genericVoteMethods");
 const getPreview = require("../helpers/LinkCache");
 
-// POST post
-module.exports.postPost = async (req, res) => {
+/**
+ * Creates a post using information given in the request.
+ * @param {Request} req - The request
+ * @param {Response} res - The response to the request
+ * @async
+ */
+module.exports.createPost = async (req, res) => {
 	try {
     const user = req.user;
     const { title, text, image, link, type } = req.body;
@@ -27,8 +31,15 @@ module.exports.postPost = async (req, res) => {
 	}
 };
 
-// GET pact (by id)
-module.exports.postGet = async (req, res) => {
+/**
+ * Returns a post using the id of the post given in the parameters
+ * of the request.
+ * It populates the pact, the author, and the comments of the post.
+ * @param {Request} req - The request
+ * @param {Response} res - The response to the request
+ * @async
+ */
+module.exports.getPost = async (req, res) => {
 	let post = null;
 	try {
 		post = await Post.findOne({ pact: req.pact, _id:req.params.postId });
@@ -65,8 +76,14 @@ module.exports.postGet = async (req, res) => {
 	}
 };
 
-// PUT upvote post
-module.exports.upvotePostPut = async (req, res) => {
+/**
+ * Upvotes a comment.
+ * If the same user upvotes a comment twice, it counts as 0 upvote.
+ * @param {Request} req - The request
+ * @param {Response} res - The response to the request
+ * @async
+ */
+module.exports.upvotePost = async (req, res) => {
 	try {
 		// Checking post exists
 		const post = await Post.findOne({ pact: req.pact, _id:req.params.postId });
@@ -99,8 +116,14 @@ module.exports.upvotePostPut = async (req, res) => {
 	}
 };
 
-// PUT downvote
-module.exports.downvotePostPut = async (req, res) => {
+/**
+ * Downvotes a post.
+ * If the same user downvotes a post twice, it counts as 0 downvote.
+ * @param {Request} req - The request
+ * @param {Response} res - The response to the request
+ * @async
+ */
+module.exports.downvotePost = async (req, res) => {
 	try {
 		// Checking post exists
 		const post = await Post.findOne({ pact: req.params.pactId, _id:req.params.postId });
@@ -131,8 +154,15 @@ module.exports.downvotePostPut = async (req, res) => {
 	}
 };
 
-// DELETE post
-module.exports.postDelete = async (req, res) => {
+/**
+ * Deletes a post.
+ * To succeed, the user who made the request must be the author,
+ * or a moderator of the pact in which the post was made.
+ * @param {Request} req - The request
+ * @param {Response} res - The response to the request
+ * @async
+ */
+module.exports.deletePost = async (req, res) => {
 	let status = 400;
 	try {
 		let post = null;

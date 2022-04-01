@@ -1,6 +1,6 @@
 const supertest = require("supertest");
 const app = require("../../app");
-const { createToken } = require("../../controllers/authController");
+const { createToken } = require("../../controllers/auth");
 const { generateTestUser, getDefaultTestUserEmail, generateCustomUniTestUser} = require("../fixtures/generateTestUser");
 const { generateTestPact, getTestPactId } = require("../fixtures/generateTestPact");
 const { MESSAGES, PACT_MESSAGES, POST_MESSAGES } = require("../../helpers/messages");
@@ -21,7 +21,7 @@ const LINK = "https://examplelink.com";
 const DEFAULT_TYPE = TEXT_TYPE;
 
 describe("POST /pact/:pactId/post", () => {
-  useTestDatabase("createPost");
+  useTestDatabase();
 
   beforeEach(async () => {
     const user = await generateTestUser();

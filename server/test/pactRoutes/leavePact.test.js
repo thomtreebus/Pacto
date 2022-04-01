@@ -3,13 +3,13 @@ const User = require("../../models/User");
 const supertest = require("supertest");
 const app = require("../../app");
 const { generateTestUser, getDefaultTestUserEmail } = require("../fixtures/generateTestUser");
-const { createToken } = require("../../controllers/authController");
+const { createToken } = require("../../controllers/auth");
 const { MESSAGES, PACT_MESSAGES } = require("../../helpers/messages");
 const {generateTestPact, getTestPactId} = require("../fixtures/generateTestPact");
 const useTestDatabase = require("../helpers/useTestDatabase");
 
 describe("DELETE /pact/:pact_id/leave", () => {
-  useTestDatabase("leavePact");
+  useTestDatabase();
 
   beforeEach(async () => {
     const user = await generateTestUser();

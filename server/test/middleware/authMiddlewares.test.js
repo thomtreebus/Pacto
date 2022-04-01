@@ -3,13 +3,13 @@ const app = require("../../app");
 const { checkAuthenticated } = require("../../middleware/authMiddleware");
 const { checkNotAuthenticated } = require("../../middleware/notAuthMiddleware");
 const { jsonResponse } = require("../../helpers/responseHandlers");
-const { createToken } = require("../../controllers/authController");
+const { createToken } = require("../../controllers/auth");
 const { MESSAGES } = require("../../helpers/messages");
 const { generateTestUser } = require("../fixtures/generateTestUser");
 const useTestDatabase = require("../helpers/useTestDatabase");
 
 describe("Auth Middlewares", () => {
-  useTestDatabase("authMiddleWare");
+  useTestDatabase();
 
   describe("Authentication Middleware", () => {
     app.get("/mockRoute", checkAuthenticated, function (req, res) {

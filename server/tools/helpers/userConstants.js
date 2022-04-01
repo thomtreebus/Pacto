@@ -1,3 +1,6 @@
+/**
+ * UK cities to be used as locations when seeding users
+ */
 module.exports.CITIES = [
 	"London",
 	"Manchester",
@@ -13,6 +16,9 @@ module.exports.CITIES = [
 	"Thamesmead"
 ];
 
+/**
+ * Courses for seeding users and pacts
+ */
 module.exports.COURSES = [
 	{
 		name: "Computer Science",
@@ -72,6 +78,9 @@ module.exports.COURSES = [
 	},
 ]
 
+/**
+ * Hobbies for seeding pacts
+ */
 module.exports.HOBBIES = [
 	{
 		name: "Gaming",

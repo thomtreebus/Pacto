@@ -1,14 +1,16 @@
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
-import { waitForElementToBeRemoved } from "@testing-library/react";
+/**
+ * Tests for the component the users uses to create a pact.
+ */
+
+import { screen, fireEvent, waitFor } from "@testing-library/react";
 import CreatePact from "../pages/CreatePact";
 import "@testing-library/jest-dom";
-import MockComponent from "./utils/MockComponent";
 import { rest } from "msw";
-import { setupServer } from "msw/node";
-import users from "./utils/testUsers";
 import { useMockServer } from "./utils/useMockServer";
+import mockRender from "./utils/mockRender";
 
 describe("CreatePact Tests", () => {
+	let history;
 	const server = useMockServer();
 
 	beforeEach(async () => {
@@ -26,12 +28,7 @@ describe("CreatePact Tests", () => {
 	});
 
 	beforeEach(async () => {
-		render(
-			<MockComponent>
-				<CreatePact />
-			</MockComponent>
-		);
-		await waitForElementToBeRemoved(() => screen.getByText("Loading"));
+		history = await mockRender(<CreatePact />);
 	});
 
 	describe("Check elements are rendered", () => {
@@ -111,7 +108,7 @@ describe("CreatePact Tests", () => {
 				name: "Create Pact",
 			});
 			fireEvent.click(buttonElement);
-			await waitFor(() => expect(window.location.pathname).toBe("/pact/1"))
+			await waitFor(() => expect(history.location.pathname).toBe("/pact/1"))
 		});
 
 		it("should return error when invalid Pact name is entered and Create Pact button is pressed with invalid input", async () => {

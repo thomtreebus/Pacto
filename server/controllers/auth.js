@@ -20,19 +20,19 @@ const handleFieldErrors = require('../helpers/errorHandler');
 // Magic numbers
 const COOKIE_MAX_AGE = 432000; // 432000 = 5 days
 const SALT_ROUNDS = 10;
+const PRIVATE_KEY = "kekw";
 
 /**
- * Creates a token cookie to keep the user logged in.
+ * Creates a JWT cookie to keep the user logged in.
  * @param id The mongoose object id of the user.
- * @returns {*} Javascript function.
+ * @returns Javascript function.
  */
 const createToken = (id) => {
-	return jwt.sign({ id }, "kekw", {
+	return jwt.sign({ id }, PRIVATE_KEY, {
 		expiresIn: COOKIE_MAX_AGE,
 	});
 };
 module.exports.createToken = createToken;
-
 
 /**
  * POST /signup. Sends signup infrmation for server to verify and create an account.
@@ -41,7 +41,7 @@ module.exports.createToken = createToken;
  * @param res contains information regarding the response. (User information)
  * @returns {Promise<void>} Javascript async function.
  */
-module.exports.signupPost = async (req, res) => {
+module.exports.signup = async (req, res) => {
 	const { firstName, lastName, uniEmail, password } = req.body;
 	const processedEmail = uniEmail.toLowerCase()
 	let jsonErrors = [];
@@ -125,7 +125,7 @@ module.exports.signupPost = async (req, res) => {
  * @param res contains information regarding the response. (User information)
  * @returns {Promise<void>} Javascript async function.
  */
-module.exports.loginPost = async (req, res) => {
+module.exports.login = async (req, res) => {
 	const { uniEmail, password } = req.body;
 
 	try {
@@ -165,7 +165,7 @@ module.exports.loginPost = async (req, res) => {
  * @param res contains information regarding the response.
  * @returns {Promise<void>} Javascript async function.
  */
-module.exports.logoutGet = (req, res) => {
+module.exports.logout = (req, res) => {
 	res.cookie("jwt", "", { maxAge: 1 });
 	res.status(200).json(jsonResponse(null, []));
 };
@@ -176,7 +176,7 @@ module.exports.logoutGet = (req, res) => {
  * @param res contains information regarding the response. (Success message)
  * @returns {Promise<void>} Javascript async function.
  */
-module.exports.verifyGet = async (req, res) => {
+module.exports.verify = async (req, res) => {
 	try {
 		// Get code from query param
 		const code = req.query.code;
@@ -192,10 +192,7 @@ module.exports.verifyGet = async (req, res) => {
 
 		// Add user to their university
 		const user = await User.findByIdAndUpdate(linker.userId, { active: true });
-		const university = await University.findByIdAndUpdate(user.university, {$push: {users: user}});
-
-		// await university.populate({ path: 'users', model: User});
-
+		await University.findByIdAndUpdate(user.university, {$push: {users: user}});
 		await linker.delete();
 		res.status(200).send(MESSAGES.VERIFICATION.SUCCESS_RESPONSE_WHOLE_BODY);
 	}
@@ -211,6 +208,6 @@ module.exports.verifyGet = async (req, res) => {
  * @param res contains information regarding the response. (User information)
  * @returns {Promise<void>} Javascript async function.
  */
-module.exports.meGet = async (req, res) => {
+module.exports.getMe = async (req, res) => {
 	res.status(200).json(jsonResponse(req.user, []));
 };

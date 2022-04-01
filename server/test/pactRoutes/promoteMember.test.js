@@ -1,6 +1,6 @@
 const supertest = require("supertest");
 const app = require("../../app");
-const { createToken } = require("../../controllers/authController");
+const { createToken } = require("../../controllers/auth");
 const { generateTestUser, getDefaultTestUserEmail } = require("../fixtures/generateTestUser");
 const { generateTestPact, getTestPactId } = require("../fixtures/generateTestPact");
 const { MESSAGES, PACT_MESSAGES } = require("../../helpers/messages");
@@ -10,7 +10,7 @@ const Notification = require("../../models/Notification");
 const useTestDatabase = require("../helpers/useTestDatabase");
 
 describe("promoteMember /pact/:pactId/:userId/promote", () => {
-  useTestDatabase("promoteMember");
+  useTestDatabase();
 
   beforeEach(async () => {
     const user = await generateTestUser();

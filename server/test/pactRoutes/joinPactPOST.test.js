@@ -1,6 +1,6 @@
 const supertest = require("supertest");
 const app = require("../../app");
-const { createToken } = require("../../controllers/authController");
+const { createToken } = require("../../controllers/auth");
 const { generateTestUser, getDefaultTestUserEmail, generateCustomUniTestUser} = require("../fixtures/generateTestUser");
 const { generateTestPact, getTestPactId } = require("../fixtures/generateTestPact");
 const { MESSAGES, PACT_MESSAGES } = require("../../helpers/messages");
@@ -9,7 +9,7 @@ const Pact = require('../../models/Pact');
 const useTestDatabase = require("../helpers/useTestDatabase");
 
 describe("POST /pact/:pactid/join", () => {
-  useTestDatabase("joinPact");
+  useTestDatabase();
 
   beforeEach(async () => {
     const user = await generateTestUser();

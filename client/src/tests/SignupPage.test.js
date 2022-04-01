@@ -1,53 +1,49 @@
+/**
+ * Tests for sign up page.
+ */
+
 import Signup from "../pages/SignupPage";
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
-import { waitForElementToBeRemoved } from "@testing-library/react";
+import { screen, fireEvent, waitFor } from "@testing-library/react";
 import "@testing-library/jest-dom";
-import MockComponent from "./utils/MockComponent";
 import { rest } from "msw";
-import { setupServer } from "msw/node";
 import { Route } from "react-router-dom";
-import users from "./utils/testUsers";
+import { useMockServer } from "./utils/useMockServer";
+import mockRender from "./utils/mockRender";
+
+const MockSignUp = () => {
+	return (
+		<>
+			<Signup />
+			<Route exact path="/login">
+				<h1>Redirected to login</h1>
+			</Route>
+		</>
+	)
+}
+
 
 describe("SignupPage Tests", () => {
-	const server = setupServer(
-		rest.get(`${process.env.REACT_APP_URL}/me`, (req, res, ctx) => {
-			return res(ctx.json({ message: users[0], errors: [] }));
-		}),
-		rest.post(`${process.env.REACT_APP_URL}/signup`, (req, res, ctx) => {
-			return res(
-				ctx.status(401),
-				ctx.json({
-					message: null,
-					errors: [
-						{ field: null, message: "The details entered are invalid." },
-					],
-				})
-			);
-		})
-	);
-
-	beforeAll(() => {
-		server.listen();
-	});
-
-	afterAll(() => {
-		server.close();
-	});
+	let history;
+	const server = useMockServer();
 
 	beforeEach(async () => {
-		server.resetHandlers();
-	});
-
-	beforeEach(async () => {
-		render(
-			<MockComponent>
-				<Signup />
-				<Route exact path="/login">
-					<h1>Redirected to login</h1>
-				</Route>
-			</MockComponent>
+		server.use(
+			rest.post(`${process.env.REACT_APP_URL}/signup`, (req, res, ctx) => {
+				return res(
+					ctx.status(401),
+					ctx.json({
+						message: null,
+						errors: [
+							{ field: null, message: "The details entered are invalid." },
+						],
+					})
+				);
+			})
 		);
-		await waitForElementToBeRemoved(() => screen.getByText("Loading"));
+	});
+
+	beforeEach(async () => {
+		history = await mockRender(<MockSignUp/>);
 	});
 
 	describe("Check elements are rendered", () => {
@@ -334,7 +330,7 @@ describe("SignupPage Tests", () => {
 				name: "Sign Up",
 			});
 			fireEvent.click(buttonElement);
-			await waitFor(() => expect(window.location.pathname).toBe("/login"));
+			await waitFor(() => expect(history.location.pathname).toBe("/login"));
 		});
 
 		it("should redirect to sign in if the sign in button is pressed", async () => {
@@ -342,7 +338,7 @@ describe("SignupPage Tests", () => {
 				name: "Already have an account? Sign in",
 			});
 			fireEvent.click(linkElement);
-			expect(window.location.pathname).toBe("/login");
+			expect(history.location.pathname).toBe("/login");
 		});
 	});
 });

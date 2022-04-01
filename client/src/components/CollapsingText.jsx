@@ -2,7 +2,7 @@ import { ArrowDropDown, ArrowDropUp } from "@mui/icons-material";
 import { Typography, Collapse, Grid, IconButton } from "@mui/material";
 import { useState, useRef, useLayoutEffect } from "react";
 
-export default function CollapsingText({ text, variant="body1", color, textDataTestId }) {
+export default function CollapsingText({ text, variant="body1", color }) {
   const [collapse, setCollapse] = useState(false);
   const textRef = useRef();
   const [dimensions, setDimensions] = useState({ width:0, height: 0 });
@@ -42,19 +42,19 @@ export default function CollapsingText({ text, variant="body1", color, textDataT
   return (
     dimensions.height > COLLAPSE_LIMIT ? <Grid>
       <Collapse in={collapse} collapsedSize="100px">
-        <Typography variant={variant} color={color} ref={textRef} data-testid={textDataTestId}>
+        <Typography variant={variant} color={color} ref={textRef}>
           {text}
         </Typography>
       </Collapse>
       <Typography onClick={() => {setCollapse(!collapse)}} className="link" variant="subtitle2" color="disabled">
         See more
-        <IconButton disableRipple disabledFocusRipple>
+        <IconButton disableRipple disabledfocusripple="true">
           { collapse ? <ArrowDropUp fontSize="medium" /> : <ArrowDropDown fontSize="medium" /> }
         </IconButton>
       </Typography>
     </Grid>
     :
-    <Typography variant={variant} color={color} ref={textRef} data-testid={textDataTestId}>
+    <Typography variant={variant} color={color} ref={textRef}>
       {text}
     </Typography>
   )

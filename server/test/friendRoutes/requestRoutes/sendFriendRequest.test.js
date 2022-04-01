@@ -4,12 +4,12 @@ const FriendRequest = require("../../../models/FriendRequest");
 const app = require("../../../app");
 const supertest = require("supertest");
 const { generateTestUser, getDefaultTestUserEmail, generateCustomUniTestUser} = require("../../fixtures/generateTestUser");
-const { createToken } = require("../../../controllers/authController");
+const { createToken } = require("../../../controllers/auth");
 const { MESSAGES, FRIEND_MESSAGES } = require("../../../helpers/messages");
 const useTestDatabase = require("../../helpers/useTestDatabase");
 
 describe("sendFriendRequest /friends", () => {
-  useTestDatabase("sendFriendRequest");
+  useTestDatabase();
 
   beforeEach(async () => {
     const user = await generateTestUser();

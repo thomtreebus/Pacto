@@ -3,12 +3,19 @@ const Schema = mongoose.Schema;
 const { isEmail } = require('validator');
 const { MESSAGES } = require('../helpers/messages')
 
-// function returns true if it contains no numbers
+/**
+ * Check if the given string does not contain numbers
+ * @param {String} str - The given type name
+ * @returns true if the given string does not contain numbers
+ */
 const containsNoNumbers = (str) => {
   const regex = /^[^0-9]+$/;
   return regex.test(str);
 };
 
+/**
+ * User model used for authentication and pact participation
+ */
 const UserSchema = Schema({
   firstName: {
     type: String,
@@ -39,6 +46,7 @@ const UserSchema = Schema({
     type: String,
     required: [true, MESSAGES.PASSWORD.BLANK],
   },
+  // Course user is storing at university
   course: {
     type: String,
     required: false 
@@ -53,6 +61,7 @@ const UserSchema = Schema({
     ref: 'University',
     required: true
   },
+  // Pacts a user is a member or moderator in
   pacts: [{
     type: Schema.Types.ObjectId,
     ref: 'Pact'
@@ -61,6 +70,7 @@ const UserSchema = Schema({
     type: Schema.Types.ObjectId,
     ref: 'Notification'
   }],
+  // Profile image
   image: {
     type: String,
     default: "https://res.cloudinary.com/djlwzi9br/image/upload/v1644582632/pacto-logo_zzeh98.png"
@@ -79,12 +89,14 @@ const UserSchema = Schema({
     required: false,
     default: ""
   },
+  // Friend requests a user has sent
   sentRequests: [
     {
       type: Schema.Types.ObjectId,
       ref: 'FriendRequest'
     }
   ],
+  // Friend requests a user has received
   receivedRequests: [
     {
       type: Schema.Types.ObjectId,
@@ -98,10 +110,12 @@ const UserSchema = Schema({
       default: []
     },
   ],
+  // Instagram username
   instagram: {
     type: String,
     required: false
   },
+  // Linkedin name
   linkedin: {
     type: String,
     required: false
@@ -110,7 +124,6 @@ const UserSchema = Schema({
     type: String,
     required: false
   }
-
 
 });
 

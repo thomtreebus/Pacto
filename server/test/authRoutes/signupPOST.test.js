@@ -2,6 +2,7 @@ const supertest = require("supertest");
 const app = require("../../app");
 const emailHandler = require('../../helpers/emailHandlers');
 const { MESSAGES } = require("../../helpers/messages");
+const University = require("../../models/University");
 const { generateTestUser } = require("../fixtures/generateTestUser");
 const useTestDatabase = require("../helpers/useTestDatabase");
 
@@ -14,7 +15,7 @@ const LAST_NAME = "Doe";
 const PASSWORD = "Password123";
 
 describe("POST /signup", () => {
-  useTestDatabase("signup");
+  useTestDatabase();
 
   beforeEach(async () => {
     const user = await generateTestUser();
@@ -199,6 +200,18 @@ describe("POST /signup", () => {
       REAL_UNI_EMAIL,
       PASSWORD,
     );
+  });
+
+  it("accepts domain that has been never seen before and creates a new University object", async () => {
+    await isValidCredentials(
+      FIRST_NAME,
+      LAST_NAME,
+      "john.doe@ucl.ac.uk",
+      PASSWORD,
+    );
+    const unis = await University.find({});
+    // KCL (created before each test) and UCL (just created)
+    expect(unis.length).toBe(2);
   });
 
   it("handles upper case email", async () => {

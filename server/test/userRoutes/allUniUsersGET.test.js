@@ -1,12 +1,12 @@
 const supertest = require("supertest");
 const app = require("../../app");
-const { createToken } = require("../../controllers/authController");
+const { createToken } = require("../../controllers/auth");
 const { generateTestUser } = require('../fixtures/generateTestUser');
 const { MESSAGES } = require("../../helpers/messages");
 const useTestDatabase = require("../helpers/useTestDatabase");
 
 describe("GET /users", () => {
-  useTestDatabase("getUsers");
+  useTestDatabase();
 
   it("active logged in user can see all university members", async () => {
     const user1 = await generateTestUser("userOne");

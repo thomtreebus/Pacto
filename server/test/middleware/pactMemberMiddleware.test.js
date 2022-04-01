@@ -2,7 +2,7 @@ const supertest = require("supertest");
 const app = require("../../app");
 const { checkIsMemberOfPact } = require("../../middleware/pactMiddleware");
 const { checkAuthenticated } = require("../../middleware/authMiddleware");
-const { createToken } = require("../../controllers/authController");
+const { createToken } = require("../../controllers/auth");
 const {jsonResponse} = require("../../helpers/responseHandlers");
 const { MESSAGES, PACT_MESSAGES } = require("../../helpers/messages");
 const { generateTestUser, getDefaultTestUserEmail } = require("../fixtures/generateTestUser");
@@ -12,7 +12,7 @@ const Pact = require("../../models/Pact");
 const useTestDatabase = require("../helpers/useTestDatabase");
 
 describe("CheckIsMemberOfPact Middleware", () => {
- useTestDatabase("checkIsMemberOfPactMiddleware");
+ useTestDatabase();
 
   beforeEach(async () => {
     const user = await generateTestUser();

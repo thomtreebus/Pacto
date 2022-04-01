@@ -14,8 +14,8 @@ export default function PostCard({ post, repliable=false }) {
   })()
 
   return (
-    <BasePostCard post={post} repliable={repliable}>
-      <ConcretePostCard post={post}/>
-    </BasePostCard>
+      <BasePostCard post={post} repliable={repliable}>
+        <ConcretePostCard post={post}/>
+      </BasePostCard>
   )
 }

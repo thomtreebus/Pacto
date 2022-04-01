@@ -4,7 +4,13 @@ const Pact = require("../models/Pact");
 const Post = require("../models/Post");
 const { jsonResponse, jsonError } = require("../helpers/responseHandlers");
 
-module.exports.universityGet = async (req, res) => {
+/**
+ * Returns the university of the user.
+ * @param {Request} req - The request
+ * @param {Response} res - The response to the request
+ * @async
+ */
+module.exports.getUniversity = async (req, res) => {
 	try {
 		const uni = req.user.university;
 		await uni.populate({ path: "users", model: User });
@@ -15,7 +21,15 @@ module.exports.universityGet = async (req, res) => {
 	}
 };
 
-module.exports.search = async (req, res) => {
+/**
+ * Searches pacts, users and posts through the university of the user making the request
+ * that matches the query string specified by the user making the request.
+ * It returns a list of pacts, users and posts.
+ * @param {Request} req - The request
+ * @param {Response} res - The response to the request
+ * @async
+ */
+module.exports.getSearchResults = async (req, res) => {
 	try {
 		const searchQuery = req.params.query;
 		const university = await University.findOne({ id: req.user.university });
