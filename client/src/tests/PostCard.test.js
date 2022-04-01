@@ -19,7 +19,7 @@ describe("PostCard Tests", () => {
     });
 
     it("should render a link post when type is link", async () => {
-      await mockRender(<PostCard post={posts[1]} />);      
+      await mockRender(<PostCard post={posts[1]} />);
       await screen.findByRole("link");
     });
 

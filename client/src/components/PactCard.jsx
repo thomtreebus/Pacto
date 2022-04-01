@@ -71,7 +71,7 @@ export default function PactCard({ pact, joined }) {
 
 						<Box sx={{
 							overflow: "hidden",
-							flex: 1, 
+							flex: 1,
 							flexWrap: 'wrap',
 							wordBreak: "break-word"
 						}}>
@@ -81,7 +81,7 @@ export default function PactCard({ pact, joined }) {
 									marginBottom: "10px",
 								}}
 							>
-								{pact.description.substr(0, DESCRIPTION_LENGTH + 1)}{" "}
+								{pact.description.slice(0, DESCRIPTION_LENGTH + 1)}{" "}
 								{pact.description.length > DESCRIPTION_LENGTH && `...`}
 							</Typography>
 						</Box>

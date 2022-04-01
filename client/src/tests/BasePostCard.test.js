@@ -17,7 +17,7 @@ const post = {
     moderators: [users[1]._id]
   },
   author: users[0],
-  createdAt: new Date(Date.now() - (86400000) * 0).toISOString(),
+  createdAt: new Date(Date.now()).toISOString(),
   title: "ipsumLorem ipsumLorem ipsumLorem ipsumLorem",
   text: "amet officia molestias esse!",
   type: "text",

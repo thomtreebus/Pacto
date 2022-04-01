@@ -9,7 +9,7 @@ import "@testing-library/jest-dom";
 import { rest } from "msw";
 import AuthRoute from "../components/AuthRoute";
 import PrivateRoute from "../components/PrivateRoute";
-import { Switch} from "react-router-dom";
+import { Switch } from "react-router-dom";
 import { useMockServer } from "./utils/useMockServer";
 import mockRender from "./utils/mockRender";
 
@@ -159,8 +159,8 @@ describe("LoginPage Tests", () => {
 			const snackbarButtonElement = await screen.findByTestId("snackbar");
 			expect(snackbarButtonElement).toBeInTheDocument();
 			setTimeout(() => {
-				expect(screen.queryByTestId("snackbar")).not.toBeInTheDocument(), 6500;
-			});
+				expect(screen.queryByTestId("snackbar")).not.toBeInTheDocument();
+			}, 6500);
 		});
 
 		it("should redirect to feed when the login button is pressed with valid credentials", async () => {

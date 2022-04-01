@@ -2,7 +2,7 @@
  * Tests for the post page.
  */
 
-import { screen, fireEvent, waitFor} from "@testing-library/react";
+import {screen, fireEvent, waitFor} from "@testing-library/react";
 import PostPage from "../pages/PostPage";
 import "@testing-library/jest-dom";
 import { rest } from "msw";

@@ -120,7 +120,7 @@ export default function PrimarySearchAppBar({ handleDrawerToggle }) {
 	}
 
 	if(isLoading){
-		return (<Loading data-testid="loading-app-bar"></Loading>)
+		return (<Loading data-testid="loading-app-bar"/>)
 	}
 
 	return (
