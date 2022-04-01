@@ -6,7 +6,7 @@ const { NOTIFICATION_MESSAGES } = require("../helpers/messages");
 module.exports.getNotifications = async (req, res) => {
   let notifications = null;
   try {
-    notifications = await Notification.find({ user: req.user._id });
+    notifications = await Notification.find({ user: req.user._id, read: false });
     try {
 			res.status(200).json(jsonResponse(notifications, []));
 		} 
