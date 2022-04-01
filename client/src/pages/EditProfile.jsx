@@ -58,7 +58,7 @@ export default function EditProfile() {
 
 		data.append("api_key", process.env.REACT_APP_CLOUDINARY_KEY);
 		data.append("file", newImage);
-		data.append("upload_preset", "n2obmbt1");
+		data.append("upload_preset", process.env.REACT_APP_CLOUDINARY_UPLOAD_PRESET);
 
 		try {
 			const res = await Axios.post(

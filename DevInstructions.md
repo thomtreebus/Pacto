@@ -17,6 +17,12 @@
       - [**Environment Variables**](#environment-variables-1)
       - [**Start Application**](#start-application-1)
     - [5. Deployment](#5-deployment)
+      - [1. Go to nginx/conf and find default.conf.example](#1-go-to-nginxconf-and-find-defaultconfexample)
+      - [2. Setup environment variables.](#2-setup-environment-variables)
+      - [3. Build application.](#3-build-application)
+      - [4. Run the application](#4-run-the-application)
+      - [5. Run certbot for the https certificate](#5-run-certbot-for-the-https-certificate)
+      - [5. Restart docker containers to use certificate.](#5-restart-docker-containers-to-use-certificate)
   - [Development](#development)
     - [Test-Driven Development](#test-driven-development)
     - [SOLID Principles](#solid-principles)
@@ -43,7 +49,7 @@ Both the client and server applications utilize a few APIs. Some of these requir
 <p align="center">
   <a href="cloudinary" rel="noopener sponsored" target="_blank"><img src="https://i.imgur.com/breMIms.png" alt="cloudinary" title="Cloudinary Account" loading="lazy" /></a>
 </p>
-You will need to add these variables as environment variables in a later step.
+You will need to add these variables as environment variables in a later step. In addition to creating an account, you will need to setup an [upload preset](https://cloudinary.com/documentation/upload_presets) to be able to upload images. Once you have created an upload preset, you will need to add the name of your preset to the client environment variables.
 
 <p></p>
 
@@ -153,6 +159,7 @@ The server application relies on a few environment variables. Create a file call
     REACT_APP_CLOUDINARY_KEY= *insert your Cloudinary key*
     REACT_APP_CLOUDINARY_SECRET= *insert your Cloudinary secret*
     REACT_APP_CLOUDINARY_URL= *insert your Cloudinary URL*
+    REACT_APP_CLOUDINARY_UPLOAD_PRESET= *insert your Cloudinary upload preset*
     ```
 
 #### **Start Application**
