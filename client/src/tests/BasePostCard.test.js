@@ -3,12 +3,13 @@
  * of existing posts. 
  */
 
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import BasePostCard from "../components/cards/BasePostCard";
 import "@testing-library/jest-dom";
 import MockComponent from "./utils/MockComponent";
 import { useMockServer } from "./utils/useMockServer";
 import mockRender from "./utils/mockRender";
+import { rest } from "msw";
 
 const post = {
   pact: {
@@ -40,9 +41,28 @@ const MockBasePostCard = () => {
 }
 
 describe("BasePostCard Tests", () => {
+  let postVoted;
   const server = useMockServer();
 
   beforeEach(async () => {
+    server.use(
+      rest.put(`${process.env.REACT_APP_URL}/pact/5/post/downvote/1`, (req, res, ctx) => {
+        postVoted=true;
+        return res(
+          ctx.json({})
+        );
+      }),
+      rest.put(`${process.env.REACT_APP_URL}/pact/5/post/upvote/1`, (req, res, ctx) => {
+        postVoted=true;
+        return res(
+          ctx.json({})
+        );
+      }),
+    )
+  });
+
+  beforeEach(async () => {
+    postVoted = false;    
 		await mockRender(<MockBasePostCard/>);
 	});
 
@@ -106,6 +126,20 @@ describe("BasePostCard Tests", () => {
       const comments = await screen.findByTestId("comments");
       fireEvent.click(comments);
       expect(window.location.pathname).toBe("/pact/5/post/1");
+    });
+
+    it("comment voting callback function is called when comment is liked via Voter component", async () => {
+      const likeBtn = await screen.findByTestId("ThumbUpRoundedIcon");
+      fireEvent.click(likeBtn);
+
+      await waitFor(() => expect(postVoted).toBe(true));
+    });
+
+    it("comment voting callback function is called when comment is disliked via Voter component", async () => {
+      const dislikeBtn = await screen.findByTestId("ThumbDownRoundedIcon");
+      fireEvent.click(dislikeBtn);
+
+      await waitFor(() => expect(postVoted).toBe(true));
     });
   });
 });
