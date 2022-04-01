@@ -96,11 +96,7 @@ describe("BasePostCard Tests", () => {
 
     it("should render pact name if showPact is true", async () => {
       document.body.innerHTML = ""; // clear render
-      render(
-        <MockComponent>
-          <BasePostCard post={post} showPact={true}/>
-        </MockComponent>
-      );
+      history = await mockRender(<BasePostCard post={post} showPact={true}/>);
       await screen.findByTestId("pact");
     });
 
@@ -165,14 +161,14 @@ describe("BasePostCard Tests", () => {
       expect(history.location.pathname).toBe("/pact/5/post/1");
     });
 
-    it("comment voting callback function is called when comment is liked via Voter component", async () => {
+    it("a request is sent when the post is liked via Voter component", async () => {
       const likeBtn = await screen.findByTestId("ThumbUpRoundedIcon");
       fireEvent.click(likeBtn);
 
       await waitFor(() => expect(postVoted).toBe(true));
     });
 
-    it("comment voting callback function is called when comment is disliked via Voter component", async () => {
+    it("a request is sent when the post is disliked via Voter component", async () => {
       const dislikeBtn = await screen.findByTestId("ThumbDownRoundedIcon");
       fireEvent.click(dislikeBtn);
 
@@ -186,7 +182,7 @@ describe("BasePostCard Tests", () => {
       await waitFor(() => expect(history.location.pathname).toBe(`/pact/${post.pact._id}`))
     });
 
-    it("handles error when deleting comment", async () => {
+    it("handles error when deleting post", async () => {
       server.use(
         rest.delete(`${process.env.REACT_APP_URL}/pact/5/post/1`, (req, res, ctx) => {
           return res(
@@ -204,14 +200,10 @@ describe("BasePostCard Tests", () => {
 
     it("should redirect to pact if pact name is clicked", async () => {
       document.body.innerHTML = ""; // clear render
-      render(
-        <MockComponent>
-          <BasePostCard post={post} showPact={true}/>
-        </MockComponent>
-      );
+      history = await mockRender(<BasePostCard post={post} showPact={true}/>);
       const pactName = await screen.findByTestId("pact");
       fireEvent.click(pactName);
-      expect(window.location.pathname).toBe("/pact/5");
+      expect(history.location.pathname).toBe("/pact/5");
     });
   });
 });
