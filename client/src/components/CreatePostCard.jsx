@@ -143,10 +143,10 @@ export default function CreatePostCard({pactID}) {
   return (
     <Card sx={{ width: '100%', padding: 1, shadow: 3, marginTop: '18px'}}>
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-        <Tabs value={postType} onChange={handleTabChange} aria-label="tabs" centered>
-          <Tab icon={<TextIcon />} data-testid="text-icon" label="Text" {...a11yProps(POST_TYPES.TEXT)} />
-          <Tab icon={<PhotoIcon />} data-testid="image-icon" label="Image" {...a11yProps(POST_TYPES.IMAGE)} />
-          <Tab icon={<LinkIcon />} data-testid="link-icon" label="Link"{...a11yProps(POST_TYPES.LINK)} />
+        <Tabs value={postType.INDEX} onChange={handleTabChange} aria-label="tabs" centered>
+          <Tab icon={<TextIcon />} data-testid="text-icon" label="Text" {...a11yProps(POST_TYPES.TEXT.INDEX)} />
+          <Tab icon={<PhotoIcon />} data-testid="image-icon" label="Image" {...a11yProps(POST_TYPES.IMAGE.INDEX)} />
+          <Tab icon={<LinkIcon />} data-testid="link-icon" label="Link"{...a11yProps(POST_TYPES.LINK.INDEX)} />
         </Tabs>
       </Box>
       <Box
@@ -154,7 +154,7 @@ export default function CreatePostCard({pactID}) {
         noValidate
         onSubmit={handleSubmit}
       >
-        <TabPanel value={postType} index={POST_TYPES.TEXT}>
+        <TabPanel value={postType.INDEX} index={POST_TYPES.TEXT.INDEX}>
           <TitleTextField apiPostTitleError={apiPostTitleError}/>
           <TextField sx={{marginTop: '8px'}}
             id="text"
@@ -169,7 +169,7 @@ export default function CreatePostCard({pactID}) {
             helperText={apiPostTextError}
           />
         </TabPanel>
-        <TabPanel value={postType} index={POST_TYPES.IMAGE}>
+        <TabPanel value={postType.INDEX} index={POST_TYPES.IMAGE.INDEX}>
           <TitleTextField apiPostTitleError={apiPostTitleError}/> 
           <label htmlFor="contained-button-file">
             <Input
@@ -192,7 +192,7 @@ export default function CreatePostCard({pactID}) {
           </label>
           <ErrorMessage  isOpen={openErrorSnackbar} setIsOpen={setOpenErrorSnackbar} message={apiPostImageError}/>
         </TabPanel>
-        <TabPanel value={postType} index={POST_TYPES.LINK}>
+        <TabPanel value={postType.INDEX} index={POST_TYPES.LINK.INDEX}>
           <TitleTextField apiPostTitleError={apiPostTitleError}/> 
           <TextField sx={{marginTop: '8px'}}
             id="link"
