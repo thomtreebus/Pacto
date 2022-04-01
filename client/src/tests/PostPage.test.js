@@ -2,14 +2,11 @@
  * Tests for the post page.
  */
 
-import {render, screen, fireEvent, waitFor} from "@testing-library/react";
-import { waitForElementToBeRemoved } from "@testing-library/react"
+import {screen, fireEvent, waitFor} from "@testing-library/react";
 import PostPage from "../pages/PostPage";
 import "@testing-library/jest-dom";
-import MockComponent from "./utils/MockComponent";
-import { createMemoryHistory } from 'history';
 import { rest } from "msw";
-import { Router, Route } from "react-router-dom";
+import { Route } from "react-router-dom";
 import users from "./utils/testUsers";
 import pacts from "./utils/testPacts";
 import comments from "./utils/testComments";

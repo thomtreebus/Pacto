@@ -8,7 +8,7 @@ import CommentBox from "../components/CommentBox";
 import CommentCard from "../components/cards/CommentCard";
 import PostCard from "../components/cards/PostCard";
 import { useAuth } from "../providers/AuthProvider";
-;
+
 export default function PostPage() {
   const { user } = useAuth()
   const { pactID, postID } = useParams();
@@ -65,12 +65,12 @@ export default function PostPage() {
     <>
       <Grid container width="100%" justifyContent="center" sx={{marginTop: 3}}>
         <Grid item xs={11} paddingBottom={1}>
-          <PostCard post={post} numComments={post.comments.length}></PostCard>
+          <PostCard post={post} numComments={post.comments.length}/>
           <Typography variant="subtitle1" className="link" onClick={() => {setShowReplyBox(!showReplyBox)}} data-testid="comment-adder">
             {showReplyBox ? "Hide" : "Add comment"}
           </Typography>
           {showReplyBox && <Box>
-            <CommentBox post={post} successHandler={commentSubmissionHandler}></CommentBox>
+            <CommentBox post={post} successHandler={commentSubmissionHandler}/>
           </Box>}
         </Grid>
         <Box sx={{width: "95%", marginInline: "auto", display: "flex"}} justifyContent="center">

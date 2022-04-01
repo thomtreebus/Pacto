@@ -50,7 +50,6 @@ export default function LoginPage() {
 			setSnackbarMessage(err.message);
 			setSnackbarOpen(true);
 			setIsButtonDisabled(false);
-			return;
 		}
 	};
 

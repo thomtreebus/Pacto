@@ -17,24 +17,33 @@ The members of the team are:
 
 ## Project structure
 
-The project consists of two applications. A React app that the client interacts with, and a Node.js server app that handles the backend/API.
+The project consists of two applications. A React app that the client interacts with, and a Node.js server app that handles the backend/API. The two applications are located in seperate directories.
 
 ## Deployed version of the application
 
 The deployed version of the application can be found at [pacto.co.uk](https://pacto.co.uk).
+
 
 ## Access credentials for viewing different roles
 
 The application has certain features that can only be viewed by users with a moderator role. The following credentials can be used to view the application as a user that is a moderator for one of the pacts (named the PactoPact):
 
 **email**: pac.to@kcl.ac.uk
+
 **password**: Password123
 
 You can also register for an account as long as you have a valid UK university email address. 
 
+## Video Demonstration
+A video walkthrough of the application that demonstrates all the major features is available [here](https://www.youtube.com/watch?v=-uVKdPKAN8w).
+
 ## Installation instructions
 
 A detailed guide on how to install the application and run it as a developer can be viewed in the [Developer Instructions](/DevInstructions.md) file (DevInstructions.md)
+
+## Testing Report
+
+A report about the approach to testing that was used can be viewed in the [Testing Report](/TestReport.md) file (TestReport.md)
 
 ## Credits/Sources
 

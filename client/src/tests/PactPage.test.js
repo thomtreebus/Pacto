@@ -28,7 +28,7 @@ const response = {
           lastName: "Wali",
           _id: 1
         },
-        createdAt: new Date(Date.now() - (86400000) * 0).toISOString(),
+        createdAt: new Date(Date.now()).toISOString(),
         title: "Lorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem",
         text: "Lorem ipsum dolor inventore ad! Porro soluta eum amet officia molestias esse!Lorem ipsum dolor inventore ad! Porro soluta eum amet officia molestias esse!Lorem ipsum dolor inventore ad! Porro soluta eum amet officia molestias esse!",
         type: "text",
@@ -161,7 +161,7 @@ describe("PactPage Tests", () => {
               );
             }),
           );
-        }),
+        })
 
         it("renders only the exit icon", async () => {
           const leaveIcon = await screen.findByTestId("ExitToAppIcon");

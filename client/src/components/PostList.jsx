@@ -6,7 +6,7 @@ import { useState } from "react";
 import { Typography } from "@mui/material";
 import { useEffect } from "react";
 
-export default function PostList({ posts, searchable=true }) {
+export default function PostList({ posts, searchable=true, showPact=false }) {
   const [orderablePosts, setPosts] = useState(posts);
 	const [search, setSearch] = useState("");
 
@@ -74,7 +74,7 @@ export default function PostList({ posts, searchable=true }) {
           {
             orderablePosts.map((post) => (
               <ListItem key={post._id}>
-                <PostCard post={post}/>
+                <PostCard post={post} showPact={showPact}/>
               </ListItem>
             ))
           }

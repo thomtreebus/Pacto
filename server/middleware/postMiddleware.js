@@ -17,7 +17,7 @@ const Comment = require("../models/Comment");
  * @async
  */
 module.exports.checkValidPost = async (req,res, next) => {
-  let post = null;
+  let post;
   try {
     post = await Post.findOne({ pact: req.pact, _id: req.params.postId });
   } catch(err){
@@ -45,7 +45,7 @@ module.exports.checkValidPost = async (req,res, next) => {
  * @async
  */
 module.exports.checkValidPostComment = async (req,res, next) => {
-  let comment = null;
+  let comment;
   try {
     comment = await Comment.findOne({ _id: req.params.commentId });
   } catch(err){
