@@ -131,7 +131,15 @@ The client application relies on a few environment variables. Some variables wil
   IS_PROD=true|false
   ```
 #### **Start Application**
-Before running the server application, you need to start the database 
+Enter the server directory
+```
+$ cd server
+```
+Install the required packages with npm
+```
+$ npm install
+```
+Start the database 
 ```
 $ npm run dbstart
 ```
@@ -139,7 +147,7 @@ If that doesn't run try running the same command with sudo
 ```
 $ sudo run npm dbstart
 ```
-Once the database is running, you can star the application
+Once the database is running, you can start the application
 ```
 $ npm run start
 ```
