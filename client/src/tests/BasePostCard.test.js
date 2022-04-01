@@ -20,7 +20,7 @@ const post = {
     lastName: "Wali",
     _id: 1
   },
-  createdAt: new Date(Date.now() - (86400000) * 0).toISOString(),
+  createdAt: new Date(Date.now()).toISOString(),
   title: "ipsumLorem ipsumLorem ipsumLorem ipsumLorem",
   text: "amet officia molestias esse!",
   type: "text",

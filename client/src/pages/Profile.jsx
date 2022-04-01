@@ -107,7 +107,7 @@ export default function Profile() {
               }
             </Box>
         </Box>
-        <Divider sx={{ marginTop: "10px", marginBottom: "10px" }}></Divider>
+        <Divider sx={{marginTop: "10px", marginBottom: "10px"}}/>
         <Box sx={{flexWrap : "wrap", marginTop: "2px", display: "flex", gap: "1rem"}} alignItems="center"> 
           {displayedUser.instagram && <Chip label={displayedUser.instagram} icon={<InstagramIcon />} variant="outlined" data-testid="instagram-icon" component="a" target="_blank" clickable href={`https://www.instagram.com/${displayedUser.instagram}`} />}
           {displayedUser.linkedin && <Chip label={displayedUser.linkedin} icon={<LinkedInIcon />} data-testid="linkedin-icon" variant="outlined" component="a" target="_blank" clickable href={`https://www.linkedin.com/search/results/all/?keywords=${displayedUser.linkedin}`} />}
@@ -115,7 +115,7 @@ export default function Profile() {
           <Chip label={`${displayedUser.friends.length} Friends`} icon={<GroupIcon />} variant="outlined" data-testid="friends-button" onClick={() => history.push("/users")} />
           <Chip label={`${displayedUser.pacts.length} Pacts`} icon={<ForumIcon />} variant="outlined" />
         </Box>
-        <Divider sx={{ marginTop: "10px", marginBottom: "10px" }}></Divider>
+        <Divider sx={{marginTop: "10px", marginBottom: "10px"}}/>
         <Typography variant="body1" textAlign={"justify"}  multiline="true" style={{whiteSpace: 'pre-line'}}> {displayedUser.bio} </Typography>
       </Grid>
     </Grid>)

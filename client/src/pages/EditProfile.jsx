@@ -169,7 +169,7 @@ export default function EditProfile() {
 						alt="Profile Picture"
 						cloudName={`${process.env.REACT_APP_CLOUDINARY_CLOUD_NAME}`}
 						publicID={image}
-					></Image>
+					/>
 					<Stack direction="row" alignItems="center" spacing={2}>
 						<label htmlFor="contained-button-file">
 							<Input
