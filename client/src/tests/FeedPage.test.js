@@ -2,7 +2,7 @@
  * Tests for the feed / home page of the application.
  */
 
-import { screen } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import Feed from "../pages/Feed";
 import "@testing-library/jest-dom";
 import { rest } from "msw";
@@ -76,5 +76,19 @@ describe("FeedPage Tests", () => {
         await screen.findByTestId("search-box");
       });
     })
+  })
+
+  it("Check displays and error when there is an issue fetching the feed", async () => {
+    server.use(
+      rest.get(`${process.env.REACT_APP_URL}/feed`, (req, res, ctx) => {
+        return res(
+          ctx.status(400),
+          ctx.json({})
+        );
+      })
+    );
+    await renderWithMock();
+    const errorMessage = await screen.findByText(/error/i)
+    expect(errorMessage).toBeInTheDocument();
   })
 })
