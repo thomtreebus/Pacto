@@ -22,7 +22,6 @@ describe("GET /me", () => {
     expect(response.body.message.firstName).toBeDefined();
     expect(response.body.message.lastName).toBeDefined();
     expect(response.body.message.uniEmail).toBeDefined();
-    expect(response.body.message.password).toBeDefined();
     expect(response.body.errors.length).toBe(0);
   });
 

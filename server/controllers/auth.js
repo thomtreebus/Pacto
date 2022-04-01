@@ -203,6 +203,6 @@ module.exports.verify = async (req, res) => {
  * @returns {Promise<void>} Javascript async function.
  */
 module.exports.getMe = async (req, res) => {
-	const user = await req.user.select(["-password"])
-	res.status(200).json(jsonResponse(user, []));
+	delete req.user.password;
+	res.status(200).json(jsonResponse(req.user, []));
 };
