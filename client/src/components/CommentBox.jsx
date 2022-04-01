@@ -79,8 +79,6 @@ export default function CommentBox({
 					error={apiTextError.length !== 0}
 					helperText={apiTextError}
 					autoFocus
-					multiline
-					maxRows={4}
 					variant="outlined"
 					InputProps={{
 						endAdornment: (
