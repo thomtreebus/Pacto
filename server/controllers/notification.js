@@ -35,9 +35,6 @@ module.exports.markAsRead = async (req, res) => {
         notification.read = true;
       }
 			notification.save();
-
-			// Populating before returning the notification
-			await notification.populate({ path: 'user', model: User });
 			
 			res.status(200).json(jsonResponse(notification, []));
 		}
