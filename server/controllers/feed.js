@@ -19,7 +19,16 @@ module.exports.getFeed = async (req, res) => {
     const posts = await Post.find({ pact: { $in: user.pacts } }).sort({ createdAt: -1 });
     for(let i = 0; i < posts.length; i++) {
       const post = posts[i];
-      await post.populate({ path: 'author', model: User });
+      await post.populate(
+        {
+          path: "author",
+          model: User,
+          select: [
+            "firstName",
+            "lastName",
+          ]
+        }
+      );
       await post.populate({ path: 'pact', model: Pact });
       if (post.type === "link") {
 				const preview = await getPreview(post.link);
