@@ -9,10 +9,10 @@ const app = require("../../app");
 const { generateTestUser, getDefaultTestUserEmail } = require("../fixtures/generateTestUser");
 const { generateTestPact, getTestPactId } = require("../fixtures/generateTestPact");
 const { generateTestPost, getTestPostId } = require("../fixtures/generateTestPost");
-const { createToken } = require("../../controllers/authController");
+const { createToken } = require("../../controllers/auth");
 const { PACT_MESSAGES, MESSAGES } = require("../../helpers/messages");
 
-describe("search /search/:query", () =>{
+describe("search /search/:query", () => {
   beforeAll(async () => {
 		await mongoose.connect(process.env.TEST_DB_CONNECTION_URL);
 	});
@@ -97,10 +97,32 @@ describe("search /search/:query", () =>{
   });
 
   it("returns posts with names that match query", async () => {
-    const query = "pac";
+    const query = "Dummy title";
     const user = await User.findOne({ uniEmail: getDefaultTestUserEmail() });
-    const notReturnUser = await generateTestUser("bob");
-    notReturnUser.save();
+    const token = createToken(user._id);
+    const response = await supertest(app)
+    .get(`/search/${query}`)
+    .set("Cookie", [`jwt=${token}`])
+    .expect(200);
+    expect(response.body.message).toBeDefined();
+    expect(response.body.errors.length).toBe(0);
+    expect(response.body.message.pacts).toBeDefined();
+    expect(response.body.message.users).toBeDefined();
+    expect(response.body.message.posts).toBeDefined();
+    expect(response.body.message.posts.length).toBe(1);
+    });
+
+  it("does not return posts from a pact the user is not a member of", async () => {
+    const query = "bob's post";
+    const user = await User.findOne({ uniEmail: getDefaultTestUserEmail() });
+    const bob = await generateTestUser("bob");
+    bob.active = true;
+    await bob.save();
+    const pactUserIsNotIn = await generateTestPact(bob, "bob's pact");
+    const post = await generateTestPost(user, pactUserIsNotIn, "bob's post");
+    await post.save();
+    await pactUserIsNotIn.save();
+    await bob.save();
     const token = createToken(user._id);
 
     const response = await supertest(app)
@@ -112,10 +134,9 @@ describe("search /search/:query", () =>{
     expect(response.body.message.pacts).toBeDefined();
     expect(response.body.message.users).toBeDefined();
     expect(response.body.message.posts).toBeDefined();
-    expect(response.body.message.users.length).toBe(1);
-    expect(response.body.message.users[0]._id).toBe(user._id.toString());
-    });
-
+    expect(response.body.message.posts.length).toBe(0);
+  });
+  
   it("uses checkAuthenticated middleware", async () =>{
 
     const response = await supertest(app)

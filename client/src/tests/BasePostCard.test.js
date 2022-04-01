@@ -1,9 +1,14 @@
+/**
+ * Tests for the basee post card componnent which wraps the the different types
+ * of existing posts. 
+ */
+
 import { render, screen, fireEvent } from "@testing-library/react";
-import { waitForElementToBeRemoved } from "@testing-library/react"
 import BasePostCard from "../components/cards/BasePostCard";
 import "@testing-library/jest-dom";
 import MockComponent from "./utils/MockComponent";
 import { useMockServer } from "./utils/useMockServer";
+import mockRender from "./utils/mockRender";
 
 const post = {
   pact: {
@@ -26,16 +31,19 @@ const post = {
   _id: 1
 }
 
+const MockBasePostCard = () => {
+  return (
+    <MockComponent>
+      <BasePostCard post={post} />
+    </MockComponent>
+  )
+}
+
 describe("BasePostCard Tests", () => {
   const server = useMockServer();
 
   beforeEach(async () => {
-		render(
-      <MockComponent>
-        <BasePostCard post={post} />
-      </MockComponent>
-    );
-    await waitForElementToBeRemoved(() => screen.getByText("Loading"));
+		await mockRender(<MockBasePostCard/>);
 	});
 
   describe("Check elements are rendered", () => {

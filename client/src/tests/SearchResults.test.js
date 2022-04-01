@@ -1,12 +1,14 @@
-import { render, screen } from "@testing-library/react";
-import { waitForElementToBeRemoved } from "@testing-library/react";
+/**
+ * Tests for search results.
+ */
+
+import { screen } from "@testing-library/react";
 import SearchResults from "../pages/SearchResults";
 import "@testing-library/jest-dom";
-import MockComponent from "./utils/MockComponent";
 import { rest } from "msw";
-import { createMemoryHistory } from 'history';
-import { Router, Route } from 'react-router-dom'
+import { Route } from 'react-router-dom'
 import { useMockServer } from "./utils/useMockServer";
+import mockRender from "./utils/mockRender";
 
 const response = {
   message: {
@@ -34,6 +36,14 @@ const response = {
   }
 }
 
+const MockSearchResults = () => {
+	return (
+		<Route exact path="/search/:query">
+			<SearchResults />
+		</Route>
+	);
+}
+
 describe("SearchResults Tests", () => {
 	const server = useMockServer();
 
@@ -50,18 +60,7 @@ describe("SearchResults Tests", () => {
 
 
 	beforeEach(async () => {
-		const history = createMemoryHistory({ initialEntries: [`/search/e`] });
-
-		render(
-			<MockComponent>
-				<Router history={history}>
-					<Route exact path="/search/:query">
-						<SearchResults />
-					</Route>
-				</Router>
-			</MockComponent>
-		);
-		await waitForElementToBeRemoved(() => screen.getByText("Loading"));
+		await mockRender(<MockSearchResults/>, `/search/e`);
 	});
 
 	describe("Check elements are rendered", () => {

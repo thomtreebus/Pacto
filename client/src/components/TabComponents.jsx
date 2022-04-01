@@ -2,7 +2,12 @@ import {Box} from "@mui/system";
 import {Typography} from "@mui/material";
 import React from "react";
 
-// Altered code from https://mui.com/components/tabs
+/**
+ * Customised TabPanel Solution over MUI's TabPanel.
+ * Altered code sourced from https://mui.com/components/tabs
+ * @param props The items you want inside a TabPanel.
+ * @returns {JSX.Element} A customised
+ */
 export function TabPanel(props) {
   const { children, value, index, ...other } = props;
 
@@ -23,6 +28,11 @@ export function TabPanel(props) {
   );
 }
 
+/**
+ * Helper function to add an id identifier attribute and track selection.
+ * Altered code sourced from https://mui.com/components/tabs
+ * @param index Index of the tab
+ */
 export function a11yProps(index) {
   return {
     id: `simple-tab-${index}`,

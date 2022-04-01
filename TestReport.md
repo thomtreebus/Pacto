@@ -25,14 +25,14 @@ The finished product, Pacto, is a social networking application aimed at student
 | Server | 297  |   297     |  |
 
 ## Client Testing
-The front-end application was created using React. [React Testing Library](https://testing-library.com/docs/react-testing-library/intro/) was used in order to test all of the components and pages. 
+The client application was created using [React](https://reactjs.org/) and automated testing was done using [Jest](https://testing-library.com/docs/react-testing-library/intro). [React Testing Library](https://testing-library.com/docs/react-testing-library/intro/) was used in order to test all of the components and pages. 
 
-In order to run the automated tests, run the following command from within the server directory:
+In order to run the automated tests, run the following command from within the client directory:
 ```
 $ npm run test
 ```
 ## Server Testing
-Server-side testing was done using the [Jest](https://testing-library.com/docs/react-testing-library/intro) JavaScript testing framework as well as [supertest](https://www.npmjs.com/package/supertest).
+The server application was created using [Node.js](https://nodejs.org/en/). Server-side testing was done using the [Jest](https://testing-library.com/docs/react-testing-library/intro) JavaScript testing framework as well as [supertest](https://www.npmjs.com/package/supertest).
 
 In order to run the automated tests, run the following command from within the server directory:
 ```
@@ -44,6 +44,8 @@ In order to view the automated test coverage in the terminal, run the following 
 ```
 $ npm run coverage
 ```
+Running coverage will create a new directory (within the directory that coverage was run in) called `coverage`. Within this directory, an html report is created that shows the test coverage in detail. The report is located at `/coverage/lcov-report/index.html`
+
 The coverage for the client application currently looks like this:
 <p align="center">
   <a href="coverage" rel="noopener sponsored" target="_blank"><img src="" alt="coverage" title="Client Test Coverage" loading="lazy" /></a>

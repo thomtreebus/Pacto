@@ -1,14 +1,17 @@
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+/**
+ * Tests for a pact list item which is displayed my a pact list.
+ */
+
+import { screen, fireEvent, waitFor } from "@testing-library/react";
 import "@testing-library/jest-dom";
-import MockComponent from "./utils/MockComponent.jsx";
 import { rest } from "msw";
-import { setupServer } from "msw/node";
 import pacts from "./utils/testPacts";
-import { waitForElementToBeRemoved } from "@testing-library/react";
 import PactListItem from "../components/PactListItem.jsx";
 import { useMockServer } from "./utils/useMockServer.js";
+import mockRender from "./utils/mockRender";
 
 describe("Pact List Item Tests", () => {
+	let history;
 	const server = useMockServer();
 
 	beforeEach(async () => {
@@ -34,14 +37,9 @@ describe("Pact List Item Tests", () => {
 		);
 	});
 
-	const renderWithMock = async (element) => {
-		render(<MockComponent>{element}</MockComponent>);
-		await waitForElementToBeRemoved(() => screen.getByText("Loading"));
-	};
-
 	describe("Tests concerning the pacts that the user is in", () => {
 		beforeEach(async () => {
-			await renderWithMock(<PactListItem pact={pacts[0]} />);
+			history = await mockRender(<PactListItem pact={pacts[0]} />);
 		});
 
 		describe("Check elements are rendered", () => {
@@ -63,14 +61,14 @@ describe("Pact List Item Tests", () => {
 				const item = screen.getByTestId(/item/i);
 				expect(item).toBeInTheDocument();
 				fireEvent.click(item);
-				expect(window.location.pathname).toBe(`/pact/${pacts[0]._id}`);
+				expect(history.location.pathname).toBe(`/pact/${pacts[0]._id}`);
 			});
 		});
 	});
 
 	describe("Tests concerning the pacts that the user is not in", () => {
 		beforeEach(async () => {
-			await renderWithMock(<PactListItem pact={pacts[1]} />);
+			history = await mockRender(<PactListItem pact={pacts[1]} />);
 		});
 
 		it("should show the join confirmation dialogue if the user is not a part of the pact", async () => {
@@ -91,7 +89,7 @@ describe("Pact List Item Tests", () => {
 			fireEvent.click(item);
 			const joinButton = await screen.findByRole("button", { name: "Join" });
 			fireEvent.click(joinButton);
-			await waitFor(() => expect(window.location.pathname).toBe("/pact/2"));
+			await waitFor(() => expect(history.location.pathname).toBe("/pact/2"));
 		});
 
 		it("should show and error message to the user wanting to join if there is one", async () => {

@@ -64,20 +64,27 @@ export default function PactCard({ pact, joined }) {
 							display: "flex",
 							flexDirection: "column",
 							alignItems: "flex-start",
-							gap: "10px",
+							gap: "10px"
 						}}
 					>
 						<PactChip pact={pact} />
 
-						<Typography
-							variant="body2"
-							sx={{
-								marginBottom: "10px",
-							}}
-						>
-							{pact.description.slice(0, DESCRIPTION_LENGTH + 1)}{" "}
-							{pact.description.length > DESCRIPTION_LENGTH && `...`}
-						</Typography>
+						<Box sx={{
+							overflow: "hidden",
+							flex: 1,
+							flexWrap: 'wrap',
+							wordBreak: "break-word"
+						}}>
+							<Typography
+								variant="body2"
+								sx={{
+									marginBottom: "10px",
+								}}
+							>
+								{pact.description.slice(0, DESCRIPTION_LENGTH + 1)}{" "}
+								{pact.description.length > DESCRIPTION_LENGTH && `...`}
+							</Typography>
+						</Box>
 					</Box>
 
 					<Box

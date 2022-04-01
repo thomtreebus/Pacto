@@ -142,7 +142,7 @@ module.exports.rejectFriendRequest = async (req, res) => {
  * @param {Response} res - The response to the request
  * @async
  */
-module.exports.removeFriend = async (req, res) => {
+module.exports.deleteFriend = async (req, res) => {
   try {
     const user = req.user;
     const { id } = req.params;

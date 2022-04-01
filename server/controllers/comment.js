@@ -1,7 +1,5 @@
-const Pact = require("../models/Pact");
 const Comment = require("../models/Comment");
 const User = require("../models/User");
-const Post = require("../models/Post");
 const Notification = require("../models/Notification");
 const {jsonResponse, jsonError} = require("../helpers/responseHandlers");
 const handleFieldErrors = require('../helpers/errorHandler');
@@ -35,17 +33,35 @@ const makeComment = async(req, res, parentComment=undefined) => {
     if(parentComment){
       parentComment.childComments.push(comment);
       const user = req.user;
-      const notification = await Notification.create({ user: parentComment.author, text: `${user.firstName} ${user.lastName} replied to your comment` });
-      await User.findByIdAndUpdate(parentComment.author, { $push: { notifications: notification._id } });
-      parentComment.save();
+      if (req.user._id !== parentComment.author) {
+        const notification = await Notification.create({
+          user: parentComment.author,
+          text: `${user.firstName} ${user.lastName} replied to your comment`
+        });
+        const a = await Notification.find({});
+        await User.findByIdAndUpdate(parentComment.author, {$push: {notifications: notification._id}});
+      }
+      await parentComment.save();
     }
 
     await comment.populate({path: "author", model: User});
     await comment.populate({path: "parentComment", model: Comment});
     await comment.populate({path: "childComments", model: Comment});
-    
-    const notification = await Notification.create({ user: req.post.author, text: `Your post received a new comment` });
-		await User.findByIdAndUpdate(req.post.author, { $push: { notifications: notification._id } });
+
+    if ((req.user._id.toString() !== req.post.author._id.toString())) {
+      const parentCommentIsNotPostAuthor = parentComment && (parentComment.author !== req.post.author._id.toString())
+      // if:  parent author is not defined ( Comment is replying directly to main post )
+      // or if:  parent comment is not the post author ( post author already got the replied to your comment notification
+      // so no need for a duplicate notification )
+      // then: send the post author a notification saying there is a new comment on their post
+      if(!parentComment || parentCommentIsNotPostAuthor ) {
+        const notification = await Notification.create({
+          user: req.post.author,
+          text: `Your post received a new comment`
+        });
+        await User.findByIdAndUpdate(req.post.author, {$push: {notifications: notification._id}});
+      }
+    }
 
     return res.status(201).json(jsonResponse(comment, []));
   }
@@ -60,7 +76,7 @@ const makeComment = async(req, res, parentComment=undefined) => {
  * @param {Response} res - The response to the request
  * @async
  */
-module.exports.commentPost = async (req, res) => {
+module.exports.createComment = async (req, res) => {
   await makeComment(req,res);
 }
 
@@ -71,7 +87,7 @@ module.exports.commentPost = async (req, res) => {
  * @param {Response} res - The response to the request
  * @async
  */
-module.exports.commentReplyPost = async (req, res) => {
+module.exports.createReplyToComment = async (req, res) => {
   await makeComment(req,res,req.comment);
 }
 
@@ -83,7 +99,7 @@ module.exports.commentReplyPost = async (req, res) => {
  * @param {Response} res - The response to the request
  * @async
  */
-module.exports.commentDelete = async (req, res) => {
+module.exports.deleteComment = async (req, res) => {
   if(!(req.pact.moderators.includes(req.user._id.toString()) || req.comment.author.toString()===req.user._id.toString())){
     res.status(401).json(jsonResponse(null, [jsonError(null, COMMENT_MESSAGES.NOT_AUTHORISED.MODIFY)]));
     return;
@@ -112,7 +128,7 @@ module.exports.commentDelete = async (req, res) => {
  * @param {Response} res - The response to the request
  * @async
  */
-module.exports.commentGet = async (req, res) => {
+module.exports.getComment = async (req, res) => {
   try {
     const comment = req.comment;
     await comment.populate({path: "author", model: User});
@@ -131,7 +147,7 @@ module.exports.commentGet = async (req, res) => {
  * @param {Response} res - The response to the request
  * @async
  */
-module.exports.commentUpvotePut = async (req, res) => {
+module.exports.upvoteComment = async (req, res) => {
   try {
     const comment = req.comment;
     await upvote(comment, req.user);
@@ -152,7 +168,7 @@ module.exports.commentUpvotePut = async (req, res) => {
  * @param {Response} res - The response to the request
  * @async
  */
-module.exports.commentDownvotePut = async (req, res) => {
+module.exports.downvoteComment = async (req, res) => {
   try {
     const comment = req.comment;
     await downvote(comment, req.user);

@@ -12,7 +12,7 @@ const getPreview = require("../helpers/LinkCache")
  * @param {Response} res - The response to the request
  * @async
  */
-module.exports.feedGET = async (req, res) => {
+module.exports.getFeed = async (req, res) => {
   try {
     const user = req.user;
     await user.populate({ path: 'pacts', model: Pact })

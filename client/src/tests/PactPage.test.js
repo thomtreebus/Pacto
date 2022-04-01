@@ -1,12 +1,15 @@
-import { fireEvent, render, screen, waitFor, waitForElementToBeRemoved } from "@testing-library/react";
+/**
+ * Tests for the pact pace.
+ */
+
+import { fireEvent, screen, waitFor } from "@testing-library/react";
 import PactPage from "../pages/PactPage";
 import "@testing-library/jest-dom";
 import { rest } from "msw";
-import MockComponent from "./utils/MockComponent";
-import { Router, Route } from "react-router-dom";
-import { createMemoryHistory } from 'history';
+import { Route } from "react-router-dom";
 import userEvent from "@testing-library/user-event";
 import { useMockServer } from "./utils/useMockServer";
+import mockRender from "./utils/mockRender";
 
 const response = {
   message: {
@@ -44,7 +47,27 @@ const response = {
   }
 }
 
+const MockPactPage = () => {
+  return (
+    <>
+      <Route exact path="/pact/:pactID">
+        <PactPage />
+      </Route>
+      <Route exact path="/pact/:pactID/edit-pact">
+        Redirected to edit-pact
+      </Route>
+      <Route exact path="/not-found">
+        Not Found
+      </Route>
+      <Route exact path="/hub">
+        Hub
+      </Route>
+    </>
+  )
+}
+
 describe("PactPage Tests", () => {
+  let history;
   const server = useMockServer();
 
 	beforeEach(async () => {
@@ -72,31 +95,8 @@ describe("PactPage Tests", () => {
     );
 	});
 
-  let history;
-
   const renderWithMock = async () => {
-    history = createMemoryHistory({ initialEntries: [`/pact/1`] });
-
-    render(
-      <MockComponent>
-        <Router history={history}>
-          <Route exact path="/pact/:pactID">
-            <PactPage />
-          </Route>
-          <Route exact path="/pact/:pactID/edit-pact">
-            Redirected to edit-pact
-          </Route>
-          <Route exact path="/not-found">
-            Not Found
-          </Route>
-          <Route exact path="/hub">
-            Hub
-          </Route>
-        </Router>
-      </MockComponent>
-    );
-
-    await waitForElementToBeRemoved(() => screen.getByText("Loading"));
+    history = await mockRender(<MockPactPage/>, "/pact/1");
   }
 
   describe("Check elements are rendered", () => {

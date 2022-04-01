@@ -2,7 +2,7 @@ const User = require("../../models/User");
 const app = require("../../app");
 const supertest = require("supertest");
 const { generateTestUser, getDefaultTestUserEmail, generateCustomUniTestUser} = require("../fixtures/generateTestUser");
-const { createToken } = require("../../controllers/authController");
+const { createToken } = require("../../controllers/auth");
 const { MESSAGES, FRIEND_MESSAGES } = require("../../helpers/messages");
 const useTestDatabase = require("../helpers/useTestDatabase");
 

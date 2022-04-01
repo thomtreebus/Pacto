@@ -68,7 +68,7 @@ export default function CommentCard({ comment, post, postUpdaterFunc }) {
       const json = await response.json();
 
       if (response.status !== 200) {
-        if (json.errors.length) throw Error(json.errors[0].message);
+        throw Error(json.errors.length ? json.errors[0].message : "Server Error");
       }
       
       const newComment = json.message;
@@ -86,10 +86,6 @@ export default function CommentCard({ comment, post, postUpdaterFunc }) {
     const newRepliedToCommentObj = JSON.parse(JSON.stringify(comment)); // Deep clone the replied-tocomment so it can be modified and resaved
     
     updateComment(newRepliedToCommentObj, [newComment]);
-  }
-
-  if(!comment){
-    return null;
   }
 
   return (comment&&
@@ -110,7 +106,7 @@ export default function CommentCard({ comment, post, postUpdaterFunc }) {
           disabled={comment.deleted}>
           </Voter>
 
-          <Box sx={{ overflow: "hidden" }}>
+          <Box sx={{ overflow: "hidden", wordBreak: "break-word" }}>
             <Typography variant="caption" data-testid="author-date-line">
               Posted by <span onClick={() => history.push(`/user/${comment.author._id}`)} className="link" data-testid="author">{comment.author.firstName + " " + comment.author.lastName}</span> {relativeTime(comment.createdAt)}
             </Typography>
@@ -137,7 +133,7 @@ export default function CommentCard({ comment, post, postUpdaterFunc }) {
           </Box>}
 
           {(comment.childComments.length > 0) && <Box sx = {{ overflow: "hidden"}} data-testid="child-comment-list">
-            <Accordion>
+            <Accordion data-testid="show-replies">
               <AccordionSummary
                 expandIcon={<ExpandMoreIcon />}
                 aria-controls="panel1a-content"
