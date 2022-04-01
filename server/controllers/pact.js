@@ -345,10 +345,12 @@ module.exports.leavePact = async (req, res) => {
 async function deleteAllComments(comments) {
 	for (let i = 0; i < comments.length; i++) {
 		const actual = await Comment.findById(comments[i]._id);
-		if(actual.childComments !== undefined && actual.childComments !== null && actual.childComments.length !== 0) {
-			await deleteAllComments(actual.childComments);
+		if(actual){
+			if (actual.childComments !== undefined && actual.childComments !== null && actual.childComments.length !== 0) {
+				await deleteAllComments(actual.childComments);
+			}
+			await Comment.findByIdAndDelete(actual._id);
 		}
-		await Comment.findByIdAndDelete(actual._id);
 	}
 }
 
