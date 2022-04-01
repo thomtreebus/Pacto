@@ -1,14 +1,17 @@
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+/**
+ * Tests for the component the users uses to create a post within a pact.
+ * A post can be a link, test or image post.
+ */
+
+import { screen, fireEvent, waitFor } from "@testing-library/react";
 import { waitForElementToBeRemoved } from "@testing-library/react";
 import CreatePostCard from "../components/CreatePostCard";
 import "@testing-library/jest-dom";
-import MockComponent from "./utils/MockComponent";
 import { rest } from "msw";
-import { setupServer } from "msw/node";
 import userEvent from "@testing-library/user-event";
 import {act} from "react-dom/test-utils";
-import users from "./utils/testUsers";
 import { useMockServer } from "./utils/useMockServer";
+import mockRender from "./utils/mockRender";
 
 const pactId = 1;
 
@@ -34,16 +37,11 @@ function serverPostRequest(server, type){
 }
 
 describe("CreatePostCard Tests", () => {
+	let history;
 	const server = useMockServer();
 
 	beforeEach(async () => {
-
-		render(
-			<MockComponent>
-				<CreatePostCard pactID={pactId} />
-			</MockComponent>
-		);
-		await waitForElementToBeRemoved(() => screen.getByText("Loading"));
+		history = await mockRender(<CreatePostCard pactID={pactId}/>)
 	});
 
 	describe("Check elements are rendered", () => {
@@ -133,7 +131,7 @@ describe("CreatePostCard Tests", () => {
 				name: "Post",
 			});
 			fireEvent.click(buttonElement);
-			await waitFor(() => expect(window.location.pathname).toBe(`/pact/${pactId}/post/1`));
+			await waitFor(() => expect(history.location.pathname).toBe(`/pact/${pactId}/post/1`));
 		});
 
 		it("should determine the post as an image post if the image tab was pressed", async () => {
@@ -356,8 +354,8 @@ describe("CreatePostCard Tests", () => {
 			const snackbarButtonElement = await screen.findByTestId("snackbar");
 			expect(snackbarButtonElement).toBeInTheDocument();
 			setTimeout(() => {
-				expect(screen.queryByTestId("snackbar")).not.toBeInTheDocument(), 6500;
-			});
+				expect(screen.queryByTestId("snackbar")).not.toBeInTheDocument()
+			}, 6500);
 		});
 	});
 });

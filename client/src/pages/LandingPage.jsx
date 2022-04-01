@@ -16,7 +16,7 @@ export default function LandingPage() {
 	return (
 		<>
 			<div className="content">
-				<div className="curve"></div>
+				<div className="curve"/>
 			</div>
 			<div className="container">
 				<Typography variant="h1" sx={{ color: "white", fontWeight: "light" }}>

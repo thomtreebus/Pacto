@@ -1,4 +1,4 @@
-import {Box, Typography} from "@mui/material";
+import {Box} from "@mui/material";
 import Tab from "@mui/material/Tab";
 import React, {useEffect, useState} from "react";
 import {useHistory} from "react-router-dom";
@@ -6,42 +6,8 @@ import {useAuth} from '../providers/AuthProvider';
 import Loading from "./Loading";
 import UserList from "../components/UserList";
 import Tabs from "@mui/material/Tabs";
-import PropTypes from "prop-types";
 import Container from "@mui/material/Container";
-
-
-function TabPanel(props) {
-  const { children, value, index, ...other } = props;
-
-  return (
-    <div
-      role="tabpanel"
-      hidden={value !== index}
-      id={`simple-tabpanel-${index}`}
-      aria-labelledby={`simple-tab-${index}`}
-      {...other}
-    >
-      {value === index && (
-        <Box sx={{ p: 3 }}>
-          <Typography component={'div'}>{children}</Typography>
-        </Box>
-      )}
-    </div>
-  );
-}
-
-TabPanel.propTypes = {
-  children: PropTypes.node,
-  index: PropTypes.number.isRequired,
-  value: PropTypes.number.isRequired,
-};
-
-function a11yProps(index) {
-  return {
-    id: `simple-tab-${index}`,
-    'aria-controls': `simple-tabpanel-${index}`,
-  };
-}
+import {a11yProps, TabPanel} from "../components/TabComponents";
 
 /**
  * Displays a list of users with certain conditions, such as same course, friends etc.

@@ -68,12 +68,12 @@ export default function PostPage() {
     <>
       <Grid container width="100%" justifyContent="center" sx={{marginTop: 3}}>
         <Grid item xs={11} paddingBottom={1}>
-          <PostCard post={post} numComments={post.comments.length}></PostCard>
-          <Typography variant="caption" className="link" onClick={() => {setShowReplyBox(!showReplyBox)}} data-testid="comment-adder">
+          <PostCard post={post} numComments={post.comments.length}/>
+          <Typography variant="subtitle1" className="link" onClick={() => {setShowReplyBox(!showReplyBox)}} data-testid="comment-adder">
             {showReplyBox ? "Hide" : "Add comment"}
           </Typography>
           {showReplyBox && <Box>
-            <CommentBox post={post} successHandler={commentSubmissionHandler}></CommentBox>
+            <CommentBox post={post} successHandler={commentSubmissionHandler}/>
           </Box>}
         </Grid>
         <Box sx={{width: "95%", marginInline: "auto", display: "flex"}} justifyContent="center">

@@ -8,7 +8,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';import { useHistory 
 import { useAuth } from "../../providers/AuthProvider";
 import CommentBox from "../CommentBox";
 import Voter from "../Voter";
-import { relativeTime } from "../../helpers/timeHandllers";
+import { relativeTime } from "../../helpers/timeHandler";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { IconButton } from "@mui/material";
 import ErrorMessage from "../ErrorMessage";
@@ -68,7 +68,7 @@ export default function CommentCard({ comment, post, postUpdaterFunc }) {
       const json = await response.json();
 
       if (response.status !== 200) {
-        if (json.errors.length) throw Error(json.errors[0].message);
+        throw Error(json.errors.length ? json.errors[0].message : "Server Error");
       }
       
       const newComment = json.message;
@@ -78,7 +78,6 @@ export default function CommentCard({ comment, post, postUpdaterFunc }) {
       setIsError(true);
       setErrorMessage(err.message);
       setIsButtonDisabled(false);
-      return;
     }
   };
 
@@ -87,10 +86,6 @@ export default function CommentCard({ comment, post, postUpdaterFunc }) {
     const newRepliedToCommentObj = JSON.parse(JSON.stringify(comment)); // Deep clone the replied-tocomment so it can be modified and resaved
     
     updateComment(newRepliedToCommentObj, [newComment]);
-  }
-
-  if(!comment){
-    return null;
   }
 
   return (comment&&
@@ -111,7 +106,7 @@ export default function CommentCard({ comment, post, postUpdaterFunc }) {
           disabled={comment.deleted}>
           </Voter>
 
-          <Box sx={{ overflow: "hidden" }}>
+          <Box sx={{ overflow: "hidden", wordBreak: "break-word" }}>
             <Typography variant="caption" data-testid="author-date-line">
               Posted by <span onClick={() => history.push(`/user/${comment.author._id}`)} className="link" data-testid="author">{comment.author.firstName + " " + comment.author.lastName}</span> {relativeTime(comment.createdAt)}
             </Typography>
@@ -138,7 +133,7 @@ export default function CommentCard({ comment, post, postUpdaterFunc }) {
           </Box>}
 
           {(comment.childComments.length > 0) && <Box sx = {{ overflow: "hidden"}} data-testid="child-comment-list">
-            <Accordion>
+            <Accordion data-testid="show-replies">
               <AccordionSummary
                 expandIcon={<ExpandMoreIcon />}
                 aria-controls="panel1a-content"
@@ -149,7 +144,7 @@ export default function CommentCard({ comment, post, postUpdaterFunc }) {
                 <Grid item xs={12} lg={12}>
                   {/* Here we map each child comment onto its respective document within the post object before display */}
                   {/* This is to avoid deep recursive population on the server side */}
-                {comment.childComments.map(c => post.comments.filter(p=> p._id===c._id)[0]).map((c) => (<CommentCard key={c._id} post={post} comment={c} postUpdaterFunc={postUpdaterFunc}></CommentCard>))}
+                {comment.childComments.map(c => post.comments.filter(p=> p._id===c._id)[0]).map((c) => (<CommentCard key={c._id} post={post} comment={c} postUpdaterFunc={postUpdaterFunc} />))}
                 </Grid>
               </AccordionDetails>
             </Accordion>

@@ -1,6 +1,9 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
+/**
+ * Link model for storing data used in the link preview for link posts.
+ */
 const LinkSchema = mongoose.Schema({
   image: {
     type: String,

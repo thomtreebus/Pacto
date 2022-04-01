@@ -10,7 +10,7 @@ import { useEffect } from "react";
  * List of posts to display
  * @param {Array} posts Array of posts
  */
-export default function PostList({ posts, searchable=true }) {
+export default function PostList({ posts, searchable=true, showPact=false }) {
   const [orderablePosts, setPosts] = useState(posts);
 	const [search, setSearch] = useState("");
 
@@ -78,7 +78,7 @@ export default function PostList({ posts, searchable=true }) {
           {
             orderablePosts.map((post) => (
               <ListItem key={post._id}>
-                <PostCard post={post}/>
+                <PostCard post={post} showPact={showPact}/>
               </ListItem>
             ))
           }

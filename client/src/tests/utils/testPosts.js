@@ -103,7 +103,7 @@ const testPosts = [
     votes: 8,
     upvoters: [1,2],
     downvoters: [3,4],
-    createdAt: new Date(Date.now() - (86400000) * 0).toISOString(),
+    createdAt: new Date(Date.now()).toISOString(),
     comments: [1,23,6,6,6,6,6,6,6],
     _id: 5
   },

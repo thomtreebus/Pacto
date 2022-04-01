@@ -1,6 +1,6 @@
 import { Card, Typography } from "@mui/material";
 import { useState } from "react";
-import { relativeTime } from "../helpers/timeHandllers";
+import { relativeTime } from "../helpers/timeHandler";
 import { IconButton } from "@mui/material";
 import MarkChatReadIcon from "@mui/icons-material/MarkChatRead";
 

@@ -1,15 +1,17 @@
-import {render, screen, fireEvent, waitFor} from "@testing-library/react";
-import { waitForElementToBeRemoved } from "@testing-library/react"
+/**
+ * Tests for the post page.
+ */
+
+import {screen, fireEvent, waitFor} from "@testing-library/react";
 import PostPage from "../pages/PostPage";
 import "@testing-library/jest-dom";
-import MockComponent from "./utils/MockComponent";
-import { createMemoryHistory } from 'history';
 import { rest } from "msw";
-import { Router, Route } from "react-router-dom";
+import { Route } from "react-router-dom";
 import users from "./utils/testUsers";
 import pacts from "./utils/testPacts";
 import comments from "./utils/testComments";
 import { useMockServer } from "./utils/useMockServer";
+import mockRender from "./utils/mockRender";
 
 const post = {
   text: "lorem ispum",
@@ -23,6 +25,20 @@ const post = {
   comments: [comments[0]],
   createdAt: "5/5/5",
 };
+
+
+const MockPostPage = () => {
+  return (
+  <>
+    <Route exact path="/pact/:pactID/post/:postID">
+      <PostPage/>
+    </Route>
+    <Route exact path="/not-found">
+      Not Found
+    </Route>
+  </>
+  )
+}
 
 describe("PostPage Tests", () => {
   const server = useMockServer();
@@ -66,21 +82,7 @@ describe("PostPage Tests", () => {
   });
 
   const renderWithMock = async () => {
-    const history = createMemoryHistory({ initialEntries: [`/pact/1/post/1`] });
-
-    render(
-      <MockComponent>
-        <Router history={history}>
-          <Route exact path="/pact/:pactID/post/:postID">
-            <PostPage/>
-          </Route>
-          <Route exact path="/not-found">
-            Not Found
-          </Route>
-        </Router>
-      </MockComponent>
-    );
-    await waitForElementToBeRemoved(() => screen.getByText("Loading"));
+    const history = await mockRender(<MockPostPage/>, "/pact/1/post/1" );
   }
 
   describe("Check elements are rendered", () => {
@@ -144,7 +146,7 @@ describe("PostPage Tests", () => {
       expect(replyBox).toBeNull();
     });
 
-    it("should handle callback from top level comment", async () => {
+    it("should handle callback from 'top level' commentBox", async () => {
       const COMMENT_TEXT = "hello";
 
       const addCommentBtn = await screen.findByText("Add comment");
@@ -159,7 +161,7 @@ describe("PostPage Tests", () => {
       await waitFor(() => expect(submit).not.toBeDisabled())
       await waitFor(() => expect(input).not.toBeInTheDocument());
 
-      const commentCards = await screen.findAllByTestId("comment-text");
+      const commentCards = await screen.findAllByTestId("comment-card");
       expect(commentCards.length).toBe(2);
     });
   });

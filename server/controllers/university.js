@@ -4,7 +4,13 @@ const Pact = require("../models/Pact");
 const Post = require("../models/Post");
 const { jsonResponse, jsonError } = require("../helpers/responseHandlers");
 
-module.exports.universityGet = async (req, res) => {
+/**
+ * Returns the university of the user.
+ * @param {Request} req - The request
+ * @param {Response} res - The response to the request
+ * @async
+ */
+module.exports.getUniversity = async (req, res) => {
 	try {
 		const uni = req.user.university;
 		await uni.populate({ path: "users", model: User });
@@ -15,7 +21,15 @@ module.exports.universityGet = async (req, res) => {
 	}
 };
 
-module.exports.search = async (req, res) => {
+/**
+ * Searches pacts, users and posts through the university of the user making the request
+ * that matches the query string specified by the user making the request.
+ * It returns a list of pacts, users and posts.
+ * @param {Request} req - The request
+ * @param {Response} res - The response to the request
+ * @async
+ */
+module.exports.getSearchResults = async (req, res) => {
 	try {
 		const searchQuery = req.params.query;
 		const university = await University.findOne({ id: req.user.university });
@@ -34,12 +48,18 @@ module.exports.search = async (req, res) => {
 		const matchingUserIds = partialMatchingUsers.map((user) => user._id);
 		const users = await User.find({ _id: { $in: matchingUserIds } });
 
-		// Find all posts matching the query string
-		const uniPacts = await Pact.find({ university: university._id });
+		// Find all posts matching the query string (only posts of pacts a user is member of)
+		const user = req.user
+		const userPacts = await Pact.find({ members: user._id });	// Pacts that a user is member of
 		const posts = await Post.find({
-			pact: { $in: uniPacts },
 			title: { $regex: new RegExp(searchQuery, "i") },
+			pact: { $in: userPacts },
 		});
+
+		// Limit results to only display top 50 of each 
+		posts.slice(0, 50);
+		pacts.slice(0, 50);
+		users.slice(0, 50);
 
 		// Populate pact in posts
 		for (let i = 0; i < posts.length; i++) {

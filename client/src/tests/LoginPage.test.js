@@ -1,18 +1,39 @@
-import { render, screen, fireEvent } from "@testing-library/react";
+/**
+ * Tests for the login page.
+ */
+
+import { screen, fireEvent } from "@testing-library/react";
 import { waitForElementToBeRemoved } from "@testing-library/react";
 import Login from "../pages/LoginPage";
 import "@testing-library/jest-dom";
-import MockComponent from "./utils/MockComponent";
 import { rest } from "msw";
-import { setupServer } from "msw/node";
 import AuthRoute from "../components/AuthRoute";
 import PrivateRoute from "../components/PrivateRoute";
-import { createMemoryHistory } from 'history';
-import { Route,Switch} from "react-router-dom";
-import users from "./utils/testUsers";
+import { Switch } from "react-router-dom";
 import { useMockServer } from "./utils/useMockServer";
+import mockRender from "./utils/mockRender";
+
+const MockLogin = () => {
+	return (
+		<>
+			<Login />
+			<AuthRoute exact path="/login">
+				<h1>Redirected to feed</h1>
+			</AuthRoute>
+			<PrivateRoute path="*">
+				<Switch>
+					<PrivateRoute exact path="/feed">
+						<h1>Redirected to feed</h1>
+					</PrivateRoute>
+				</Switch>
+			</PrivateRoute>
+		</>
+	);
+}
+
 
 describe("LoginPage Tests", () => {
+	let history;
 	const server = useMockServer();
 
 	beforeEach(async () => {
@@ -30,23 +51,7 @@ describe("LoginPage Tests", () => {
 	});
 
 	beforeEach(async () => {
-		history = createMemoryHistory({ initialEntries: [`/login`] });
-		render(
-			<MockComponent>
-				<Login />
-				<AuthRoute exact path="/login">
-					<h1>Redirected to feed</h1>
-				</AuthRoute>
-				<PrivateRoute path="*">
-          <Switch>
-            <PrivateRoute exact path="/feed">
-              <h1>Redirected to feed</h1>
-            </PrivateRoute>
-          </Switch>
-        </PrivateRoute>
-			</MockComponent>
-		);
-		await waitForElementToBeRemoved(() => screen.getByText("Loading"));
+		history = await mockRender(<MockLogin/>, '/login');
 	});
 
 	describe("Check elements are rendered", () => {
@@ -118,7 +123,7 @@ describe("LoginPage Tests", () => {
 				name: "Don't have an account? Sign Up",
 			});
 			fireEvent.click(linkElement);
-			expect(window.location.pathname).toBe("/signup");
+			expect(history.location.pathname).toBe("/signup");
 		});
 
 		it("should show an error snackbar with text 'Incorrect credentials.' when the login button is pressed with a invalid credentials", async () => {
@@ -154,8 +159,8 @@ describe("LoginPage Tests", () => {
 			const snackbarButtonElement = await screen.findByTestId("snackbar");
 			expect(snackbarButtonElement).toBeInTheDocument();
 			setTimeout(() => {
-				expect(screen.queryByTestId("snackbar")).not.toBeInTheDocument(), 6500;
-			});
+				expect(screen.queryByTestId("snackbar")).not.toBeInTheDocument();
+			}, 6500);
 		});
 
 		it("should redirect to feed when the login button is pressed with valid credentials", async () => {
@@ -174,7 +179,7 @@ describe("LoginPage Tests", () => {
 			fireEvent.click(buttonElement);
 			const redirectMessage = await screen.findByText(/Redirected to feed/i);
 			expect(redirectMessage).toBeInTheDocument();
-			expect(window.location.pathname).toBe("/feed");
+			expect(history.location.pathname).toBe("/feed");
 		});
 
 		it("should display an error in the snack bar if there is one", async () => {

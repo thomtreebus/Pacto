@@ -7,6 +7,9 @@ const EmailVerificationCode = require("../models/EmailVerificationCode");
 const FriendRequest = require("../models/FriendRequest");
 const Notification = require("../models/Notification");
 
+/**
+ * Unseed the database by deleting all database documents
+ */
 async function unseed() {
 	await User.deleteMany({});
 	await Pact.deleteMany({});

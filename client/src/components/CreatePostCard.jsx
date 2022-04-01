@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
-import PropTypes from 'prop-types';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
-import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import TextField from '@mui/material/TextField';
@@ -17,6 +15,7 @@ import { Image } from 'cloudinary-react';
 import Axios from 'axios';
 import IconButton from '@mui/material/IconButton';
 import ErrorMessage from './ErrorMessage';
+import {a11yProps, TabPanel} from "./TabComponents";
 
 const Input = styled('input')({
   display: 'none',
@@ -26,37 +25,19 @@ function TitleTextField({apiPostTitleError}){
   return <TextField fullWidth name="title" label="Title" error={apiPostTitleError.length !== 0} helperText={apiPostTitleError}/> 
 }
 
-function TabPanel(props) {
-  const { children, value, index, ...other } = props;
-
-  return (
-    <div
-      role="tabpanel"
-      hidden={value !== index}
-      id={`simple-tabpanel-${index}`}
-      aria-labelledby={`simple-tab-${index}`}
-      {...other}
-    >
-      {value === index && (
-        <Box sx={{ p: 3 }}>
-          <Typography component={'span'}>{children}</Typography>
-        </Box>
-      )}
-    </div>
-  );
-}
-
-TabPanel.propTypes = {
-  children: PropTypes.node,
-  index: PropTypes.number.isRequired,
-  value: PropTypes.number.isRequired,
-};
-
-function a11yProps(index) {
-  return {
-    id: `simple-tab-${index}`,
-    'aria-controls': `simple-tabpanel-${index}`,
-  };
+const POST_TYPES = {
+  TEXT: {
+    INDEX: 0,
+    STRING: "text"
+  },
+  IMAGE: {
+    INDEX: 1,
+    STRING: "image"
+  },
+  LINK: {
+    INDEX: 2,
+    STRING: "link"
+  },
 }
 
 /**
@@ -64,21 +45,21 @@ function a11yProps(index) {
  * @param {number} pactID The pact id the post is to be created in
  */
 export default function CreatePostCard({pactID}) {
-  const [value, setValue] = React.useState(0);
+  const [postType, setPostType] = useState(POST_TYPES.TEXT);
   const history = useHistory();
 
   const [apiPostTitleError, setApiPostTitleError] = useState('');
   const [apiPostTextError, setApiPostTextError] = useState('');
-  const [apiPostImageError, setApiPostImageError] = useState('');
+  const [apiPostImageError, setApiPostImageError] = useState(''); // Always displayed in snackbar instead of as field
   const [apiPostLinkError, setApiPostLinkError] = useState('');
-  const [isUploadButtonDisabled, setIsUploadButtonDisabled] = useState(false);
+  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
 
-  const [image, setImage] = React.useState(null);
+  const [image, setImage] = useState(null);
 
-  const [open, setOpen] = React.useState(false);
+  const [openErrorSnackbar, setOpenErrorSnackbar] = useState(false); // Opens independent error message component.
 
   const uploadImage = async (newImage) => {
-    setIsUploadButtonDisabled(true);
+    setIsButtonDisabled(true);
 
     const data = new FormData();
 
@@ -89,34 +70,25 @@ export default function CreatePostCard({pactID}) {
     try {
       const res = await Axios.post(`https://api.cloudinary.com/v1_1/${process.env.REACT_APP_CLOUDINARY_CLOUD_NAME}/image/upload`, data)
       setImage(res.data.url);
-      setIsUploadButtonDisabled(false);
     } catch (err) {
       setApiPostImageError(err.message);
-      setIsUploadButtonDisabled(false);
-      setOpen(true);
+      setOpenErrorSnackbar(true); 
     }
-  }
 
-  function getPostType() {
-    switch(value) {
-      case 1:
-        return "image";
-      case 2:
-        return "link";
-      default:
-        return "text";
-    }
+    setIsButtonDisabled(false);
   }
 
   const handleSubmit = async (event) => {
+    setIsButtonDisabled(true);
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
+    const data = new FormData(event.currentTarget); // Get user-entered data
 
     setApiPostTitleError('');
     setApiPostTextError('');
     setApiPostImageError('');
     setApiPostLinkError('');
 
+    // Send data to backend
     const response = await fetch(`${process.env.REACT_APP_URL}/pact/${pactID}/post`, {
       method: "POST",
       headers: {
@@ -128,64 +100,57 @@ export default function CreatePostCard({pactID}) {
         text: data.get("text"),
         image: image,
         link: data.get("link"),
-        type: getPostType()
+        type: postType.STRING
       }),
     });
 
     const json = await response.json();
     
+    // Handle errors
     Object.values(json['errors']).forEach(err => {
       const field = err["field"];
       const message = err["message"];
 
-      if (field === "title") {
-        setApiPostTitleError(message);
+      switch(field){
+        case "title":
+          setApiPostTitleError(message);
+          break;
+        case "text":
+          setApiPostTextError(message);
+          break;
+        case "image":
+          setApiPostImageError(message);
+          setOpenErrorSnackbar(true);
+          break;
+        case "link":
+          setApiPostLinkError(message);
+          break;
+        // no default
       }
-
-      if (getPostType() === "text") {
-        switch (field) {
-          case ("text"): 
-            setApiPostTextError(message);
-            break;
-          default: // do nothing
-        }
-      }
-      else if (getPostType() === "image") {
-        switch (field) {
-          case ("image"): 
-            setApiPostImageError(message);
-            setOpen(true);
-            break;
-          default: // do nothing
-        }
-      } else {
-        switch (field) {
-          case ("link"): 
-            setApiPostLinkError(message);
-            break;
-          default: // do nothing
-        }
-      }
-    })
+    });
 
     if (response.status !== 201) {
+      setIsButtonDisabled(false);
       return;
     }
     history.push(`/pact/${pactID}/post/${json.message._id}`);
     
   };
   
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
+  // Will be executed when new tab is selected
+  const handleTabChange = (event, newValue) => {
+    const types = Object.values(POST_TYPES); // Get array of possible types
+    const newType = types.filter(t => t.INDEX === newValue)[0]; // Get the type with the given index
+    setPostType(newType); // Update type
   };
 
   return (
     <Card sx={{ width: '100%', padding: 1, shadow: 3, marginTop: '18px'}}>
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-        <Tabs value={value} onChange={handleChange} aria-label="tabs" centered>
-          <Tab icon={<TextIcon />} data-testid="text-icon" label="Text" {...a11yProps(0)} />
-          <Tab icon={<PhotoIcon />} data-testid="image-icon" label="Image" {...a11yProps(1)} />
-          <Tab icon={<LinkIcon />} data-testid="link-icon" label="Link"{...a11yProps(2)} />
+        <Tabs value={postType.INDEX} onChange={handleTabChange} aria-label="tabs" centered>
+          <Tab icon={<TextIcon />} data-testid="text-icon" label="Text" {...a11yProps(POST_TYPES.TEXT.INDEX)} />
+          <Tab icon={<PhotoIcon />} data-testid="image-icon" label="Image" {...a11yProps(POST_TYPES.IMAGE.INDEX)} />
+          <Tab icon={<LinkIcon />} data-testid="link-icon" label="Link"{...a11yProps(POST_TYPES.LINK.INDEX)} />
         </Tabs>
       </Box>
       <Box
@@ -193,7 +158,7 @@ export default function CreatePostCard({pactID}) {
         noValidate
         onSubmit={handleSubmit}
       >
-        <TabPanel value={value} index={0}>
+        <TabPanel value={postType.INDEX} index={POST_TYPES.TEXT.INDEX}>
           <TitleTextField apiPostTitleError={apiPostTitleError}/>
           <TextField sx={{marginTop: '8px'}}
             id="text"
@@ -208,7 +173,7 @@ export default function CreatePostCard({pactID}) {
             helperText={apiPostTextError}
           />
         </TabPanel>
-        <TabPanel value={value} index={1}>
+        <TabPanel value={postType.INDEX} index={POST_TYPES.IMAGE.INDEX}>
           <TitleTextField apiPostTitleError={apiPostTitleError}/> 
           <label htmlFor="contained-button-file">
             <Input
@@ -217,9 +182,9 @@ export default function CreatePostCard({pactID}) {
               data-testid="image-upload-icon"
               type="file"
               onChange={(e) => { uploadImage(e.target.files[0])}} 
-              disabled={isUploadButtonDisabled}
+              disabled={isButtonDisabled}
             />
-            <IconButton color="primary" component="span" disabled={isUploadButtonDisabled}>
+            <IconButton color="primary" component="span" disabled={isButtonDisabled}>
               <PhotoCameraIcon />
             </IconButton>
             {image && <Image
@@ -229,9 +194,9 @@ export default function CreatePostCard({pactID}) {
 								publicID={image}
 							> </Image>}
           </label>
-          <ErrorMessage  isOpen={open} setIsOpen={setOpen} message={apiPostImageError}/>
+          <ErrorMessage  isOpen={openErrorSnackbar} setIsOpen={setOpenErrorSnackbar} message={apiPostImageError}/>
         </TabPanel>
-        <TabPanel value={value} index={2}>
+        <TabPanel value={postType.INDEX} index={POST_TYPES.LINK.INDEX}>
           <TitleTextField apiPostTitleError={apiPostTitleError}/> 
           <TextField sx={{marginTop: '8px'}}
             id="link"
@@ -244,7 +209,7 @@ export default function CreatePostCard({pactID}) {
             helperText={apiPostLinkError}
           />
         </TabPanel>
-        <Button variant="contained" sx={{marginTop: '8px'}} type="submit" fullWidth disabled={isUploadButtonDisabled}>Post</Button>
+        <Button variant="contained" sx={{marginTop: '8px'}} type="submit" fullWidth disabled={isButtonDisabled}>Post</Button>
       </Box>
     </Card>
   );

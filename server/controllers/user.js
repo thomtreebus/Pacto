@@ -5,13 +5,18 @@ const University = require("../models/University");
 const {USER_MESSAGES} = require("../helpers/messages");
 const FriendRequest = require('../models/FriendRequest');
 
+/**
+ * Updates the profile of the user making the request.
+ * @param {Request} req - The request
+ * @param {Response} res - The response to the request
+ * @async
+ */
 module.exports.updateProfile = async(req, res) => {
   let status = undefined;
   let jsonErrors = [];
   let resMessage = null;
   try {
     const { id } = req.params;
-    const { firstName, lastName, personalEmail, course } = req.body;
 
     if (!mongoose.Types.ObjectId.isValid(id)) {
       status = 404;
@@ -40,8 +45,14 @@ module.exports.updateProfile = async(req, res) => {
   }
 }
 
-
-module.exports.viewProfile = async(req, res) => {
+/**
+ * Returns the profile of a user.
+ * The id of the user is given in the parameters of the request.
+ * @param {Request} req - The request
+ * @param {Response} res - The response to the request
+ * @async
+ */
+module.exports.getProfile = async(req, res) => {
   let status = 400;
   try {
     const university = req.user.university;
@@ -66,8 +77,6 @@ module.exports.viewProfile = async(req, res) => {
       throw Error(USER_MESSAGES.NOT_ACTIVE)
     }
 
-    // await user.populate({ path: 'user', model: User })
-
     res.status(200).json(jsonResponse(user, []));
 
   } catch (err) {
@@ -75,7 +84,14 @@ module.exports.viewProfile = async(req, res) => {
   }
 }
 
-module.exports.allUniUsers = async(req, res) => {
+/**
+ * Returns a list of all users in the university of 
+ * the user who made the request.
+ * @param {Request} req - The request
+ * @param {Response} res - The response to the request
+ * @async
+ */
+module.exports.getUniversityUsers = async(req, res) => {
   let status = 400;
   try {
     const university = req.user.university;
@@ -90,3 +106,4 @@ module.exports.allUniUsers = async(req, res) => {
     res.status(status).json(jsonResponse(null, [jsonError(null, err.message)]));
   }
 }
+

@@ -11,7 +11,6 @@ import AccountCircle from "@mui/icons-material/AccountCircle";
 import { Link, useHistory } from "react-router-dom";
 import { ButtonBase } from "@mui/material";
 import Avatar from "@mui/material/Avatar";
-import { useAuth } from "../providers/AuthProvider";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import Badge from "@mui/material/Badge";
 import PactoIcon from "../assets/pacto-logo.png";
@@ -68,7 +67,6 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 export default function PrimarySearchAppBar({ handleDrawerToggle }) {
 	const history = useHistory();
 
-	const { user, silentUserRefresh } = useAuth();
 	const [isLoading, setIsLoading] = useState(true);
 
 	const [profileAnchorEl, setProfileAnchorEl] = useState(null);
@@ -100,29 +98,12 @@ export default function PrimarySearchAppBar({ handleDrawerToggle }) {
 			});
 	}, []);
 
-	const handleLogout = async () => {
-		await fetch(`${process.env.REACT_APP_URL}/logout`, {
-			credentials: "include",
-		});
-		await silentUserRefresh();
-	};
-
 	const handleProfileMenuOpen = (event) => {
 		setProfileAnchorEl(event.currentTarget);
 	};
 
 	const handleProfileMenuClose = () => {
 		setProfileAnchorEl(null);
-	};
-
-	const handleEditProfileClick = () => {
-		history.push("/edit-profile");
-		handleProfileMenuClose();
-	};
-
-	const handleProfileClick = () => {
-		history.push("/user/" + user._id);
-		handleProfileMenuClose();
 	};
 
 	const handleNotificationsMenuOpen = (event) => {
@@ -144,7 +125,7 @@ export default function PrimarySearchAppBar({ handleDrawerToggle }) {
 	}
 
 	if(isLoading){
-		return (<Loading data-testid="loading-app-bar"></Loading>)
+		return (<Loading data-testid="loading-app-bar"/>)
 	}
 
 	return (
@@ -236,9 +217,6 @@ export default function PrimarySearchAppBar({ handleDrawerToggle }) {
 				profileAnchorEl={profileAnchorEl}
 				isProfileMenuOpen={isProfileMenuOpen}
 				handleProfileMenuClose={handleProfileMenuClose}
-				handleProfileClick={handleProfileClick}
-				handleEditProfileClick={handleEditProfileClick}
-				handleLogout={handleLogout}
 			/>
 			<NotificationsMenu
 				notificationsMenuId={notificationsMenuId}

@@ -1,6 +1,6 @@
 const supertest = require("supertest");
 const app = require("../../app");
-const { createToken } = require("../../controllers/authController");
+const { createToken } = require("../../controllers/auth");
 const { generateTestUser, getDefaultTestUserEmail, generateCustomUniTestUser} = require("../fixtures/generateTestUser");
 const { generateTestPact, getTestPactId } = require("../fixtures/generateTestPact");
 const { MESSAGES, PACT_MESSAGES, POST_MESSAGES } = require("../../helpers/messages");

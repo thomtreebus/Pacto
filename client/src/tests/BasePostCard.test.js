@@ -1,11 +1,14 @@
+/**
+ * Tests for the basee post card componnent which wraps the the different types
+ * of existing posts. 
+ */
+
 import { render, screen, fireEvent } from "@testing-library/react";
-import { waitForElementToBeRemoved } from "@testing-library/react"
 import BasePostCard from "../components/cards/BasePostCard";
 import "@testing-library/jest-dom";
 import MockComponent from "./utils/MockComponent";
-import { setupServer } from "msw/node";
-import { rest } from "msw";
 import { useMockServer } from "./utils/useMockServer";
+import mockRender from "./utils/mockRender";
 
 const post = {
   pact: {
@@ -17,7 +20,7 @@ const post = {
     lastName: "Wali",
     _id: 1
   },
-  createdAt: new Date(Date.now() - (86400000) * 0).toISOString(),
+  createdAt: new Date(Date.now()).toISOString(),
   title: "ipsumLorem ipsumLorem ipsumLorem ipsumLorem",
   text: "amet officia molestias esse!",
   type: "text",
@@ -28,16 +31,19 @@ const post = {
   _id: 1
 }
 
+const MockBasePostCard = () => {
+  return (
+    <MockComponent>
+      <BasePostCard post={post} />
+    </MockComponent>
+  )
+}
+
 describe("BasePostCard Tests", () => {
   const server = useMockServer();
 
   beforeEach(async () => {
-		render(
-      <MockComponent>
-        <BasePostCard post={post} />
-      </MockComponent>
-    );
-    await waitForElementToBeRemoved(() => screen.getByText("Loading"));
+		await mockRender(<MockBasePostCard/>);
 	});
 
   describe("Check elements are rendered", () => {
@@ -66,7 +72,7 @@ describe("BasePostCard Tests", () => {
     });
 
     it("should render comments number with singular for 1", async () => {
-      document.body.innerHTML = "";
+      document.body.innerHTML = ""; // clear render
       const postCopy = {...post};
       postCopy.comments = [0];
       render(
@@ -76,6 +82,16 @@ describe("BasePostCard Tests", () => {
       );
       const comments = await screen.findByTestId("comments");
       expect(comments.innerHTML).toContain("1 Comment");
+    });
+
+    it("should render pact name if showPact is true", async () => {
+      document.body.innerHTML = ""; // clear render
+      render(
+        <MockComponent>
+          <BasePostCard post={post} showPact={true}/>
+        </MockComponent>
+      );
+      await screen.findByTestId("pact");
     });
 
     it("should render comment icon", async () => {
@@ -100,6 +116,18 @@ describe("BasePostCard Tests", () => {
       const comments = await screen.findByTestId("comments");
       fireEvent.click(comments);
       expect(window.location.pathname).toBe("/pact/5/post/1");
+    });
+
+    it("should redirect to pact if pact name is clicked", async () => {
+      document.body.innerHTML = ""; // clear render
+      render(
+        <MockComponent>
+          <BasePostCard post={post} showPact={true}/>
+        </MockComponent>
+      );
+      const pactName = await screen.findByTestId("pact");
+      fireEvent.click(pactName);
+      expect(window.location.pathname).toBe("/pact/5");
     });
   });
 });

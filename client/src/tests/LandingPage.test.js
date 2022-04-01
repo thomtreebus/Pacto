@@ -1,3 +1,7 @@
+/**
+ * Tests for the landing page.
+ */
+
 import LandingPage from "../pages/LandingPage";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import "@testing-library/jest-dom";

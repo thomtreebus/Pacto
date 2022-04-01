@@ -2,7 +2,7 @@ import { Box, Card, CardContent } from "@mui/material";
 import { Typography } from "@mui/material";
 import { useHistory } from "react-router-dom";
 import CommentIcon from "@mui/icons-material/Comment";
-import { relativeTime } from "../../helpers/timeHandllers";
+import { relativeTime } from "../../helpers/timeHandler";
 import { useAuth } from "../../providers/AuthProvider";
 import Voter from "../Voter";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -10,7 +10,7 @@ import { IconButton } from "@mui/material";
 import { useState } from "react";
 import ErrorMessage from "../ErrorMessage";
 
-export default function BasePostCard({ children, post, numComments = null }) {
+export default function BasePostCard({ children, post, numComments = null, showPact = false }) {
 	const { user, silentUserRefresh } = useAuth();
 	const commentCount = numComments === null ? post.comments.length : numComments;
 	const [isButtonDisabled, setIsButtonDisabled] = useState(false);
@@ -77,7 +77,7 @@ export default function BasePostCard({ children, post, numComments = null }) {
 							initThumbDown={post.downvoters.includes(user._id)}
 							handleLikeEvent={handleLikeEvent}
 							initLikes={post.votes}
-						></Voter>
+						/>
 						<Box sx={{ overflow: "hidden" }}>
 							<Typography variant="caption" data-testid="author-date-line">
 								Posted by{" "}
@@ -88,7 +88,14 @@ export default function BasePostCard({ children, post, numComments = null }) {
 								>
 									{post.author.firstName + " " + post.author.lastName}
 								</span>{" "}
-								{relativeTime(post.createdAt)}
+								{relativeTime(post.createdAt) + " "}
+								{showPact && <span
+									onClick={() => history.push(`/pact/${post.pact._id}`)}
+									className="link"
+									data-testid="pact"
+								>
+									{`in ${post.pact.name}`}
+								</span>}
 							</Typography>
 
 							<Typography variant="h6" data-testid="title" className="link" onClick={() => {

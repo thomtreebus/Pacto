@@ -11,11 +11,13 @@ const { MESSAGES } = require("../helpers/messages");
 const FriendRequest = require('../models/FriendRequest');
 
 /**
- * This function checks if the user has a valid cookie.
- * @param req contains information regarding the incoming request.
- * @param res contains information regarding the response.
- * @param next Required parameter for middleware. Signals call of the next function.
- * @returns {Promise<void>} Javascript async function.
+ * Middleware to check that the user is authenticated.
+ * Adds the user field to the request if the user is authenticated.
+ * Returns an error if the user is inactive or is not logged in.
+ * @param {Request} req - The request
+ * @param {Response} res - The response to the request
+ * @param {*} next - The next function to be executed
+ * @async
  */
 const checkAuthenticated = async (req, res, next) => {
   const token = req.cookies.jwt;
