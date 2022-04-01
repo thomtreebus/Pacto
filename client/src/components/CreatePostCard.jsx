@@ -52,12 +52,12 @@ export default function CreatePostCard({pactID}) {
     try {
       const res = await Axios.post(`https://api.cloudinary.com/v1_1/${process.env.REACT_APP_CLOUDINARY_CLOUD_NAME}/image/upload`, data)
       setImage(res.data.url);
-      setIsButtonDisabled(false);
     } catch (err) {
       setApiPostImageError(err.message);
-      setIsButtonDisabled(false);
       setOpen(true);
     }
+
+    setIsButtonDisabled(false);
   }
 
   function getPostType() {
@@ -132,9 +132,8 @@ export default function CreatePostCard({pactID}) {
       }
     });
 
-    setIsButtonDisabled(false);
-
     if (response.status !== 201) {
+      setIsButtonDisabled(false);
       return;
     }
     history.push(`/pact/${pactID}/post/${json.message._id}`);
