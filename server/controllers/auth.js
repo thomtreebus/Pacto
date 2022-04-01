@@ -98,10 +98,7 @@ module.exports.signup = async (req, res) => {
 		
 		if(!errorFound){
 			const user = await User.create({ firstName, lastName, uniEmail:processedEmail, password:hashedPassword, university });
-
 			await handleVerification(uniEmail, user._id);
-			await user.populate({path: 'university', model: University});
-
 			res.status(201).json(jsonResponse(user, []));
 		}
 	}
