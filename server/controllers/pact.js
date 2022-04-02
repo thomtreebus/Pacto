@@ -79,11 +79,18 @@ module.exports.getPact = async (req, res) => {
 		await pact.populate({
 			path: "posts",
 			model: Post,
-			populate: {
-				path: "author",
-				model: User,
-				select: ["firstName", "lastName"]
-			}
+			populate: [
+				{
+					path: "author",
+					model: User,
+					select: ["firstName", "lastName"]
+				},
+				{
+					path: "pact",
+					model: Pact,
+					select: ["moderators"]
+				}
+			]
 		});
 
 		for (let index = 0; index < pact.posts.length; index++) {
