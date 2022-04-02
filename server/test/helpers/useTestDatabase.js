@@ -15,6 +15,7 @@ dotenv.config();
 function useTestDatabase() {
 	beforeAll(async () => {
 		await mongoose.connect(`${process.env.TEST_DB_CONNECTION_URL}`);
+		await clearDatabase();
 	});
 
 	afterAll(async () => {
