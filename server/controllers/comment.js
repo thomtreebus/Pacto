@@ -44,7 +44,7 @@ const makeComment = async(req, res, parentComment=undefined) => {
       await parentComment.save();
     }
 
-    await comment.populate({path: "author", model: User});
+    await comment.populate({path: "author", model: User, select: ["firstName", "lastName"]});
     await comment.populate({path: "parentComment", model: Comment});
     await comment.populate({path: "childComments", model: Comment});
 
