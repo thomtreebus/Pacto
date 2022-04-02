@@ -101,6 +101,12 @@ The client application relies on a few environment variables. Some variables wil
   EMAIL_AUTHOR=*insert author to be displayed when a user receives an email*
   SMTP_HOST=*insert the smtp link*
   ```
+- [Cloudinary](https://cloudinary.com/) variables - add the Cloudinary values that you got when registering for an account
+  ```
+  CLOUDINARY_CLOUD_NAME= *insert your cloud name*
+  CLOUDINARY_KEY= *insert your Cloudinary key*
+  CLOUDINARY_SECRET= *insert your Cloudinary secret*
+  ```
 - [University API](http://universities.hipolabs.com/search?country=United%20Kingdom) URL - Add the URL for the University API as shown below:
   ```
   UNIVERSITY_API=http://universities.hipolabs.com/search?country=United%20Kingdom
@@ -113,6 +119,10 @@ The client application relies on a few environment variables. Some variables wil
 - The URL of your server application. This is used for email verification. During development you can use localhost but update the variable once your server application is deployed. (Should be the same value as REACT_APP_URL in the client .env)
   ```
   DEPLOYED_URL=http://localhost:8000
+  ```
+- Production flag. This boolean flag makes the server run in https mode and makes use of the private keys and certificates required for https. Only set to true if you are deploying the application.
+  ```dotenv
+  IS_PROD=true|false
   ```
 #### **Start Application**
 Before running the server application, you need to start the database 
@@ -163,13 +173,47 @@ $ npm run start
 Once the client application starts to run, a new tab will open and show the React app.
 
 ### 5. Deployment
-How to deploy.
+We have a simple docker container that does most of the work for you.
+
+#### 1. Go to nginx/conf and find default.conf.example
+
+Inside the file replace example.org to that of your own domain. 
+
+#### 2. Setup environment variables.
+
+As stated above, place the .env files in their respective directories.
+
+#### 3. Build application.
+Build the application by running the following command to set up the docker volumes in the root directory.
+```
+  docker-compose build
+```
+
+#### 4. Run the application
+Run the application in detached mode
+```
+  docker-compose up -d
+```
+
+#### 5. Run certbot for the https certificate
+Run the following command and follow the steps prompted. Replace example.org with your domain
+```
+  docker-compose run --rm certbot-https-certificate certonly --webroot --webroot-path /var/www/certbot/ -d example.org
+```
+
+
+#### 5. Restart docker containers to use certificate.
+To get nginx to use the new certificates we need to restart the containers 
+```
+  docker-compose down
+  docker-compose up -d
+```
 
 ## Development
 ### Test-Driven Development
 Test driven development was employed throughout the development of the application. Before adding any major new functionality, tests were written to ensure that once the functionality was implemented, it would work as intended. For example, when creating a new page, a few tests would be written first (to fail intentionally), and once the page was created, the tests would be used to check that the page fulfilled its purpose. 
 
-When developing new features for the application, be sure to write automated tests, or use manual testing in scenarios where automated testing can not be employed. To read more about our approach to testing, take a look at the Testing Report (TestReport.md)
+When developing new features for the application, be sure to write automated tests, or use manual testing in scenarios where automated testing can not be employed. To read more about our approach to testing, take a look at the [Testing Report](/TestReport.md).
 
 ### SOLID Principles
 #### **Single Responsibility Principle**
