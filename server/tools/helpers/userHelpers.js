@@ -168,7 +168,7 @@ async function generateFriendRequest(user1, user2) {
 	shuffledUsers[1].receivedRequests.push(request);
 
 	// Notify the recipient that they have received a new friend request
-	await createNotification(shuffledUsers[0], `${shuffledUsers[0].firstName} ${shuffledUsers[0].lastName} has sent you a friend request`)
+	await createNotification(shuffledUsers[1], `${shuffledUsers[0].firstName} ${shuffledUsers[0].lastName} has sent you a friend request`)
 	await shuffledUsers[0].save();
 	await shuffledUsers[1].save();
 }
