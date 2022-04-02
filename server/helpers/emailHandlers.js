@@ -32,7 +32,7 @@ module.exports.handleVerification = async (email, id) => {
   const transporter = await createTransporter();
   // Generate a verification code
   const code = await cryptoRandomString.async({length: 63, type: 'url-safe'});
-  const url = `${process.env.DEPLOYED_URL}/verify?code=${code}`;
+  const url = `${process.env.CORS_URL}/verify/${code}`;
   
   // Send verification code to user's email address
   const mail = await transporter.sendMail({

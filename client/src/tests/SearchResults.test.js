@@ -2,13 +2,15 @@
  * Tests for search results.
  */
 
-import { screen } from "@testing-library/react";
+import { cleanup, fireEvent, screen } from "@testing-library/react";
 import SearchResults from "../pages/SearchResults";
 import "@testing-library/jest-dom";
 import { rest } from "msw";
 import { Route } from 'react-router-dom'
 import { useMockServer } from "./utils/useMockServer";
 import mockRender from "./utils/mockRender";
+import users from "./utils/testUsers";
+import pacts from "./utils/testPacts";
 
 const response = {
   message: {
@@ -20,7 +22,7 @@ const response = {
           lastName: "Wali",
           _id: 1
         },
-        createdAt: new Date(Date.now() - (86400000) * 0).toISOString(),
+				createdAt: new Date(Date.now()).toISOString(),
         title: "Lorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem",
         text: "Lorem ipsum dolor inventore ad! Porro soluta eum amet officia molestias esse!Lorem ipsum dolor inventore ad! Porro soluta eum amet officia molestias esse!Lorem ipsum dolor inventore ad! Porro soluta eum amet officia molestias esse!",
         type: "text",
@@ -31,8 +33,8 @@ const response = {
         _id: 1
       }
 		],
-		users: [],
-		pacts: [],
+		users: users,
+		pacts: pacts,
   }
 }
 
@@ -69,11 +71,6 @@ describe("SearchResults Tests", () => {
 			expect(tabsElement).toBeInTheDocument();
 		});
 
-		it("should render PactGrid element", async () => {
-			const pactGrid = await screen.findByTestId("pact-grid");
-			expect(pactGrid).toBeInTheDocument();
-		});
-
 		it("should render PostList element", async () => {
 			const postList = await screen.findByTestId("post-list");
 			expect(postList).toBeInTheDocument();
@@ -84,6 +81,60 @@ describe("SearchResults Tests", () => {
 			expect(userList).toBeInTheDocument();
 		});
 
+		it("should render PactGrid element", async () => {
+			const pactGrid = await screen.findByTestId("pact-grid");
+			expect(pactGrid).toBeInTheDocument();
+		});
+
+		it("allows the user to go to the pacts grid", async () => {
+			const pactsButton = await screen.findByText("Pacts");
+			fireEvent.click(pactsButton);
+			const pactGrid = await screen.findByTestId("pact-grid");
+			const userList = await screen.findByTestId("user-list");
+			const postList = await screen.findByTestId("post-list");
+			expect(pactGrid).toBeVisible();
+			expect(userList).not.toBeVisible();
+			expect(postList).not.toBeVisible();
+		});
+
+
+		it("allows the user to go to the user list", async () => {
+			const usersButton = await screen.findByText("Users");
+			fireEvent.click(usersButton);
+			const pactGrid = await screen.findByTestId("pact-grid");
+			const userList = await screen.findByTestId("user-list");
+			const postList = await screen.findByTestId("post-list");
+			expect(pactGrid).not.toBeVisible();
+			expect(userList).toBeVisible();
+			expect(postList).not.toBeVisible();
+		});
+
+
+		it("allows the user to go to the pacts grid", async () => {
+			const postButton = await screen.findByText("Posts");
+			fireEvent.click(postButton);
+			const pactGrid = await screen.findByTestId("pact-grid");
+			const userList = await screen.findByTestId("user-list");
+			const postList = await screen.findByTestId("post-list");
+			expect(pactGrid).not.toBeVisible();
+			expect(userList).not.toBeVisible();
+			expect(postList).toBeVisible();
+		});
+
+		it("shows the error page if there is an error while searching",async () => {
+			server.use(
+				rest.get(`${process.env.REACT_APP_URL}/search/e`, (req, res, ctx) => {
+					return res(
+						ctx.status(404),
+						ctx.json(response)
+					);
+				})
+			);
+			cleanup();
+			await mockRender(<MockSearchResults/>, `/search/e`);
+			const errorMessage = await screen.findByText(/error/i)
+			expect(errorMessage).toBeInTheDocument();
+		})
 	});
 	
 });

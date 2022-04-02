@@ -98,7 +98,7 @@ describe("User Page Tests", () => {
                 await assertUsersShown(["3"]);
             });
         
-            it("does not show users that share the same mutal value if the mutal value is blank", async () => {
+            it("does not show users that share the same filter value if the value is blank", async () => {
                 cleanup();
                 const userCopy = Object.assign({}, users[0]);
                 userCopy.location = ' ';

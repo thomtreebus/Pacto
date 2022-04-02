@@ -22,7 +22,7 @@ const response = {
           lastName: "Wali",
           _id: 1
         },
-        createdAt: new Date(Date.now() - (86400000) * 0).toISOString(),
+        createdAt: new Date(Date.now()).toISOString(),
         title: "Lorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem",
         text: "Lorem ipsum dolor inventore ad! Porro soluta eum amet officia molestias esse!Lorem ipsum dolor inventore ad! Porro soluta eum amet officia molestias esse!Lorem ipsum dolor inventore ad! Porro soluta eum amet officia molestias esse!",
         type: "text",
@@ -76,5 +76,19 @@ describe("FeedPage Tests", () => {
         await screen.findByTestId("search-box");
       });
     })
+  })
+
+  it("Check displays and error when there is an issue fetching the feed", async () => {
+    server.use(
+      rest.get(`${process.env.REACT_APP_URL}/feed`, (req, res, ctx) => {
+        return res(
+          ctx.status(400),
+          ctx.json({})
+        );
+      })
+    );
+    await renderWithMock();
+    const errorMessage = await screen.findByText(/error/i)
+    expect(errorMessage).toBeInTheDocument();
   })
 })

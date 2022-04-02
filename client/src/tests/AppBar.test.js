@@ -12,6 +12,7 @@ import PrivateRoute from "../components/PrivateRoute";
 import AuthRoute from "../components/AuthRoute";
 import { useMockServer } from "./utils/useMockServer.js";
 import mockRender from "./utils/mockRender"
+import userEvent from "@testing-library/user-event";
 
 /**
  * A mock component to make it easier to test functionality.
@@ -215,6 +216,23 @@ describe("App Bar Tests", () => {
       expect(redirectMessage).toBeInTheDocument();
       expect(history.location.pathname).toBe("/user/userid1");
     });
+
+
+    it("doesn't allow the user to search if the input is empty", async () => {
+      const searchValue = "{enter}";
+      const searchElementConatiner = await screen.findByTestId("appbar-search");
+      const searchElement = searchElementConatiner.querySelector("input");
+      userEvent.type(searchElement, searchValue);
+      expect(history.location.pathname).toBe("/feed")
+    })
+
+    it("allows the user to search using the search bar if there is a value", async () => {
+      const searchValue = "e{enter}";
+      const searchElementContainer = await screen.findByTestId("appbar-search");
+      const searchElement = searchElementContainer.querySelector("input");
+      userEvent.type(searchElement, searchValue);
+      expect(history.location.pathname).toBe("/search/e")
+    })
 
     it("should open the notifications menu when the notification bell is pressed", async () => {
       const buttonElement = await waitFor(() => screen.getByTestId("notification-button"));

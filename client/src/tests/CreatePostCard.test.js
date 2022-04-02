@@ -106,7 +106,6 @@ describe("CreatePostCard Tests", () => {
 			const inputElements = await screen.findAllByLabelText("Text");
 			for (let i = 0; i < inputElements.length; i++) {
 				if (inputElements.value) {
-					count++;
 					const inputElement = inputElements[i];
 					fireEvent.change(inputElement, {target: { value: "This is a text field."} });
 					expect(inputElement.value).toBe("This is a text field.");
@@ -354,8 +353,8 @@ describe("CreatePostCard Tests", () => {
 			const snackbarButtonElement = await screen.findByTestId("snackbar");
 			expect(snackbarButtonElement).toBeInTheDocument();
 			setTimeout(() => {
-				expect(screen.queryByTestId("snackbar")).not.toBeInTheDocument(), 6500;
-			});
+				expect(screen.queryByTestId("snackbar")).not.toBeInTheDocument()
+			}, 6500);
 		});
 	});
 });

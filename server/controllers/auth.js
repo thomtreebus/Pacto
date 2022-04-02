@@ -204,5 +204,7 @@ module.exports.verify = async (req, res) => {
  */
 module.exports.getMe = async (req, res) => {
 	delete req.user.password;
+	// stop browser from caching the jwt token
+	res.set("Cache-Control", "no-store");
 	res.status(200).json(jsonResponse(req.user, []));
 };

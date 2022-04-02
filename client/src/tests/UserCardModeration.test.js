@@ -4,7 +4,6 @@
 
 import { screen, fireEvent, waitFor } from "@testing-library/react";
 import "@testing-library/jest-dom";
-import MockComponent from "./utils/MockComponent";
 import {rest} from "msw";
 import testUsers from "./utils/testUsers"
 import UserCardModeration from "../components/UserCardModeration";
@@ -222,5 +221,13 @@ describe("UserCard Tests", () => {
         })
       });
     });
+
+    it("Shows a golden ring when the user is a moderator", async () => {
+      const moderatedPact = Object.assign({}, pactResponse.message);
+      moderatedPact.moderators = [testUsers[0]];
+      await renderWithMock(<UserCardModeration user={testUsers[0]} pact={moderatedPact} showBannedUsers={true}/>);
+      const buttonElement = await screen.findByTestId("user-image-avatar");
+      expect(buttonElement.style._values.outline.includes("gold")).toBe(true);
+    })
   });
 });

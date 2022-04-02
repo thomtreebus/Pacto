@@ -33,7 +33,7 @@ export default function BasePostCard({ children, post, numComments = null, showP
 		try {
 			if (response.status !== 204) {
 				const json = await response.json();
-				if (json.errors.length) throw Error(json.errors[0].message);
+        throw Error(json.errors?.length ? json.errors[0].message : "Server Error");
 			}
 		} catch (err) {
 			setIsError(true);
@@ -41,9 +41,8 @@ export default function BasePostCard({ children, post, numComments = null, showP
 			setIsButtonDisabled(false);
 			return;
 		}
-
-		await silentUserRefresh();
 		history.push(`/pact/${post.pact._id}`);
+		await silentUserRefresh();
 	};
 
 	const handleLikeEvent = async (eventCode) => {
@@ -77,7 +76,7 @@ export default function BasePostCard({ children, post, numComments = null, showP
 							initThumbDown={post.downvoters.includes(user._id)}
 							handleLikeEvent={handleLikeEvent}
 							initLikes={post.votes}
-						></Voter>
+						/>
 						<Box sx={{ overflow: "hidden" }}>
 							<Typography variant="caption" data-testid="author-date-line">
 								Posted by{" "}
