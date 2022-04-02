@@ -28,7 +28,7 @@ module.exports.updateProfile = async(req, res) => {
       await User.findByIdAndUpdate(id, { ...req.body }, {runValidators: true});
       status = 200
       const university = req.user.university;
-      resMessage = await User.findOne({university, _id: req.params.id});
+      resMessage = await User.findOne({university, _id: req.params.id}, "-password");
       await resMessage.populate({path: 'university', model: University});
       await resMessage.populate({path: 'sentRequests', model: FriendRequest});
       await resMessage.populate({path: 'receivedRequests', model: FriendRequest});
@@ -63,9 +63,7 @@ module.exports.getProfile = async(req, res) => {
       throw Error(USER_MESSAGES.DOES_NOT_EXIST);
     }
 
-    const user = await User.findOne({ university, _id:req.params.id }).populate(
-      {path: 'university', model: University}
-    );
+    const user = await User.findOne({ university, _id:req.params.id}, "-password").populate({path: 'university', model: University});
 
 		if (!user){
 			status = 404;
