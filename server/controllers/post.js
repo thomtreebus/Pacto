@@ -53,12 +53,13 @@ module.exports.getPost = async (req, res) => {
 		}
 
 		try {
-			await post.populate({ path: 'pact', model: Pact});
-			await post.populate({ path: 'author', model: User});
+			await post.populate({ path: 'pact', model: Pact, select: ["name"]});
+			await post.populate({ path: 'author', model: User, select: ["firstName", "lastName"]});
 			await post.populate({ path: 'comments', model: Comment, populate : 
 				[{
 					path: 'author',
-					model: User
+					model: User,
+					select: ["firstName", "lastName"]
 				},{
 					path: 'childComments',
 					model: Comment
