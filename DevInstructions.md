@@ -17,12 +17,6 @@
       - [**Environment Variables**](#environment-variables-1)
       - [**Start Application**](#start-application-1)
     - [5. Deployment](#5-deployment)
-      - [1. Go to nginx/conf and find default.conf.example](#1-go-to-nginxconf-and-find-defaultconfexample)
-      - [2. Setup environment variables.](#2-setup-environment-variables)
-      - [3. Build application.](#3-build-application)
-      - [4. Run the application](#4-run-the-application)
-      - [5. Run certbot for the https certificate](#5-run-certbot-for-the-https-certificate)
-      - [5. Restart docker containers to use certificate.](#5-restart-docker-containers-to-use-certificate)
   - [Development](#development)
     - [Test-Driven Development](#test-driven-development)
     - [SOLID Principles](#solid-principles)
@@ -49,7 +43,7 @@ Both the client and server applications utilize a few APIs. Some of these requir
 <p align="center">
   <a href="cloudinary" rel="noopener sponsored" target="_blank"><img src="https://i.imgur.com/breMIms.png" alt="cloudinary" title="Cloudinary Account" loading="lazy" /></a>
 </p>
-You will need to add these variables as environment variables in a later step. In addition to creating an account, you will need to setup an [upload preset](https://cloudinary.com/documentation/upload_presets) to be able to upload images. Once you have created an upload preset, you will need to add the name of your preset to the client environment variables.
+You will need to add these variables as environment variables in a later step.
 
 <p></p>
 
@@ -107,12 +101,6 @@ The client application relies on a few environment variables. Some variables wil
   EMAIL_AUTHOR=*insert author to be displayed when a user receives an email*
   SMTP_HOST=*insert the smtp link*
   ```
-- [Cloudinary](https://cloudinary.com/) variables - add the Cloudinary values that you got when registering for an account
-  ```
-  CLOUDINARY_CLOUD_NAME= *insert your cloud name*
-  CLOUDINARY_KEY= *insert your Cloudinary key*
-  CLOUDINARY_SECRET= *insert your Cloudinary secret*
-  ```
 - [University API](http://universities.hipolabs.com/search?country=United%20Kingdom) URL - Add the URL for the University API as shown below:
   ```
   UNIVERSITY_API=http://universities.hipolabs.com/search?country=United%20Kingdom
@@ -126,37 +114,16 @@ The client application relies on a few environment variables. Some variables wil
   ```
   DEPLOYED_URL=http://localhost:8000
   ```
-- Production flag. This boolean flag makes the server run in https mode and makes use of the private keys and certificates required for https. Only set to true if you are deploying the application.
-  ```dotenv
-  IS_PROD=true|false
-  ```
 #### **Start Application**
-Enter the server directory
-```
-$ cd server
-```
-Install the required packages with npm
-```
-$ npm install
-```
-To be able to run the database, we need to give Docker read and write privileges for the User class (i.e. the file owner), the Group class (i.e. the group owning the file) and the Others class. To do this, we must change its mode:
-
-```
-$ sudo chmod 666 /var/run/docker.sock
-```
-Afterwards, we must enable the Docker socket.
-```
-$ sudo systemctl enable --now docker
-```
-Then we run need to start the server
+Before running the server application, you need to start the database 
 ```
 $ npm run dbstart
 ```
-If that doesn't run try running the same command with sudo privileges
+If that doesn't run try running the same command with sudo
 ```
-$ sudo npm run dbstart
+$ sudo run npm dbstart
 ```
-Once the database is running, you can start the application
+Once the database is running, you can star the application
 ```
 $ npm run start
 ```
@@ -170,13 +137,14 @@ The server application relies on a few environment variables. Create a file call
   ```
   REACT_APP_URL=http://localhost:8000
   ```
--  The Cloudinary variables need to be added to the client .env file as well. The values should be the same as in the server .env file but the variable names must include the REACT_APP_ prefix
+-  Add the Cloudinary variables that you got when setting up a cloudinary account.
     ```
     REACT_APP_CLOUDINARY_CLOUD_NAME= *insert your cloud name*
     REACT_APP_CLOUDINARY_KEY= *insert your Cloudinary key*
     REACT_APP_CLOUDINARY_SECRET= *insert your Cloudinary secret*
     REACT_APP_CLOUDINARY_URL= *insert your Cloudinary URL*
     REACT_APP_CLOUDINARY_UPLOAD_PRESET= *insert your Cloudinary upload preset*
+
     ```
 
 #### **Start Application**
@@ -195,47 +163,13 @@ $ npm run start
 Once the client application starts to run, a new tab will open and show the React app.
 
 ### 5. Deployment
-We have a simple docker container that does most of the work for you.
-
-#### 1. Go to nginx/conf and find default.conf.example
-
-Inside the file replace example.org to that of your own domain. 
-
-#### 2. Setup environment variables.
-
-As stated above, place the .env files in their respective directories.
-
-#### 3. Build application.
-Build the application by running the following command to set up the docker volumes in the root directory.
-```
-  docker-compose build
-```
-
-#### 4. Run the application
-Run the application in detached mode
-```
-  docker-compose up -d
-```
-
-#### 5. Run certbot for the https certificate
-Run the following command and follow the steps prompted. Replace example.org with your domain
-```
-  docker-compose run --rm certbot-https-certificate certonly --webroot --webroot-path /var/www/certbot/ -d example.org
-```
-
-
-#### 5. Restart docker containers to use certificate.
-To get nginx to use the new certificates we need to restart the containers 
-```
-  docker-compose down
-  docker-compose up -d
-```
+How to deploy.
 
 ## Development
 ### Test-Driven Development
 Test driven development was employed throughout the development of the application. Before adding any major new functionality, tests were written to ensure that once the functionality was implemented, it would work as intended. For example, when creating a new page, a few tests would be written first (to fail intentionally), and once the page was created, the tests would be used to check that the page fulfilled its purpose. 
 
-When developing new features for the application, be sure to write automated tests, or use manual testing in scenarios where automated testing can not be employed. To read more about our approach to testing, take a look at the [Testing Report](/TestReport.md).
+When developing new features for the application, be sure to write automated tests, or use manual testing in scenarios where automated testing can not be employed. To read more about our approach to testing, take a look at the Testing Report (TestReport.md)
 
 ### SOLID Principles
 #### **Single Responsibility Principle**
