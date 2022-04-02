@@ -15,8 +15,6 @@ module.exports.updateProfile = async(req, res) => {
   let status = undefined;
   let jsonErrors = [];
   let resMessage = null;
-  req.body["bio"] = req.body["bio"].trim();
-
   try {
     const { id } = req.params;
 

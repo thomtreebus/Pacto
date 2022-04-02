@@ -18,10 +18,8 @@ const getPreview = require("../helpers/LinkCache");
 module.exports.createPact = async (req, res) => {
 	try {
 		const user = req.user;
+    const { name } = req.body;
     const optionalAttributes = ['description', 'category'];
-		req.body["name"] = req.body["name"].trim();
-		req.body["description"] = req.body["description"].trim();
-		const { name } = req.body;
 
 		const newPact = {
 			name,
@@ -140,9 +138,6 @@ module.exports.updatePact = async(req, res) => {
 			status = 401
 			throw Error(PACT_MESSAGES.NOT_MODERATOR);
 		}
-
-		req.body["name"] = req.body["name"].trim();
-		req.body["description"] = req.body["description"].trim();
 
 		const updatedPact = await Pact.findByIdAndUpdate(pact.id, { ...req.body }, { runValidators: true });
 		status = 200
