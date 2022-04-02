@@ -1,6 +1,6 @@
 /**
  * Tests for the component the edit profile page this is where
- * ther user can edit deatils relating to their account.
+ * the user can edit details relating to their account.
  */
 
 import { screen, fireEvent, waitFor } from "@testing-library/react";
@@ -169,7 +169,7 @@ describe("Edit Profile Page Tests", () => {
       const inputElement = await screen.findByRole("textbox", {
         name: "Location",
       });
-      const testValue = "Antartica";
+      const testValue = "Antarctica";
       fireEvent.change(inputElement, { target: { value: testValue } });
       expect(inputElement.value).toBe(testValue);
     });

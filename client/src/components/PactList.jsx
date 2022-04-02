@@ -1,7 +1,15 @@
+/**
+ * A component to render a list of pacts
+ */
+
 import React from "react";
 import { Typography } from "@mui/material";
 import PactListItem from "./PactListItem";
 
+/**
+ * Renders a list of pacts
+ * @param {Array} pacts A list of Pact documents
+ */
 export default function PactList({ pacts }) {
 	if (!pacts.length) {
 		return (

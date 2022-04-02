@@ -1,3 +1,7 @@
+/**
+ * Page that allows users to create a post to a certain Pact
+ */
+
 import { Grid, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import React, { useEffect, useState } from "react";
@@ -49,7 +53,7 @@ export default function PostPage() {
   const commentSubmissionHandler = (newComment) => {
     setShowReplyBox(false);
 
-    const newPostObj = JSON.parse(JSON.stringify(post)); // Deep clone the post so it can be modified and resaved
+    const newPostObj = JSON.parse(JSON.stringify(post)); // Deep clone the post, so it can be modified and re-saved
     newPostObj.comments.unshift(newComment); // Add new comment to front of comments array ( to render at top)
 
     setPost(newPostObj);
@@ -57,7 +61,7 @@ export default function PostPage() {
 
   // This callback function is used when the change to the post object occurs on a deeper recursive layer
   // and is thus better handled inside the component.
-  const recieveUpdatedPostObj = (newPostObj) => {
+  const receiveUpdatedPostObj = (newPostObj) => {
     setPost(newPostObj);
   }
 
@@ -65,7 +69,7 @@ export default function PostPage() {
     <>
       <Grid container width="100%" justifyContent="center" sx={{marginTop: 3}}>
         <Grid item xs={11} paddingBottom={1}>
-          <PostCard post={post} numComments={post.comments.length}/>
+          <PostCard post={post} />
           <Typography variant="subtitle1" className="link" onClick={() => {setShowReplyBox(!showReplyBox)}} data-testid="comment-adder">
             {showReplyBox ? "Hide" : "Add comment"}
           </Typography>
@@ -78,7 +82,7 @@ export default function PostPage() {
             {/* We display only the comments without a parentComment, i.e. top level comments */}
             { post.comments.filter((x) => x.parentComment == null).map((c) => {
               return(
-                <CommentCard key={c._id} post={post} comment={c} postUpdaterFunc={recieveUpdatedPostObj}> </CommentCard>
+                <CommentCard key={c._id} post={post} comment={c} postUpdaterFunc={receiveUpdatedPostObj}> </CommentCard>
               );
             })}
           </Grid>

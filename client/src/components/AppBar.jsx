@@ -1,3 +1,7 @@
+/**
+ * An appbar for the website, containing common useful features
+ */
+
 import React, { useEffect, useState } from "react";
 import { styled, alpha } from "@mui/material/styles";
 import AppBar from "@mui/material/AppBar";
@@ -59,6 +63,11 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 	},
 }));
 
+/**
+ * An appbar providing functionality such as buttons to
+ * view your profile, notifications, logout or make search queries
+ * @param {function} handleDrawerToggle Called when drawer is clicked
+ */
 export default function PrimarySearchAppBar({ handleDrawerToggle }) {
 	const history = useHistory();
 

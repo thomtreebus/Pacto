@@ -1,3 +1,7 @@
+/**
+ * The base (common) component that all posts share.
+ */
+
 import { Box, Card, CardContent } from "@mui/material";
 import { Typography } from "@mui/material";
 import { useHistory } from "react-router-dom";
@@ -10,9 +14,15 @@ import { IconButton } from "@mui/material";
 import { useState } from "react";
 import ErrorMessage from "../ErrorMessage";
 
-export default function BasePostCard({ children, post, numComments = null, showPact = false }) {
+/**
+ * The base component for all posts.
+ * @param children The post-type specific content
+ * @param {Object} post The post being shown
+ * @param {boolean} showPact Whether the pact name should be displayed (for the feed page)
+ */
+export default function BasePostCard({ children, post, showPact = false }) {
 	const { user, silentUserRefresh } = useAuth();
-	const commentCount = numComments === null ? post.comments.length : numComments;
+	const commentCount = post.comments.length;
 	const [isButtonDisabled, setIsButtonDisabled] = useState(false);
 	const [isError, setIsError] = useState(false);
 	const [errorMessage, setErrorMessage] = useState("");

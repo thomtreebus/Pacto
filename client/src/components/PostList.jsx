@@ -1,11 +1,19 @@
 import { Card, Grid, IconButton, InputBase, List, ListItem } from "@mui/material"
 import PostCard from "./cards/PostCard"
+/**
+ * A component to render a list of posts
+ */
+
 import SearchIcon from "@mui/icons-material/Search";
 import CloseIcon from "@mui/icons-material/Close";
 import { useState } from "react";
 import { Typography } from "@mui/material";
 import { useEffect } from "react";
 
+/**
+ * List of posts to display
+ * @param {Array} posts Array of posts
+ */
 export default function PostList({ posts, searchable=true, showPact=false }) {
   const [orderablePosts, setPosts] = useState(posts);
 	const [search, setSearch] = useState("");
@@ -62,10 +70,10 @@ export default function PostList({ posts, searchable=true, showPact=false }) {
       </Grid>
       <Grid item width="100%">
 
-        {!orderablePosts.length ? 
+        {!orderablePosts.length ?
           (
             <Typography variant="subtitle1" sx={{ textAlign: "center" }}>
-              There are no posts avaliable
+              There are no posts available
             </Typography>
           )
         :

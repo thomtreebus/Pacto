@@ -1,5 +1,5 @@
 /**
- * Tests for the left and the mobile side bar.
+ * Tests for the left and the mobile sidebar.
  */
 
 import { fireEvent, screen } from "@testing-library/react";
@@ -37,7 +37,7 @@ describe("Left Sidebar tests", () => {
 	});
 
 	describe("Sidebar default state", () => {
-		it("permenant sidebar should be visible", () => {
+		it("permanent sidebar should be visible", () => {
 			const permanentSidebar = screen.getByTestId("permanent-sidebar");
 			expect(permanentSidebar).toBeVisible();
 		});

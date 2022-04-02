@@ -1,3 +1,7 @@
+/**
+ * Displays the landing page
+ */
+
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import { useHistory } from "react-router-dom";

@@ -1,6 +1,6 @@
 /**
  * Tests for the user list variant that uses the card with moderation tools instead of the 
- * defult user cards.
+ * default user cards.
  */
 
 import { screen } from "@testing-library/react";

@@ -1,3 +1,7 @@
+/**
+ * A card to provide the ability to create posts of three types
+ */
+
 import React, { useState } from 'react';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
@@ -40,6 +44,10 @@ const POST_TYPES = {
   },
 }
 
+/**
+ * Used to create posts
+ * @param {number} pactID The pact id the post is to be created in
+ */
 export default function CreatePostCard({pactID}) {
   const [postType, setPostType] = useState(POST_TYPES.TEXT);
   const history = useHistory();

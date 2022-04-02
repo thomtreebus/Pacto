@@ -7,6 +7,10 @@ import { useAuth } from "../../providers/AuthProvider";
 import UserListModeration from "../UserListModeration";
 import { Box } from "@mui/material";
 
+/**
+ * A page providing lists of members, moderators and banned users of a pact
+ * @param {Object} pact Pact document
+ */
 export default function PactMembersTab({ pact }) {
 	const { user } = useAuth();
 	const [isLoading, setIsLoading] = useState(true);

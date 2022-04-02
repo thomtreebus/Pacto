@@ -1,3 +1,7 @@
+/**
+ * A page to edit the details of a Pact
+ */
+
 import { ButtonBase, Card, Grid, Typography } from "@mui/material";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
@@ -22,7 +26,6 @@ import MenuItem from "@mui/material/MenuItem";
 const Input = styled("input")({
   display: "none",
 });
-
 
 export default function EditPact() {
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);

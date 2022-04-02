@@ -1,3 +1,7 @@
+/**
+ * Allows the user to search for a particular Pact, post or user
+ */
+
 import React, { useEffect, useState } from 'react'
 import { useParams } from "react-router-dom";
 import ErrorPage from "./Error";

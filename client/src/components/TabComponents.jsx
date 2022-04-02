@@ -1,3 +1,7 @@
+/**
+ * An abstraction component to make tabs
+ */
+
 import {Box} from "@mui/system";
 import {Typography} from "@mui/material";
 import React from "react";

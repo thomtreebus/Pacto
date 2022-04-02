@@ -1,3 +1,7 @@
+/**
+ * The left side bar component to be shown on the website
+ */
+
 import React from "react";
 import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
@@ -6,6 +10,9 @@ import { Typography, Toolbar, Divider } from "@mui/material";
 
 const drawerWidth = 240;
 
+/**
+ * A right sidebar
+ */
 export default function RightSideBar() {
 	return (
 		<Box sx={{ display: { xs: "none", md: "flex" } }}>

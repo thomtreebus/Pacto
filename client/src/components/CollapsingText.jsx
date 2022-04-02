@@ -1,7 +1,18 @@
+/**
+ * A component used where you might want to collapse a text
+ * section, perhaps if it was too long
+ */
+
 import { ArrowDropDown, ArrowDropUp } from "@mui/icons-material";
 import { Typography, Collapse, Grid, IconButton } from "@mui/material";
 import { useState, useRef, useLayoutEffect } from "react";
 
+/**
+ * A component that can be used to collapse text
+ * @param {string} text
+ * @param {string} variant
+ * @param {string} color
+ */
 export default function CollapsingText({ text, variant="body1", color }) {
   const [collapse, setCollapse] = useState(false);
   const textRef = useRef();
@@ -27,7 +38,7 @@ export default function CollapsingText({ text, variant="body1", color }) {
   }, []);
 
   // Milliseconds the window size must be constant for before rechecking if collapsing is needed.
-  // Otherwise we get significant lag
+  // Otherwise, we get significant lag
   const RESET_TIMEOUT = 100;
 
   let movement_timer = null; // Will eventually be an object when clearInterval is called

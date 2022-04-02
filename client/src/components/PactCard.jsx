@@ -1,3 +1,7 @@
+/**
+ * The PactCard which is shown on the university hub page
+ */
+
 import React, { useState } from "react";
 import { Grid, Card, CardHeader, Button, Avatar, Box } from "@mui/material";
 import { CardContent, Typography, CardActions } from "@mui/material";
@@ -9,6 +13,11 @@ import { useHistory } from "react-router-dom";
 import ErrorMessage from "./ErrorMessage";
 import { useAuth } from "../providers/AuthProvider";
 
+/**
+ * A card displaying a pact which a user can use to visit or join it
+ * @param {Object} pact The pact being displayed
+ * @param {boolean} joined Whether the user has joined the pact
+ */
 export default function PactCard({ pact, joined }) {
 	const { silentUserRefresh } = useAuth();
 	const history = useHistory();

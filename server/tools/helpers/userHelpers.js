@@ -181,7 +181,7 @@ async function generateFriendRequest(user1, user2) {
  * @param user2 - second user
  */
 function canGenerateFriendship(user1, user2) {
-	return !areUsersFriends(user1, user2) && !doUsershavePendingRequest(user1, user2);
+	return !areUsersFriends(user1, user2) && !doUsersHavePendingRequest(user1, user2);
 }
 
 /**
@@ -212,7 +212,7 @@ function isFriendOf(user1, user2) {
  * @param user2 - second user
  * @returns true if either user has pending request from the other one
  */
-function doUsershavePendingRequest(user1, user2) {
+function doUsersHavePendingRequest(user1, user2) {
 	return hasPendingRequestFrom(user1, user2) || hasPendingRequestFrom(user2, user1);
 }
 

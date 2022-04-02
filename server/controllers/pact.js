@@ -269,7 +269,7 @@ module.exports.promoteMember = async (req, res) => {
 }
 
 /**
- * Revokes a the ban of a member, so they become again a normal member.
+ * Revokes the ban of a member, so they become again a normal member.
  * The user making the request must be a moderator of the pact.
  * @param {Request} req - The request
  * @param {Response} res - The response to the request

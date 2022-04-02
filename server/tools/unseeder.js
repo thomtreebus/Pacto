@@ -19,7 +19,7 @@ async function unseed() {
 	await EmailVerificationCode.deleteMany({});
 	await FriendRequest.deleteMany({});
 	await Notification.deleteMany({});
-	console.log("Finished unseeding");
+	console.log("Finished un-seeding");
 }
 
 module.exports.unseed = unseed;

@@ -1,3 +1,7 @@
+/**
+ * A chip to display the category of a pact
+ */
+
 import React from "react";
 import PeopleIcon from "@mui/icons-material/People";
 import CommentIcon from "@mui/icons-material/Comment";
@@ -5,6 +9,10 @@ import BookIcon from "@mui/icons-material/MenuBook";
 import CreateIcon from "@mui/icons-material/Create";
 import { Chip } from "@mui/material";
 
+/**
+ * A chip signifying the category a pact belongs to
+ * @param {Object} pact The pact document
+ */
 export default function PactChip({ pact }) {
 	let icon = <CommentIcon />;
 	let color = "info";

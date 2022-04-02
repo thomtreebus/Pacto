@@ -1,3 +1,7 @@
+/**
+ * The components which show up in the left side bar
+ */
+
 import React from "react";
 import Box from "@mui/material/Box";
 import Divider from "@mui/material/Divider";
@@ -12,6 +16,9 @@ import { useAuth } from "../providers/AuthProvider";
 import PageList from "./PageList";
 import MyPactList from "./MyPactList";
 
+/**
+ * The content of a sidebar
+ */
 export default function LeftSideBarContent() {
 	const { user } = useAuth();
 

@@ -48,7 +48,7 @@ describe("Generic downvote", () => {
     expect(obj.upvoters.length).toBe(oldUpvoterLen);
   });
 
-  it("handles downvote after upvoting", async () => {
+  it("handles downvote after up-voting", async () => {
     const user = await User.findOne({ uniEmail: getDefaultTestUserEmail() });
     const oldVotes = obj.votes;
     const oldUpvoterLen = obj.upvoters.length;

@@ -14,10 +14,10 @@ const loggedInUser = {
 	firstName: "pac",
 	lastName: "to",
 	image: "https://avatars.dicebear.com/api/identicon/temp.svg",
-	friends: [1], // Logged in user is friends with testUsers[0]
+	friends: [1], // Logged-in user is friends with testUsers[0]
 	sentRequests: [{ _id: 1, recipient: 2 }], // and has sent a request to testUser[1]
 	receivedRequests: [{ _id: 2, requestor: 3 }], // and has received a request from testUser[2]
-	// User has no relationship with testUseer[3]
+	// User has no relationship with testUser[3]
 };
 
 describe("FriendButton Tests", () => {

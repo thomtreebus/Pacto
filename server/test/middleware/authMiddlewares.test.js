@@ -34,7 +34,7 @@ describe("Auth Middlewares", () => {
       expect(response.body.errors.length).toBe(1);
     });
 
-    it("rejects valid token for nonexisting user", async () => {
+    it("rejects valid token for nonexistent user", async () => {
       const user = await generateTestUser();
       
       const token = createToken(user._id + 1);

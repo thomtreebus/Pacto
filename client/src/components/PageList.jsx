@@ -1,3 +1,7 @@
+/**
+ * A component to show buttons to different pages in the app on the sidebar
+ */
+
 import React from "react";
 import ListItem from "@mui/material/ListItem";
 import ListItemIcon from "@mui/material/ListItemIcon";
@@ -14,6 +18,9 @@ const pages = [
 	{ icon: <PeopleIcon />, text: "Users", path: "/users" },
 ];
 
+/**
+ * List of pages shown on sidebar
+ */
 export default function PageList() {
 	const { activePage, setActivePage } = useAuth();
 	const history = useHistory();

@@ -1,5 +1,5 @@
 /**
- * A helper file to isloated the creation of MockComponnts.
+ * A helper file to isolate the creation of MockComponents.
  */
 
 import React from "react";
@@ -10,7 +10,7 @@ import AuthProvider from "../../providers/AuthProvider";
 export const queryClient = new QueryClient();
 
 /**
- * Wraps the component in the the library prerequisites like the router
+ * Wraps the component in the library prerequisites like the router
  * and the providers.
  *
  * @param children The element that you would like to wrap in the library prerequisites.
