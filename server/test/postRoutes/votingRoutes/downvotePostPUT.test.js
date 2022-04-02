@@ -42,7 +42,7 @@ describe("PUT /pact/:pactId/post/downvote/:postId", () => {
     const response = await sendRequest(token);
 
     const responsePost = response.body.message;
-    expect(responsePost.author._id.toString()).toBe(user._id.toString());
+    expect(responsePost.author).toBe(user._id.toString());
     expect(responsePost.votes).toBe(oldVotes - 1);
     expect(responsePost.upvoters).toStrictEqual([]);
     expect(responsePost.downvoters[0]).toBe(user._id.toString());
