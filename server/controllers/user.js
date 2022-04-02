@@ -81,27 +81,3 @@ module.exports.getProfile = async(req, res) => {
     res.status(status).json(jsonResponse(null, [jsonError(null, err.message)]));
   }
 }
-
-/**
- * Returns a list of all users in the university of 
- * the user who made the request.
- * @param {Request} req - The request
- * @param {Response} res - The response to the request
- * @async
- */
-module.exports.getUniversityUsers = async(req, res) => {
-  let status = 400;
-  try {
-    const university = req.user.university;
-
-    const users = await User.find({university, active: true}).populate(
-      {path: 'university', model: University}
-    );
-
-    res.status(200).json(jsonResponse(users, []));
-
-  } catch (err) {
-    res.status(status).json(jsonResponse(null, [jsonError(null, err.message)]));
-  }
-}
-
