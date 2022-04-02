@@ -97,12 +97,13 @@ module.exports.upvotePost = async (req, res) => {
 			await Notification.create({ user: post.author, text: `${req.user.firstName} ${req.user.lastName} upvoted your post in ${req.pact.name}` });
 
 			// Populating before returning the post
-			await post.populate({ path: 'pact', model: Pact});
-			await post.populate({ path: 'author', model: User});
+			await post.populate({ path: 'pact', model: Pact, select: ["name"]});
+			await post.populate({ path: 'author', model: User, select: ["firstName", "lastName"]});
 			await post.populate({ path: 'comments', model: Comment, populate : 
 				[{
 					path: 'author',
-					model: User
+					model: User,
+					select: ["firstName", "lastName"]
 				},{
 					path: 'childComments',
 					model: Comment
@@ -135,12 +136,13 @@ module.exports.downvotePost = async (req, res) => {
 			await downvote(post, req.user);
 
 			// Populating before returning the post
-			await post.populate({ path: 'pact', model: Pact});
-			await post.populate({ path: 'author', model: User});
+			await post.populate({ path: 'pact', model: Pact, select: ["name"]});
+			await post.populate({ path: 'author', model: User, select: ["firstName", "lastName"]});
 			await post.populate({ path: 'comments', model: Comment, populate : 
 				[{
 					path: 'author',
-					model: User
+					model: User,
+					select: ["firstName", "lastName"]
 				},{
 					path: 'childComments',
 					model: Comment
