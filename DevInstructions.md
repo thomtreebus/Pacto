@@ -40,7 +40,7 @@ Both the client and server applications utilize a few APIs. Some of these requir
 
 #### **Cloudinary**
 [Cloudinary](https://cloudinary.com/) is for cloud image hosting. You need to create an account on Cloudinary in order to get an API key. Follow the Cloudinary [docs](https://cloudinary.com/documentation) in order to set up your account. Once you have an account you will see the following values:
-<p align="center">
+<p>
   <a href="cloudinary" rel="noopener sponsored" target="_blank"><img src="https://i.imgur.com/breMIms.png" alt="cloudinary" title="Cloudinary Account" loading="lazy" /></a>
 </p>
 You will need to add these variables as environment variables in a later step.
@@ -52,7 +52,7 @@ You will need to add these variables as environment variables in a later step.
 
 Use the Link Preview [documentation](https://docs.linkpreview.net/) instructions to sign up for an API key. Once you have an account, you will be shown your API key:
 
-<p align="center">
+<p>
   <a href="cloudinary" rel="noopener sponsored" target="_blank"><img src="https://i.imgur.com/8QWqHKV.png" alt="cloudinary" title="Cloudinary Account" loading="lazy" /></a>
 </p>
 You will need to add this API key as an environment variable in a later step.
@@ -60,7 +60,7 @@ You will need to add this API key as an environment variable in a later step.
 <p></p>
 
 #### **University API**
-The [University API](http://universities.hipolabs.com/search?country=United%20Kingdom) is a simple API that returns a university's name and domain name for any given UK university. It is used in the server application for email verification to determine if a user has a valid university email adress. There is no registration required to use this API.
+The [University API](http://universities.hipolabs.com/search?country=United%20Kingdom) is a simple API that returns a university's name and domain name for any given UK university. It is used in the server application for email verification to determine if a user has a valid university email address. There is no registration required to use this API.
 
 #### **SendGrid SMTP Server**
 
@@ -116,12 +116,12 @@ The client application relies on a few environment variables. Some variables wil
   LINKPREVIEW_KEY= *insert your Link Preview API key*
   LINKPREVIEW_URL=http://api.linkpreview.net
   ```
-- The URL of your server application. This is used for email verification. During development you can use localhost but update the variable once your server application is deployed. (Should be the same value as REACT_APP_URL in the client .env)
+- The URL of your server application. This is used for email verification. During development, you can use localhost but update the variable once your server application is deployed. (Should be the same value as REACT_APP_URL in the client .env)
   ```
   DEPLOYED_URL=http://localhost:8000
   ```
 - Production flag. This boolean flag makes the server run in https mode and makes use of the private keys and certificates required for https. Only set to true if you are deploying the application.
-  ```dotenv
+  ```
   IS_PROD=true|false
   ```
 #### **Start Application**
@@ -144,7 +144,10 @@ $ npm run dbstart
 ```
 If that doesn't run try running the same command with sudo
 ```
-Once the database is running, you can star the application
+$ sudo npm run dbstart
+```
+
+Once the database is running, you can start the application
 ```
 $ npm run start
 ```
@@ -236,7 +239,7 @@ In the server application, each file, or function has a sole responsibility. Rou
 New functionality can be added to the application without having to modify existing models. The server application can be extended by adding new controllers that can perform certain operations without having to modify any of the models. On the client new components can be created without having to change existing components.
 
 #### **Liskov Substitution Principle**
-The application currently doesn't rely on inheritance as React is by nature, a functional framework. The majority of the server application uses a functional programming approach. Therefore it is very rare for a class to have child classes.
+The application currently doesn't rely on inheritance as React is by nature, a functional framework. The majority of the server application uses a functional programming approach. Therefore, it is very rare for a class to have child classes.
 #### **Interface Segregation Principle**
 In the client application,pages only depend on components that it displays/uses. At the top of each file, only the required functions/components are imported in order to ensure that interfaces are segregated from each other. The server application will throw an error if there are any unused imports at the top of a file.
 #### **Dependency Inversion Principle**
