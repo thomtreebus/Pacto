@@ -1,3 +1,7 @@
+/**
+ * A page that displays the error message if an error is encountered
+ */
+
 import { Box, Typography } from "@mui/material";
 import React from "react";
 

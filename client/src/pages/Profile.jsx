@@ -1,3 +1,7 @@
+/**
+ * Capitalises the first letter of a string
+ */
+
 import React from 'react';
 import { useState } from "react";
 import { Image } from 'cloudinary-react';

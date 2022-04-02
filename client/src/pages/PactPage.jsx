@@ -1,3 +1,7 @@
+/**
+ * Displays the contents of a Pact
+ */
+
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import Loading from "./Loading";
@@ -10,9 +14,6 @@ import { a11yProps, TabPanel } from "../components/TabComponents";
 import PactMembersTab from "../components/PactPage/PactMembersTab";
 import { Box } from "@mui/material";
 
-/**
- * Displays the contents of a Pact
- */
 export default function PactPage() {
 	const { pactID } = useParams();
 	const [pact, setPact] = useState(null);

@@ -1,3 +1,7 @@
+/**
+ * Allows the user to search for a particular Pact, post or user
+ */
+
 import React, { useEffect, useState } from 'react'
 import { useParams } from "react-router-dom";
 import ErrorPage from "./Error";
@@ -10,9 +14,6 @@ import Tab from '@mui/material/Tab';
 import UserList from '../components/UserList';
 import {TabPanel} from "../components/TabComponents";
 
-/**
- * Allows the user to search for a particular Pact, post or user
- */
 export default function SearchResults() {
   const { query } = useParams();
   const [isLoading, setIsLoading] = useState(true);

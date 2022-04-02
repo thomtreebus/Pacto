@@ -1,3 +1,7 @@
+/**
+ * Displays a list of users with certain conditions, such as same course, friends etc.
+ */
+
 import {Box} from "@mui/material";
 import Tab from "@mui/material/Tab";
 import React, {useEffect, useState} from "react";
@@ -9,9 +13,6 @@ import Tabs from "@mui/material/Tabs";
 import Container from "@mui/material/Container";
 import {a11yProps, TabPanel} from "../components/TabComponents";
 
-/**
- * Displays a list of users with certain conditions, such as same course, friends etc.
- */
 export default function UserPage() {
 
     const { user } = useAuth();

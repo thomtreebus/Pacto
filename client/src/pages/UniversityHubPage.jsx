@@ -1,3 +1,7 @@
+/**
+ * Displays a page of all the Pacts that are in the application
+ */
+
 import { Box, Typography, Card, Fab } from "@mui/material";
 import Tab from "@mui/material/Tab";
 import TabContext from "@mui/lab/TabContext";
@@ -16,9 +20,6 @@ import { useQuery } from "react-query";
 import Loading from "./Loading";
 import { useEffect } from "react";
 
-/**
- * Displays a page of all the Pacts that are in the application
- */
 export default function UniversityHubPage() {
 	const { isLoading, data } = useQuery("repoData", () =>
 		fetch(`${process.env.REACT_APP_URL}/university`, {

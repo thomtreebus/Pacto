@@ -1,12 +1,13 @@
+/**
+ * Displays a Not Found message when a 404 error is encountered
+ */
+
 import React from "react";
 import { Card, Toolbar, Typography } from "@mui/material";
 import logo from '../assets/foiled-again-foil.gif';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 
-/**
- * Displays a Not Found message when a 404 error is encountered
- */
 export default function Notfound() {
 	return (
 		<>

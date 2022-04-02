@@ -1,3 +1,7 @@
+/**
+ * Page that allows the user to enter their credentials and enter the website
+ */
+
 import React, { useState } from "react";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
@@ -12,9 +16,6 @@ import Typography from "@mui/material/Typography";
 import { useAuth } from "../providers/AuthProvider";
 import ErrorMessage from "../components/ErrorMessage";
 
-/**
- * Page that allows the user to enter their credentials and enter the website
- */
 export default function LoginPage() {
 	const { silentUserRefresh } = useAuth();
 	const [snackbarOpen, setSnackbarOpen] = useState(false);

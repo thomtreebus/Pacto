@@ -1,3 +1,7 @@
+/**
+ * A page to create a new Pact
+ */
+
 import React, { useState } from "react";
 import { Card, Typography } from "@mui/material";
 import Avatar from "@mui/material/Avatar";
@@ -11,9 +15,6 @@ import MenuItem from "@mui/material/MenuItem";
 import { useAuth } from "../providers/AuthProvider";
 
 
-/**
- * A page to create a new Pact
- */
 export default function CreatePactPage() {
 	const [category, setCategory] = useState("");
 	const [isButtonDisabled, setIsButtonDisabled] = useState(false);

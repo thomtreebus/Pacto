@@ -1,13 +1,13 @@
+/**
+ * A feed page that displays all the posts of the Pacts the user is a part of
+ */
+
 import React, { useEffect, useState } from 'react'
 import ErrorPage from "./Error";
 import Loading from "./Loading";
 import PostList from '../components/PostList';
 import { Grid, Box } from '@mui/material';
 
-
-/**
- * A feed page that displays all the posts of the Pacts the user is a part of
- */
 export default function Feed() {
 	const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);

@@ -1,3 +1,7 @@
+/**
+ * Page that allows users to create a post to a certain Pact
+ */
+
 import { Grid, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import React, { useEffect, useState } from "react";
@@ -9,9 +13,6 @@ import CommentCard from "../components/cards/CommentCard";
 import PostCard from "../components/cards/PostCard";
 import { useAuth } from "../providers/AuthProvider";
 
-/**
- * Page that allows users to create a post to a certain Pact
- */
 export default function PostPage() {
   const { user } = useAuth()
   const { pactID, postID } = useParams();

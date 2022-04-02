@@ -1,3 +1,7 @@
+/**
+ * A page to edit the user's profile
+ */
+
 import React, { useEffect, useState } from "react";
 import Axios from "axios";
 import { useHistory } from "react-router-dom";
@@ -25,9 +29,6 @@ const Input = styled("input")({
 	display: "none",
 });
 
-/**
- * A page to edit the user's profile
- */
 export default function EditProfile() {
 	const { user, silentUserRefresh } = useAuth();
 
