@@ -125,13 +125,24 @@ The client application relies on a few environment variables. Some variables wil
   IS_PROD=true|false
   ```
 #### **Start Application**
+
+To be able to run the database, we need to give Docker read and write privileges for the User class (i.e. the file owner), the Group class (i.e. the group owning the file) and the Others class. To do this, we must change its mode:
+
+```
+$ sudo chmod 666 /var/run/docker.sock
+```
+
+Afterwards, we must enable the Docker socket.
+
+```
+$ sudo systemctl enable --now docker
+```
+
 Before running the server application, you need to start the database 
 ```
 $ npm run dbstart
 ```
 If that doesn't run try running the same command with sudo
-```
-$ sudo run npm dbstart
 ```
 Once the database is running, you can star the application
 ```
@@ -213,7 +224,7 @@ To get nginx to use the new certificates we need to restart the containers
 ### Test-Driven Development
 Test driven development was employed throughout the development of the application. Before adding any major new functionality, tests were written to ensure that once the functionality was implemented, it would work as intended. For example, when creating a new page, a few tests would be written first (to fail intentionally), and once the page was created, the tests would be used to check that the page fulfilled its purpose. 
 
-When developing new features for the application, be sure to write automated tests, or use manual testing in scenarios where automated testing can not be employed. To read more about our approach to testing, take a look at the [Testing Report](/TestReport.md).
+When developing new features for the application, be sure to write automated tests, or use manual testing in scenarios where automated testing can not be employed. To read more about our approach to testing, take a look at the [Testing Report](TestReport.md).
 
 ### SOLID Principles
 #### **Single Responsibility Principle**
