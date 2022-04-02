@@ -5,7 +5,7 @@
 import { screen, fireEvent, waitFor } from "@testing-library/react";
 import PostList from "../components/PostList";
 import "@testing-library/jest-dom";
-import testdata from "./utils/testPosts"
+import testData from "./utils/testPosts"
 import { useMockServer } from "./utils/useMockServer";
 
 import mockRender from "./utils/mockRender";
@@ -14,7 +14,7 @@ describe("PostList Tests", () => {
   const server = useMockServer();
 
   beforeEach(async () => {
-    await mockRender(<PostList posts={testdata} />)
+    await mockRender(<PostList posts={testData} />)
   })
 
   describe("Check elements are rendered", () => {

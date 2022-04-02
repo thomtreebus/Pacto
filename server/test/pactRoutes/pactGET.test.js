@@ -47,7 +47,7 @@ describe("GET /pact/:id", () =>{
 
     const post = await generateTestPost(user, pact);
     await post.save();
-    const post2 = await generateTestPost(user, pact, "randomtitle", "", "link", "http://google.com");
+    const post2 = await generateTestPost(user, pact, "randomTitle", "", "link", "http://google.com");
     await post2.save();
   });
 
@@ -99,7 +99,7 @@ describe("GET /pact/:id", () =>{
     expect(response.body.errors[0].message).toBe(MESSAGES.AUTH.IS_NOT_LOGGED_IN);
   });
 
-  it("returns images, titles and url's for any link posts when available", async () => {
+  it("returns images, titles and urls for any link posts when available", async () => {
     const user = await User.findOne({ uniEmail: getDefaultTestUserEmail() });
 
     const token = createToken(user._id);
@@ -118,7 +118,7 @@ describe("GET /pact/:id", () =>{
     })
   });
 
-  it("returns just url's for any link posts when a preview couldn't be fetched", async () => {
+  it("returns just urls for any link posts when a preview couldn't be fetched", async () => {
     server.use(
       rest.post(`${process.env.LINKPREVIEW_URL}`, (req, res, ctx) => {
         return res(

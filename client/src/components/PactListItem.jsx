@@ -1,3 +1,7 @@
+/**
+ * A item component for a pact to be put on the sidebar
+ */
+
 import React, { useState } from "react";
 import ListItem from "@mui/material/ListItem";
 import ListItemIcon from "@mui/material/ListItemIcon";
@@ -8,6 +12,10 @@ import { useHistory } from "react-router-dom";
 import { useAuth } from "../providers/AuthProvider";
 import { Button, Divider, Alert } from "@mui/material";
 
+/**
+ * Pact list item shown on sidebar
+ * @param {Object} pact Pact document
+ */
 export default function PactListItem({ pact }) {
 	const { user, silentUserRefresh, activePage } = useAuth();
 	const history = useHistory();

@@ -1,3 +1,7 @@
+/**
+ * The card used to display comments
+ */
+
 import { Box, Card, CardContent, Grid } from "@mui/material";
 import { useState } from "react";
 import Accordion from '@mui/material/Accordion';
@@ -16,6 +20,12 @@ import CollapsingText from "../CollapsingText";
 
 export const DELETED_COMMENT_MESSAGE = "This comment has been deleted.";
 
+/**
+ * The card used to display comments
+ * @param {Object} comment The comment being displayed
+ * @param {Object} post The post the comment belongs to
+ * @param {function} postUpdaterFunc Call this when the post needs to be updated
+ */
 export default function CommentCard({ comment, post, postUpdaterFunc }) {
   const { user } = useAuth();
   const [showReplyBox, setShowReplyBox] = useState(false);
@@ -39,7 +49,7 @@ export default function CommentCard({ comment, post, postUpdaterFunc }) {
 	};
 
   const updateComment = (updatedComment, replies=[]) => {
-    const newPostObj = JSON.parse(JSON.stringify(post)); // Deep clone the post so it can be modified and resaved
+    const newPostObj = JSON.parse(JSON.stringify(post)); // Deep clone the post, so it can be modified and re-saved
 
     const indexOfCommentToUpdate = post.comments.indexOf(comment);
     newPostObj.comments = newPostObj.comments.filter(c => c._id !== comment._id); // Remove comment from post
@@ -83,7 +93,7 @@ export default function CommentCard({ comment, post, postUpdaterFunc }) {
 
   const replySubmissionHandler = (newComment) => {
     setShowReplyBox(false);
-    const newRepliedToCommentObj = JSON.parse(JSON.stringify(comment)); // Deep clone the replied-tocomment so it can be modified and resaved
+    const newRepliedToCommentObj = JSON.parse(JSON.stringify(comment)); // Deep clone the replied-tocomment, so it can be modified and re-saved
     
     updateComment(newRepliedToCommentObj, [newComment]);
   }

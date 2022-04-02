@@ -1,3 +1,7 @@
+/**
+ * Displays a list of users with certain conditions, such as same course, friends etc.
+ */
+
 import {Box} from "@mui/material";
 import Tab from "@mui/material/Tab";
 import React, {useEffect, useState} from "react";

@@ -1,5 +1,5 @@
 /**
- * Tests for the pact list which is used to diplay a list of pacts.
+ * Tests for the pact list which is used to display a list of pacts.
  */
 
 import { screen } from "@testing-library/react";

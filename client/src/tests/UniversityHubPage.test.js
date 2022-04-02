@@ -120,7 +120,7 @@ describe("University Hub Tests", () => {
 				await assertPactsShown(allPacts);
 			});
 
-			it("should filter pacts in a case insenstive manner", async () => {
+			it("should filter pacts in a case insensitive manner", async () => {
 				const searchBar = await screen.findByPlaceholderText(/Search/i);
 				await assertPactsShown(allPacts);
 				fireEvent.change(searchBar, { target: { value: "pact1" } });

@@ -1,3 +1,7 @@
+/**
+ * Page that allows the user to enter their credentials and enter the website
+ */
+
 import React, { useState } from "react";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";

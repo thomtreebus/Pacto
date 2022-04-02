@@ -1,5 +1,13 @@
+/**
+ * The card which displays the image component of a post
+ */
+
 import { Box } from "@mui/material"
 
+/**
+ * The card used to display images
+ * @param {Object} post The post being displayed
+ */
 export default function ImagePostCard({ post }) {
   return (
     <Box textAlign="center">

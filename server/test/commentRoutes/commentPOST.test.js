@@ -48,8 +48,8 @@ describe("POST /pact/:pactId/post/:postId/comment", () =>{
     return response;
   }
 
-  function commentOnCommentNotification(commentor) {
-    return `${commentor.firstName} ${commentor.lastName} replied to your comment`;
+  function commentOnCommentNotification(commenter) {
+    return `${commenter.firstName} ${commenter.lastName} replied to your comment`;
   }
 
   const createCommentUser = async (name, pact) => {
@@ -73,7 +73,7 @@ describe("POST /pact/:pactId/post/:postId/comment", () =>{
     expect(response.body.message.text).toBe(sentText);
   });
 
-  it("commenting on your own post does not send a notifiation", async () => {
+  it("commenting on your own post does not send a notification", async () => {
     const user = await User.findOne({ uniEmail: getDefaultTestUserEmail() });
     const token = createToken(user._id);
     const post = await Post.findOne({ _id: getTestPostId() });
@@ -127,8 +127,8 @@ describe("POST /pact/:pactId/post/:postId/comment", () =>{
     const commentUser2 = await createCommentUser("commenterTwo", pact);
 
     const beforeCountPostUser = postUser.notifications.length;
-    const beforeCountcommentUser1 = commentUser1.notifications.length;
-    const beforeCountcommentUser2 = commentUser2.notifications.length;
+    const beforeCountCommentUser1 = commentUser1.notifications.length;
+    const beforeCountCommentUser2 = commentUser2.notifications.length;
 
     const token1 = createToken(commentUser1._id);
 
@@ -161,16 +161,16 @@ describe("POST /pact/:pactId/post/:postId/comment", () =>{
 
     const updatedCommentUser1 = await User.findOne({ _id: commentUser1._id });
     await updatedCommentUser1.populate({path: 'notifications', model: Notification});
-    const cpommentUser1Notifications = updatedCommentUser1.notifications;
+    const commentUser1Notifications = updatedCommentUser1.notifications;
     // Should be 1 notification in total
-    expect(cpommentUser1Notifications.length).toBe(beforeCountcommentUser1+1);
-    expect(cpommentUser1Notifications[beforeCountcommentUser1].text).toBe(commentOnCommentNotification(commentUser2));
+    expect(commentUser1Notifications.length).toBe(beforeCountCommentUser1+1);
+    expect(commentUser1Notifications[beforeCountCommentUser1].text).toBe(commentOnCommentNotification(commentUser2));
 
     const updatedCommentUser2 = await User.findOne({ _id: commentUser2._id });
     await updatedCommentUser2.populate({path: 'notifications', model: Notification});
-    const cpommentUser2Notifications = updatedCommentUser2.notifications;
+    const commentUser2Notifications = updatedCommentUser2.notifications;
     // Should be 0 notification
-    expect(cpommentUser2Notifications.length).toBe(beforeCountcommentUser2);
+    expect(commentUser2Notifications.length).toBe(beforeCountCommentUser2);
 
     const notifications = await Notification.find({ });
     expect(notifications.length).toBe(3);

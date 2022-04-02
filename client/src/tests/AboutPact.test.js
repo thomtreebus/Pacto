@@ -1,5 +1,5 @@
 /**
- * Tests for the about pact components which is used in the pact
+ * Tests for the "about pact" components which is used in the pact
  * page to display information of the pact currently being used.
  */
 

@@ -1,8 +1,16 @@
+/**
+ * A card to display a user and sent or accept requests
+ */
+
 import { Box, Grid, Card, CardHeader, Avatar, Typography } from "@mui/material"
 import { useHistory } from "react-router-dom";
 import { useAuth } from "../providers/AuthProvider";
 import FriendButtons from "./FriendButtons";
 
+/**
+ * A card to display information about a user
+ * @param {Object} user The user being displayed
+ */
 export default function UserCard({user}){
 
     const {user: currentUser} = useAuth();

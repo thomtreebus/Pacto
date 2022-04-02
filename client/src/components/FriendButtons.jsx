@@ -1,3 +1,8 @@
+/**
+ * Provides buttons to perform actions such as adding/removing friends
+ * or accepting/rejecting them
+ */
+
 import { Box } from "@mui/material"
 import { useState } from "react";
 import AddFriendIcon from '@mui/icons-material/PersonAdd';
@@ -7,7 +12,11 @@ import RejectIcon from '@mui/icons-material/Close';
 import { Tooltip, IconButton } from "@mui/material";
 import { useAuth } from "../providers/AuthProvider";
 
-export default function FriendButtons({user}){ // logged in user and user to be interacted with
+/**
+ * Buttons to accept/reject friend requests, or add/remove friends.
+ * @param {Object} user The user the profile belongs to
+ */
+export default function FriendButtons({user}){
   const {user : currentUser, silentUserRefresh} = useAuth();
   const [isFriend, setIsFriend] = useState(currentUser.friends && currentUser.friends.includes(user._id));
   const [hasSentRequest, setHasSentRequest] = useState(currentUser.sentRequests && currentUser.sentRequests.some(r => r.recipient === user._id));
@@ -107,7 +116,7 @@ export default function FriendButtons({user}){ // logged in user and user to be 
           <Tooltip title="Request Sent">
             <span>
               <IconButton  data-testid="sent-req-btn" disabled >
-                <AddFriendIcon color="diabled" fontSize="large" sx={{border: "0.2rem solid", borderRadius: "5px"}} />
+                <AddFriendIcon color="disabled" fontSize="large" sx={{border: "0.2rem solid", borderRadius: "5px"}} />
               </IconButton>
             </span>
           </Tooltip>   

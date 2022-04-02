@@ -1,5 +1,5 @@
 /**
- * Tests for the left side bar which contains mypacts and the navigation links.
+ * Tests for the left sidebar which contains mypacts and the navigation links.
  */
 
 import { screen } from "@testing-library/react";

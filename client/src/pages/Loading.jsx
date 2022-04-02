@@ -1,3 +1,7 @@
+/**
+ * Displays the loading page when a page is loading
+ */
+
 import { Box, CircularProgress } from "@mui/material";
 import React from "react";
 

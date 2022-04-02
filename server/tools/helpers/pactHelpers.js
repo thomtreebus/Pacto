@@ -8,7 +8,7 @@ const {createNotification} = require("./notificationHelpers");
 const chance = new Chance(1234);
 
 /**
- * Seed pacts for a given university. Pacts for various categories will created
+ * Seed pacts for a given university. Pacts for various categories will be created
  * as well as the PactoPact which is used to show some features as a demo
  * 
  * @param university - University to seed pacts in 
@@ -146,9 +146,9 @@ async function addUsersToPact(users, pact, isModerator = false) {
 			await addUserToPact(users[i], pact, isModerator);
 		}	
 	} else {
-		// Add the preprogrammed user 'Pac To' to the pact if no other users are added
-		const preprogrammedUser = await User.findOne({uniEmail : `pac.to@kcl.ac.uk`});
-		await addUserToPact(preprogrammedUser, pact, true);
+		// Add the pre-programmed user 'Pac To' to the pact if no other users are added
+		const preProgrammed = await User.findOne({uniEmail : `pac.to@kcl.ac.uk`});
+		await addUserToPact(preProgrammed, pact, true);
 	}
 }
 
@@ -157,7 +157,7 @@ async function addUsersToPact(users, pact, isModerator = false) {
  * 
  * @param user - user to add to the pact
  * @param pact - pact to add the user to
- * @param moderator - wether or not a user should be added as moderator
+ * @param moderator - whether a user should be added as moderator
  */
 async function addUserToPact(user, pact, moderator=false) {
 	pact.members.push(user);
@@ -200,7 +200,7 @@ async function addBannedUserToPact(user, pact) {
  * Return a given number random seeded users from the database
  * 
  * @param numberOfUsers - number of random users to return
- * @param includeDefault - include the defualt 'Pac To' user if True
+ * @param includeDefault - include the default 'Pac To' user if True
  * @returns a list of seeded users
  */
 async function getRandomUsers(numberOfUsers, includeDefault= true) {

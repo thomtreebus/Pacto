@@ -230,7 +230,7 @@ async function populateVotes(obj, pact) {
  * Populate a post or comment with an upvote
  * 
  * @param obj - post or comment to upvote 
- * @param member - user upvoting the post or comment
+ * @param member - user up-voting the post or comment
  */
 async function populateUpvote(obj, member) {
 	obj.upvoters.push(member);
@@ -242,7 +242,7 @@ async function populateUpvote(obj, member) {
  * Populate a post or comment with a downvote
  * 
  * @param obj - post or comment to downvote 
- * @param member - user downvoting the post or comment
+ * @param member - user down voting the post or comment
  */
 async function populateDownvote(obj, member) {
 	obj.downvoters.push(member);

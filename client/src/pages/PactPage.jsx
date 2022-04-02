@@ -1,3 +1,7 @@
+/**
+ * Displays the contents of a Pact
+ */
+
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import Loading from "./Loading";

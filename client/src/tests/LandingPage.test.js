@@ -36,13 +36,13 @@ describe("Landing page tests", () => {
 	});
 
 	describe("Check interactions between the elements", () => {
-		it("redircts to sign up the join button is clicked", async () => {
+		it("redirects to sign up the join button is clicked", async () => {
 			const joinButton = screen.getByText(/join/i);
 			fireEvent.click(joinButton);
 			await waitFor(() => expect(window.location.pathname).toBe("/signup"));
 		});
 
-		it("redircts to login the already have an account prompt is clicked", async () => {
+		it("redirects to login the already have an account prompt is clicked", async () => {
 			const prompt = screen.getByText(/sign in/i);
 			fireEvent.click(prompt);
 			await waitFor(() => expect(window.location.pathname).toBe("/login"));

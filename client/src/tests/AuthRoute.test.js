@@ -1,5 +1,5 @@
 /**
- * Tests for the constum route componnent auth route. 
+ * Tests for the auth route.
  */
 
 import { screen } from "@testing-library/react";
@@ -20,7 +20,7 @@ describe("AuthRoute Tests", () => {
 		expect(history.location.pathname).toBe("/feed");
 	});
 
-	it("renders the compontent when the user is not logged in", async () => {
+	it("renders the component when the user is not logged in", async () => {
 		server.use(
 			rest.get(`${process.env.REACT_APP_URL}/me`, (req, res, ctx) => {
 				return res(

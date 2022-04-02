@@ -268,7 +268,7 @@ describe("PactPage Tests", () => {
       });
     });
 
-    describe("Ui Interations", () => {
+    describe("Ui Interactions", () => {
       it("Switches to pact posts tab when click on pactPosts ", async () => {
         const button = await screen.findByText("Pact Posts")
         userEvent.click(button);

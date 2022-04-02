@@ -1,5 +1,13 @@
+/**
+ * A card to display some basic information about a pact
+ */
+
 import { Card, CardHeader, CardContent, Typography, Divider } from "@mui/material";
 
+/**
+ * A card displaying information about a pact
+ * @param {Object} pact Pact document
+ */
 export default function AboutPact({ pact }) {
   return (
     <Card sx={{ width: "100%" }} data-testid="about-pact">

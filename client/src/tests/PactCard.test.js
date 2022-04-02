@@ -115,7 +115,7 @@ describe("Pact Card Tests", () => {
 				await waitFor(() => expect(history.location.pathname).toBe("/pact/1"));
 			}
 
-			async function testSuccessfullJoinButtonClick(button) {
+			async function testSuccessfulJoinButtonClick(button) {
 				expect(button).not.toBeDisabled();
 				fireEvent.click(button);
 				expect(button).toBeDisabled();
@@ -126,17 +126,17 @@ describe("Pact Card Tests", () => {
 				await renderWithMock(<PactCard pact={testPacts[0]} />);
 				const button = screen.getByText(/Join/i);
 				expect(button).toBeInTheDocument();
-				await testSuccessfullJoinButtonClick(button);
+				await testSuccessfulJoinButtonClick(button);
 			});
 
-			it("should render the not joined button when joined is explicity false", async () => {
+			it("should render the not joined button when joined is explicit false", async () => {
 				await renderWithMock(<PactCard pact={testPacts[0]} joined={false} />);
 				const button = screen.getByText(/Join/i);
 				expect(button).toBeInTheDocument();
-				await testSuccessfullJoinButtonClick(button);
+				await testSuccessfulJoinButtonClick(button);
 			});
 
-			it("should render the joined button when joined is suplied", async () => {
+			it("should render the joined button when joined is supplied", async () => {
 				await renderWithMock(<PactCard pact={testPacts[0]} joined />);
 				const button = screen.getByText(/View/i);
 				expect(button).toBeInTheDocument();

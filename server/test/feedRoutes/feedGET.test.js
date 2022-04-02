@@ -51,7 +51,7 @@ describe("GET /feed", () =>{
 
     const post = await generateTestPost(user, pact);
     await post.save();
-    const post2 = await generateTestPost(user, pact, "randomtitle", "", "link", "http://google.com");
+    const post2 = await generateTestPost(user, pact, "randomTitle", "", "link", "http://google.com");
     await post2.save();
   });
 
@@ -90,7 +90,7 @@ describe("GET /feed", () =>{
     expect(response.body.errors[0].message).toBe(MESSAGES.AUTH.IS_NOT_LOGGED_IN);
   });
 
-  it("returns just url's for any link posts when a preview couldn't be fetched", async () => {
+  it("returns just urls for any link posts when a preview couldn't be fetched", async () => {
     server.use(
       rest.post(`${process.env.LINKPREVIEW_URL}`, (req, res, ctx) => {
         return res(

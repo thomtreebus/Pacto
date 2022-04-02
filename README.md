@@ -17,7 +17,7 @@ The members of the team are:
 
 ## Project structure
 
-The project consists of two applications. A React app that the client interacts with, and a Node.js server app that handles the backend/API. The two applications are located in seperate directories.
+The project consists of two applications. A React app that the client interacts with, and a Node.js server app that handles the backend/API. The two applications are located in separate directories.
 
 ## Deployed version of the application
 
@@ -35,7 +35,7 @@ The application has certain features that can only be viewed by users with a mod
 You can also register for an account as long as you have a valid UK university email address. 
 
 ## Video Demonstration
-A video walkthrough of the application that demonstrates all the major features is available [here](https://www.youtube.com/watch?v=-uVKdPKAN8w).
+A video walk through of the application that demonstrates all the major features is available [here](https://www.youtube.com/watch?v=-uVKdPKAN8w).
 
 ## Installation instructions
 
@@ -53,7 +53,7 @@ The packages used by the two applications are specified in `package.json`
 
 ### MUI (Material UI)
 
-The majority of components and elements used in the client application were created using [MUI](https://mui.com/), a React library that uses [Material Design](https://material.io/design). These components are labelled accordingly in the files where they are directly used. Additionaly, some code that is shown in the [MUI documentation](https://mui.com/getting-started/installation/) has been used, this is also labelled in the files. All React MUI components are located in the following directories:
+The majority of components and elements used in the client application were created using [MUI](https://mui.com/), a React library that uses [Material Design](https://material.io/design). These components are labelled accordingly in the files where they are directly used. Additionally, some code that is shown in the [MUI documentation](https://mui.com/getting-started/installation/) has been used, this is also labelled in the files. All React MUI components are located in the following directories:
 ```
 client/src/components
 client/src/pages

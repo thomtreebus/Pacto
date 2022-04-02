@@ -1,9 +1,16 @@
+/**
+ * A menu for the app bar
+ */
+
 import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";
 import Divider from "@mui/material/Divider";
 import { useHistory } from "react-router-dom";
 import { useAuth } from "../providers/AuthProvider";
 
+/**
+ * A menu to be shown on the app bar
+ */
 export default function ProfileMenu({
   profileMenuId, 
   profileAnchorEl, 

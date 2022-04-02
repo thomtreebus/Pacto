@@ -1,5 +1,13 @@
+/**
+ * The card which displays the link component of a post
+ */
+
 import {Card, CardActionArea, CardContent, CardMedia, Typography, Link } from "@mui/material";
 
+/**
+ * The card used to display link posts
+ * @param {Object} post The post being displayed
+ */
 export default function LinkPostCard({ post }) {
   return (
     <Card sx={{ marginBottom: "5px" }}>

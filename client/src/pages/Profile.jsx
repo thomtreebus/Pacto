@@ -1,3 +1,7 @@
+/**
+ * Capitalises the first letter of a string
+ */
+
 import React from 'react';
 import { useState } from "react";
 import { Image } from 'cloudinary-react';
@@ -21,11 +25,18 @@ import EditIcon from '@mui/icons-material/Edit';
 import {useAuth} from "../providers/AuthProvider";
 import FriendButtons from '../components/FriendButtons';
 
+/**
+ * Capitalises the first letter of a string
+ * @param {string} string 
+ */
 function capitalizeFirstLetter(string) {
-  const sanatisedString = string.trim();
-  return sanatisedString.charAt(0).toUpperCase() + sanatisedString.slice(1);
+  const sanitisedString = string.trim();
+  return sanitisedString.charAt(0).toUpperCase() + sanitisedString.slice(1);
 }
 
+/**
+ * Page that displays the profile of a user
+ */
 export default function Profile() {
   const { user: loggedInUser, silentUserRefresh } = useAuth();
   const [displayedUser, setDisplayedUser] = useState(null);

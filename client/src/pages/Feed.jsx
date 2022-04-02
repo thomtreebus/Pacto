@@ -1,3 +1,7 @@
+/**
+ * A feed page that displays all the posts of the Pacts the user is a part of
+ */
+
 import React, { useEffect, useState } from 'react'
 import ErrorPage from "./Error";
 import Loading from "./Loading";

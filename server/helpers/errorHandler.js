@@ -2,7 +2,7 @@ const { jsonError } = require("../helpers/responseHandlers");
 const { UNIQUE_MESSAGE } = require("../helpers/messages");
 
 /**
- * Capitilises the 1st letter of the given word
+ * Capitalizes the 1st letter of the given word
  * @param {String} word 
  * @returns The capitalised word
  */

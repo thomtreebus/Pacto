@@ -1,3 +1,7 @@
+/**
+ * A page to create a new Pact
+ */
+
 import React, { useState } from "react";
 import { Card, Typography } from "@mui/material";
 import Avatar from "@mui/material/Avatar";
@@ -9,6 +13,7 @@ import Icon from "../assets/pacto-logo.ico";
 import { useHistory } from "react-router-dom";
 import MenuItem from "@mui/material/MenuItem";
 import { useAuth } from "../providers/AuthProvider";
+
 
 export default function CreatePactPage() {
 	const [category, setCategory] = useState("");

@@ -1,5 +1,5 @@
 /**
- * A file to store the test pacts used by some of the tests.
+ * A file to store the test pacts used by some tests.
  */
 
 import users from "./testUsers";

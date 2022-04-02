@@ -181,7 +181,7 @@ describe("POST /signup", () => {
       );
     });
 
-    it("rejects when email not unqiue", async () => {
+    it("rejects when email not unique", async () => {
       await isInvalidCredentials(
         FIRST_NAME,
         LAST_NAME,

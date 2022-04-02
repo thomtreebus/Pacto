@@ -40,7 +40,7 @@ module.exports.getSearchResults = async (req, res) => {
 			name: { $regex: new RegExp(searchQuery, "i") },
 		});
 
-		// Find all users who's name match the query string
+		// Find all users whose name match the query string
 		const partialMatchingUsers = await User.aggregate([
 			{ $project: { name: { $concat: ["$firstName", " ", "$lastName"] } } },
 			{ $match: { name: new RegExp(searchQuery, "i") } },

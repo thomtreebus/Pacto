@@ -21,7 +21,7 @@ const NotificationSchema = mongoose.Schema({
     type: Date,
     default: Date.now
   },
-  // Wether or not the user has seen/read the notification
+  // Whether the user has seen/read the notification
   read: {
     type: Boolean,
     default: false

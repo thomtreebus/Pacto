@@ -35,7 +35,7 @@ const createToken = (id) => {
 module.exports.createToken = createToken;
 
 /**
- * POST /signup. Sends signup infrmation for server to verify and create an account.
+ * POST /signup. Sends signup information for server to verify and create an account.
  * On Success, response object contains logged-in user's information.
  * @param req contains information regarding the incoming request. (User signup form)
  * @param res contains information regarding the response. (User information)

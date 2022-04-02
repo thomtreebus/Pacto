@@ -1,3 +1,7 @@
+/**
+ * The left side bar component to be shown on the website
+ */
+
 import React, { useState } from "react";
 import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
@@ -6,6 +10,9 @@ import LeftSideBarContent from "./LeftSideBarContent";
 
 const drawerWidth = 240;
 
+/**
+ * A left sidebar (and also an appbar for some reason)
+ */
 export default function LeftSideBar() {
 	const [mobileOpen, setMobileOpen] = useState(false);
 

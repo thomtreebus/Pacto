@@ -1,3 +1,7 @@
+/**
+ * Displays a Not Found message when a 404 error is encountered
+ */
+
 import React from "react";
 import { Card, Toolbar, Typography } from "@mui/material";
 import logo from '../assets/foiled-again-foil.gif';

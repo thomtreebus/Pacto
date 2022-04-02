@@ -1,3 +1,7 @@
+/**
+ * Allows the user to sign up to the application with valid credentials
+ */
+
 import React, { useState } from "react";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";

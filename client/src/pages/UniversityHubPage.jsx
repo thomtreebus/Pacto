@@ -1,3 +1,7 @@
+/**
+ * Displays a page of all the Pacts that are in the application
+ */
+
 import { Box, Typography, Card, Fab } from "@mui/material";
 import Tab from "@mui/material/Tab";
 import TabContext from "@mui/lab/TabContext";

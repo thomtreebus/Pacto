@@ -56,7 +56,7 @@ describe("acceptFriendRequest /friends", () => {
     expect(updatedRecipient.receivedRequests.length).toBe(0);
   });
 
-  it("notifies requestor that the recipient has accepted their friend request", async () => {
+  it("notifies requester that the recipient has accepted their friend request", async () => {
     await Notification.deleteMany({});
     const recipientUser = await generateCustomUniTestUser("User", "ucl");
     recipientUser.active = true;
