@@ -35,6 +35,7 @@ module.exports.getFeed = async (req, res) => {
           model: Pact,
           select: [
             "name",
+            "moderators"
           ]
         }
       );
