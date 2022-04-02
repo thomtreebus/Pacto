@@ -45,7 +45,7 @@ module.exports.getSearchResults = async (req, res) => {
 			{ $match: { name: new RegExp(searchQuery, "i") } },
 		]);
 		const matchingUserIds = partialMatchingUsers.map((user) => user._id);
-		const users = await User.find({ _id: { $in: matchingUserIds }, select: ["firstName", "lastName", "image"] });
+		const users = await User.find({ _id: { $in: matchingUserIds }}, "firstName lastName image");
 
 		// Find all posts matching the query string (only posts of pacts a user is member of)
 		const user = req.user
