@@ -17,6 +17,12 @@
       - [**Environment Variables**](#environment-variables-1)
       - [**Start Application**](#start-application-1)
     - [5. Deployment](#5-deployment)
+      - [1. Go to nginx/conf and find default.conf.example](#1-go-to-nginxconf-and-find-defaultconfexample)
+      - [2. Setup environment variables.](#2-setup-environment-variables)
+      - [3. Build application.](#3-build-application)
+      - [4. Run the application](#4-run-the-application)
+      - [5. Run certbot for the https certificate](#5-run-certbot-for-the-https-certificate)
+      - [5. Restart docker containers to use certificate.](#5-restart-docker-containers-to-use-certificate)
   - [Development](#development)
     - [Test-Driven Development](#test-driven-development)
     - [SOLID Principles](#solid-principles)
@@ -168,7 +174,6 @@ The server application relies on a few environment variables. Create a file call
     REACT_APP_CLOUDINARY_SECRET= *insert your Cloudinary secret*
     REACT_APP_CLOUDINARY_URL= *insert your Cloudinary URL*
     REACT_APP_CLOUDINARY_UPLOAD_PRESET= *insert your Cloudinary upload preset*
-
     ```
 
 #### **Start Application**
