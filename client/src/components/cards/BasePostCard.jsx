@@ -1,3 +1,7 @@
+/**
+ * The base (common) component that all posts share.
+ */
+
 import { Box, Card, CardContent } from "@mui/material";
 import { Typography } from "@mui/material";
 import { useHistory } from "react-router-dom";

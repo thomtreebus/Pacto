@@ -1,3 +1,8 @@
+/**
+ * A route designed to permit only unauthorized users to
+ * visit the specified url
+ */
+
 import React from "react";
 import { Route, Redirect } from "react-router-dom";
 import { useAuth } from "../providers/AuthProvider";

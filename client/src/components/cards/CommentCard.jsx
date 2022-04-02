@@ -1,3 +1,7 @@
+/**
+ * The card used to display comments
+ */
+
 import { Box, Card, CardContent, Grid } from "@mui/material";
 import { useState } from "react";
 import Accordion from '@mui/material/Accordion';

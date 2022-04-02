@@ -1,3 +1,7 @@
+/**
+ * A list component to render the given users
+ */
+
 import React from "react";
 import { Typography } from "@mui/material";
 import UserCard from "./UserCard";

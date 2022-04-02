@@ -1,3 +1,8 @@
+/**
+ * Provides buttons to perform actions such as adding/removing friends
+ * or accepting/rejecting them
+ */
+
 import { Box } from "@mui/material"
 import { useState } from "react";
 import AddFriendIcon from '@mui/icons-material/PersonAdd';

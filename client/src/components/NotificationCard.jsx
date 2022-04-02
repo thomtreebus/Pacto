@@ -1,3 +1,7 @@
+/**
+ * The card which displays a singular notification
+ */
+
 import { Card, Typography } from "@mui/material";
 import { useState } from "react";
 import { relativeTime } from "../helpers/timeHandler";

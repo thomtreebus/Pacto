@@ -1,3 +1,7 @@
+/**
+ * A list of pacts for which the user is not a part of
+ */
+
 import React, { useEffect } from "react";
 import List from "@mui/material/List";
 import { useQuery } from "react-query";

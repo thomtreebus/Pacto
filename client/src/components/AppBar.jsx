@@ -1,3 +1,7 @@
+/**
+ * An appbar for the website, containing common useful features
+ */
+
 import React, { useEffect, useState } from "react";
 import { styled, alpha } from "@mui/material/styles";
 import AppBar from "@mui/material/AppBar";

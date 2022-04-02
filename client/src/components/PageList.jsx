@@ -1,3 +1,7 @@
+/**
+ * A component to show buttons to different pages in the app on the sidebar
+ */
+
 import React from "react";
 import ListItem from "@mui/material/ListItem";
 import ListItemIcon from "@mui/material/ListItemIcon";

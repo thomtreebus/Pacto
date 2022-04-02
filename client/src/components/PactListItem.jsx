@@ -1,3 +1,7 @@
+/**
+ * A item component for a pact to be put on the sidebar
+ */
+
 import React, { useState } from "react";
 import ListItem from "@mui/material/ListItem";
 import ListItemIcon from "@mui/material/ListItemIcon";

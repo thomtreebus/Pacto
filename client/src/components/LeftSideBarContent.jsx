@@ -1,3 +1,7 @@
+/**
+ * The components which show up in the left side bar
+ */
+
 import React from "react";
 import Box from "@mui/material/Box";
 import Divider from "@mui/material/Divider";

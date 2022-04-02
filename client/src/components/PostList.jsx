@@ -1,5 +1,9 @@
 import { Card, Grid, IconButton, InputBase, List, ListItem } from "@mui/material"
 import PostCard from "./cards/PostCard"
+/**
+ * A component to render a list of posts
+ */
+
 import SearchIcon from "@mui/icons-material/Search";
 import CloseIcon from "@mui/icons-material/Close";
 import { useState } from "react";

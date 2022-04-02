@@ -1,3 +1,7 @@
+/**
+ * An abstraction to create snackbar errors on any page
+ */
+
 import React from "react";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";

@@ -1,3 +1,7 @@
+/**
+ * A card to display some basic information about a pact
+ */
+
 import { Card, CardHeader, CardContent, Typography, Divider } from "@mui/material";
 
 /**

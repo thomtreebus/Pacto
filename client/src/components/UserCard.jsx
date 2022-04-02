@@ -1,3 +1,7 @@
+/**
+ * A card to display a user and sent or accept requests
+ */
+
 import { Box, Grid, Card, CardHeader, Avatar, Typography } from "@mui/material"
 import { useHistory } from "react-router-dom";
 import { useAuth } from "../providers/AuthProvider";

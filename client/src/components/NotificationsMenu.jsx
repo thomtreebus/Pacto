@@ -1,3 +1,7 @@
+/**
+ * The component which lists the unread notifications a user has
+ */
+
 import Menu from "@mui/material/Menu";
 import NotificationCard from "./NotificationCard";
 import { Typography } from "@mui/material";

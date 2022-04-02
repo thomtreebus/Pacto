@@ -1,3 +1,7 @@
+/**
+ * The card which displays the text component of a post
+ */
+
 import { Box } from "@mui/material"
 import CollapsingText from "../CollapsingText"
 

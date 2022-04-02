@@ -1,3 +1,7 @@
+/**
+ * The component which shows the list of pacts the user is in
+ */
+
 import React, { useEffect } from "react";
 import List from "@mui/material/List";
 import { useAuth } from "../providers/AuthProvider";

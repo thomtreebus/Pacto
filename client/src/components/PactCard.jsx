@@ -1,3 +1,7 @@
+/**
+ * The PactCard which is shown on the university hub page
+ */
+
 import React, { useState } from "react";
 import { Grid, Card, CardHeader, Button, Avatar, Box } from "@mui/material";
 import { CardContent, Typography, CardActions } from "@mui/material";

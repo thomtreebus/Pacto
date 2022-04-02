@@ -1,3 +1,7 @@
+/**
+ * A menu for the app bar
+ */
+
 import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";
 import Divider from "@mui/material/Divider";

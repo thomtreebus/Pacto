@@ -1,3 +1,7 @@
+/**
+ * An abstraction component to provide the ability to up/downvote a post/comment
+ */
+
 import { Box, IconButton } from "@mui/material";
 import { useState } from "react";
 import { Typography } from "@mui/material";

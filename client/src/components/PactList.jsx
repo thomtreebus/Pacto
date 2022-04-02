@@ -1,3 +1,7 @@
+/**
+ * A component to render a list of pacts
+ */
+
 import React from "react";
 import { Typography } from "@mui/material";
 import PactListItem from "./PactListItem";

@@ -1,3 +1,7 @@
+/**
+ * A box to permit replying to a post/comment
+ */
+
 import * as React from "react";
 import { Box, TextField, Grid } from "@mui/material";
 import { useState } from "react";

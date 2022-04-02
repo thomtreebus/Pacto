@@ -1,3 +1,7 @@
+/**
+ * A chip to display the category of a pact
+ */
+
 import React from "react";
 import PeopleIcon from "@mui/icons-material/People";
 import CommentIcon from "@mui/icons-material/Comment";

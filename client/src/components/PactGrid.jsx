@@ -1,3 +1,7 @@
+/**
+ * A grid which contains pact cards of all pacts in the uni
+ */
+
 import React from "react";
 import PactCard from "../components/PactCard";
 import { Grid, Typography } from "@mui/material";

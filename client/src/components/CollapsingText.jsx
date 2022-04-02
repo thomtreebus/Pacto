@@ -1,3 +1,8 @@
+/**
+ * A component used where you might want to collapse a text
+ * section, perhaps if it was too long
+ */
+
 import { ArrowDropDown, ArrowDropUp } from "@mui/icons-material";
 import { Typography, Collapse, Grid, IconButton } from "@mui/material";
 import { useState, useRef, useLayoutEffect } from "react";

@@ -1,3 +1,8 @@
+/**
+ * The abstract component which chooses the correct components
+ * to use to render a post based on its type
+ */
+
 import BasePostCard from "./BasePostCard";
 import ImagePostCard from "./ImagePostCard";
 import LinkPostCard from "./LinkPostCard";

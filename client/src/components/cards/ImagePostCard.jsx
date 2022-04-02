@@ -1,3 +1,7 @@
+/**
+ * The card which displays the image component of a post
+ */
+
 import { Box } from "@mui/material"
 
 /**

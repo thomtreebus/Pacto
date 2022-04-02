@@ -1,3 +1,7 @@
+/**
+ * The card which displays the link component of a post
+ */
+
 import {Card, CardActionArea, CardContent, CardMedia, Typography, Link } from "@mui/material";
 
 /**

@@ -1,3 +1,7 @@
+/**
+ * A card to provide the ability to create posts of three types
+ */
+
 import React, { useState } from 'react';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
