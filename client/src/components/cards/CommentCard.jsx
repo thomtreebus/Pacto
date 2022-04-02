@@ -16,6 +16,12 @@ import CollapsingText from "../CollapsingText";
 
 export const DELETED_COMMENT_MESSAGE = "This comment has been deleted.";
 
+/**
+ * The card used to display comments
+ * @param {Object} comment The comment being displayed
+ * @param {Object} post The post the comment belongs to
+ * @param {function} postUpdaterFunc Call this when the post needs to be updated
+ */
 export default function CommentCard({ comment, post, postUpdaterFunc }) {
   const { user } = useAuth();
   const [showReplyBox, setShowReplyBox] = useState(false);

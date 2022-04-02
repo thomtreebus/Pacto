@@ -4,7 +4,12 @@ import { useState } from "react";
 import { IconButton } from "@mui/material";
 import ReplyIcon from "@mui/icons-material/Reply";
 
-// Allows the user to add a comment to some post.
+/**
+ * A box that allows a user to make a comment
+ * @param {Object} post The post the comment is being made on
+ * @param {function} successHandler Called on successful comment post
+ * @param {boolean} repliedToComment A boolean which means if the box is meant to reply to a comment or a post
+ */
 export default function CommentBox({
 	post,
 	successHandler = () => {},

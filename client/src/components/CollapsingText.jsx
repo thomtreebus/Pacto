@@ -2,6 +2,12 @@ import { ArrowDropDown, ArrowDropUp } from "@mui/icons-material";
 import { Typography, Collapse, Grid, IconButton } from "@mui/material";
 import { useState, useRef, useLayoutEffect } from "react";
 
+/**
+ * A component that can be used to collapse text
+ * @param {string} text
+ * @param {string} variant
+ * @param {string} color
+ */
 export default function CollapsingText({ text, variant="body1", color }) {
   const [collapse, setCollapse] = useState(false);
   const textRef = useRef();
