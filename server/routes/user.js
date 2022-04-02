@@ -3,9 +3,9 @@ const router = express.Router();
 const { updateProfile, getProfile, getUniversityUsers } = require('../controllers/user');
 const { checkAuthenticated } = require("../middleware/authMiddleware");
 
-router.put('/:id', checkAuthenticated, updateProfile);
-router.get("/:id", checkAuthenticated, getProfile);
+router.put('/users/:id', checkAuthenticated, updateProfile);
+router.get("/users/:id", checkAuthenticated, getProfile);
 
-router.get("/", checkAuthenticated, getUniversityUsers);
+router.get("/users/", checkAuthenticated, getUniversityUsers);
 
 module.exports = router;
