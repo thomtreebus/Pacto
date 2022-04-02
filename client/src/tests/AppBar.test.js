@@ -228,8 +228,8 @@ describe("App Bar Tests", () => {
 
     it("allows the user to search using the search bar if there is a value", async () => {
       const searchValue = "e{enter}";
-      const searchElementConatiner = await screen.findByTestId("appbar-search");
-      const searchElement = searchElementConatiner.querySelector("input");
+      const searchElementContainer = await screen.findByTestId("appbar-search");
+      const searchElement = searchElementContainer.querySelector("input");
       userEvent.type(searchElement, searchValue);
       expect(history.location.pathname).toBe("/search/e")
     })

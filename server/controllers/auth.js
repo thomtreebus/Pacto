@@ -209,5 +209,7 @@ module.exports.verify = async (req, res) => {
  * @returns {Promise<void>} Javascript async function.
  */
 module.exports.getMe = async (req, res) => {
-	res.status(200).json(jsonResponse(req.user, []));
+	// stop browser from caching the
+	res.set("Cache-Control", "no-store");
+	res.status(200).json(jsonResponse(req.user, []))
 };

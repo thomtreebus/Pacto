@@ -19,6 +19,7 @@ export default function AuthProvider({ children }) {
 		try {
 			const res = await fetch(`${process.env.REACT_APP_URL}/me`, {
 				credentials: "include",
+				cache: "no-store",
 			});
 			if (!res.ok) {
 				throw Error(res.errors);
@@ -32,13 +33,13 @@ export default function AuthProvider({ children }) {
 			setIsAuthenticated(false);
 			setUser(null);
 		}
-	}, [])
+	}, []);
 
 	const fetchUser = useCallback(async () => {
 		setIsLoading(true);
 		await silentUserRefresh();
 		setIsLoading(false);
-	}, [silentUserRefresh])
+	}, [silentUserRefresh]);
 
 	useEffect(() => {
 		fetchUser();

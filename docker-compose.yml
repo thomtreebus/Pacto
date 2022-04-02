@@ -1,32 +1,44 @@
 version: "3"
 services:
-
-  client:
+  # Client web-server based on https://mindsers.blog/post/https-using-nginx-certbot-docker/
+  client-webserver:
+    image: nginx:stable
     build:
       context: ./client
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.prod
     ports:
-      - 3000:3000
+      - "80:80"
+      - "443:443"
     networks:
       - pacto
-    depends_on:
-      - server
     links:
       - server
-    command: npm start
+    volumes:
+      - ./nginx/conf/:/etc/nginx/conf.d/:ro
+      - ./certbot/www:/var/www/certbot/:ro
+      - ./certbot/conf/:/etc/nginx/ssl/:ro
+    depends_on:
+      - server
     stdin_open: true
-    tty: true
+
+  certbot-https-certificate:
+    image: certbot/certbot:latest
+    volumes:
+      - ./certbot/www/:/var/www/certbot/:rw
+      - ./certbot/conf/:/etc/letsencrypt/:rw
 
   server:
     build:
       context: ./server
       dockerfile: Dockerfile
     ports:
-      - 8000:8000
+      - "8000:8000"
     networks:
       - pacto
     depends_on:
       - mongo
+    volumes:
+      - ./certbot/conf/:/etc/nginx/ssl/:ro
     links:
       - mongo
     command: /usr/app/node_modules/.bin/nodemon -L src/server.js
