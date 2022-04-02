@@ -115,7 +115,6 @@ module.exports.getPact = async (req, res) => {
 module.exports.updatePact = async(req, res) => {
 	let status = undefined;
 	const jsonErrors = [];
-	let resMessage = null;
 	try {
 		const pact = req.pact
 		const moderators = pact.moderators;
@@ -144,7 +143,7 @@ module.exports.updatePact = async(req, res) => {
 		}
 	}
 	finally {
-		res.status(status).json(jsonResponse(resMessage, jsonErrors));
+		res.status(status).json(jsonResponse(null, jsonErrors));
 	}
 }
 
