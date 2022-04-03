@@ -10,7 +10,7 @@ import { Card, CardHeader, CardContent, Typography, Divider } from "@mui/materia
  */
 export default function AboutPact({ pact }) {
   return (
-    <Card sx={{ width: "100%" }} data-testid="about-pact">
+    <Card sx={{ width: "100%", wordBreak: "break-word"  }} data-testid="about-pact">
       <CardHeader title="About Pact" subheader={pact.name} sx={{ backgroundColor: "darkgray" }} />
       <CardContent>
         <Typography>
