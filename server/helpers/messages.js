@@ -69,14 +69,14 @@ module.exports.PACT_MESSAGES = {
 		MAX_LENGTH_EXCEEDED: "Description cannot exceed 255 characters",
 	},
 	UNIVERSITY: {
-		BLANK: "university cannot be blank",
+		BLANK: "University cannot be blank",
 	},
 	CATEGORY: {
 		INVALID_CHOICE:
 			"The category must be either society, course, module or other",
 		BLANK: "Category is a required field",
 	},
-	NOT_FOUND: "pact not found",
+	NOT_FOUND: "Pact not found",
 	SUCCESSFUL_JOIN: "Successfully Joined the pact",
 	NOT_AUTHORISED: "User is not a member of this pact",
 	NOT_MODERATOR: "User is not a moderator of this pact",
@@ -105,13 +105,13 @@ module.exports.PACT_MESSAGES = {
  * Error messages about posts.
  */
 module.exports.POST_MESSAGES = {
-	NOT_FOUND: "post not found",
+	NOT_FOUND: "Post not found",
 	NOT_AUTHORISED: {
 		NOT_AUTHOR_NOT_MOD: "User is neither a mod nor the author of the post",
 		NOT_AUTHOR: "User is not the author of the post",
 	},
 	NO_AUTHOR: "Author is a required field",
-  NO_PACT: "post is a required field",
+  NO_PACT: "Post is a required field",
   TITLE: {
 		BLANK: "Title is a required field",
 		MAX_LENGTH_EXCEEDED: "Title cannot exceed 200 characters",
@@ -183,7 +183,7 @@ module.exports.COMMENT_MESSAGES = {
  * Error messages about users.
  */
 module.exports.USER_MESSAGES = {
-	NOT_AUTHENTICATED: "post not found",
+	NOT_AUTHENTICATED: "Post not found",
 	DOES_NOT_EXIST: "User does not exist",
 	UNIVERSITY_NOT_SET: "User has no university",
 	UPDATE_OTHER_PROFILE_UNAUTHORISED: "Can not update someone else's profile",
