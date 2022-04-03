@@ -3,7 +3,7 @@
  */
 
 import {screen, fireEvent, waitFor} from "@testing-library/react";
-import PostPage from "../pages/PostPage";
+import Post from "../pages/university/pact/post/Post";
 import "@testing-library/jest-dom";
 import { rest } from "msw";
 import { Route } from "react-router-dom";
@@ -31,7 +31,7 @@ const MockPostPage = () => {
   return (
   <>
     <Route exact path="/pact/:pactID/post/:postID">
-      <PostPage/>
+      <Post/>
     </Route>
     <Route exact path="/not-found">
       Not Found

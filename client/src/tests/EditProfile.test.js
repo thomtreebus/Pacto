@@ -6,7 +6,7 @@
 import { screen, fireEvent, waitFor } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import { rest } from "msw";
-import EditProfile from "../pages/EditProfile";
+import EditProfile from "../pages/users/profile/EditProfile";
 import userEvent from "@testing-library/user-event";
 import {act} from "react-dom/test-utils";
 import { useMockServer } from "./utils/useMockServer";

@@ -9,7 +9,7 @@ import React from "react";
  * A page that displays the error message if an error is encountered
  * @param {string} error 
  */
-export default function Error({ error }) {
+export default function ErrorComponent({ error }) {
 	return (
 		<Box
 			sx={{

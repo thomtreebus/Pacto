@@ -3,7 +3,7 @@
  */
 
 import { fireEvent, screen, waitFor } from "@testing-library/react";
-import PactPage from "../pages/PactPage";
+import Pact from "../pages/university/pact/Pact";
 import "@testing-library/jest-dom";
 import { rest } from "msw";
 import { Route } from "react-router-dom";
@@ -51,7 +51,7 @@ const MockPactPage = () => {
   return (
     <>
       <Route exact path="/pact/:pactID">
-        <PactPage />
+        <Pact />
       </Route>
       <Route exact path="/pact/:pactID/edit-pact">
         Redirected to edit-pact

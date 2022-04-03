@@ -6,7 +6,7 @@ import { Card, CardHeader, CardContent, Typography, Divider } from "@mui/materia
 
 /**
  * A card displaying information about a pact
- * @param {Object} pact Pact document
+ * @param {Object} pact pact document
  */
 export default function AboutPact({ pact }) {
   return (

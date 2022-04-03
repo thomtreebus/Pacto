@@ -4,17 +4,22 @@
 
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import Loading from "./Loading";
+import Loading from "../../../components/Loading";
 import { useHistory } from "react-router-dom";
-import { useAuth } from "../providers/AuthProvider";
+import { useAuth } from "../../../providers/AuthProvider";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
-import PactPageFeedTab from "../components/PactPage/PactPageFeedTab";
-import { a11yProps, TabPanel } from "../components/TabComponents";
-import PactMembersTab from "../components/PactPage/PactMembersTab";
+import PactPageFeedTab from "../../../components/PactPage/PactPageFeedTab";
+import { a11yProps, TabPanel } from "../../../components/TabComponents";
+import PactMembersTab from "../../../components/PactPage/PactMembersTab";
 import { Box } from "@mui/material";
 
-export default function PactPage() {
+/**
+ * Displays a tabbed component showcasing the pact
+ * posts and pact members.
+ * @returns {JSX.Element}
+ */
+export default function Pact() {
 	const { pactID } = useParams();
 	const [pact, setPact] = useState(null);
 	const [isLoading, setIsLoading] = useState(true);

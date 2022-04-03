@@ -6,7 +6,7 @@ import { screen , waitFor } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import { rest } from "msw";
 import {Route} from "react-router-dom";
-import Profile from "../pages/Profile";
+import Profile from "../pages/users/profile/Profile";
 import userEvent from "@testing-library/user-event";
 import pacts from "./utils/testPacts";
 import { useMockServer } from "./utils/useMockServer";

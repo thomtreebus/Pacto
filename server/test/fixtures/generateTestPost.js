@@ -33,6 +33,6 @@ module.exports.getTestPostId = () => {
   if (myPost) {
     return myPost._id;
   } else {
-    throw Error("Post not generated")
+    throw Error("post not generated")
   }
 }

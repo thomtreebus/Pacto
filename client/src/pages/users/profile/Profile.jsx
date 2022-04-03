@@ -1,5 +1,5 @@
 /**
- * Capitalises the first letter of a string
+ * Page displays the profile of the user.
  */
 
 import React from 'react';
@@ -8,7 +8,7 @@ import { Image } from 'cloudinary-react';
 import { useHistory } from "react-router-dom";
 import Grid from '@mui/material/Grid';
 import {useParams } from "react-router-dom";
-import Loading from "./Loading";
+import Loading from "../../../components/Loading";
 import { useEffect } from "react";
 import Typography from "@mui/material/Typography";
 import Stack from "@mui/material/Stack";
@@ -22,8 +22,8 @@ import WhatsAppIcon from '@mui/icons-material/WhatsApp';
 import GroupIcon from '@mui/icons-material/Group';
 import ForumIcon from '@mui/icons-material/Forum';
 import EditIcon from '@mui/icons-material/Edit';
-import {useAuth} from "../providers/AuthProvider";
-import FriendButtons from '../components/FriendButtons';
+import {useAuth} from "../../../providers/AuthProvider";
+import FriendButtons from '../../../components/FriendButtons';
 
 /**
  * Capitalises the first letter of a string
@@ -35,7 +35,8 @@ function capitalizeFirstLetter(string) {
 }
 
 /**
- * Page that displays the profile of a user
+ * The profile page displays the users details.
+ * @returns {JSX.Element}
  */
 export default function Profile() {
   const { user: loggedInUser, silentUserRefresh } = useAuth();

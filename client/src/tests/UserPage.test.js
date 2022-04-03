@@ -2,7 +2,7 @@
  * Tests for the user page.
  */
 
-import UserPage from "../pages/UserPage";
+import Users from "../pages/users/Users";
 import { screen, fireEvent, cleanup } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import { rest } from "msw";
@@ -17,7 +17,7 @@ const MockUserPage = () => {
     return ( 
         <>
             <Route exact path="/users">
-                <UserPage />
+                <Users />
             </Route>
             <Route exact path="/user/:id">
                 <h1>Redirected to user-profile</h1>

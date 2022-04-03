@@ -2,7 +2,7 @@ import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import { useEffect, useState } from "react";
 import { a11yProps, TabPanel } from "../TabComponents";
-import Loading from "../../pages/Loading";
+import Loading from "../Loading";
 import { useAuth } from "../../providers/AuthProvider";
 import UserListModeration from "../UserListModeration";
 import { Box } from "@mui/material";

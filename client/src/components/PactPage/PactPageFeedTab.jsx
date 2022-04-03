@@ -13,7 +13,7 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import {useTheme} from "@mui/material/styles";
 import { useHistory } from "react-router-dom";
 import {useAuth} from "../../providers/AuthProvider";
-import Loading from "../../pages/Loading";
+import Loading from "../Loading";
 import LeaveIcon from "@mui/icons-material/ExitToApp";
 import DeleteIcon from "@mui/icons-material/Delete";
 import ErrorMessage from "../ErrorMessage";

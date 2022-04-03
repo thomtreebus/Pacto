@@ -3,7 +3,7 @@
  */
 
 import { screen } from "@testing-library/react";
-import Feed from "../pages/Feed";
+import Feed from "../pages/feed/Feed";
 import "@testing-library/jest-dom";
 import { rest } from "msw";
 import { Route } from "react-router-dom";

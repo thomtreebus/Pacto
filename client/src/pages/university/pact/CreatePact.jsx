@@ -9,13 +9,17 @@ import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
-import Icon from "../assets/pacto-logo.ico";
+import Icon from "../../../assets/pacto-logo.ico";
 import { useHistory } from "react-router-dom";
 import MenuItem from "@mui/material/MenuItem";
-import { useAuth } from "../providers/AuthProvider";
+import { useAuth } from "../../../providers/AuthProvider";
 
-
-export default function CreatePactPage() {
+/**
+ * Page for creating  a pact taking in a
+ * pact name and description.
+ * @returns {JSX.Element}
+ */
+export default function CreatePact() {
 	const [category, setCategory] = useState("");
 	const [isButtonDisabled, setIsButtonDisabled] = useState(false);
 	const history = useHistory();

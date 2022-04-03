@@ -21,7 +21,7 @@ import PactoIcon from "../assets/pacto-logo.png";
 import MenuIcon from "@mui/icons-material/Menu";
 import NotificationsMenu from "./NotificationsMenu";
 import ProfileMenu from "./ProfileMenu";
-import Loading from "../pages/Loading";
+import Loading from "./Loading";
 
 const Search = styled("div")(({ theme }) => ({
 	position: "relative",

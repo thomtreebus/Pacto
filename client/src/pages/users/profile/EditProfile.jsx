@@ -21,14 +21,19 @@ import InstagramIcon from "@mui/icons-material/Instagram";
 import LinkedInIcon from "@mui/icons-material/LinkedIn";
 import WhatsAppIcon from "@mui/icons-material/WhatsApp";
 import { Divider } from "@mui/material";
-import Loading from "./Loading";
-import { useAuth } from "../providers/AuthProvider";
-import ErrorMessage from "../components/ErrorMessage";
+import Loading from "../../../components/Loading";
+import { useAuth } from "../../../providers/AuthProvider";
+import ErrorMessage from "../../../components/ErrorMessage";
 
 const Input = styled("input")({
 	display: "none",
 });
 
+/**
+ * Gives the user the ability to edit details displayed
+ * on their profile excluding their name.
+ * @returns {JSX.Element}
+ */
 export default function EditProfile() {
 	const { user, silentUserRefresh } = useAuth();
 

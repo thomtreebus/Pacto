@@ -2,7 +2,7 @@
  * Tests for the university hub page.
  */
 
-import UniversityHubPage from "../pages/UniversityHubPage";
+import UniversityHub from "../pages/university/UniversityHub";
 import { screen, fireEvent, waitFor } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import { rest } from "msw";
@@ -28,7 +28,7 @@ describe("University Hub Tests", () => {
 	});
 
 	beforeEach(async () => {
-		history = await mockRender(<UniversityHubPage/>);
+		history = await mockRender(<UniversityHub/>);
 	});
 
 	describe("Check elements are rendered", () => {

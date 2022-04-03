@@ -3,7 +3,7 @@
  */
 
 import { screen, fireEvent, waitFor } from "@testing-library/react";
-import EditPact from "../pages/EditPact";
+import EditPact from "../pages/university/pact/EditPact";
 import "@testing-library/jest-dom";
 import { rest } from "msw";
 import {Route} from "react-router-dom";

@@ -8,7 +8,11 @@ import logo from '../assets/foiled-again-foil.gif';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 
-export default function Notfound() {
+/**
+ * A page shown when the app can't find the desired page.
+ * @returns {JSX.Element}
+ */
+export default function NotFound() {
 	return (
 		<>
 			<Toolbar/>

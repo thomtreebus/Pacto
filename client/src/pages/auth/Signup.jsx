@@ -11,10 +11,16 @@ import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
-import Icon from "../assets/pacto-logo.ico";
+import Icon from "../../assets/pacto-logo.ico";
 import { AlertTitle, Alert } from "@mui/material";
 
-export default function SignupPage() {
+/**
+ * Signup page takes user's name and email along with
+ * their password to create an account and send a
+ * verification email.
+ * @returns {JSX.Element}
+ */
+export default function Signup() {
 	const [passwordConfirmError, setPasswordConfirmError] = useState("");
 	const [apiFirstNameError, setApiFirstNameError] = useState("");
 	const [apiLastNameError, setApiLastNameError] = useState("");

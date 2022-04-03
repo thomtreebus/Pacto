@@ -1,6 +1,6 @@
 import React, { useContext, useState, useEffect, useCallback } from "react";
-import Loading from "../pages/Loading";
-import ErrorPage from "../pages/Error";
+import Loading from "../components/Loading";
+import ErrorComponent from "../components/ErrorComponent";
 
 const AuthContext = React.createContext();
 
@@ -56,7 +56,7 @@ export default function AuthProvider({ children }) {
 	}
 
 	if (error) {
-		return <ErrorPage error={error} />;
+		return <ErrorComponent error={error} />;
 	}
 
 	return (

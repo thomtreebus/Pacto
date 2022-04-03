@@ -11,12 +11,17 @@ import { Link } from "react-router-dom";
 import Paper from "@mui/material/Paper";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
-import Icon from "../assets/pacto-logo.ico";
+import Icon from "../../assets/pacto-logo.ico";
 import Typography from "@mui/material/Typography";
-import { useAuth } from "../providers/AuthProvider";
-import ErrorMessage from "../components/ErrorMessage";
+import { useAuth } from "../../providers/AuthProvider";
+import ErrorMessage from "../../components/ErrorMessage";
 
-export default function LoginPage() {
+/**
+ * Login page displays the email and password for
+ * the user to enter to authenticate with the website.
+ * @returns {JSX.Element}
+ */
+export default function Login() {
 	const { silentUserRefresh } = useAuth();
 	const [snackbarOpen, setSnackbarOpen] = useState(false);
 	const [snackbarMessage, setSnackbarMessage] = useState(null);

@@ -7,19 +7,19 @@ import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import Box from "@mui/material/Box";
-import Icon from "../assets/pacto-logo.ico";
+import Icon from "../../../assets/pacto-logo.ico";
 import { useHistory } from "react-router-dom";
 import { useState } from "react";
 import { useParams } from "react-router-dom";
 import { useEffect } from "react";
 import { Image } from "cloudinary-react";
 import Axios from "axios";
-import ErrorMessage from "../components/ErrorMessage";
+import ErrorMessage from "../../../components/ErrorMessage";
 import { LoadingButton } from "@mui/lab";
 import { styled } from "@mui/material/styles";
-import Loading from "./Loading";
+import Loading from "../../../components/Loading";
 import UploadIcon from '@mui/icons-material/Upload';
-import { useAuth } from "../providers/AuthProvider";
+import { useAuth } from "../../../providers/AuthProvider";
 import MenuItem from "@mui/material/MenuItem";
 
 
@@ -27,6 +27,12 @@ const Input = styled("input")({
   display: "none",
 });
 
+/**
+ * A page giving the user the ability to edit the
+ * pact name and description, along with the ability
+ * to edit the pact image.
+ * @returns {JSX.Element}
+ */
 export default function EditPact() {
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   const { user, silentUserRefresh } = useAuth();

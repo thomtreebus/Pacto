@@ -2,7 +2,7 @@
  * Tests for the landing page.
  */
 
-import LandingPage from "../pages/LandingPage";
+import Landing from "../pages/Landing";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import { BrowserRouter } from "react-router-dom";
@@ -11,7 +11,7 @@ describe("Landing page tests", () => {
 	beforeEach(() => {
 		render(
 			<BrowserRouter>
-				<LandingPage />
+				<Landing />
 			</BrowserRouter>
 		);
 	});

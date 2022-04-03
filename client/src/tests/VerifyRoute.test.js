@@ -8,7 +8,7 @@ import { rest } from "msw";
 
 import { useMockServer } from "./utils/useMockServer";
 import mockRender from "./utils/mockRender";
-import Verify from "../pages/Verify";
+import Verify from "../pages/auth/Verify";
 
 describe("Edit Profile Page Tests", () => {
 	let history;

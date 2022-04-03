@@ -8,7 +8,12 @@ import { useHistory } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { Box } from "@mui/material";
 
-export default function LandingPage() {
+/**
+ * Landing page is what a user sees when
+ * a user is at the root page
+ * @returns {JSX.Element}
+ */
+export default function Landing() {
 	const history = useHistory();
 
 	function handleClick() {

@@ -4,7 +4,7 @@
 
 import { screen, fireEvent } from "@testing-library/react";
 import { waitForElementToBeRemoved } from "@testing-library/react";
-import Login from "../pages/LoginPage";
+import Login from "../pages/auth/Login";
 import "@testing-library/jest-dom";
 import { rest } from "msw";
 import AuthRoute from "../components/AuthRoute";

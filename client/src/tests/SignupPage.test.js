@@ -2,7 +2,7 @@
  * Tests for sign up page.
  */
 
-import Signup from "../pages/SignupPage";
+import Signup from "../pages/auth/Signup";
 import { screen, fireEvent, waitFor } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import { rest } from "msw";

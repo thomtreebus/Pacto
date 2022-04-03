@@ -1,23 +1,23 @@
-import Login from "./pages/LoginPage";
-import SignUp from "./pages/SignupPage";
-import Profile from "./pages/Profile";
+import Login from "./pages/auth/Login";
+import Signup from "./pages/auth/Signup";
+import Profile from "./pages/users/profile/Profile";
 import BaseLayout from "./layouts/BaseLayout";
-import Landing from "./pages/LandingPage";
-import Feed from "./pages/Feed";
-import EditPact from "./pages/EditPact"
-import CreatePact from "./pages/CreatePact";
+import Landing from "./pages/Landing";
+import Feed from "./pages/feed/Feed";
+import EditPact from "./pages/university/pact/EditPact"
+import CreatePact from "./pages/university/pact/CreatePact";
 import { Route, Switch } from "react-router-dom";
 import { CssBaseline } from "@mui/material";
-import EditProfile from "./pages/EditProfile";
+import EditProfile from "./pages/users/profile/EditProfile";
 import PrivateRoute from "./components/PrivateRoute";
 import AuthRoute from "./components/AuthRoute";
 import NotFound from "./pages/NotFound";
-import UniversityHubPage from "./pages/UniversityHubPage";
-import PactPage from "./pages/PactPage";
-import PostPage from "./pages/PostPage";
-import UserPage from "./pages/UserPage";
+import UniversityHub from "./pages/university/UniversityHub";
+import Pact from "./pages/university/pact/Pact";
+import Post from "./pages/university/pact/post/Post";
+import Users from "./pages/users/Users";
 import SearchResults from "./pages/SearchResults";
-import Verify from "./pages/Verify";
+import Verify from "./pages/auth/Verify";
 import { useHistory } from "react-router-dom";
 import { useAuth } from "./providers/AuthProvider";
 
@@ -43,7 +43,7 @@ function App() {
 					<Login />
 				</AuthRoute>
 				<AuthRoute exact path="/signup">
-					<SignUp />
+					<Signup />
 				</AuthRoute>
 
 				<PrivateRoute path="*">
@@ -62,19 +62,19 @@ function App() {
 								<Feed />
 							</PrivateRoute>
 							<PrivateRoute exact path="/hub">
-								<UniversityHubPage />
+								<UniversityHub />
 							</PrivateRoute>
 							<PrivateRoute exact path="/create-pact">
 								<CreatePact />
 							</PrivateRoute>
 							<PrivateRoute exact path="/pact/:pactID">
-								<PactPage />
+								<Pact />
 							</PrivateRoute>
 							<PrivateRoute exact path="/pact/:pactID/post/:postID">
-								<PostPage />
+								<Post />
 							</PrivateRoute>
 							<PrivateRoute exact path="/users">
-								<UserPage />
+								<Users />
 							</PrivateRoute>
 							<PrivateRoute exact path="/search/:query">
 								<SearchResults />

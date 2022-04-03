@@ -6,14 +6,19 @@ import { Grid, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import Loading from "./Loading";
+import Loading from "../../../../components/Loading";
 import { useHistory } from "react-router-dom";
-import CommentBox from "../components/CommentBox";
-import CommentCard from "../components/cards/CommentCard";
-import PostCard from "../components/cards/PostCard";
-import { useAuth } from "../providers/AuthProvider";
+import CommentBox from "../../../../components/CommentBox";
+import CommentCard from "../../../../components/cards/CommentCard";
+import PostCard from "../../../../components/cards/PostCard";
+import { useAuth } from "../../../../providers/AuthProvider";
 
-export default function PostPage() {
+/**
+ * A full page representation of a post showcasing
+ * its comments and the ability to comment on a post.
+ * @returns {JSX.Element}
+ */
+export default function Post() {
   const { user } = useAuth()
   const { pactID, postID } = useParams();
   const [post, setPost] = useState(null);

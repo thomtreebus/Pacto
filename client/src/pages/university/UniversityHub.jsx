@@ -7,7 +7,7 @@ import Tab from "@mui/material/Tab";
 import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
 import { useState } from "react";
-import background from "../assets/hub-background.jpg";
+import background from "../../assets/hub-background.jpg";
 import { Divider } from "@mui/material";
 import InputBase from "@mui/material/InputBase";
 import IconButton from "@mui/material/IconButton";
@@ -15,12 +15,17 @@ import SearchIcon from "@mui/icons-material/Search";
 import CloseIcon from "@mui/icons-material/Close";
 import AddIcon from "@mui/icons-material/Add";
 import { useHistory } from "react-router-dom";
-import PactGrid from "../components/PactGrid";
+import PactGrid from "../../components/PactGrid";
 import { useQuery } from "react-query";
-import Loading from "./Loading";
+import Loading from "../../components/Loading";
 import { useEffect } from "react";
 
-export default function UniversityHubPage() {
+/**
+ * Displays a list of all pacts in the university
+ * and the option to create a pact.
+ * @returns {JSX.Element}
+ */
+export default function UniversityHub() {
 	const { isLoading, data } = useQuery("repoData", () =>
 		fetch(`${process.env.REACT_APP_URL}/university`, {
 			credentials: "include",

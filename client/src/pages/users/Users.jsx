@@ -6,14 +6,18 @@ import {Box} from "@mui/material";
 import Tab from "@mui/material/Tab";
 import React, {useEffect, useState} from "react";
 import {useHistory} from "react-router-dom";
-import {useAuth} from '../providers/AuthProvider';
-import Loading from "./Loading";
-import UserList from "../components/UserList";
+import {useAuth} from '../../providers/AuthProvider';
+import Loading from "../../components/Loading";
+import UserList from "../../components/UserList";
 import Tabs from "@mui/material/Tabs";
 import Container from "@mui/material/Container";
-import {a11yProps, TabPanel} from "../components/TabComponents";
+import {a11yProps, TabPanel} from "../../components/TabComponents";
 
-export default function UserPage() {
+/**
+ * Users page contains a list of university users.
+ * @returns {JSX.Element}
+ */
+export default function Users() {
 
     const { user } = useAuth();
     const [isLoading, setIsLoading] = useState(true);

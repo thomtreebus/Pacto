@@ -3,11 +3,16 @@
  */
 
 import React, { useEffect, useState } from 'react'
-import ErrorPage from "./Error";
-import Loading from "./Loading";
-import PostList from '../components/PostList';
+import ErrorComponent from "../../components/ErrorComponent";
+import Loading from "../../components/Loading";
+import PostList from '../../components/PostList';
 import { Grid, Box } from '@mui/material';
 
+/**
+ * Feed displays posts that the user is a pact of.
+ * @returns {JSX.Element}
+ * @constructor
+ */
 export default function Feed() {
 	const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -40,7 +45,7 @@ export default function Feed() {
 	return (
 		<>
     { isLoading && <Loading /> }
-    {error && <ErrorPage />}
+    {error && <ErrorComponent />}
     <Box sx={{width: "95%", marginInline: "auto", display: "flex"}} justifyContent="center">
       <Grid item xs={12} lg={10} data-testid="comment-list">
         {posts && <PostList posts={posts} showPact={true}/>}

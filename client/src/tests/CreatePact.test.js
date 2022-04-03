@@ -3,7 +3,7 @@
  */
 
 import { screen, fireEvent, waitFor } from "@testing-library/react";
-import CreatePact from "../pages/CreatePact";
+import CreatePact from "../pages/university/pact/CreatePact";
 import "@testing-library/jest-dom";
 import { rest } from "msw";
 import { useMockServer } from "./utils/useMockServer";
