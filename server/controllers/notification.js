@@ -6,13 +6,8 @@ const { NOTIFICATION_MESSAGES } = require("../helpers/messages");
 module.exports.getNotifications = async (req, res) => {
   let notifications = null;
   try {
-    notifications = await Notification.find({ user: req.user._id });
+    notifications = await Notification.find({ user: req.user._id, read: false });
     try {
-      for (let i = 0; i < notifications.length; i++) {
-        const notification = notifications[i];
-        await notification.populate({ path: 'user', model: User});
-      }
-      
 			res.status(200).json(jsonResponse(notifications, []));
 		} 
 		catch (err) {
@@ -40,9 +35,6 @@ module.exports.markAsRead = async (req, res) => {
         notification.read = true;
       }
 			notification.save();
-
-			// Populating before returning the notification
-			await notification.populate({ path: 'user', model: User });
 			
 			res.status(200).json(jsonResponse(notification, []));
 		}

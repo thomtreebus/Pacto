@@ -98,10 +98,7 @@ module.exports.signup = async (req, res) => {
 		
 		if(!errorFound){
 			const user = await User.create({ firstName, lastName, uniEmail:processedEmail, password:hashedPassword, university });
-
 			await handleVerification(uniEmail, user._id);
-			await user.populate({path: 'university', model: University});
-
 			res.status(201).json(jsonResponse(user, []));
 		}
 	}
@@ -149,9 +146,6 @@ module.exports.login = async (req, res) => {
 		// Generate cookie to log in user
 		const token = createToken(user._id);
 		res.cookie("jwt", token, { httpOnly: true, maxAge: COOKIE_MAX_AGE * 1000 });
-		await user.populate({path: 'university', model: University});
-    await user.populate({path: 'sentRequests', model: FriendRequest});
-    await user.populate({path: 'receivedRequests', model: FriendRequest});
 		res.status(200).json(jsonResponse({ user }, []));
 	} 
   catch (err) {
@@ -209,7 +203,8 @@ module.exports.verify = async (req, res) => {
  * @returns {Promise<void>} Javascript async function.
  */
 module.exports.getMe = async (req, res) => {
-	// stop browser from caching the
+	delete req.user.password;
+	// stop browser from caching the jwt token
 	res.set("Cache-Control", "no-store");
-	res.status(200).json(jsonResponse(req.user, []))
+	res.status(200).json(jsonResponse(req.user, []));
 };

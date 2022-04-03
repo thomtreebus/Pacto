@@ -44,7 +44,7 @@ const makeComment = async(req, res, parentComment=undefined) => {
       await parentComment.save();
     }
 
-    await comment.populate({path: "author", model: User});
+    await comment.populate({path: "author", model: User, select: ["firstName", "lastName"]});
     await comment.populate({path: "parentComment", model: Comment});
     await comment.populate({path: "childComments", model: Comment});
 
@@ -111,7 +111,16 @@ module.exports.deleteComment = async (req, res) => {
 
     await req.comment.save();
 
-    await req.comment.populate({path: "author", model: User});
+    await req.comment.populate(
+      {
+        path: "author",
+        model: User,
+        select: [
+          "firstName",
+          "lastName",
+        ]
+      }
+    );
     await req.comment.populate({path: "parentComment", model: Comment});
     await req.comment.populate({path: "childComments", model: Comment});
 
@@ -131,7 +140,16 @@ module.exports.deleteComment = async (req, res) => {
 module.exports.getComment = async (req, res) => {
   try {
     const comment = req.comment;
-    await comment.populate({path: "author", model: User});
+    await req.comment.populate(
+      {
+        path: "author",
+        model: User,
+        select: [
+          "firstName",
+          "lastName",
+        ]
+      }
+    );
     await comment.populate({path: "parentComment", model: Comment});
     await comment.populate({path: "childComments", model: Comment});
     res.status(200).json(jsonResponse(comment, []));
@@ -151,7 +169,16 @@ module.exports.upvoteComment = async (req, res) => {
   try {
     const comment = req.comment;
     await upvote(comment, req.user);
-    await comment.populate({path: "author", model: User});
+    await req.comment.populate(
+      {
+        path: "author",
+        model: User,
+        select: [
+          "firstName",
+          "lastName",
+        ]
+      }
+    );
     await comment.populate({path: "parentComment", model: Comment});
     await comment.populate({path: "childComments", model: Comment});
 
@@ -172,7 +199,16 @@ module.exports.downvoteComment = async (req, res) => {
   try {
     const comment = req.comment;
     await downvote(comment, req.user);
-    await comment.populate({path: "author", model: User});
+    await req.comment.populate(
+      {
+        path: "author",
+        model: User,
+        select: [
+          "firstName",
+          "lastName",
+        ]
+      }
+    );
     await comment.populate({path: "parentComment", model: Comment});
     await comment.populate({path: "childComments", model: Comment});
 

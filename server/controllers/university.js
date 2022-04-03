@@ -13,7 +13,6 @@ const { jsonResponse, jsonError } = require("../helpers/responseHandlers");
 module.exports.getUniversity = async (req, res) => {
 	try {
 		const uni = req.user.university;
-		await uni.populate({ path: "users", model: User });
 		await uni.populate({ path: "pacts", model: Pact });
 		res.status(200).json(jsonResponse(uni, []));
 	} catch (err) {
@@ -32,7 +31,7 @@ module.exports.getUniversity = async (req, res) => {
 module.exports.getSearchResults = async (req, res) => {
 	try {
 		const searchQuery = req.params.query;
-		const university = await University.findOne({ id: req.user.university });
+		const university = await University.findById(req.user.university);
 
 		// Find all pacts matching the query string
 		const pacts = await Pact.find({
@@ -46,7 +45,7 @@ module.exports.getSearchResults = async (req, res) => {
 			{ $match: { name: new RegExp(searchQuery, "i") } },
 		]);
 		const matchingUserIds = partialMatchingUsers.map((user) => user._id);
-		const users = await User.find({ _id: { $in: matchingUserIds } });
+		const users = await User.find({ _id: { $in: matchingUserIds }}, "firstName lastName image");
 
 		// Find all posts matching the query string (only posts of pacts a user is member of)
 		const user = req.user
@@ -64,8 +63,8 @@ module.exports.getSearchResults = async (req, res) => {
 		// Populate pact in posts
 		for (let i = 0; i < posts.length; i++) {
 			const post = posts[i];
-			await post.populate({ path: 'pact', model: Pact});
-			await post.populate({ path: 'author', model: User});
+			await post.populate({ path: 'pact', model: Pact, select: ["name", "moderators"]});
+			await post.populate({ path: 'author', model: User, select: ["firstName", "lastName"]});
 		}
 		const results = {
 			pacts: pacts,

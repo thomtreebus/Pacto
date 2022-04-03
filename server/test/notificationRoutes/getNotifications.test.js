@@ -39,7 +39,7 @@ describe("GET /notifications getNotifications()", () => {
     const responseNotifications = response.body.message;
     expect(responseNotifications).toBeDefined();
     expect(responseNotifications.length).toBe(1);
-    expect(responseNotifications[0].user._id).toBe(notification.user._id.toString());
+    expect(responseNotifications[0].user).toBe(notification.user.toString());
     expect(responseNotifications[0].text).toBe("test notification");
   });
 

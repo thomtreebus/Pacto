@@ -50,9 +50,9 @@ describe("POST /pact", () => {
       .expect(201);
     
     expect(response.body.message).toBeDefined();
-    expect(response.body.message.university._id.toString()).toEqual(user.university._id.toString());
-    expect(response.body.message.members[0]._id.toString()).toEqual(user._id.toString());
-    expect(response.body.message.moderators[0]._id.toString()).toEqual(user._id.toString());
+    expect(response.body.message.university.toString()).toEqual(user.university.toString());
+    expect(response.body.message.members[0].toString()).toEqual(user._id.toString());
+    expect(response.body.message.moderators[0].toString()).toEqual(user._id.toString());
     expect(response.body.message.members.length).toBe(1);
     expect(response.body.message.moderators.length).toBe(1);
     expect(response.body.errors.length).toBe(0);

@@ -42,11 +42,6 @@ module.exports.createPact = async (req, res) => {
 		user.university.pacts.push(pact);
 		await user.university.save();
 
-		await pact.populate({ path: 'university', model: University });
-		await pact.populate({ path: "members", model: User });
-		await pact.populate({ path: "moderators", model: User });
-		await pact.populate({ path: "posts", model: Post });
-
 		res.status(201).json(jsonResponse(pact, []));
 	}
   catch (err) {
@@ -67,36 +62,35 @@ module.exports.getPact = async (req, res) => {
 	try {
 		const pact = req.pact;
 		await pact.populate({
-			path: 'university',
-			model: University,
-			select: ["name"]
-		});
-		await pact.populate({
 			path: "members",
 			model: User,
-			select: ["firstName", "lastName", "course", "university", "image"]
+			select: ["firstName", "lastName", "image"]
 		});
 		await pact.populate({
 			path: "moderators",
 			model: User,
-			select: ["firstName", "lastName", "course", "university", "image"]
+			select: ["firstName", "lastName", "image"]
 		});
 		await pact.populate({
 			path: "bannedUsers",
 			model: User,
-			select: ["firstName", "lastName", "course", "university", "image"]
+			select: ["firstName", "lastName", "image"]
 		});
 		await pact.populate({
 			path: "posts",
 			model: Post,
-			populate: [{
-				path: "author",
-				model: User,
-				select: ["firstName", "lastName", "course", "university"]
-			},
+			populate: [
 				{
-					path: "pact", model: Pact
-				}]
+					path: "author",
+					model: User,
+					select: ["firstName", "lastName"]
+				},
+				{
+					path: "pact",
+					model: Pact,
+					select: ["moderators"]
+				}
+			]
 		});
 
 		for (let index = 0; index < pact.posts.length; index++) {
@@ -128,7 +122,6 @@ module.exports.getPact = async (req, res) => {
 module.exports.updatePact = async(req, res) => {
 	let status = undefined;
 	const jsonErrors = [];
-	let resMessage = null;
 	try {
 		const pact = req.pact
 		const moderators = pact.moderators;
@@ -157,7 +150,7 @@ module.exports.updatePact = async(req, res) => {
 		}
 	}
 	finally {
-		res.status(status).json(jsonResponse(resMessage, jsonErrors));
+		res.status(status).json(jsonResponse(null, jsonErrors));
 	}
 }
 
