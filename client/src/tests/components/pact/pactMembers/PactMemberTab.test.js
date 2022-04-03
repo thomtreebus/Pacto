@@ -8,8 +8,8 @@ import { rest } from "msw";
 import { Route } from "react-router-dom";
 import userEvent from "@testing-library/user-event";
 import PactMembersTab from "../../../../components/pact/pactMembers/PactMembersTab";
-import { useMockServer } from "./helpers/useMockServer";
-import mockRender from "./helpers/mockRender";
+import { useMockServer } from "../../../helpers/useMockServer";
+import mockRender from "../../../helpers/mockRender";
 
 const response = {
   message: {

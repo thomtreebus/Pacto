@@ -5,10 +5,9 @@
 import { screen, fireEvent, waitFor } from "@testing-library/react";
 import PostList from "../../../components/lists/PostList";
 import "@testing-library/jest-dom";
-import testData from "./helpers/testPosts"
-import { useMockServer } from "./helpers/useMockServer";
-
-import mockRender from "./helpers/mockRender";
+import testData from "../../helpers/testPosts"
+import { useMockServer } from "../../helpers/useMockServer";
+import mockRender from "../.././helpers/mockRender";
 
 describe("PostList Tests", () => {
   const server = useMockServer();

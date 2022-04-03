@@ -6,10 +6,10 @@ import { screen } from "@testing-library/react";
 import { waitForElementToBeRemoved } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import { rest } from "msw";
-import pacts from "./helpers/testPacts";
+import pacts from "../../helpers/testPacts";
 import MyPactList from "../../../components/lists/MyPactList";
-import { useMockServer } from "./helpers/useMockServer";
-import mockRender from "./helpers/mockRender";
+import { useMockServer } from "../../helpers/useMockServer";
+import mockRender from "../../helpers/mockRender";
 
 const user = {
 	pacts: [pacts[0]._id, pacts[1]._id],

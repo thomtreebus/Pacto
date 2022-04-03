@@ -6,7 +6,7 @@
 import { render, screen } from "@testing-library/react";
 import AboutPact from "../../../../components/pact/pactFeed/AboutPact";
 import "@testing-library/jest-dom";
-import pacts from "./helpers/testPacts";
+import pacts from "../../../helpers/testPacts";
 
 describe("AboutPact Tests", () => {
   beforeEach(() => {

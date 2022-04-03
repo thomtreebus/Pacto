@@ -5,8 +5,8 @@
 import { screen, fireEvent } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import Voter from "../../components/Voter";
-import { useMockServer } from "./helpers/useMockServer";
-import mockRender from "./helpers/mockRender";
+import { useMockServer } from "../helpers/useMockServer";
+import mockRender from "../helpers/mockRender";
 
 const post = {
   pact: 5,

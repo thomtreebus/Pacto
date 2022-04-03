@@ -6,8 +6,8 @@ import { screen, fireEvent, waitFor } from "@testing-library/react";
 import CreatePact from "../../../../pages/university/pact/CreatePact";
 import "@testing-library/jest-dom";
 import { rest } from "msw";
-import { useMockServer } from "./utils/useMockServer";
-import mockRender from "./utils/mockRender";
+import {useMockServer} from "../../../helpers/useMockServer";
+import mockRender from "../../../helpers/mockRender";
 
 describe("CreatePact Tests", () => {
 	let history;

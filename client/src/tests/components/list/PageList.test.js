@@ -5,8 +5,8 @@
 import { fireEvent, screen } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import PageList from "../../../components/lists/PageList";
-import { useMockServer } from "./helpers/useMockServer";
-import mockRender from "./helpers/mockRender";
+import { useMockServer } from "../../helpers/useMockServer";
+import mockRender from "../../helpers/mockRender";
 
 describe("Page List Tests", () => {
 	let history;

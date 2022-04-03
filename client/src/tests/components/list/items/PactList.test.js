@@ -5,9 +5,9 @@
 import { screen } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import PactList from "../../../../components/lists/PactList.jsx";
-import pacts from "./helpers/testPacts";
-import { useMockServer } from "./helpers/useMockServer.js";
-import mockRender from "./helpers/mockRender";
+import pacts from "../../../helpers/testPacts";
+import { useMockServer } from "../../../helpers/useMockServer.js";
+import mockRender from "../../../helpers/mockRender";
 
 describe("Pact List Tests", () => {
 	const server = useMockServer();

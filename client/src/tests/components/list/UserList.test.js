@@ -5,9 +5,9 @@
 import { screen } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import UserList from "../../../components/lists/UserList.jsx";
-import users from "./helpers/testUsers";
-import { useMockServer } from "./helpers/useMockServer.js";
-import mockRender from "./helpers/mockRender";
+import users from "../../helpers/testUsers";
+import { useMockServer } from "../../helpers/useMockServer.js";
+import mockRender from "../../helpers/mockRender";
 
 describe("User List Tests", () => {
 	const server = useMockServer();

@@ -6,8 +6,8 @@ import { screen, fireEvent, waitFor } from "@testing-library/react";
 import CommentBox from "../../components/CommentBox";
 import "@testing-library/jest-dom";
 import { rest } from "msw";
-import { useMockServer } from "./helpers/useMockServer";
-import mockRender from "./helpers/mockRender";
+import { useMockServer } from "../helpers/useMockServer";
+import mockRender from "../helpers/mockRender";
 
 const COMMENT_TEXT = "amet officia molestias esse!";
 

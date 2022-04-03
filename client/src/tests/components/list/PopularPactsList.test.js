@@ -6,11 +6,11 @@ import { screen } from "@testing-library/react";
 import { waitForElementToBeRemoved } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import { rest } from "msw";
-import pacts from "./helpers/testPacts";
+import pacts from "../../helpers/testPacts";
 import PopularPactsList from "../../../components/lists/PopularPactsList";
-import { useMockServer } from "./helpers/useMockServer";
-import mockRender from "./helpers/mockRender";
-import users from "./helpers/testUsers";
+import { useMockServer } from "../../helpers/useMockServer";
+import mockRender from "../../helpers/mockRender";
+import users from "../../helpers/testUsers";
 
 describe("Popular Pact List tests", () => {
 	const server = useMockServer();

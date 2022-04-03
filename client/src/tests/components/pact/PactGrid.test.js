@@ -5,9 +5,9 @@
 import { screen } from "@testing-library/react";
 import PactGrid from "../../../components/pact/PactGrid";
 import "@testing-library/jest-dom";
-import pacts from "./helpers/testPacts";
-import { useMockServer } from "./helpers/useMockServer";
-import mockRender from "./helpers/mockRender";
+import pacts from "../../helpers/testPacts";
+import { useMockServer } from "../../helpers/useMockServer";
+import mockRender from "../../helpers/mockRender";
 
 describe("PactGrid Tests", () => {
 	const server = useMockServer();

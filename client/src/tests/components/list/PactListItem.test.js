@@ -5,10 +5,10 @@
 import { screen, fireEvent, waitFor } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import { rest } from "msw";
-import pacts from "./helpers/testPacts";
+import pacts from "../../helpers/testPacts";
 import PactListItem from "../../../components/lists/items/PactListItem.jsx";
-import { useMockServer } from "./helpers/useMockServer.js";
-import mockRender from "./helpers/mockRender";
+import { useMockServer } from "../../helpers/useMockServer.js";
+import mockRender from "../../helpers/mockRender";
 
 describe("Pact List Item Tests", () => {
 	let history;

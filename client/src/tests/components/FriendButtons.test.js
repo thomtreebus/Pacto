@@ -6,9 +6,9 @@ import { screen, fireEvent } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import { rest } from "msw";
 import FriendButtons from "../../components/FriendButtons";
-import testUsers from "./helpers/testUsers";
-import { useMockServer } from "./helpers/useMockServer";
-import mockRender from "./helpers/mockRender";
+import testUsers from "../helpers/testUsers";
+import { useMockServer } from "../helpers/useMockServer";
+import mockRender from "../helpers/mockRender";
 
 const loggedInUser = {
 	firstName: "pac",
