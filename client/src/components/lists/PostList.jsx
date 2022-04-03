@@ -1,5 +1,5 @@
 import { Card, Grid, IconButton, InputBase, List, ListItem } from "@mui/material"
-import PostCard from "./cards/PostCard"
+import PostCard from "../cards/PostCard"
 /**
  * A component to render a list of posts
  */

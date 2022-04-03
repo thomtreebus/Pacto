@@ -4,9 +4,9 @@
 
 import {Box, Grid, Card, CardHeader, Avatar, Typography } from "@mui/material"
 import {useHistory} from "react-router-dom";
-import {useAuth} from "../providers/AuthProvider";
+import {useAuth} from "../../providers/AuthProvider";
 import React, {useEffect, useState} from "react";
-import ErrorMessage from "./ErrorMessage";
+import ErrorMessage from "../errors/ErrorMessage";
 import BanIcon from '@mui/icons-material/DoNotDisturbOn';
 import UnBanIcon from '@mui/icons-material/DoDisturbOff';
 import PromoteIcon from '@mui/icons-material/Star';

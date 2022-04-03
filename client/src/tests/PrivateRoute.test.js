@@ -4,7 +4,7 @@
 
 import { screen } from "@testing-library/react";
 import "@testing-library/jest-dom";
-import PrivateRoute from "../components/PrivateRoute";
+import PrivateRoute from "../routes/PrivateRoute";
 import { rest } from "msw";
 import { useMockServer } from "./utils/useMockServer";
 import mockRender from "./utils/mockRender";

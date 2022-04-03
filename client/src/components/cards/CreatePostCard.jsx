@@ -1,5 +1,5 @@
 /**
- * A card to provide the ability to create posts of three types
+ * A card to provide the ability to create posts of three types.
  */
 
 import React, { useState } from 'react';
@@ -18,8 +18,8 @@ import { useHistory } from "react-router-dom";
 import { Image } from 'cloudinary-react';
 import Axios from 'axios';
 import IconButton from '@mui/material/IconButton';
-import ErrorMessage from './ErrorMessage';
-import {a11yProps, TabPanel} from "./TabComponents";
+import ErrorMessage from '../errors/ErrorMessage';
+import {a11yProps, TabPanel} from "../helpers/TabComponents";
 
 const Input = styled('input')({
   display: 'none',

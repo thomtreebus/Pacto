@@ -15,7 +15,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import CloseIcon from "@mui/icons-material/Close";
 import AddIcon from "@mui/icons-material/Add";
 import { useHistory } from "react-router-dom";
-import PactGrid from "../../components/PactGrid";
+import PactGrid from "../../components/pact/PactGrid";
 import { useQuery } from "react-query";
 import Loading from "../../components/Loading";
 import { useEffect } from "react";

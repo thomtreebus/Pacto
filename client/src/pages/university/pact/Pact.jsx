@@ -9,9 +9,9 @@ import { useHistory } from "react-router-dom";
 import { useAuth } from "../../../providers/AuthProvider";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
-import PactPageFeedTab from "../../../components/PactPage/PactPageFeedTab";
-import { a11yProps, TabPanel } from "../../../components/TabComponents";
-import PactMembersTab from "../../../components/PactPage/PactMembersTab";
+import PactPageFeedTab from "../../../components/pact/pactFeed/PactPageFeedTab";
+import { a11yProps, TabPanel } from "../../../components/helpers/TabComponents";
+import PactMembersTab from "../../../components/pact/pactMembers/PactMembersTab";
 import { Box } from "@mui/material";
 
 /**

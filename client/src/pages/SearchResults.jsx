@@ -4,15 +4,15 @@
 
 import React, { useEffect, useState } from 'react'
 import { useParams } from "react-router-dom";
-import ErrorComponent from "../components/ErrorComponent";
+import ErrorComponent from "../components/errors/ErrorComponent";
 import Loading from "../components/Loading";
-import PostList from "../components/PostList";
-import PactGrid from "../components/PactGrid";
+import PostList from "../components/lists/PostList";
+import PactGrid from "../components/pact/PactGrid";
 import Box from '@mui/material/Box';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
-import UserList from '../components/UserList';
-import {TabPanel} from "../components/TabComponents";
+import UserList from '../components/lists/UserList';
+import {TabPanel} from "../components/helpers/TabComponents";
 
 /**
  * Search results gives us matching component matching

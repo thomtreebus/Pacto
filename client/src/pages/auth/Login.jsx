@@ -14,7 +14,7 @@ import Grid from "@mui/material/Grid";
 import Icon from "../../assets/pacto-logo.ico";
 import Typography from "@mui/material/Typography";
 import { useAuth } from "../../providers/AuthProvider";
-import ErrorMessage from "../../components/ErrorMessage";
+import ErrorMessage from "../../components/errors/ErrorMessage";
 
 /**
  * Login page displays the email and password for

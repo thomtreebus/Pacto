@@ -8,10 +8,10 @@ import React, {useEffect, useState} from "react";
 import {useHistory} from "react-router-dom";
 import {useAuth} from '../../providers/AuthProvider';
 import Loading from "../../components/Loading";
-import UserList from "../../components/UserList";
+import UserList from "../../components/lists/UserList";
 import Tabs from "@mui/material/Tabs";
 import Container from "@mui/material/Container";
-import {a11yProps, TabPanel} from "../../components/TabComponents";
+import {a11yProps, TabPanel} from "../../components/helpers/TabComponents";
 
 /**
  * Users page contains a list of university users.

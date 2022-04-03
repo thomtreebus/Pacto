@@ -4,7 +4,7 @@
 
 import { screen } from "@testing-library/react";
 import "@testing-library/jest-dom";
-import UserList from "../components/UserList.jsx";
+import UserList from "../components/lists/UserList.jsx";
 import users from "./utils/testUsers";
 import { useMockServer } from "./utils/useMockServer.js";
 import mockRender from "./utils/mockRender";

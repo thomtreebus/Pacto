@@ -4,7 +4,7 @@
 
 import { screen } from "@testing-library/react";
 import "@testing-library/jest-dom";
-import AuthRoute from "../components/AuthRoute";
+import AuthRoute from "../routes/AuthRoute";
 import { rest } from "msw";
 import { useMockServer } from "./utils/useMockServer";
 import mockRender from "./utils/mockRender";

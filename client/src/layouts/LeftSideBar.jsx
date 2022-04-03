@@ -1,12 +1,12 @@
 /**
- * The left side bar component to be shown on the website
+ * The left sidebar component to be shown on the website
  */
 
 import React, { useState } from "react";
 import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
 import AppBar from "./AppBar";
-import LeftSideBarContent from "./LeftSideBarContent";
+import LeftSideBarContent from "../components/LeftSideBarContent";
 
 const drawerWidth = 240;
 

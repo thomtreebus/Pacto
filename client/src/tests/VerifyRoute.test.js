@@ -54,7 +54,7 @@ describe("Edit Profile Page Tests", () => {
 			await waitFor(() => expect(history.location.pathname).toBe("/login"));
 		});
 
-    it("It should display a message whenever the satus is not successfull", async () => {
+    it("It should display a message whenever the status is not successfully", async () => {
       server.use(
 				rest.get(`${process.env.REACT_APP_URL}/verify`, (req, res, ctx) => {
 					return res(ctx.status(400), ctx.json({}));

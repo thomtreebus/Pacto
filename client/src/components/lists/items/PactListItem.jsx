@@ -1,5 +1,5 @@
 /**
- * A item component for a pact to be put on the sidebar
+ * Items component for a pact to be put on the sidebar
  */
 
 import React, { useState } from "react";
@@ -9,7 +9,7 @@ import ListItemText from "@mui/material/ListItemText";
 import { Modal, Box, Typography } from "@mui/material";
 import Avatar from "@mui/material/Avatar";
 import { useHistory } from "react-router-dom";
-import { useAuth } from "../providers/AuthProvider";
+import { useAuth } from "../../../providers/AuthProvider";
 import { Button, Divider, Alert } from "@mui/material";
 
 /**

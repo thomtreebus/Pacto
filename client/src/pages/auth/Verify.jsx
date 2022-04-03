@@ -3,7 +3,7 @@ import Button from "@mui/material/Button";
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 import { Card } from "@mui/material";
-import ErrorMessage from "../../components/ErrorMessage";
+import ErrorMessage from "../../components/errors/ErrorMessage";
 import PactoIcon from "../../assets/pacto-logo.png";
 import Avatar from "@mui/material/Avatar";
 import Box from "@mui/material/Box";
@@ -16,12 +16,12 @@ import { Typography } from "@mui/material";
 export default function Verify() {
 	const [snackbarOpen, setSnackbarOpen] = useState(false);
 	const [snackbarMessage, setSnackbarMessage] = useState(null);
-	const [buttonIsDiabled, setButtonIsDisabled] = useState(false);
+	const [buttonIsDisabled, setButtonIsDisabled] = useState(false);
 	const { id } = useParams();
 	const history = useHistory();
 
 	/**
-	 * This function is called when the verify prompt is clicked.
+	 * This function is called when verify prompt is clicked.
 	 */
 	const handleClick = async () => {
 		setButtonIsDisabled(true);
@@ -85,7 +85,7 @@ export default function Verify() {
 						<Button
 							className="signin-link"
 							onClick={handleClick}
-							disabled={buttonIsDiabled}
+							disabled={buttonIsDisabled}
 							label="Verify Account"
 							variant="contained"
 							sx={{

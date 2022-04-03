@@ -1,22 +1,26 @@
+/**
+ * The content inside the feed tab for pact page
+ */
+
 import {Fab, Grid} from "@mui/material";
-import PostList from "../PostList";
+import PostList from "../../lists/PostList";
 import {Box} from "@mui/system";
-import AboutPact from "../AboutPact";
+import AboutPact from "./AboutPact";
 import EditIcon from "@mui/icons-material/Edit";
 import AddIcon from "@mui/icons-material/Add";
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
-import CreatePostCard from "../CreatePostCard";
+import CreatePostCard from "../../cards/CreatePostCard";
 import {useEffect, useState} from "react";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import {useTheme} from "@mui/material/styles";
 import { useHistory } from "react-router-dom";
-import {useAuth} from "../../providers/AuthProvider";
-import Loading from "../Loading";
+import {useAuth} from "../../../providers/AuthProvider";
+import Loading from "../../Loading";
 import LeaveIcon from "@mui/icons-material/ExitToApp";
 import DeleteIcon from "@mui/icons-material/Delete";
-import ErrorMessage from "../ErrorMessage";
+import ErrorMessage from "../../errors/ErrorMessage";
 
 /**
  * A feed displaying posts and information about a pact, plus other functionality

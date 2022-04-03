@@ -4,7 +4,7 @@
 
 import { screen } from "@testing-library/react";
 import { fireEvent, waitFor } from "@testing-library/react";
-import PactCard from "../components/PactCard";
+import PactCard from "../components/cards/PactCard";
 import "@testing-library/jest-dom";
 import testPacts from "./utils/testPacts";
 import { rest } from "msw";

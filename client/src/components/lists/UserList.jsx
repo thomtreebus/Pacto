@@ -4,7 +4,7 @@
 
 import React from "react";
 import { Typography } from "@mui/material";
-import UserCard from "./UserCard";
+import UserCard from "../cards/UserCard";
 
 /**
  * Produces a list of users

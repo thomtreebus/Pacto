@@ -6,7 +6,7 @@ import React, { useEffect } from "react";
 import List from "@mui/material/List";
 import { useQuery } from "react-query";
 import PactList from "./PactList";
-import { useAuth } from "../providers/AuthProvider";
+import { useAuth } from "../../providers/AuthProvider";
 import { Typography } from "@mui/material";
 
 /**

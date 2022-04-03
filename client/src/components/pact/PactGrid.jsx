@@ -3,9 +3,9 @@
  */
 
 import React from "react";
-import PactCard from "../components/PactCard";
+import PactCard from "../cards/PactCard";
 import { Grid, Typography } from "@mui/material";
-import { useAuth } from "../providers/AuthProvider";
+import { useAuth } from "../../providers/AuthProvider";
 
 /**
  * A grid displaying pact cards

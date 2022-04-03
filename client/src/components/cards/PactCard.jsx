@@ -1,5 +1,5 @@
 /**
- * The PactCard which is shown on the university hub page
+ * The PactCard which is shown on the university hub page.
  */
 
 import React, { useState } from "react";
@@ -8,10 +8,10 @@ import { CardContent, Typography, CardActions } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import PeopleAltRoundedIcon from "@mui/icons-material/PeopleAltRounded";
-import PactChip from "./PactChip";
+import PactChip from "../pact/pactFeed/PactChip";
 import { useHistory } from "react-router-dom";
-import ErrorMessage from "./ErrorMessage";
-import { useAuth } from "../providers/AuthProvider";
+import ErrorMessage from "../errors/ErrorMessage";
+import { useAuth } from "../../providers/AuthProvider";
 
 /**
  * A card displaying a pact which a user can use to visit or join it

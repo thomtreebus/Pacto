@@ -1,6 +1,6 @@
 import React, { useContext, useState, useEffect, useCallback } from "react";
 import Loading from "../components/Loading";
-import ErrorComponent from "../components/ErrorComponent";
+import ErrorComponent from "../components/errors/ErrorComponent";
 
 const AuthContext = React.createContext();
 

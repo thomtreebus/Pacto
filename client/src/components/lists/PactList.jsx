@@ -4,7 +4,7 @@
 
 import React from "react";
 import { Typography } from "@mui/material";
-import PactListItem from "./PactListItem";
+import PactListItem from "./items/PactListItem";
 
 /**
  * Renders a list of pacts

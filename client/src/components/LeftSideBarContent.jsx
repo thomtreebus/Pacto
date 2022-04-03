@@ -1,5 +1,5 @@
 /**
- * The components which show up in the left side bar
+ * The components which show up in the left sidebar
  */
 
 import React from "react";
@@ -13,11 +13,12 @@ import Toolbar from "@mui/material/Toolbar";
 import Avatar from "@mui/material/Avatar";
 import { Typography } from "@mui/material";
 import { useAuth } from "../providers/AuthProvider";
-import PageList from "./PageList";
-import MyPactList from "./MyPactList";
+import PageList from "./lists/PageList";
+import MyPactList from "./lists/MyPactList";
 
 /**
  * The content of a sidebar
+ * @returns {JSX.Element}
  */
 export default function LeftSideBarContent() {
 	const { user } = useAuth();

@@ -7,7 +7,7 @@ import { waitForElementToBeRemoved } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import { rest } from "msw";
 import pacts from "./utils/testPacts";
-import MyPactList from "../components/MyPactList";
+import MyPactList from "../components/lists/MyPactList";
 import { useMockServer } from "./utils/useMockServer";
 import mockRender from "./utils/mockRender";
 

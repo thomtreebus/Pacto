@@ -4,7 +4,7 @@
 
 import React from "react";
 import { Typography } from "@mui/material";
-import UserCardModeration from "./UserCardModeration";
+import UserCardModeration from "../cards/UserCardModeration";
 
 /**
  * List of users to apply moderation to

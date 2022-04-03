@@ -4,12 +4,12 @@
  */
 
 import { screen, fireEvent, waitFor, act } from "@testing-library/react"
-import AppBar from "../components/AppBar.jsx";
+import AppBar from "../layouts/AppBar.jsx";
 import "@testing-library/jest-dom";
 import { rest } from "msw";
 import { Switch } from "react-router-dom";
-import PrivateRoute from "../components/PrivateRoute";
-import AuthRoute from "../components/AuthRoute";
+import PrivateRoute from "../routes/PrivateRoute";
+import AuthRoute from "../routes/AuthRoute";
 import { useMockServer } from "./utils/useMockServer.js";
 import mockRender from "./utils/mockRender"
 import userEvent from "@testing-library/user-event";
@@ -184,14 +184,14 @@ describe("App Bar Tests", () => {
       await waitFor(() => expect(menuElement).toBeVisible());
     });
 
-    it("should close the profile menu when a menu item is pressed", async () => {
+    it("should close the profile menu when a menu items is pressed", async () => {
       const iconButtonElement = screen.getByTestId("profile-button");
       fireEvent.click(iconButtonElement);
       const menuElement = screen.getByTestId("primary-search-account-menu");
       await waitFor(() => expect(menuElement).toBeVisible());
     });
   
-    it("should close the profile menu when a menu item is pressed", async () => { 
+    it("should close the profile menu when a menu items is pressed", async () => {
       const iconButtonElement = screen.getByTestId("profile-button");
       fireEvent.click(iconButtonElement);
       const menuElement = screen.getByTestId("primary-search-account-menu");
@@ -220,8 +220,8 @@ describe("App Bar Tests", () => {
 
     it("doesn't allow the user to search if the input is empty", async () => {
       const searchValue = "{enter}";
-      const searchElementConatiner = await screen.findByTestId("appbar-search");
-      const searchElement = searchElementConatiner.querySelector("input");
+      const searchElementContainer = await screen.findByTestId("appbar-search");
+      const searchElement = searchElementContainer.querySelector("input");
       userEvent.type(searchElement, searchValue);
       expect(history.location.pathname).toBe("/feed")
     })

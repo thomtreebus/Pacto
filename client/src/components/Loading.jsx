@@ -5,6 +5,10 @@
 import { Box, CircularProgress } from "@mui/material";
 import React from "react";
 
+/**
+ * Component showing a spinning circle
+ * @returns {JSX.Element}
+ */
 export default function Loading() {
 	return (
 		<Box

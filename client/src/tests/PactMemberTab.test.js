@@ -7,7 +7,7 @@ import "@testing-library/jest-dom";
 import { rest } from "msw";
 import { Route } from "react-router-dom";
 import userEvent from "@testing-library/user-event";
-import PactMembersTab from "../components/PactPage/PactMembersTab";
+import PactMembersTab from "../components/pact/pactMembers/PactMembersTab";
 import { useMockServer } from "./utils/useMockServer";
 import mockRender from "./utils/mockRender";
 

@@ -4,7 +4,7 @@
 
 import { screen } from "@testing-library/react";
 import "@testing-library/jest-dom";
-import PactList from "../components/PactList.jsx";
+import PactList from "../components/lists/PactList.jsx";
 import pacts from "./utils/testPacts";
 import { useMockServer } from "./utils/useMockServer.js";
 import mockRender from "./utils/mockRender";

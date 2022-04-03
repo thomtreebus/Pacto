@@ -12,7 +12,7 @@ import Voter from "../Voter";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { IconButton } from "@mui/material";
 import { useState } from "react";
-import ErrorMessage from "../ErrorMessage";
+import ErrorMessage from "../errors/ErrorMessage";
 
 /**
  * The base component for all posts.

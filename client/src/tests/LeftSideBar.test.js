@@ -6,7 +6,7 @@ import { fireEvent, screen } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import { rest } from "msw";
 import pacts from "./utils/testPacts";
-import LeftSideBar from "../components/LeftSideBar";
+import LeftSideBar from "../layouts/LeftSideBar";
 import { useMockServer } from "./utils/useMockServer"
 import mockRender from "./utils/mockRender";
 

@@ -3,9 +3,9 @@
  */
 
 import React, { useEffect, useState } from 'react'
-import ErrorComponent from "../../components/ErrorComponent";
+import ErrorComponent from "../../components/errors/ErrorComponent";
 import Loading from "../../components/Loading";
-import PostList from '../../components/PostList';
+import PostList from '../../components/lists/PostList';
 import { Grid, Box } from '@mui/material';
 
 /**

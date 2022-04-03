@@ -10,7 +10,7 @@ import { useHistory } from "react-router-dom";
 import FeedIcon from "@mui/icons-material/Feed";
 import UniversityIcon from "@mui/icons-material/School";
 import PeopleIcon from "@mui/icons-material/People";
-import { useAuth } from "../providers/AuthProvider";
+import { useAuth } from "../../providers/AuthProvider";
 
 const pages = [
 	{ icon: <FeedIcon />, text: "Feed", path: "/feed" },
@@ -20,6 +20,7 @@ const pages = [
 
 /**
  * List of pages shown on sidebar
+ * @returns {JSX.Element}
  */
 export default function PageList() {
 	const { activePage, setActivePage } = useAuth();

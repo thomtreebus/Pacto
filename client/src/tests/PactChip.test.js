@@ -3,7 +3,7 @@
  */
 
 import { render, screen } from "@testing-library/react";
-import PactChip from "../components/PactChip";
+import PactChip from "../components/pact/pactFeed/PactChip";
 import "@testing-library/jest-dom";
 
 describe("Pact Chip Tests", () => {

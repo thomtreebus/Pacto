@@ -19,9 +19,9 @@ import NotificationsIcon from "@mui/icons-material/Notifications";
 import Badge from "@mui/material/Badge";
 import PactoIcon from "../assets/pacto-logo.png";
 import MenuIcon from "@mui/icons-material/Menu";
-import NotificationsMenu from "./NotificationsMenu";
-import ProfileMenu from "./ProfileMenu";
-import Loading from "./Loading";
+import NotificationsMenu from "../components/menus/NotificationsMenu";
+import ProfileMenu from "../components/menus/ProfileMenu";
+import Loading from "../components/Loading";
 
 const Search = styled("div")(({ theme }) => ({
 	position: "relative",

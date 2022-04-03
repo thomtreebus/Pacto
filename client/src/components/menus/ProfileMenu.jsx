@@ -6,10 +6,16 @@ import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";
 import Divider from "@mui/material/Divider";
 import { useHistory } from "react-router-dom";
-import { useAuth } from "../providers/AuthProvider";
+import { useAuth } from "../../providers/AuthProvider";
 
 /**
  * A menu to be shown on the app bar
+ * @param profileMenuId
+ * @param profileAnchorEl
+ * @param isProfileMenuOpen
+ * @param handleProfileMenuClose
+ * @returns {JSX.Element}
+ * @constructor
  */
 export default function ProfileMenu({
   profileMenuId, 

@@ -5,7 +5,7 @@
 
 import { screen, fireEvent, waitFor } from "@testing-library/react";
 import { waitForElementToBeRemoved } from "@testing-library/react";
-import CreatePostCard from "../components/CreatePostCard";
+import CreatePostCard from "../components/cards/CreatePostCard";
 import "@testing-library/jest-dom";
 import { rest } from "msw";
 import userEvent from "@testing-library/user-event";

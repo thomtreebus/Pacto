@@ -1,10 +1,10 @@
 /**
- * The card which displays a singular notification
+ * The card which displays a singular notification.
  */
 
 import { Card, Typography } from "@mui/material";
 import { useState } from "react";
-import { relativeTime } from "../helpers/timeHandler";
+import { relativeTime } from "../../helpers/timeHandler";
 import { IconButton } from "@mui/material";
 import MarkChatReadIcon from "@mui/icons-material/MarkChatRead";
 

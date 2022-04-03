@@ -1,12 +1,12 @@
 /**
- * Tests for a pact list item which is displayed my a pact list.
+ * Tests for a pact list items which is displayed my a pact list.
  */
 
 import { screen, fireEvent, waitFor } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import { rest } from "msw";
 import pacts from "./utils/testPacts";
-import PactListItem from "../components/PactListItem.jsx";
+import PactListItem from "../components/lists/items/PactListItem.jsx";
 import { useMockServer } from "./utils/useMockServer.js";
 import mockRender from "./utils/mockRender";
 

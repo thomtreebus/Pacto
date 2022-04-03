@@ -1,11 +1,11 @@
 /**
- * The left side bar component to be shown on the website
+ * The left sidebar component to be shown on the website
  */
 
 import React from "react";
 import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
-import PopularPactsList from "./PopularPactsList";
+import PopularPactsList from "../components/lists/PopularPactsList";
 import { Typography, Toolbar, Divider } from "@mui/material";
 
 const drawerWidth = 240;

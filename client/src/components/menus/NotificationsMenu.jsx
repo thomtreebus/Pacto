@@ -3,7 +3,7 @@
  */
 
 import Menu from "@mui/material/Menu";
-import NotificationCard from "./NotificationCard";
+import NotificationCard from "../cards/NotificationCard";
 import { Typography } from "@mui/material";
 
 /**

@@ -4,7 +4,7 @@
 
 import { fireEvent, screen } from "@testing-library/react";
 import "@testing-library/jest-dom";
-import PageList from "../components/PageList";
+import PageList from "../components/lists/PageList";
 import { useMockServer } from "./utils/useMockServer";
 import mockRender from "./utils/mockRender";
 

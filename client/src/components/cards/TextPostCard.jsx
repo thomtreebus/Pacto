@@ -3,7 +3,7 @@
  */
 
 import { Box } from "@mui/material"
-import CollapsingText from "../CollapsingText"
+import CollapsingText from "../helpers/CollapsingText"
 
 /**
  * The card used to display text posts

@@ -3,7 +3,7 @@
  */
 
 import { screen } from "@testing-library/react";
-import PactGrid from "../components/PactGrid";
+import PactGrid from "../components/pact/PactGrid";
 import "@testing-library/jest-dom";
 import pacts from "./utils/testPacts";
 import { useMockServer } from "./utils/useMockServer";

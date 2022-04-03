@@ -3,7 +3,7 @@
  */
 
 import { screen, fireEvent, waitFor } from "@testing-library/react";
-import PostList from "../components/PostList";
+import PostList from "../components/lists/PostList";
 import "@testing-library/jest-dom";
 import testData from "./utils/testPosts"
 import { useMockServer } from "./utils/useMockServer";

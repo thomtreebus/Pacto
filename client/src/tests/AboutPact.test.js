@@ -4,7 +4,7 @@
  */
 
 import { render, screen } from "@testing-library/react";
-import AboutPact from "../components/AboutPact";
+import AboutPact from "../components/pact/pactFeed/AboutPact";
 import "@testing-library/jest-dom";
 import pacts from "./utils/testPacts";
 

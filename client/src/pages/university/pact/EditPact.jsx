@@ -14,7 +14,7 @@ import { useParams } from "react-router-dom";
 import { useEffect } from "react";
 import { Image } from "cloudinary-react";
 import Axios from "axios";
-import ErrorMessage from "../../../components/ErrorMessage";
+import ErrorMessage from "../../../components/errors/ErrorMessage";
 import { LoadingButton } from "@mui/lab";
 import { styled } from "@mui/material/styles";
 import Loading from "../../../components/Loading";

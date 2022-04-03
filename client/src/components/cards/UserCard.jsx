@@ -4,8 +4,8 @@
 
 import { Box, Grid, Card, CardHeader, Avatar, Typography } from "@mui/material"
 import { useHistory } from "react-router-dom";
-import { useAuth } from "../providers/AuthProvider";
-import FriendButtons from "./FriendButtons";
+import { useAuth } from "../../providers/AuthProvider";
+import FriendButtons from "../FriendButtons";
 
 /**
  * A card to display information about a user

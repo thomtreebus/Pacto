@@ -1,16 +1,17 @@
 /**
- * The component which shows the list of pacts the user is in
+ * The component which shows the list of pacts the user is in.
  */
 
 import React, { useEffect } from "react";
 import List from "@mui/material/List";
-import { useAuth } from "../providers/AuthProvider";
+import { useAuth } from "../../providers/AuthProvider";
 import { useQuery } from "react-query";
 import PactList from "./PactList";
 import { Typography } from "@mui/material";
 
 /**
  * Renders the list of pacts the logged-in user belongs to
+ * @returns {JSX.Element}
  */
 export default function MyPactList() {
 	const { isLoading, data, refetch } = useQuery("mypacts", () =>

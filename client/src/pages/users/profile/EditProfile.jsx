@@ -23,7 +23,7 @@ import WhatsAppIcon from "@mui/icons-material/WhatsApp";
 import { Divider } from "@mui/material";
 import Loading from "../../../components/Loading";
 import { useAuth } from "../../../providers/AuthProvider";
-import ErrorMessage from "../../../components/ErrorMessage";
+import ErrorMessage from "../../../components/errors/ErrorMessage";
 
 const Input = styled("input")({
 	display: "none",
