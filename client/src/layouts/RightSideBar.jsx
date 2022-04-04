@@ -1,5 +1,5 @@
 /**
- * The left sidebar component to be shown on the website
+ * The right sidebar component to be shown on the website
  */
 
 import React from "react";
