@@ -23,8 +23,8 @@ End-to-end testing was not done as the client and server application were both t
 ## Metrics
 |        | Test Cases Executed | Test Cases Passed | Code Coverage |
 |--------|---------------------|-------------------|---------------|
-| Client | 374                 | 374               | 99.35%        |
-| Server | 297                 | 297               | 97.22%        |
+| Client | 374                 | 374               | 99.34%        |
+| Server | 302                 | 302               | 97.20%        |
 
 ## Client Testing
 The client application was created using [React](https://reactjs.org/) and automated testing was done using [Jest](https://testing-library.com/docs/react-testing-library/intro). [React Testing Library](https://testing-library.com/docs/react-testing-library/intro/) was used in order to test all the components and pages. 
