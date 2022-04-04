@@ -1,5 +1,5 @@
 /**
- * Tests for a pact list items which is displayed my a pact list.
+ * Tests for a pact list item which is displayed my a pact list.
  */
 
 import { screen, fireEvent, waitFor } from "@testing-library/react";

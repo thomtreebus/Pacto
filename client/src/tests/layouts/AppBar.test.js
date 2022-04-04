@@ -184,14 +184,14 @@ describe("App Bar Tests", () => {
       await waitFor(() => expect(menuElement).toBeVisible());
     });
 
-    it("should close the profile menu when a menu items is pressed", async () => {
+    it("should close the profile menu when a menu item is pressed", async () => {
       const iconButtonElement = screen.getByTestId("profile-button");
       fireEvent.click(iconButtonElement);
       const menuElement = screen.getByTestId("primary-search-account-menu");
       await waitFor(() => expect(menuElement).toBeVisible());
     });
   
-    it("should close the profile menu when a menu items is pressed", async () => {
+    it("should close the profile menu when a menu item is pressed", async () => {
       const iconButtonElement = screen.getByTestId("profile-button");
       fireEvent.click(iconButtonElement);
       const menuElement = screen.getByTestId("primary-search-account-menu");
