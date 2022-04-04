@@ -53,12 +53,12 @@ Running coverage will create a new directory (within the directory that coverage
 
 The coverage for the client application currently looks like this:
 <p>
-  <a href="coverage" rel="noopener sponsored" target="_blank"><img src="https://i.imgur.com/k2052tP.png" alt="coverage" title="Client Test Coverage" loading="lazy" /></a>
+  <a href="coverage" rel="noopener sponsored" target="_blank"><img src="https://i.imgur.com/uEbmnRK.png" alt="coverage" title="Client Test Coverage" loading="lazy" /></a>
 </p>
 
 The coverage for the server application currently looks like this:
 <p>
-  <a href="coverage" rel="noopener sponsored" target="_blank"><img src="https://i.imgur.com/HcxO7R3.png" alt="coverage" title="Server Test Coverage" loading="lazy" /></a>
+  <a href="coverage" rel="noopener sponsored" target="_blank"><img src="https://i.imgur.com/5rPtifW.png" alt="coverage" title="Server Test Coverage" loading="lazy" /></a>
 </p>
 
 ## Manual Testing
