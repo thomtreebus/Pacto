@@ -158,6 +158,12 @@ describe("POST /pact", () => {
         name: ""
       }, "name", PACT_MESSAGES.NAME.BLANK);
     });
+
+    it("trims the name before validating", async () => {
+      await isInvalidPact({
+        name: "x "
+      }, "name", PACT_MESSAGES.NAME.MIN_LENGTH_NOT_MET);
+    });
   });
 
   describe("Description validation", () => {
@@ -172,6 +178,13 @@ describe("POST /pact", () => {
       await isValidPact({
         name: NAME,
         description: "x".repeat(255)
+      });
+    });
+
+    it("trims the description before validation", async () => {
+      await isValidPact({
+        name: NAME,
+        description: ` ${"x".repeat(255)} `
       });
     });
 

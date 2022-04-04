@@ -8,6 +8,7 @@ const handleFieldErrors = require('../helpers/errorHandler');
 const { MESSAGES, PACT_MESSAGES } = require("../helpers/messages");
 const Notification = require("../models/Notification");
 const getPreview = require("../helpers/LinkCache");
+const {requestBodyFieldTrim} = require("../helpers/requestBodyTrim");
 
 /**
  * Creates a pact using information given in the request.
@@ -17,9 +18,12 @@ const getPreview = require("../helpers/LinkCache");
  */
 module.exports.createPact = async (req, res) => {
 	try {
+		requestBodyFieldTrim(req, "name");
+		requestBodyFieldTrim(req, "description");
+
 		const user = req.user;
-    const { name } = req.body;
-    const optionalAttributes = ['description', 'category'];
+		const { name } = req.body;
+		const optionalAttributes = ['description', 'category'];
 
 		const newPact = {
 			name,
@@ -123,6 +127,9 @@ module.exports.updatePact = async(req, res) => {
 	let status = undefined;
 	const jsonErrors = [];
 	try {
+		requestBodyFieldTrim(req, "name");
+		requestBodyFieldTrim(req, "description");
+
 		const pact = req.pact
 		const moderators = pact.moderators;
 
