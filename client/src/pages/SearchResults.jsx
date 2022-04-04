@@ -4,16 +4,21 @@
 
 import React, { useEffect, useState } from 'react'
 import { useParams } from "react-router-dom";
-import ErrorPage from "./Error";
-import Loading from "./Loading";
-import PostList from "../components/PostList";
-import PactGrid from "../components/PactGrid";
+import ErrorComponent from "../components/errors/ErrorComponent";
+import Loading from "../components/Loading";
+import PostList from "../components/lists/PostList";
+import PactGrid from "../components/pact/PactGrid";
 import Box from '@mui/material/Box';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
-import UserList from '../components/UserList';
-import {TabPanel} from "../components/TabComponents";
+import UserList from '../components/lists/UserList';
+import {TabPanel} from "../components/helpers/TabComponents";
 
+/**
+ * Search results gives us matching component matching
+ * the user's search query.
+ * @returns {JSX.Element}
+ */
 export default function SearchResults() {
   const { query } = useParams();
   const [isLoading, setIsLoading] = useState(true);
@@ -48,7 +53,7 @@ export default function SearchResults() {
   return (
     <>
     { isLoading && <Loading /> }
-    {error && <ErrorPage />}
+    {error && <ErrorComponent />}
     <Box sx={{ width: '100%'}}>
       <Box sx={{ borderBottom: 1, borderColor: 'divider', bgcolor: 'background.paper' }}>
         <Tabs value={type} onChange={handleTabChange} centered data-testid="tabs-element">

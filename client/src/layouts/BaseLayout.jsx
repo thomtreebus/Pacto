@@ -1,6 +1,6 @@
 import React from "react";
-import LeftSideBar from "../components/LeftSideBar";
-import RightSideBar from "../components/RightSideBar";
+import LeftSideBar from "./LeftSideBar";
+import RightSideBar from "./RightSideBar";
 import Box from "@mui/material/Box";
 
 export default function BaseLayout({ children }) {

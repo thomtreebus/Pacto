@@ -1,5 +1,5 @@
 /**
- * The card used to display comments
+ * The card used to display comments.
  */
 
 import { Box, Card, CardContent, Grid } from "@mui/material";
@@ -15,8 +15,8 @@ import Voter from "../Voter";
 import { relativeTime } from "../../helpers/timeHandler";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { IconButton } from "@mui/material";
-import ErrorMessage from "../ErrorMessage";
-import CollapsingText from "../CollapsingText";
+import ErrorMessage from "../errors/ErrorMessage";
+import CollapsingText from "../helpers/CollapsingText";
 
 export const DELETED_COMMENT_MESSAGE = "This comment has been deleted.";
 
