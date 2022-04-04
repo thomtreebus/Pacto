@@ -1,3 +1,4 @@
+# Parts taken from https://tiangolo.medium.com/react-in-docker-with-nginx-built-with-multi-stage-docker-builds-including-testing-8cc49d6ec305
 # Pull Docker Hub base image
 FROM node:16 as build
 # Set working directory

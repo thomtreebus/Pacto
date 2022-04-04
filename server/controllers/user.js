@@ -4,6 +4,7 @@ const {jsonResponse, jsonError} = require("../helpers/responseHandlers");
 const University = require("../models/University");
 const {USER_MESSAGES} = require("../helpers/messages");
 const FriendRequest = require('../models/FriendRequest');
+const {requestBodyFieldTrim} = require("../helpers/requestBodyTrim");
 
 /**
  * Updates the profile of the user making the request.
@@ -15,6 +16,8 @@ module.exports.updateProfile = async(req, res) => {
   let status = undefined;
   let jsonErrors = [];
   let resMessage = null;
+  requestBodyFieldTrim(req, "bio");
+
   try {
     const { id } = req.params;
 
